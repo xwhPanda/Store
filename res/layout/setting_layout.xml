@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:setting="http://schemas.android.com/apk/res/com.jiqu.store"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent" 
+    android:background="@drawable/toolbg">
+    
+    <com.jiqu.view.TitleView
+        android:id="@+id/titleView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+    
+    <com.jiqu.view.SettingsItem
+        android:id="@+id/threadItem"
+        setting:isThreadPool="true"
+        android:layout_centerHorizontal="true"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+    
+    <com.jiqu.view.SettingsItem
+        android:id="@+id/loadLargImg"
+        setting:isNext="true"
+        android:layout_centerHorizontal="true"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/threadItem"
+        android:layout_alignLeft="@+id/threadItem"
+        android:layout_alignRight="@+id/threadItem"/>
+    
+    <com.jiqu.view.SettingsItem
+        android:id="@+id/autoCheckVersion"
+        setting:isAutoCheckUpdate="true"
+        android:layout_centerHorizontal="true"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/loadLargImg"
+        android:layout_alignLeft="@+id/loadLargImg"
+        android:layout_alignRight="@+id/loadLargImg"/>
+    
+    <com.jiqu.view.SettingsItem
+        android:id="@+id/checkVersion"
+        setting:isCheckUpdate="true"
+        android:layout_centerHorizontal="true"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/autoCheckVersion"
+        android:layout_alignLeft="@+id/autoCheckVersion"
+        android:layout_alignRight="@+id/autoCheckVersion"/>
+    
+    <com.jiqu.view.SettingsItem
+        android:id="@+id/modifyPassword"
+        setting:isNext="true"
+        android:layout_centerHorizontal="true"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/checkVersion"
+        android:layout_alignLeft="@+id/checkVersion"
+        android:layout_alignRight="@+id/checkVersion"/>
+    
+    <com.jiqu.view.SettingsItem
+        android:id="@+id/loginOut"
+        setting:isNext="true"
+        android:layout_centerHorizontal="true"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/modifyPassword"
+        android:layout_alignLeft="@+id/modifyPassword"
+        android:layout_alignRight="@+id/modifyPassword"/>
+
+</RelativeLayout>

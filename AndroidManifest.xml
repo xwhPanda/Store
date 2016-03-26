@@ -1,0 +1,64 @@
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.jiqu.store"
+    android:versionCode="1001"
+    android:versionName="1.0.01" >
+
+    <uses-sdk
+        android:minSdkVersion="11"
+        android:targetSdkVersion="17" />
+    
+    <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.RESTART_PACKAGES"/>  
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>
+
+    <application
+        android:name="com.jiqu.application.StoreApplication"
+        android:allowBackup="true"
+        android:icon="@drawable/ic_launcher"
+        android:label="@string/app_name"
+        android:theme="@style/FullScreen">
+        
+        <activity android:name="com.jiqu.store.MainActivity"
+            android:screenOrientation="portrait">
+            <intent-filter >
+                <action android:name="android.intent.action.MAIN"/>
+                <category android:name="android.intent.category.LAUNCHER"/>
+            </intent-filter>
+        </activity>
+        
+        <activity android:name="com.jiqu.activity.MemberLoginActivity"
+            android:screenOrientation="portrait"></activity>
+        
+        <activity android:name="com.jiqu.activity.ShowAccountInformatiomActivity"
+            android:screenOrientation="portrait"></activity>
+        
+        <activity android:name="com.jiqu.activity.ForgetPasswordActivity"
+            android:screenOrientation="portrait"></activity>
+        
+        <activity android:name="com.jiqu.activity.RegisterActivity"
+            android:screenOrientation="portrait"></activity>
+        
+        <activity android:name="com.jiqu.activity.SearchActivity"
+            android:screenOrientation="portrait"></activity>
+        
+        <activity android:name="com.jiqu.activity.SettingActivity"
+            android:screenOrientation="portrait"></activity>
+        
+        <activity android:name="com.jiqu.activity.ModifyPasswordActivity"
+            android:screenOrientation="portrait"></activity>
+        
+        <activity android:name="com.jiqu.activity.MessageCenterActivity"
+            android:screenOrientation="portrait"></activity>
+        
+        <activity android:name="com.jiqu.activity.GameEvaluationInformationActivity"
+            android:screenOrientation="portrait"></activity>
+        
+        <activity android:name="com.jiqu.activity.AppUninstallActivity"
+            android:screenOrientation="portrait"></activity>
+        
+        <activity android:name="com.jiqu.activity.DownloadManagerActivity"
+            android:screenOrientation="portrait"></activity>
+    </application>
+
+</manifest>

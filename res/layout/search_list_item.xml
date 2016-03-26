@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical" 
+    android:background="@color/bottomBgColor">
+    
+    <RelativeLayout 
+        android:id="@+id/searchLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        
+        <Button 
+            android:id="@+id/backBtn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:background="@drawable/fanhui"/>
+        
+        <RelativeLayout 
+            android:id="@+id/searchEditLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:background="@drawable/sousuobg">
+            
+            <Button 
+                android:id="@+id/searchBtn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_alignParentRight="true"
+                android:layout_marginRight="5dp"
+                android:background="@drawable/sousuoicon"/>
+            
+            <EditText
+                android:id="@+id/searchEdit"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_centerVertical="true"
+                android:layout_toLeftOf="@id/searchBtn"
+                android:background="@color/transparent"
+                android:textColor="@color/itemDesColor"
+                android:paddingLeft="5dp"
+                android:singleLine="true"
+                android:textColorHint="@color/itemDesColor"
+                android:hint="@string/welcomeUseVR"/>
+            
+        </RelativeLayout>
+    </RelativeLayout>
+    
+    <LinearLayout 
+        android:id="@+id/keywordLin"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_below="@id/searchLayout"
+        android:orientation="vertical">
+        
+    </LinearLayout>
+
+</RelativeLayout>

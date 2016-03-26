@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent" 
+    android:background="@color/black">
+    
+    <ImageView
+        android:id="@+id/gameIcon"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:background="@color/red"/>
+    
+    <LinearLayout
+        android:id="@+id/inforLin"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:layout_toRightOf="@+id/gameIcon"
+        android:gravity="center_vertical"
+        android:orientation="vertical">
+        
+        <TextView
+            android:id="@+id/gameName"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:maxLength="15"
+            android:singleLine="true"
+            android:textColor="@color/blue"
+            android:ellipsize="end"
+            android:text="英雄联盟"/>
+        
+        <com.jiqu.view.RatingBarView
+            android:id="@+id/gameScoreBar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+        
+        <TextView
+            android:id="@+id/gameInformation"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:maxLength="20"
+            android:singleLine="true"
+            android:textColor="@color/blue"
+            android:ellipsize="end"
+            android:text="中文 11M"/>
+        
+    </LinearLayout>
+    
+    <LinearLayout
+        android:id="@+id/downloadLin"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@color/blue"
+        android:layout_alignParentRight="true"
+        android:layout_centerVertical="true"
+        android:gravity="center"
+        android:clickable="true"
+        android:orientation="horizontal">
+        
+        <ImageView 
+            android:id="@+id/downloadImg"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/xiazai"/>
+        
+        <TextView 
+            android:id="@+id/downloadTx"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/white"
+            android:text="@string/downloadNow"/>
+    </LinearLayout>
+
+</RelativeLayout>

@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="horizontal" >
+    
+    <TextView 
+        android:id="@+id/headlinesTx"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:textSize="14sp"
+        android:background="@color/headlineColor"
+        android:textColor="@color/white"
+        android:gravity="center"
+        android:text="@string/headlineTx"/>
+    
+    <RelativeLayout 
+        android:layout_width="0dp"
+        android:layout_weight="3"
+        android:layout_height="match_parent"
+        android:background="@color/headlineContentBg">
+        
+        <ImageView 
+            android:id="@+id/headlineContenImg"
+            android:layout_width="@dimen/headlineContenImgSize"
+            android:layout_height="@dimen/headlineContenImgSize"
+            android:layout_marginLeft="5dp"
+            android:layout_centerVertical="true"
+            android:background="@drawable/bao"/>
+        
+        <TextView 
+	        android:id="@+id/headlinesInformation"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:layout_toRightOf="@id/headlineContenImg"
+	        android:layout_marginLeft="5dp"
+	        android:layout_centerVertical="true"
+	        android:singleLine="true"
+	        android:maxEms="20"
+	        android:ellipsize="end"
+	        android:textSize="12sp"
+	        android:textColor="@color/white"
+	        android:background="@color/headlineContentBg"
+	        android:text="使命召唤最新公测，最炫风暴等你来开启"/>
+        
+    </RelativeLayout>
+    
+</LinearLayout>

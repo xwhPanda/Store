@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content">
+    
+    <RelativeLayout 
+        android:id="@+id/parentView"
+        android:layout_width="wrap_content"
+    	android:layout_height="wrap_content"
+    	android:background="@color/itemBgColor">
+        
+        <ImageView
+        android:id="@+id/gameIcon"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:background="@color/red"/>
+    
+	    <TextView 
+	        android:id="@+id/gameName"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:layout_below="@id/gameIcon"
+	        android:layout_centerHorizontal="true"
+	        android:singleLine="true"
+	        android:ellipsize="end"
+	        android:textColor="@color/bottomFocus"/>
+	    
+	    <TextView 
+	        android:id="@+id/gameDescription"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:layout_centerHorizontal="true"
+	        android:layout_below="@id/gameName"
+	        android:singleLine="true"
+	        android:ellipsize="end"
+	        android:textColor="@color/itemDesColor"/>
+    </RelativeLayout>
+
+</LinearLayout>

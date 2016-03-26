@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent" 
+    android:background="@drawable/toolbg">
+    
+    <com.jiqu.view.TitleView
+        android:id="@+id/titleView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+
+    <com.jiqu.view.PasswordView 
+        android:id="@+id/nickNameView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"/>
+    
+    <com.jiqu.view.PasswordView 
+        android:id="@+id/phoneNumberView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_below="@id/nickNameView"
+        android:layout_alignLeft="@id/nickNameView"
+        android:layout_alignRight="@id/nickNameView"/>
+    
+    <com.jiqu.view.PasswordView 
+        android:id="@+id/emailView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_below="@id/phoneNumberView"
+        android:layout_alignLeft="@id/phoneNumberView"
+        android:layout_alignRight="@id/phoneNumberView"/>
+    
+    <RadioGroup 
+        android:id="@+id/genderGroup"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:orientation="horizontal"
+        android:layout_below="@id/emailView">
+        <RadioButton 
+            android:id="@+id/manRadio"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:button="@null"
+            android:drawablePadding="3dp"
+            android:drawableLeft="@drawable/gender_radiobutton_selector"
+            android:text="@string/man"/>
+        
+        <RadioButton 
+            android:id="@+id/femaleRadio"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:button="@null"
+            android:drawablePadding="3dp"
+            android:drawableLeft="@drawable/gender_radiobutton_selector"
+            android:text="@string/female"/>
+    </RadioGroup>
+    
+    <com.jiqu.view.PasswordView 
+        android:id="@+id/passwordView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_below="@id/genderGroup"
+        android:layout_alignLeft="@id/phoneNumberView"
+        android:layout_alignRight="@id/phoneNumberView"/>
+    
+    <com.jiqu.view.PasswordView 
+        android:id="@+id/confirmPasswordView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_below="@id/passwordView"
+        android:layout_alignLeft="@id/passwordView"
+        android:layout_alignRight="@id/passwordView"/>
+    
+    <Button 
+        android:id="@+id/registerBtn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_below="@id/confirmPasswordView"
+        android:layout_alignLeft="@id/confirmPasswordView"
+        android:layout_alignRight="@id/confirmPasswordView"
+        android:background="@drawable/tijiao"
+        android:text="@string/register"
+        android:textColor="@color/white"/>
+</RelativeLayout>

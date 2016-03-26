@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.jiqu.view.PullToRefreshLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/refresh_view"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent" 
+    android:background="@color/bottomBgColor">
+    
+    <include layout="@layout/refresh_head" />
+    <!-- 支持所有实现Pullable接口的View -->
+
+    <com.jiqu.view.PullableGridView
+        android:id="@+id/content_view"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:scrollbars="none"
+        android:numColumns="auto_fit"
+        android:gravity="center_horizontal"
+        android:listSelector="@color/transparent"
+        android:background="@color/bottomBgColor"/>
+
+    <include layout="@layout/load_more" />
+    
+</com.jiqu.view.PullToRefreshLayout>

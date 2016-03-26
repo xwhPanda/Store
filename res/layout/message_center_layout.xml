@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/toolbg">
+    
+    <com.jiqu.view.TitleView 
+        android:id="@+id/titleView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+
+    <RelativeLayout
+        android:id="@+id/btnLayout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true">
+
+        <Button
+            android:id="@+id/notice"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" 
+            android:padding="0dp"
+            android:text="@string/notic"/>
+
+        <Button
+            android:id="@+id/privateLetter"	
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="0dp"
+            android:layout_toRightOf="@id/notice" 
+            android:text="@string/privateLetter"/>
+    </RelativeLayout>
+
+    <com.jiqu.view.PullToRefreshLayout
+        android:id="@+id/refreshView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/btnLayout" >
+
+        <include layout="@layout/refresh_head" />
+
+        <com.jiqu.view.PullableListView
+            android:id="@+id/contentView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/transparent"
+            android:divider="@drawable/xian"
+            android:dividerHeight="1dp"
+            android:gravity="center_horizontal"
+            android:listSelector="@color/transparent"
+            android:scrollbars="none" />
+
+        <include layout="@layout/load_more" />
+    </com.jiqu.view.PullToRefreshLayout>
+    
+    <com.jiqu.view.PullToRefreshLayout
+        android:id="@+id/messageRefreshView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/btnLayout" 
+        android:visibility="invisible">
+
+        <include layout="@layout/refresh_head" />
+
+        <com.jiqu.view.PullableListView
+            android:id="@+id/messageContentView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/transparent"
+            android:divider="@drawable/xian"
+            android:dividerHeight="1dp"
+            android:gravity="center_horizontal"
+            android:listSelector="@color/transparent"
+            android:scrollbars="none" />
+
+        <include layout="@layout/load_more" />
+    </com.jiqu.view.PullToRefreshLayout>
+    
+</RelativeLayout>

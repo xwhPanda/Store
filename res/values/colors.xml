@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="white">#FFFFFF</color>
+    <color name="black">#000000</color>
+    <color name="red">#FF0000</color>
+    <color name="transparent">#00000000</color>
+    
+    <color name="bottomBgColor">#0c0e10</color>
+    <color name="bottomFocus">#40b6f2</color>
+    <!-- 推荐页精品、专题等按下背景颜色 -->
+    <color name="recommendCategoryFocus">#40b6f2</color>
+    <!-- 推荐页头条栏 -->
+    <color name="headlineColor">#3a3a3a</color>
+    <color name="headlineContentBg">#ff3333</color>
+    
+    <color name="itemColor">#686f73</color>
+    <color name="itemDesColor">#999999</color>
+    
+    <color name="sortTitleColor">#ff3333</color>
+    
+    <color name="itemBgColor">#171a1f</color>
+    
+    <color name="informationListGameColor">#fbb03b</color>
+    <color name="informationListTimeColor">#23c4f5</color>
+    
+    <color name="toolItemTextColor">#32c4f5</color>
+    <color name="blue">#35c3f5</color>
+    <color name="yellow">#ffc003</color>
+</resources>

@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent" 
+    android:background="@drawable/toolbg">
+    
+    <com.jiqu.view.TitleView
+        android:id="@+id/titleView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+    
+    <ImageView 
+        android:id="@+id/accountImg"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:background="@drawable/yonghuicon"/>
+    
+    <TextView 
+        android:id="@+id/level"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:background="@drawable/dengji"
+        android:layout_below="@id/accountImg"
+        android:gravity="center"/>
+    
+   <ListView 
+       android:id="@+id/accountInformationList"
+       android:layout_width="wrap_content"
+       android:layout_height="wrap_content"
+       android:layout_centerHorizontal="true"
+       android:layout_below="@id/level"
+       android:scrollbars="none"
+       android:listSelector="@null"/>
+
+   <Button 
+       android:id="@+id/modifyBtn"
+       android:layout_width="wrap_content"
+       android:layout_height="wrap_content"
+       android:layout_centerHorizontal="true"
+       android:layout_below="@id/accountInformationList"
+       android:layout_alignLeft="@id/accountInformationList"
+       android:layout_alignRight="@id/accountInformationList"
+       android:background="@drawable/xiugai"
+       android:text="@string/modify"
+       android:textColor="@color/white"/>
+
+</RelativeLayout>

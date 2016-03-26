@@ -1,0 +1,283 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent" 
+    android:background="@drawable/toolbg" >
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:scrollbars="none" >
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <com.jiqu.view.TitleView
+                android:id="@+id/titleView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+
+            <TextView
+                android:id="@+id/evaluationTitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:ellipsize="end"
+                android:singleLine="true"
+                android:text="复合式服务阿飞看哈客家话"
+                android:textColor="@color/white" />
+
+            <LinearLayout
+                android:id="@+id/informationLin"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/evaluationTitle"
+                android:layout_centerHorizontal="true"
+                android:gravity="center_horizontal"
+                android:orientation="horizontal" >
+
+                <TextView
+                    android:id="@+id/evaluationTime"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:ellipsize="end"
+                    android:singleLine="true"
+                    android:text="时间 ： 2016-3-23"
+                    android:textColor="@color/itemDesColor" />
+
+                <TextView
+                    android:id="@+id/evaluationAuthor"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:ellipsize="end"
+                    android:singleLine="true"
+                    android:text="作者 ： panda"
+                    android:textColor="@color/itemDesColor" />
+
+                <TextView
+                    android:id="@+id/browseCount"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:ellipsize="end"
+                    android:singleLine="true"
+                    android:text="浏览 ： 2000"
+                    android:textColor="@color/itemDesColor" />
+            </LinearLayout>
+
+            <ImageView
+                android:id="@+id/gameImg"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/informationLin"
+                android:layout_centerHorizontal="true"
+                android:background="@color/red" />
+
+            <TextView
+                android:id="@+id/information"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignLeft="@id/gameImg"
+                android:layout_alignRight="@id/gameImg"
+                android:layout_below="@id/gameImg"
+                android:text="防水防奇偶推荐给公司计划和基金公司的管理键盘以及天津哈飞和放假了符合日哦俄特国内首个绿色可能给人类价格收购计划开了更好的了解历史较高"
+                android:textColor="@color/itemDesColor" />
+
+            <ImageView
+                android:id="@+id/view1"
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_below="@id/information"
+                android:background="@drawable/xian" />
+
+            <LinearLayout
+                android:id="@+id/scoreLin"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/view1"
+                android:orientation="horizontal" >
+
+                <RelativeLayout
+                    android:id="@+id/coefficientRel"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_gravity="center"
+                    android:layout_weight="1"
+                    android:gravity="center" >
+
+                    <RelativeLayout
+                        android:id="@+id/screenSenseRel"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerHorizontal="true" >
+
+                        <TextView
+                            android:id="@+id/screenSense"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_centerVertical="true"
+                            android:singleLine="true"
+                            android:text="@string/screenSense"
+                            android:textColor="@color/white" />
+
+                        <com.jiqu.view.RatingBarView
+                            android:id="@+id/screenSenseBar"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_centerVertical="true"
+                            android:layout_toRightOf="@id/screenSense" />
+                    </RelativeLayout>
+
+                    <RelativeLayout
+                        android:id="@+id/immersionRel"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@id/screenSenseRel"
+                        android:layout_centerHorizontal="true" >
+
+                        <TextView
+                            android:id="@+id/immersion"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_centerVertical="true"
+                            android:singleLine="true"
+                            android:text="@string/immersion"
+                            android:textColor="@color/white" />
+
+                        <com.jiqu.view.RatingBarView
+                            android:id="@+id/immersionBar"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_centerVertical="true"
+                            android:layout_toRightOf="@id/immersion" />
+                    </RelativeLayout>
+
+                    <RelativeLayout
+                        android:id="@+id/gameplayRel"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@id/immersionRel"
+                        android:layout_centerHorizontal="true" >
+
+                        <TextView
+                            android:id="@+id/gameplay"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_centerVertical="true"
+                            android:singleLine="true"
+                            android:text="@string/gameplay"
+                            android:textColor="@color/white" />
+
+                        <com.jiqu.view.RatingBarView
+                            android:id="@+id/gameplayBar"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_centerVertical="true"
+                            android:layout_toRightOf="@id/gameplay" />
+                    </RelativeLayout>
+
+                    <RelativeLayout
+                        android:id="@+id/difficultyNumberRel"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@id/gameplayRel"
+                        android:layout_centerHorizontal="true" >
+
+                        <TextView
+                            android:id="@+id/difficultyNumber"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_centerVertical="true"
+                            android:singleLine="true"
+                            android:text="@string/difficultyNumber"
+                            android:textColor="@color/white" />
+
+                        <com.jiqu.view.RatingBarView
+                            android:id="@+id/difficultyBar"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_centerVertical="true"
+                            android:layout_toRightOf="@id/difficultyNumber" />
+                    </RelativeLayout>
+                </RelativeLayout>
+
+                <ImageView
+                    android:id="@+id/view2"
+                    android:layout_width="1dp"
+                    android:layout_height="match_parent"
+                    android:background="@drawable/xiaotiao" />
+
+                <RelativeLayout
+                    android:id="@+id/comprehensiveRel"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:layout_weight="1" >
+
+                    <TextView
+                        android:id="@+id/comprehensiveEvaluation"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerHorizontal="true"
+                        android:singleLine="true"
+                        android:text="@string/comprehensive"
+                        android:textColor="@color/blue" />
+
+                    <TextView
+                        android:id="@+id/evaluationScore"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@id/comprehensiveEvaluation"
+                        android:layout_centerHorizontal="true"
+                        android:text="9.8"
+                        android:textColor="@color/blue"
+                        android:textStyle="bold|italic" />
+
+                    <com.jiqu.view.RatingBarView
+                        android:id="@+id/comprehensiveBar"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@id/evaluationScore"
+                        android:layout_centerHorizontal="true" />
+                </RelativeLayout>
+            </LinearLayout>
+
+            <ImageView
+                android:id="@+id/view3"
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_below="@id/scoreLin"
+                android:background="@drawable/xian" />
+
+            <TextView
+                android:id="@+id/detailedTitle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/view3"
+                android:background="@drawable/heise"
+                android:gravity="center_vertical"
+                android:text="@string/evaluationDetailed"
+                android:textColor="@color/blue" />
+
+            <LinearLayout
+                android:id="@+id/detailedEvaLin"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/detailedTitle"
+                android:orientation="vertical" >
+            </LinearLayout>
+            
+            <TextView 
+            android:id="@+id/emptyView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/detailedEvaLin"/>
+        </RelativeLayout>
+    </ScrollView>
+
+    <com.jiqu.view.EvaluationBottomView
+        android:id="@+id/evaGameView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"/>
+</RelativeLayout>

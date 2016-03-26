@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/topPanel"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <RelativeLayout
+        android:id="@+id/toolTop"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/bottomHeight"
+        android:background="@drawable/tool_top_bg" 
+        android:visibility="gone">
+
+        <TextView
+            android:id="@+id/toolTopTx"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="@dimen/toolTopTitleMarginL"
+            android:text="@string/toolTopTitle"
+            android:textColor="@color/white"
+            android:textSize="@dimen/topTipSize" />
+
+        <ImageView
+            android:id="@+id/toolTopImg"
+            android:layout_width="@dimen/toolTopImgSize"
+            android:layout_height="@dimen/toolTopImgSize"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="@dimen/toolTopImgMarginR"
+            android:background="@drawable/shezhi_icon" />
+    </RelativeLayout>
+
+    <LinearLayout
+        android:id="@+id/top"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/bottomBgColor"
+        android:layout_centerVertical="true"
+        android:gravity="center_vertical"
+        android:orientation="horizontal">
+
+        <RelativeLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:layout_weight="1" >
+
+            <ImageView
+                android:id="@+id/accountImg"
+                android:layout_width="@dimen/topAccountIconSize"
+                android:layout_height="@dimen/topAccountIconSize"
+                android:layout_centerInParent="true"
+                android:background="@drawable/yonghuicon" />
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/searchRel"
+            android:layout_width="0dp"
+            android:layout_height="@dimen/topAccountIconSize"
+            android:layout_weight="6"
+            android:background="@drawable/sousuobg" >
+
+            <Button
+                android:id="@+id/searchBtn"
+                android:layout_width="@dimen/bottomImgSize"
+                android:layout_height="@dimen/bottomImgSize"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:layout_marginRight="@dimen/searchBtnMarginR"
+                android:background="@drawable/sousuoicon" />
+
+            <EditText
+                android:id="@+id/searchEd"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_centerVertical="true"
+                android:layout_toLeftOf="@id/searchBtn"
+                android:hint="@string/welcomeUseVR"
+                android:paddingLeft="5dp"
+                android:singleLine="true"
+                android:textColor="@color/itemDesColor"
+                android:textColorHint="@color/itemDesColor"
+                android:background="@color/transparent"
+                android:textSize="12sp" />
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:layout_weight="1" >
+
+            <Button
+                android:id="@+id/download"
+                android:layout_width="@dimen/topAccountIconSize"
+                android:layout_height="@dimen/topAccountIconSize"
+                android:layout_centerInParent="true"
+                android:background="@drawable/top_xiazai_icon" />
+        </RelativeLayout>
+    </LinearLayout>
+
+</RelativeLayout>

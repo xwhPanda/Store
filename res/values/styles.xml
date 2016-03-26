@@ -1,0 +1,23 @@
+<resources xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <style name="FullScreen" parent="android:Theme">
+        <item name="android:windowFullscreen">true</item>
+        <item name="android:windowNoTitle">true</item>
+    </style>
+    
+    <style name="RatingStyle" parent="@android:style/Widget.RatingBar">
+        <item name="android:progressDrawable">@drawable/ratingbar_drawable</item>  
+       <item name="android:numStars">5</item>  
+       <item name="android:minHeight">@dimen/ratingHeight</item>
+       <item name="android:maxHeight">@dimen/ratingHeight</item>
+       <item name="android:isIndicator">true</item>
+    </style>
+    
+    <style name="EvaluationRatingStyle" parent="@android:style/Widget.RatingBar">
+        <item name="android:progressDrawable">@drawable/evaluation_star_se</item>  
+       <item name="android:numStars">5</item>  
+       <item name="android:minHeight">@dimen/ratingHeight</item>
+       <item name="android:maxHeight">@dimen/ratingHeight</item>
+       <item name="android:isIndicator">true</item>
+    </style>
+</resources>

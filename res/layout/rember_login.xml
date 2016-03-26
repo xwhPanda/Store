@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/toolbg" >
+
+    <com.jiqu.view.TitleView
+        android:id="@+id/titleView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+
+    <ImageView
+        android:id="@+id/accountIcon"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:background="@drawable/yonghuicon"/>
+
+    <com.jiqu.view.PasswordView 
+        android:id="@+id/accountInputView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/accountIcon"
+        android:layout_centerHorizontal="true"/>
+    
+    <com.jiqu.view.PasswordView 
+        android:id="@+id/passwordInputView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/accountInputView"
+        android:layout_alignLeft="@id/accountInputView"
+        android:layout_alignRight="@id/accountInputView"
+        android:layout_centerHorizontal="true"/>
+    
+    <Button 
+        android:id="@+id/login"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@id/passwordInputView"
+        android:layout_alignRight="@id/passwordInputView"
+        android:background="@drawable/denglu"
+        android:textColor="@color/white"
+        android:layout_below="@id/passwordInputView"
+        android:text="@string/login"/>
+
+    <LinearLayout
+        android:id="@+id/forgetPdLin"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_below="@id/login"
+        android:orientation="horizontal" >
+
+        <Button
+            android:id="@+id/forgetPassword"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@color/transparent"
+            android:text="@string/forgetPassword"
+            android:textColor="@color/itemDesColor"/>
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical" />
+
+        <Button
+            android:id="@+id/register"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@color/transparent"
+            android:text="@string/registered"
+            android:textColor="@color/itemDesColor"/>
+    </LinearLayout>
+
+</RelativeLayout>

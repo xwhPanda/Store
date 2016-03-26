@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- 设置界面添加属性用来区别显示哪种控件 -->
+    <declare-styleable name="settingViewDefineAttr">
+        <!-- 改变线程池大小 -->
+        <attr name="isThreadPool" format="boolean"/>
+        <!-- 自动检查更新 -->
+        <attr name="isAutoCheckUpdate" format="boolean"/>
+        <!-- 检查更新 -->
+        <attr name="isCheckUpdate" format="boolean"/>
+        <!-- 正常布局，右边为箭头图标 -->
+        <attr name="isNext" format="boolean"/>
+    </declare-styleable>
+    
+    <declare-styleable name="CustomRatingBar">
+        <attr name="editAble" format="boolean" />
+        <attr name="showScore" format="boolean" />
+    </declare-styleable>
+    
+    <declare-styleable name="RatingBarAttr">
+        <attr name="rating" format="float" />
+    </declare-styleable>
+</resources>

@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- 默认 -->
+    <dimen name="backBtnMargin">5dp</dimen>
+    <dimen name="accountInputEdWidth">220dp</dimen>
+    <dimen name="accountInputEdMarginTop">40dp</dimen>
+    <dimen name="accountInputEdPadding">35dp</dimen>
+    <dimen name="passwordInputLinMarginTop">5dp</dimen>
+    <dimen name="passwordIsVisibleMarginRight">5dp</dimen>
+    <dimen name="accountLoginBtnMarginTop">250dp</dimen>
+    
+    <dimen name="accountIconMarginTop">25dp</dimen>
+    <dimen name="accountNameMarginTop">10dp</dimen>
+    <dimen name="nicknamePadding">5dp</dimen>
+    <dimen name="nicknameMargin">15dp</dimen>
+    <dimen name="accountIconSize">80dp</dimen>
+    <dimen name="infomationHeight">50dp</dimen>
+    
+    <dimen name="topAccountIconSize">30dp</dimen>
+    <dimen name="searchBtnMarginR">5dp</dimen>
+    <dimen name="bottomImgSize">20dp</dimen>
+    <dimen name="bottomHeight">54dp</dimen>
+    <dimen name="recommendCategoryImgSize">20dp</dimen>
+    <dimen name="headlinesHeight">35dp</dimen>
+    <dimen name="recommendGameListMarginTop">5dp</dimen>
+    <dimen name="recommendViewPagerHeight">150dp</dimen>
+    <dimen name="headlineContenImgSize">20dp</dimen>
+    <dimen name="recommendGameInformationImgHeight">110dp</dimen>
+    <dimen name="recommendGameInformationImgMarginTop">5dp</dimen>
+    
+    <dimen name="moreBtnSize">10dp</dimen>
+    <dimen name="sortNameMargin">5dp</dimen>
+    <dimen name="sortMoreBtnMarginR">15dp</dimen>
+    <dimen name="recommendGameItemPadding">15dp</dimen>
+    <dimen name="listViewGameIconSize">60dp</dimen>
+    <dimen name="listViewGameItemSize">85dp</dimen>
+    <dimen name="listViewGameDownload">30dp</dimen>
+    <dimen name="listViewGameSubscript">30dp</dimen>
+    
+    <dimen name="ratingHeight">20px</dimen>
+    <dimen name="HeadlinesTxMargingL">5dp</dimen>
+    <dimen name="marginHeadline">17dp</dimen>
+    <dimen name="informationListViewIconW">110dp</dimen>
+    <dimen name="informationListViewIconH">65dp</dimen>
+    <dimen name="informationListViewMargin">10dp</dimen>
+    <dimen name="informationListViewItemSize">86dp</dimen>
+    <dimen name="informationListViewTimeMarginB">10dp</dimen>
+    <dimen name="informationTimeImgW">10dp</dimen>
+    <dimen name="informationTimeImgH">10dp</dimen>
+    
+    <dimen name="gameGridViewSpacing">10dp</dimen>
+    <dimen name="gameGridViewImgH">200dp</dimen>
+    <dimen name="gameGridViewItemH">260dp</dimen>
+    <dimen name="gameGridViewItemScoreW">50dp</dimen>
+    <dimen name="gameGridViewItemScoreH">60dp</dimen>
+    
+    <dimen name="toolTopTitleMarginL">10dp</dimen>
+    <dimen name="toolTopImgMarginR">10dp</dimen>
+    <dimen name="toolTopImgSize">20dp</dimen>
+    <dimen name="emptyViewHeight">10dp</dimen>
+    <dimen name="margin">10dp</dimen>
+    <dimen name="toolDownloadImgSize">30dp</dimen>
+    <dimen name="toolTxMarginTop">5dp</dimen>
+    <dimen name="toolAccountIconSize">70dp</dimen>
+    <dimen name="toolFiveMargin">5dp</dimen>
+    <dimen name="toolTwoMargin">5dp</dimen>
+    <dimen name="toolMessageImgH">15dp</dimen>
+    <dimen name="toolMessageImgW">23dp</dimen>
+    
+    <dimen name="loginTopBackImgSize">15dp</dimen>
+    <dimen name="topTipSize">18sp</dimen>
+    <dimen name="loginAccountSize">80dp</dimen>
+</resources>

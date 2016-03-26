@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="horizontal" 
+    android:background="@color/bottomBgColor">
+
+    <LinearLayout 
+        android:id="@+id/boutiqueLin"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:orientation="horizontal"
+        android:clickable="true"
+        android:gravity="center"
+        android:background="@drawable/recommend_category_bg_selector">
+        
+        <ImageView 
+            android:id="@+id/boutiqueImg"
+            android:layout_width="@dimen/recommendCategoryImgSize"
+            android:layout_height="@dimen/recommendCategoryImgSize"
+            android:background="@drawable/boutique_selector"/>
+        
+        <TextView 
+            android:id="@+id/boutiquTx"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@drawable/recommend_category_text_selector"
+            android:textSize="12sp"
+        	android:text="精品" />
+        
+    </LinearLayout>
+
+    <View 
+        android:layout_width="2dp"
+        android:layout_height="match_parent"
+        android:layout_marginTop="5dp"
+        android:layout_marginBottom="5dp"
+        android:background="@drawable/xiaotiao"/>
+    
+    <LinearLayout 
+        android:id="@+id/thematicLin"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:orientation="horizontal"
+        android:clickable="true"
+        android:gravity="center"
+        android:background="@drawable/recommend_category_bg_selector">
+        
+        <ImageView 
+            android:id="@+id/thematicImg"
+            android:layout_width="@dimen/recommendCategoryImgSize"
+            android:layout_height="@dimen/recommendCategoryImgSize"
+            android:background="@drawable/thematic_selector"/>
+        
+        <TextView 
+            android:id="@+id/thematicTx"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="12sp"
+            android:textColor="@drawable/recommend_category_text_selector"
+        	android:text="专题" />
+        </LinearLayout>
+    
+    <View 
+        android:layout_width="2dp"
+        android:layout_height="match_parent"
+        android:layout_marginTop="5dp"
+        android:layout_marginBottom="5dp"
+        android:background="@drawable/xiaotiao"/>
+    
+    <LinearLayout 
+        android:id="@+id/rankingLin"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:orientation="horizontal"
+        android:clickable="true"
+        android:gravity="center"
+        android:background="@drawable/recommend_category_bg_selector">
+        
+        <ImageView 
+            android:id="@+id/rankingImg"
+            android:layout_width="@dimen/recommendCategoryImgSize"
+            android:layout_height="@dimen/recommendCategoryImgSize"
+            android:background="@drawable/ranking_selector"/>
+        
+        <TextView 
+            android:id="@+id/rankingTx"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="12sp"
+            android:textColor="@drawable/recommend_category_text_selector"
+        	android:text="排行" />
+        </LinearLayout>
+    
+    <View 
+        android:layout_width="2dp"
+        android:layout_height="match_parent"
+        android:layout_marginTop="5dp"
+        android:layout_marginBottom="5dp"
+        android:background="@drawable/xiaotiao"/>
+
+    <LinearLayout 
+        android:id="@+id/sortLin"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:orientation="horizontal"
+        android:clickable="true"
+        android:gravity="center"
+        android:background="@drawable/recommend_category_bg_selector">
+        
+        <ImageView 
+            android:id="@+id/sortImg"
+            android:layout_width="@dimen/recommendCategoryImgSize"
+            android:layout_height="@dimen/recommendCategoryImgSize"
+            android:background="@drawable/sort_selector"/>
+        
+        <TextView 
+            android:id="@+id/sortTx"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="12sp"
+            android:textColor="@drawable/recommend_category_text_selector"
+        	android:text="排行" />
+        </LinearLayout>
+
+</LinearLayout>

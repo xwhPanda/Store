@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/bottomPanel"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal" 
+    android:background="@color/bottomBgColor">
+    
+    <LinearLayout
+        android:id="@+id/recommendLin"
+        android:layout_width="0dp"
+        android:layout_weight="1"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:clickable="true"
+        android:gravity="center">
+        
+        <ImageView 
+            android:id="@+id/recommendImg"
+            android:layout_width="@dimen/bottomImgSize"
+            android:layout_height="@dimen/bottomImgSize"
+            android:background="@drawable/tuijian"/>
+        
+        <TextView 
+            android:id="@+id/recommendTx"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="12sp"
+            android:textColor="@color/white"
+            android:text="@string/recomendTx"/>
+        
+        
+    </LinearLayout>
+    
+    <LinearLayout
+        android:id="@+id/informationLin"
+        android:layout_width="0dp"
+        android:layout_weight="1"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:gravity="center"
+        android:clickable="true">
+        
+        <ImageView 
+            android:id="@+id/informationImg"
+            android:layout_width="@dimen/bottomImgSize"
+            android:layout_height="@dimen/bottomImgSize"
+            android:background="@drawable/zixun"/>
+        
+        <TextView 
+            android:id="@+id/informationTx"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="12sp"
+            android:textColor="@color/white"
+            android:text="@string/informationTx"/>
+        
+    </LinearLayout>
+    
+    <LinearLayout
+        android:id="@+id/gameLin" 
+        android:layout_width="0dp" 
+        android:layout_weight="1"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:gravity="center"
+        android:clickable="true">
+        
+        <ImageView 
+            android:id="@+id/gameImg"
+            android:layout_width="@dimen/bottomImgSize"
+            android:layout_height="@dimen/bottomImgSize"
+            android:background="@drawable/youxi"/>
+        
+        <TextView 
+            android:id="@+id/gameTx"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="12sp"
+            android:textColor="@color/white"
+            android:text="@string/gameTx"/>
+        
+    </LinearLayout>
+    
+    <LinearLayout
+        android:id="@+id/evaluationLin" 
+        android:layout_width="0dp" 
+        android:layout_weight="1"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:gravity="center"
+        android:clickable="true">
+        
+        <ImageView 
+            android:id="@+id/evaluationImg"
+            android:layout_width="@dimen/bottomImgSize"
+            android:layout_height="@dimen/bottomImgSize"
+            android:background="@drawable/ceping"/>
+        
+        <TextView 
+            android:id="@+id/evaluationTx"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="12sp"
+            android:textColor="@color/white"
+            android:text="@string/evaluationTx"/>
+        
+    </LinearLayout>
+    
+    <LinearLayout
+        android:id="@+id/toolLin" 
+        android:layout_width="0dp" 
+        android:layout_weight="1"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:gravity="center"
+        android:clickable="true">
+        
+        <ImageView
+            android:id="@+id/toolImg"
+            android:layout_width="@dimen/bottomImgSize"
+            android:layout_height="@dimen/bottomImgSize"
+            android:background="@drawable/gongju"/>
+        
+        <TextView 
+            android:id="@+id/toolTx"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="12sp"
+            android:textColor="@color/white"
+            android:text="@string/toolTx"/>
+        
+    </LinearLayout>
+
+</LinearLayout>
