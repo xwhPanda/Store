@@ -26,4 +26,7 @@
     <color name="toolItemTextColor">#32c4f5</color>
     <color name="blue">#35c3f5</color>
     <color name="yellow">#ffc003</color>
+    
+    <color name="progressColor">#43ff6d</color>
+    <color name="progressBgColor">#dfdfdf</color>
 </resources>

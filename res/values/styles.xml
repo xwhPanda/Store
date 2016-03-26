@@ -20,4 +20,10 @@
        <item name="android:maxHeight">@dimen/ratingHeight</item>
        <item name="android:isIndicator">true</item>
     </style>
+    
+    <style name="mProgress_horizontal">
+    <item name="android:indeterminateOnly">false</item>  
+    <item name="android:progressDrawable">@drawable/progress_sel</item>
+    <item name="android:indeterminateDrawable">@android:drawable/progress_indeterminate_horizontal</item>  
+</style>
 </resources>
