@@ -45,7 +45,7 @@ public class DownloadManager {
 	
 	public static DaoSession DBManager;
 	
-	private static final int UPDATE_DB_PER_SIZE = 100 * 1024;
+	private static final int UPDATE_DB_PER_SIZE = 2 * 1024;
 	
 	private static final int BUFFER_SIZE = 4 * 1024;
 
@@ -104,15 +104,40 @@ public class DownloadManager {
 	}
 
 	/** 下载，需要传入一个appInfo对象 */
-	public synchronized void download(AppInfo appInfo) {
+	public synchronized void download(DownloadAppinfo appInfo) {
 		// 先判断是否有这个app的下载信息
 		
 //		DownloadInfo info = mDownloadMap.get(appInfo.getId());
 		DownloadAppinfo info = DBManager.getDownloadAppinfoDao().queryBuilder().where(Properties.Id.eq(appInfo.getId())).unique();
 		if (info == null) {// 如果没有，则根据appInfo创建一个新的下载信息
-			info = AppInfo.toDownloadAppInfo(appInfo);
+			info = appInfo;
+			info.setProgress(0.0f);
+			info.setHasFinished(false);
+			info.setDes("");
+			info.setScore(2);
 			DBManager.getDownloadAppinfoDao().insertOrReplace(info);
 //			mDownloadMap.put(appInfo.getId(), info);
+		}else {
+			String path = info.getPath();
+			boolean existsFile = FileUtil.isExistsFile(path);
+			if (existsFile) {
+				long fileSize = FileUtil.getFileSize(path);
+				if (fileSize == Long.parseLong(info.getAppSize())) {
+					info.setCurrentSize(fileSize);
+					info.setHasFinished(true);
+					info.setProgress((fileSize + 0.0f) / Float.parseFloat(info.getAppSize()));
+					info.setDownloadState(DownloadManager.STATE_DOWNLOADED);
+				}else {
+					info.setCurrentSize(fileSize);
+					info.setHasFinished(false);
+				}
+			}else {
+				info.setCurrentSize(0l);
+				info.setHasFinished(false);
+				info.setProgress(0.0f);
+				info.setDownloadState(DownloadManager.STATE_NONE);
+			}
+			setDownloadInfo(info.getId(), info);
 		}
 		// 判断状态是否为STATE_NONE、STATE_PAUSED、STATE_ERROR。只有这3种状态才能进行下载，其他状态不予处理
 		if (info.getDownloadState() == STATE_NONE
@@ -128,7 +153,7 @@ public class DownloadManager {
 	}
 
 	/** 暂停下载 */
-	public synchronized void pause(AppInfo appInfo) {
+	public synchronized void pause(DownloadAppinfo appInfo) {
 		stopDownload(appInfo);
 //		DownloadInfo info = mDownloadMap.get(appInfo.getId());// 找出下载信息
 		DownloadAppinfo info = DBManager.getDownloadAppinfoDao().queryBuilder().where(Properties.Id.eq(appInfo.getId())).unique();
@@ -139,7 +164,7 @@ public class DownloadManager {
 	}
 
 	/** 取消下载，逻辑和暂停类似，只是需要删除已下载的文件 */
-	public synchronized void cancel(AppInfo appInfo) {
+	public synchronized void cancel(DownloadAppinfo appInfo) {
 		stopDownload(appInfo);
 //		DownloadInfo info = mDownloadMap.get(appInfo.getId());// 找出下载信息
 		DownloadAppinfo info = DBManager.getDownloadAppinfoDao().queryBuilder().where(Properties.Id.eq(appInfo.getId())).unique();
@@ -153,7 +178,7 @@ public class DownloadManager {
 	}
 
 	/** 安装应用 */
-	public synchronized void install(AppInfo appInfo) {
+	public synchronized void install(DownloadAppinfo appInfo) {
 		stopDownload(appInfo);
 //		DownloadInfo info = mDownloadMap.get(appInfo.getId());// 找出下载信息
 		DownloadAppinfo info = DBManager.getDownloadAppinfoDao().queryBuilder().where(Properties.Id.eq(appInfo.getId())).unique();
@@ -164,7 +189,7 @@ public class DownloadManager {
 					"application/vnd.android.package-archive");
 			AppUtil.getContext().startActivity(installIntent);
 		}
-		notifyDownloadStateChanged(info);
+//		notifyDownloadStateChanged(info);
 	}
 	
 	/** 使用ADB命令进行安装  需放到线程里面执行*/
@@ -245,7 +270,7 @@ public class DownloadManager {
 	}
 
 	/** 如果该下载任务还处于线程池中，且没有执行，先从线程池中移除 */
-	private void stopDownload(AppInfo appInfo) {
+	private void stopDownload(DownloadAppinfo appInfo) {
 		DownloadTask task = mTaskMap.remove(appInfo.getId());// 先从集合中找出下载任务
 		if (task != null) {
 			ThreadManager.getDownloadPool().cancel(task);// 然后从线程池中移除
@@ -256,7 +281,8 @@ public class DownloadManager {
 	public synchronized DownloadAppinfo getDownloadInfo(long id) {
 //		return mDownloadMap.get(id);
 		QueryBuilder qb = DBManager.getDownloadAppinfoDao().queryBuilder();
-		return (DownloadAppinfo) qb.where(Properties.Id.eq(id)).unique();
+		DownloadAppinfo appinfo = (DownloadAppinfo) qb.where(Properties.Id.eq(id)).unique();
+		return appinfo;
 	}
 
 	public synchronized void setDownloadInfo(long id, DownloadAppinfo info) {
@@ -267,7 +293,7 @@ public class DownloadManager {
 	/** 下载任务 */
 	public class DownloadTask implements Runnable {
 		private DownloadAppinfo info;
-		private DownloadAppinfo downloadAppinfo;
+//		private DownloadAppinfo downloadAppinfo;
 
 		public DownloadTask(DownloadAppinfo info) {
 			this.info = info;
@@ -303,8 +329,9 @@ public class DownloadManager {
 				} catch (Exception e1) {
 					e1.printStackTrace();
 				}
-
 				FileOutputStream fos = null;
+				long length = 0;
+				boolean isChanged = false;
 				try {
 					fos = new FileOutputStream(file, true);
 					int count = -1;
@@ -314,17 +341,19 @@ public class DownloadManager {
 						// 每次读取到数据后，都需要判断是否为下载状态，如果不是，下载需要终止，如果是，则刷新进度
 						fos.write(buffer, 0, count);
 						fos.flush();
-						if (file.length() - info.getCurrentSize() > UPDATE_DB_PER_SIZE) {
-							//写入数据库
-							downloadAppinfo.setCurrentSize(file.length());
-							downloadAppinfo.setProgress((file.length() + 0.0f) / Integer.parseInt(downloadAppinfo.getAppSize()));
-							DBManager.getDownloadAppinfoDao().insertOrReplace(downloadAppinfo);
-						}
 						info.setCurrentSize(info.getCurrentSize() + count);
+						if (file.length() - length > UPDATE_DB_PER_SIZE) {
+							//写入数据库
+							length = file.length();
+//							info.setCurrentSize(file.length());
+							info.setProgress((info.getCurrentSize() + 0.0f) / Float.parseFloat(info.getAppSize()));
+							DBManager.getDownloadAppinfoDao().insertOrReplace(info);
+						}
 						
 						notifyDownloadProgressed(info);// 刷新进度
 					}
 				} catch (Exception e) {
+					e.printStackTrace();
 					info.setDownloadState(STATE_ERROR);
 					notifyDownloadStateChanged(info);
 					info.setCurrentSize((long) 0);
@@ -343,24 +372,23 @@ public class DownloadManager {
 				}
 
 				// 判断进度是否和app总长度相等
+				
 				if (info.getCurrentSize() == Long.parseLong(info.getAppSize())) {
 					info.setDownloadState(STATE_DOWNLOADED);
-					downloadAppinfo.setCurrentSize(info.getCurrentSize());
-					downloadAppinfo.setDownloadState(STATE_DOWNLOADED);
-					DBManager.getDownloadAppinfoDao().insertOrReplace(downloadAppinfo);
+					info.setProgress(1.0f);
+					DBManager.getDownloadAppinfoDao().insertOrReplace(info);
 					notifyDownloadStateChanged(info);
 				} else if (info.getDownloadState() == STATE_PAUSED) {// 判断状态
-					downloadAppinfo.setCurrentSize(info.getCurrentSize());
-					downloadAppinfo.setDownloadState(STATE_PAUSED);
-					DBManager.getDownloadAppinfoDao().insertOrReplace(downloadAppinfo);
+					DBManager.getDownloadAppinfoDao().insertOrReplace(info);
 					notifyDownloadStateChanged(info);
 				} else {
 					info.setDownloadState(STATE_ERROR);
-					DBManager.getDownloadAppinfoDao().delete(downloadAppinfo);
+					DBManager.getDownloadAppinfoDao().delete(info);
 					notifyDownloadStateChanged(info);
 					info.setCurrentSize((long) 0);// 错误状态需要删除文件
 					file.delete();
 				}
+				
 			}
 			mTaskMap.remove(info.getId());
 		}

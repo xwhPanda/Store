@@ -11,6 +11,14 @@
         android:button="@null"
         android:background="@drawable/checkbox_yellow_sel"/>
     
+    <Button 
+        android:id="@+id/open"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:layout_alignParentRight="true"
+        android:background="@drawable/runing_selector"/>
+    
     <ImageView 
         android:id="@+id/appIcon"
         android:layout_width="wrap_content"
@@ -25,30 +33,29 @@
         android:layout_toRightOf="@id/appIcon"
         android:textColor="@color/white"/>
     
-    <ProgressBar 
-        android:id="@+id/downloadPrg"
+    <TextView 
+        android:id="@+id/appDes"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@id/appName"
         android:layout_alignLeft="@id/appName"
-        android:background="@color/red"
-        android:max="100"
-        style="@style/mProgress_horizontal" />
+        android:layout_toLeftOf="@id/open"
+        android:singleLine="true"
+        android:ellipsize="end"
+        android:textColor="@color/itemDesColor"/>
+    
+    <com.jiqu.view.RatingBarView 
+        android:id="@+id/appScore"
+        android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:layout_below="@id/appDes"
+		android:layout_alignLeft="@id/appDes"/>
     
     <TextView 
-        android:id="@+id/progressTx"
+        android:id="@+id/appSize"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textColor="@color/itemDesColor"
-        android:layout_below="@id/downloadPrg"
-        android:layout_alignLeft="@id/appName"/>
+        android:layout_toRightOf="@id/appScore"
+        android:layout_alignTop="@id/appScore"/>
     
-    <Button 
-        android:id="@+id/pause"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerVertical="true"
-        android:layout_alignParentRight="true"
-        android:background="@drawable/jixu"/>
-
 </RelativeLayout>

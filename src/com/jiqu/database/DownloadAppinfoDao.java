@@ -23,18 +23,20 @@ public class DownloadAppinfoDao extends AbstractDao<DownloadAppinfo, Long> {
      * Can be used for QueryBuilder and for referencing column names.
     */
     public static class Properties {
-        public final static Property AppName = new Property(0, String.class, "appName", false, "APP_NAME");
-        public final static Property Id = new Property(1, Long.class, "id", true, "ID");
-        public final static Property CurrentSize = new Property(2, Long.class, "currentSize", false, "CURRENT_SIZE");
-        public final static Property AppSize = new Property(3, String.class, "appSize", false, "APP_SIZE");
-        public final static Property DownloadState = new Property(4, int.class, "downloadState", false, "DOWNLOAD_STATE");
-        public final static Property Url = new Property(5, String.class, "url", false, "URL");
-        public final static Property IconUrl = new Property(6, String.class, "iconUrl", false, "ICON_URL");
-        public final static Property Path = new Property(7, String.class, "path", false, "PATH");
-        public final static Property HasFinished = new Property(8, Boolean.class, "hasFinished", false, "HAS_FINISHED");
-        public final static Property Des = new Property(9, String.class, "des", false, "DES");
-        public final static Property Score = new Property(10, Integer.class, "score", false, "SCORE");
-        public final static Property Progress = new Property(11, Float.class, "progress", false, "PROGRESS");
+        public final static Property PackageName = new Property(0, String.class, "packageName", false, "PACKAGE_NAME");
+        public final static Property AppName = new Property(1, String.class, "appName", false, "APP_NAME");
+        public final static Property Id = new Property(2, Long.class, "id", true, "ID");
+        public final static Property CurrentSize = new Property(3, Long.class, "currentSize", false, "CURRENT_SIZE");
+        public final static Property AppSize = new Property(4, String.class, "appSize", false, "APP_SIZE");
+        public final static Property DownloadState = new Property(5, int.class, "downloadState", false, "DOWNLOAD_STATE");
+        public final static Property Url = new Property(6, String.class, "url", false, "URL");
+        public final static Property IconUrl = new Property(7, String.class, "iconUrl", false, "ICON_URL");
+        public final static Property Path = new Property(8, String.class, "path", false, "PATH");
+        public final static Property HasFinished = new Property(9, Boolean.class, "hasFinished", false, "HAS_FINISHED");
+        public final static Property Des = new Property(10, String.class, "des", false, "DES");
+        public final static Property Score = new Property(11, Integer.class, "score", false, "SCORE");
+        public final static Property Progress = new Property(12, Float.class, "progress", false, "PROGRESS");
+        public final static Property IconByte = new Property(13, byte[].class, "iconByte", false, "ICON_BYTE");
     };
 
 
@@ -50,18 +52,20 @@ public class DownloadAppinfoDao extends AbstractDao<DownloadAppinfo, Long> {
     public static void createTable(SQLiteDatabase db, boolean ifNotExists) {
         String constraint = ifNotExists? "IF NOT EXISTS ": "";
         db.execSQL("CREATE TABLE " + constraint + "\"DOWNLOAD_APPINFO\" (" + //
-                "\"APP_NAME\" TEXT NOT NULL ," + // 0: appName
-                "\"ID\" INTEGER PRIMARY KEY ," + // 1: id
-                "\"CURRENT_SIZE\" INTEGER," + // 2: currentSize
-                "\"APP_SIZE\" TEXT NOT NULL ," + // 3: appSize
-                "\"DOWNLOAD_STATE\" INTEGER NOT NULL ," + // 4: downloadState
-                "\"URL\" TEXT NOT NULL ," + // 5: url
-                "\"ICON_URL\" TEXT," + // 6: iconUrl
-                "\"PATH\" TEXT NOT NULL ," + // 7: path
-                "\"HAS_FINISHED\" INTEGER," + // 8: hasFinished
-                "\"DES\" TEXT," + // 9: des
-                "\"SCORE\" INTEGER," + // 10: score
-                "\"PROGRESS\" REAL);"); // 11: progress
+                "\"PACKAGE_NAME\" TEXT NOT NULL ," + // 0: packageName
+                "\"APP_NAME\" TEXT NOT NULL ," + // 1: appName
+                "\"ID\" INTEGER PRIMARY KEY ," + // 2: id
+                "\"CURRENT_SIZE\" INTEGER," + // 3: currentSize
+                "\"APP_SIZE\" TEXT NOT NULL ," + // 4: appSize
+                "\"DOWNLOAD_STATE\" INTEGER NOT NULL ," + // 5: downloadState
+                "\"URL\" TEXT NOT NULL ," + // 6: url
+                "\"ICON_URL\" TEXT," + // 7: iconUrl
+                "\"PATH\" TEXT NOT NULL ," + // 8: path
+                "\"HAS_FINISHED\" INTEGER," + // 9: hasFinished
+                "\"DES\" TEXT," + // 10: des
+                "\"SCORE\" INTEGER," + // 11: score
+                "\"PROGRESS\" REAL," + // 12: progress
+                "\"ICON_BYTE\" BLOB);"); // 13: iconByte
     }
 
     /** Drops the underlying database table. */
@@ -74,70 +78,78 @@ public class DownloadAppinfoDao extends AbstractDao<DownloadAppinfo, Long> {
     @Override
     protected void bindValues(SQLiteStatement stmt, DownloadAppinfo entity) {
         stmt.clearBindings();
-        stmt.bindString(1, entity.getAppName());
+        stmt.bindString(1, entity.getPackageName());
+        stmt.bindString(2, entity.getAppName());
  
         Long id = entity.getId();
         if (id != null) {
-            stmt.bindLong(2, id);
+            stmt.bindLong(3, id);
         }
  
         Long currentSize = entity.getCurrentSize();
         if (currentSize != null) {
-            stmt.bindLong(3, currentSize);
+            stmt.bindLong(4, currentSize);
         }
-        stmt.bindString(4, entity.getAppSize());
-        stmt.bindLong(5, entity.getDownloadState());
-        stmt.bindString(6, entity.getUrl());
+        stmt.bindString(5, entity.getAppSize());
+        stmt.bindLong(6, entity.getDownloadState());
+        stmt.bindString(7, entity.getUrl());
  
         String iconUrl = entity.getIconUrl();
         if (iconUrl != null) {
-            stmt.bindString(7, iconUrl);
+            stmt.bindString(8, iconUrl);
         }
-        stmt.bindString(8, entity.getPath());
+        stmt.bindString(9, entity.getPath());
  
         Boolean hasFinished = entity.getHasFinished();
         if (hasFinished != null) {
-            stmt.bindLong(9, hasFinished ? 1L: 0L);
+            stmt.bindLong(10, hasFinished ? 1L: 0L);
         }
  
         String des = entity.getDes();
         if (des != null) {
-            stmt.bindString(10, des);
+            stmt.bindString(11, des);
         }
  
         Integer score = entity.getScore();
         if (score != null) {
-            stmt.bindLong(11, score);
+            stmt.bindLong(12, score);
         }
  
         Float progress = entity.getProgress();
         if (progress != null) {
-            stmt.bindDouble(12, progress);
+            stmt.bindDouble(13, progress);
+        }
+ 
+        byte[] iconByte = entity.getIconByte();
+        if (iconByte != null) {
+            stmt.bindBlob(14, iconByte);
         }
     }
 
     /** @inheritdoc */
     @Override
     public Long readKey(Cursor cursor, int offset) {
-        return cursor.isNull(offset + 1) ? null : cursor.getLong(offset + 1);
+        return cursor.isNull(offset + 2) ? null : cursor.getLong(offset + 2);
     }    
 
     /** @inheritdoc */
     @Override
     public DownloadAppinfo readEntity(Cursor cursor, int offset) {
         DownloadAppinfo entity = new DownloadAppinfo( //
-            cursor.getString(offset + 0), // appName
-            cursor.isNull(offset + 1) ? null : cursor.getLong(offset + 1), // id
-            cursor.isNull(offset + 2) ? null : cursor.getLong(offset + 2), // currentSize
-            cursor.getString(offset + 3), // appSize
-            cursor.getInt(offset + 4), // downloadState
-            cursor.getString(offset + 5), // url
-            cursor.isNull(offset + 6) ? null : cursor.getString(offset + 6), // iconUrl
-            cursor.getString(offset + 7), // path
-            cursor.isNull(offset + 8) ? null : cursor.getShort(offset + 8) != 0, // hasFinished
-            cursor.isNull(offset + 9) ? null : cursor.getString(offset + 9), // des
-            cursor.isNull(offset + 10) ? null : cursor.getInt(offset + 10), // score
-            cursor.isNull(offset + 11) ? null : cursor.getFloat(offset + 11) // progress
+            cursor.getString(offset + 0), // packageName
+            cursor.getString(offset + 1), // appName
+            cursor.isNull(offset + 2) ? null : cursor.getLong(offset + 2), // id
+            cursor.isNull(offset + 3) ? null : cursor.getLong(offset + 3), // currentSize
+            cursor.getString(offset + 4), // appSize
+            cursor.getInt(offset + 5), // downloadState
+            cursor.getString(offset + 6), // url
+            cursor.isNull(offset + 7) ? null : cursor.getString(offset + 7), // iconUrl
+            cursor.getString(offset + 8), // path
+            cursor.isNull(offset + 9) ? null : cursor.getShort(offset + 9) != 0, // hasFinished
+            cursor.isNull(offset + 10) ? null : cursor.getString(offset + 10), // des
+            cursor.isNull(offset + 11) ? null : cursor.getInt(offset + 11), // score
+            cursor.isNull(offset + 12) ? null : cursor.getFloat(offset + 12), // progress
+            cursor.isNull(offset + 13) ? null : cursor.getBlob(offset + 13) // iconByte
         );
         return entity;
     }
@@ -145,18 +157,20 @@ public class DownloadAppinfoDao extends AbstractDao<DownloadAppinfo, Long> {
     /** @inheritdoc */
     @Override
     public void readEntity(Cursor cursor, DownloadAppinfo entity, int offset) {
-        entity.setAppName(cursor.getString(offset + 0));
-        entity.setId(cursor.isNull(offset + 1) ? null : cursor.getLong(offset + 1));
-        entity.setCurrentSize(cursor.isNull(offset + 2) ? null : cursor.getLong(offset + 2));
-        entity.setAppSize(cursor.getString(offset + 3));
-        entity.setDownloadState(cursor.getInt(offset + 4));
-        entity.setUrl(cursor.getString(offset + 5));
-        entity.setIconUrl(cursor.isNull(offset + 6) ? null : cursor.getString(offset + 6));
-        entity.setPath(cursor.getString(offset + 7));
-        entity.setHasFinished(cursor.isNull(offset + 8) ? null : cursor.getShort(offset + 8) != 0);
-        entity.setDes(cursor.isNull(offset + 9) ? null : cursor.getString(offset + 9));
-        entity.setScore(cursor.isNull(offset + 10) ? null : cursor.getInt(offset + 10));
-        entity.setProgress(cursor.isNull(offset + 11) ? null : cursor.getFloat(offset + 11));
+        entity.setPackageName(cursor.getString(offset + 0));
+        entity.setAppName(cursor.getString(offset + 1));
+        entity.setId(cursor.isNull(offset + 2) ? null : cursor.getLong(offset + 2));
+        entity.setCurrentSize(cursor.isNull(offset + 3) ? null : cursor.getLong(offset + 3));
+        entity.setAppSize(cursor.getString(offset + 4));
+        entity.setDownloadState(cursor.getInt(offset + 5));
+        entity.setUrl(cursor.getString(offset + 6));
+        entity.setIconUrl(cursor.isNull(offset + 7) ? null : cursor.getString(offset + 7));
+        entity.setPath(cursor.getString(offset + 8));
+        entity.setHasFinished(cursor.isNull(offset + 9) ? null : cursor.getShort(offset + 9) != 0);
+        entity.setDes(cursor.isNull(offset + 10) ? null : cursor.getString(offset + 10));
+        entity.setScore(cursor.isNull(offset + 11) ? null : cursor.getInt(offset + 11));
+        entity.setProgress(cursor.isNull(offset + 12) ? null : cursor.getFloat(offset + 12));
+        entity.setIconByte(cursor.isNull(offset + 13) ? null : cursor.getBlob(offset + 13));
      }
     
     /** @inheritdoc */

@@ -395,6 +395,25 @@ public class FileUtil {
 		return false;
 	}
 	
-	
+	public static String getSize(long size){
+		String str = "0 M";
+		if ((size / 1024) == 0) {
+			return str;
+		}else {
+			if (size / 1024 / 1024 == 0) {
+				return size / 1024 + " KB";
+			}else {
+				if (size / 1024 / 1024 / 1024 == 0) {
+					return size / 1024 / 1024 + "M";
+				}else {
+					if(size / 1024 / 1024 / 1024 / 1024 == 0){
+						return size / 1024 / 1024 / 1024 + "G";
+					}
+				}
+			}
+		}
+		
+		return str;
+	}
 
 }

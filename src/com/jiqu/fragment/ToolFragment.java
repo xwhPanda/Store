@@ -1,6 +1,7 @@
 package com.jiqu.fragment;
 
 import com.jiqu.activity.AppUninstallActivity;
+import com.jiqu.activity.DownloadManagerActivity;
 import com.jiqu.store.R;
 import com.jiqu.tools.MetricsTool;
 import com.jiqu.tools.UIUtil;
@@ -137,7 +138,7 @@ public class ToolFragment extends Fragment implements OnClickListener{
 		// TODO Auto-generated method stub
 		switch (v.getId()) {
 		case R.id.downloadItem:
-			
+			startActivity(new Intent(getActivity(), DownloadManagerActivity.class));
 			break;
 
 		case R.id.resourcesItem:

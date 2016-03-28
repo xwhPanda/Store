@@ -88,7 +88,7 @@ public class MainActivity extends FragmentActivity implements OnClickListener,Li
 		init();
 		setOnclick();
 		
-		startActivity(new Intent(this, DownloadManagerActivity.class));
+//		startActivity(new Intent(this, DownloadManagerActivity.class));
 	}
 	
 	/**

@@ -3,6 +3,8 @@ package com.jiqu.activity;
 import java.util.List;
 
 import android.os.Bundle;
+import android.os.Handler;
+import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
@@ -13,15 +15,21 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
 
+import com.jiqu.adapter.DownloadedAdapter;
 import com.jiqu.adapter.DownloadingAdapter;
 import com.jiqu.application.StoreApplication;
 import com.jiqu.database.DownloadAppinfo;
 import com.jiqu.database.DownloadAppinfoDao.Properties;
 import com.jiqu.download.DownloadManager;
+import com.jiqu.interfaces.UninstallStateObserver;
+import com.jiqu.object.InstalledApp;
 import com.jiqu.store.BaseActivity;
 import com.jiqu.store.R;
+import com.jiqu.tools.InstalledAppTool;
 import com.jiqu.tools.UIUtil;
 import com.jiqu.view.TitleView;
+
+import de.greenrobot.dao.query.QueryBuilder;
 
 public class DownloadManagerActivity extends BaseActivity implements OnClickListener,OnCheckedChangeListener{
 	private TitleView titleView;
@@ -33,6 +41,9 @@ public class DownloadManagerActivity extends BaseActivity implements OnClickList
 	private RelativeLayout allDeleteRel;
 	private ListView downloadingList,downloadedList;
 	private DownloadingAdapter downloadingAdapter;
+	private DownloadedAdapter downloadedAdapter;
+	private List<DownloadAppinfo> downloadingApps;
+	private List<DownloadAppinfo> downloadedApps;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -40,6 +51,14 @@ public class DownloadManagerActivity extends BaseActivity implements OnClickList
 		super.onCreate(savedInstanceState);
 		
 		initView();
+		downloadingAdapter.startObserver();
+	}
+	
+	@Override
+	protected void onDestroy() {
+		// TODO Auto-generated method stub
+		super.onDestroy();
+		downloadingAdapter.stopObserver();
 	}
 	
 	@Override
@@ -118,15 +137,51 @@ public class DownloadManagerActivity extends BaseActivity implements OnClickList
 	}
 	
 	private void initData(){
-		List<DownloadAppinfo> downloadedApps = StoreApplication.daoSession.getDownloadAppinfoDao().queryBuilder().where(Properties.DownloadState.eq(DownloadManager.STATE_DOWNLOADED)).list();
-		downloadingAdapter = new DownloadingAdapter(this, downloadedApps);
-		downloadedList.setAdapter(downloadingAdapter);
+		QueryBuilder<DownloadAppinfo> qb = StoreApplication.daoSession.getDownloadAppinfoDao().queryBuilder();
+		downloadingApps = qb.where(qb.or(Properties.DownloadState.eq(DownloadManager.STATE_DOWNLOADING)
+				, Properties.DownloadState.eq(DownloadManager.STATE_ERROR)
+				, Properties.DownloadState.eq(DownloadManager.STATE_NONE)
+				,Properties.DownloadState.eq(DownloadManager.STATE_PAUSED)
+				,Properties.DownloadState.eq(DownloadManager.STATE_WAITING))).list();
+		downloadingAdapter = new DownloadingAdapter(this, downloadingApps,handler);
+		downloadingList.setAdapter(downloadingAdapter);
+		
+		downloadedApps = StoreApplication.daoSession.getDownloadAppinfoDao().queryBuilder().where(Properties.DownloadState.eq(DownloadManager.STATE_DOWNLOADED)).list();
+		downloadedAdapter = new DownloadedAdapter(this, downloadedApps);
+		downloadedList.setAdapter(downloadedAdapter);
 	}
+	
+	private Handler handler = new Handler(){
+		public void handleMessage(android.os.Message msg) {
+			if (msg.what == 1) {//有应用下载完成
+				QueryBuilder<DownloadAppinfo> qb = StoreApplication.daoSession.getDownloadAppinfoDao().queryBuilder();
+				List<DownloadAppinfo> apps = qb.where(qb.or(Properties.DownloadState.eq(DownloadManager.STATE_DOWNLOADING)
+						, Properties.DownloadState.eq(DownloadManager.STATE_ERROR)
+						, Properties.DownloadState.eq(DownloadManager.STATE_NONE)
+						,Properties.DownloadState.eq(DownloadManager.STATE_PAUSED)
+						,Properties.DownloadState.eq(DownloadManager.STATE_WAITING))).list();
+				downloadingAdapter.clearHolders();
+				downloadingApps.clear();
+				downloadingApps.addAll(apps);
+				downloadingAdapter.notifyDataSetChanged();
+				
+				List<DownloadAppinfo> apps2 = StoreApplication.daoSession.getDownloadAppinfoDao().queryBuilder().where(Properties.DownloadState.eq(DownloadManager.STATE_DOWNLOADED)).list();
+				downloadedApps.clear();
+				downloadedAdapter.clearHolders();
+				downloadedApps.addAll(apps2);
+				downloadedAdapter.notifyDataSetChanged();
+			}
+		};
+	};
 
 	@Override
 	public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
 		// TODO Auto-generated method stub
-		
+		if (buttonView == allStartCB) {
+			downloadingAdapter.refreshHolderForCheck(isChecked);
+		}else if (buttonView == allDeleteCB) {
+			downloadedAdapter.refreshHolderForChecked(isChecked);
+		}
 	}
 
 	@Override
@@ -135,16 +190,26 @@ public class DownloadManagerActivity extends BaseActivity implements OnClickList
 		switch (v.getId()) {
 		case R.id.downloading:
 			changeButtonState(downloading);
+			downloadedList.setVisibility(View.INVISIBLE);
+			allDeleteRel.setVisibility(View.INVISIBLE);
+			allStartRel.setVisibility(View.VISIBLE);
+			downloadingList.setVisibility(View.VISIBLE);
 			break;
 
 		case R.id.downloaded:
 			changeButtonState(downloaded);
+			downloadingList.setVisibility(View.INVISIBLE);
+			allStartRel.setVisibility(View.INVISIBLE);
+			allDeleteRel.setVisibility(View.VISIBLE);
+			downloadedList.setVisibility(View.VISIBLE);
 			break;
 			
 		case R.id.allStartBtn:
+			downloadingAdapter.startDownloadAll();
 			break;
 			
 		case R.id.allDeleteBtn:
+			downloadedAdapter.deleteAll();
 			break;
 		}
 	}

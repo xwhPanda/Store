@@ -253,7 +253,6 @@ public class UninstallAppAdatpter extends BaseAdapter implements UninstallStateO
 				});
 			}
 		}else if (action == 1) {//uninstall
-			Log.i("TAG", "pkg:" + pkg);
 			refreshHolder(pkg);
 		}
 	}

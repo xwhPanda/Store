@@ -149,14 +149,12 @@ public class AppUninstallActivity extends BaseActivity implements OnClickListene
 			if (Intent.ACTION_PACKAGE_ADDED.equals(action)) {
 				String addPkg = intent.getDataString().split(":")[1];
 				//应用安装
-				Log.i("TAG", "安装应用 ： " + addPkg);
 				if (adapter != null) {
 					adapter.changeAppPkg(addPkg, 0);
 				}
 			}else if (Intent.ACTION_PACKAGE_REMOVED.equals(action)) {
 				String removePkg = intent.getDataString().split(":")[1];
 				//应用卸载
-				Log.i("TAG", "卸载完成 ： " + removePkg);
 				if (adapter != null) {
 					adapter.changeAppPkg(removePkg, 1);
 				}

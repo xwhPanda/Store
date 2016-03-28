@@ -1,5 +1,6 @@
 package com.jiqu.adapter;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
@@ -23,6 +24,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Bitmap.Config;
+import android.graphics.drawable.BitmapDrawable;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -127,7 +129,7 @@ public class GameAdapter extends BaseAdapter implements DownloadObserver{
 				holder2 = (Holder2) convertView.getTag();
 			}
 			
-			holder2.setData(informations.get(position));
+			holder2.setData(AppInfo.toDownloadAppInfo(informations.get(position)));
 			mDisplayedHolders.add(holder2);
 			break;
 		case 2:
@@ -159,27 +161,6 @@ public class GameAdapter extends BaseAdapter implements DownloadObserver{
 		}
 	}
 
-	private String getSize(long size){
-		String str = "0 M";
-		if ((size / 1024) == 0) {
-			return str;
-		}else {
-			if (size / 1024 / 1024 == 0) {
-				return size / 1024 + " KB";
-			}else {
-				if (size / 1024 / 1024 / 1024 == 0) {
-					return size / 1024 / 1024 + "M";
-				}else {
-					if(size / 1024 / 1024 / 1024 / 1024 == 0){
-						return size / 1024 / 1024 / 1024 + "G";
-					}
-				}
-			}
-		}
-		
-		return str;
-	}
-	
 	private class Holder1{
 		private TextView sortName;
 		private TextView moreTx;
@@ -203,7 +184,7 @@ public class GameAdapter extends BaseAdapter implements DownloadObserver{
 		
 		private int mState;
 		private float mProgress;
-		public AppInfo mData;
+		public DownloadAppinfo mData;
 		private DownloadManager mDownloadManager;
 		private boolean hasAttached;
 		
@@ -276,22 +257,20 @@ public class GameAdapter extends BaseAdapter implements DownloadObserver{
 			}
 		}
 		
-		private void setData(AppInfo data){
+		private void setData(DownloadAppinfo data){
 			if (mDownloadManager == null) {
 				mDownloadManager = DownloadManager.getInstance();
 			}
-			String filePath = FileUtil.getDownloadDir(AppUtil.getContext()) + File.separator + data.getName() + ".apk";
+			String filePath = FileUtil.getDownloadDir(AppUtil.getContext()) + File.separator + data.getAppName() + ".apk";
 			boolean existsFile = FileUtil.isExistsFile(filePath);
 			if (existsFile) {
 				long fileSize = FileUtil.getFileSize(filePath);
-				if (fileSize == Long.parseLong(data.getSize())) {
-					DownloadAppinfo downloadInfo = AppInfo.toDownloadAppInfo(data);
-					downloadInfo.setCurrentSize(fileSize);
-					downloadInfo.setHasFinished(true);
-					downloadInfo.setProgress(1.0f);
-					downloadInfo.setDownloadState(DownloadManager.STATE_DOWNLOADED);
-					DownloadManager.DBManager.insertOrReplace(downloadInfo);
-					mDownloadManager.setDownloadInfo(data.getId(), downloadInfo);
+				if (fileSize == Long.parseLong(data.getAppSize())) {
+					data.setCurrentSize(fileSize);
+					data.setHasFinished(true);
+					data.setProgress(1.0f);
+					data.setDownloadState(DownloadManager.STATE_DOWNLOADED);
+					mDownloadManager.setDownloadInfo(data.getId(), data);
 				}
 			}
 			
@@ -307,22 +286,25 @@ public class GameAdapter extends BaseAdapter implements DownloadObserver{
 			refreshView();
 		}
 		
-		private AppInfo getData(){
+		private DownloadAppinfo getData(){
 			return mData;
 		}
 		
 		private void refreshView(){
-			gameName.setText(mData.getName());
+			gameName.setText(mData.getAppName());
 //			gameDes.setText(mData.getDesinfo());
 			gameScore.setRating((float) 4.5);
-			gameSize.setText(getSize(Long.parseLong(mData.getSize())));
+			gameSize.setText(FileUtil.getSize(Long.parseLong(mData.getAppSize())));
 			
 			@SuppressWarnings("deprecation")
 			ImageRequest imageRequest = new ImageRequest(
-					mData.getLogo_url_160(),  
+					mData.getIconUrl(),  
 			        new Response.Listener<Bitmap>() {  
 			            @Override  
-			            public void onResponse(Bitmap response) {  
+			            public void onResponse(Bitmap response) { 
+			            	ByteArrayOutputStream baos = new ByteArrayOutputStream();
+			            	response.compress(Bitmap.CompressFormat.PNG, 100, baos);
+			            	mData.setIconByte(baos.toByteArray());
 			                icon.setImageBitmap(response); 
 			            }  
 			        }, 0, 0, Config.RGB_565, new Response.ErrorListener() {  
@@ -333,7 +315,7 @@ public class GameAdapter extends BaseAdapter implements DownloadObserver{
 			        });
 			StoreApplication.getInstance().getRequestQueue().add(imageRequest);
 			
-			String  path=FileUtil.getDownloadDir(AppUtil.getContext()) + File.separator + mData.getName() + ".apk";
+			String  path=FileUtil.getDownloadDir(AppUtil.getContext()) + File.separator + mData.getAppName() + ".apk";
 			hasAttached = FileUtil.isValidAttach(path, false);
 
 			DownloadAppinfo downloadInfo = mDownloadManager.getDownloadInfo(mData.getId());
@@ -352,10 +334,10 @@ public class GameAdapter extends BaseAdapter implements DownloadObserver{
 					downloadInfo.setDownloadState(mState);
 				}
 			}
-			refreshState(mState, mProgress);
+			refreshState(mState, mProgress,true);
 		}
 		
-		public void refreshState(int state , float progress){
+		public void refreshState(int state , float progress,boolean isFirst){
 			mState = state;
 			mProgress = progress;
 			downloadBtn.clearAnimation();
@@ -381,6 +363,9 @@ public class GameAdapter extends BaseAdapter implements DownloadObserver{
 				break;
 			case DownloadManager.STATE_DOWNLOADED:
 				downloadBtn.setBackgroundResource(R.drawable.runing_selector);
+				if (!isFirst) {
+					mDownloadManager.install(mData);
+				}
 				break;
 			default:
 				break;
@@ -396,14 +381,14 @@ public class GameAdapter extends BaseAdapter implements DownloadObserver{
 		List<Holder2> displayedHolder2s = getDisplayedHolders();
 		for(int i = 0; i < displayedHolder2s.size(); i++){
 			final Holder2 holder2 = displayedHolder2s.get(i);
-			AppInfo appInfo = holder2.getData();
-			if (appInfo.getId() == info.getId()) {
+			DownloadAppinfo appInfo = holder2.getData();
+			if (appInfo.getId().longValue() == info.getId().longValue()) {
 				AppUtil.post(new Runnable() {
 					
 					@Override
 					public void run() {
 						// TODO Auto-generated method stub
-						holder2.refreshState(info.getDownloadState(), info.getProgress());
+						holder2.refreshState(info.getDownloadState(), info.getProgress(),false);
 					}
 				});
 			}
@@ -419,6 +404,5 @@ public class GameAdapter extends BaseAdapter implements DownloadObserver{
 	@Override
 	public void onDownloadProgressed(DownloadAppinfo info) {
 		// TODO Auto-generated method stub
-		refreshHolder(info);
 	}
 }

@@ -7,6 +7,8 @@ package com.jiqu.database;
 public class DownloadAppinfo {
 
     /** Not-null value. */
+    private String packageName;
+    /** Not-null value. */
     private String appName;
     private Long id;
     private Long currentSize;
@@ -22,6 +24,7 @@ public class DownloadAppinfo {
     private String des;
     private Integer score;
     private Float progress;
+    private byte[] iconByte;
 
     public DownloadAppinfo() {
     }
@@ -30,7 +33,8 @@ public class DownloadAppinfo {
         this.id = id;
     }
 
-    public DownloadAppinfo(String appName, Long id, Long currentSize, String appSize, int downloadState, String url, String iconUrl, String path, Boolean hasFinished, String des, Integer score, Float progress) {
+    public DownloadAppinfo(String packageName, String appName, Long id, Long currentSize, String appSize, int downloadState, String url, String iconUrl, String path, Boolean hasFinished, String des, Integer score, Float progress, byte[] iconByte) {
+        this.packageName = packageName;
         this.appName = appName;
         this.id = id;
         this.currentSize = currentSize;
@@ -43,8 +47,19 @@ public class DownloadAppinfo {
         this.des = des;
         this.score = score;
         this.progress = progress;
+        this.iconByte = iconByte;
     }
-    
+
+    /** Not-null value. */
+    public String getPackageName() {
+        return packageName;
+    }
+
+    /** Not-null value; ensure this value is available before it is saved to the database. */
+    public void setPackageName(String packageName) {
+        this.packageName = packageName;
+    }
+
     /** Not-null value. */
     public String getAppName() {
         return appName;
@@ -147,6 +162,14 @@ public class DownloadAppinfo {
 
     public void setProgress(Float progress) {
         this.progress = progress;
+    }
+
+    public byte[] getIconByte() {
+        return iconByte;
+    }
+
+    public void setIconByte(byte[] iconByte) {
+        this.iconByte = iconByte;
     }
 
 }

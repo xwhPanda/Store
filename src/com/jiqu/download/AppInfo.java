@@ -87,6 +87,7 @@ public class AppInfo {
 	
 	public static DownloadAppinfo toDownloadAppInfo(AppInfo info){
 		DownloadAppinfo downloadInfo = new DownloadAppinfo();
+		downloadInfo.setPackageName(info.apkid);
 		downloadInfo.setId(info.getId());
 		downloadInfo.setAppName(info.getName());
 		downloadInfo.setAppSize(info.size);
@@ -94,7 +95,7 @@ public class AppInfo {
 		downloadInfo.setDownloadState(DownloadManager.STATE_NONE);
 		downloadInfo.setUrl(info.down_url);
 		downloadInfo.setIconUrl(info.logo_url_160);
-		downloadInfo.setPath(FileUtil.getDownloadDir(AppUtil.getContext()) + File.separator + info.apkid + ".apk");
+		downloadInfo.setPath(FileUtil.getDownloadDir(AppUtil.getContext()) + File.separator + info.name + ".apk");
 		return downloadInfo;
 	}
 	
