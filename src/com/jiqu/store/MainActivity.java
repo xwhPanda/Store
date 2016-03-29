@@ -14,10 +14,12 @@ import com.android.volley.VolleyError;
 import com.jiqu.activity.AppUninstallActivity;
 import com.jiqu.activity.DownloadManagerActivity;
 import com.jiqu.activity.GameEvaluationInformationActivity;
+import com.jiqu.activity.MemberLoginActivity;
 import com.jiqu.activity.MessageCenterActivity;
 import com.jiqu.activity.ModifyPasswordActivity;
 import com.jiqu.activity.SearchActivity;
 import com.jiqu.activity.SettingActivity;
+import com.jiqu.activity.ShowAccountInformatiomActivity;
 import com.jiqu.download.AppInfo;
 import com.jiqu.fragment.EvaluationFragment;
 import com.jiqu.fragment.GameFragment;
@@ -27,14 +29,17 @@ import com.jiqu.fragment.ToolFragment;
 import com.jiqu.tools.MetricsTool;
 import com.jiqu.tools.SharePreferenceTool;
 import com.jiqu.tools.UIUtil;
+import com.jiqu.view.CustomDialog;
 
 import android.annotation.SuppressLint;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -47,7 +52,7 @@ import android.widget.TextView;
 
 public class MainActivity extends FragmentActivity implements OnClickListener,Listener<String>,ErrorListener{
 	private float Rx,Ry;
-	private ImageView accountImg;
+	private Button accountImg;
 	private EditText searchEd;
 	private Button searchBtn;
 	private Button download;
@@ -88,7 +93,14 @@ public class MainActivity extends FragmentActivity implements OnClickListener,Li
 		init();
 		setOnclick();
 		
-//		startActivity(new Intent(this, DownloadManagerActivity.class));
+//		new CustomDialog(this).setNegativeButton(new DialogInterface.OnClickListener() {
+//			
+//			@Override
+//			public void onClick(DialogInterface dialog, int which) {
+//				// TODO Auto-generated method stub
+//				dialog.dismiss();
+//			}
+//		}).initView().show();
 	}
 	
 	/**
@@ -103,7 +115,7 @@ public class MainActivity extends FragmentActivity implements OnClickListener,Li
 		
 		bottomPanel = (LinearLayout) findViewById(R.id.bottomPanel);
 		
-		accountImg = (ImageView) findViewById(R.id.accountImg);
+		accountImg = (Button) findViewById(R.id.accountImg);
 		searchEd = (EditText) findViewById(R.id.searchEd);
 		searchBtn = (Button) findViewById(R.id.searchBtn);
 		download = (Button) findViewById(R.id.download);
@@ -209,6 +221,7 @@ public class MainActivity extends FragmentActivity implements OnClickListener,Li
 		toolLin.setOnClickListener(this);
 		
 		searchEd.setOnClickListener(this);
+		accountImg.setOnClickListener(this);
 	}
 	
 	@SuppressWarnings("deprecation")
@@ -345,6 +358,10 @@ public class MainActivity extends FragmentActivity implements OnClickListener,Li
 			break;
 		case R.id.searchEd:
 			startActivity(new Intent(this, SearchActivity.class));
+			break;
+		
+		case R.id.accountImg:
+			startActivity(new Intent(this, ShowAccountInformatiomActivity.class));
 			break;
 		}
 		mFragmentTransaction.commit();

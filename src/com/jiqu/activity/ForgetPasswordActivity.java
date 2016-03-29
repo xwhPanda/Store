@@ -77,6 +77,7 @@ public class ForgetPasswordActivity extends BaseActivity implements OnClickListe
 		UIUtil.setViewSize(confirmPassword.visibleButton, 56 * Ry, 56 * Ry);
 		UIUtil.setViewSize(commit, 0, 100 * Ry);
 		
+		UIUtil.setTextSize(timeCount, 25);
 		UIUtil.setTextSize(getCodes, 45);
 		UIUtil.setTextSize(accountEd, 45);
 		UIUtil.setTextSize(codesEd, 45);
@@ -84,13 +85,22 @@ public class ForgetPasswordActivity extends BaseActivity implements OnClickListe
 		UIUtil.setTextSize(confirmPassword.editText, 45);
 		UIUtil.setTextSize(commit, 45);
 		
+		UIUtil.setViewPadding(accountEd, (int)(30 * Rx), 0, (int)(30 * Rx), 0);
+		UIUtil.setViewPadding(codesEd, (int)(30 * Rx), 0, (int)(10 * Rx), 0);
+		UIUtil.setViewPadding(inputPassword.editText, (int)(30 * Rx), 0, (int)(30 * Rx), 0);
+		UIUtil.setViewPadding(confirmPassword.editText, (int)(30 * Rx), 0, (int)(30 * Rx), 0);
+		
 		try {
-			UIUtil.setViewSizeMargin(accountEd, 0, 505 * Ry, 0, 0);
-			UIUtil.setViewSizeMargin(codesLin, 0, 30 * Ry, 0, 0);
-			UIUtil.setViewSizeMargin(timeCount, 0, 15 * Ry, 0, 0);
-			UIUtil.setViewSizeMargin(inputPassword, 0, 165 * Ry, 0, 0);
-			UIUtil.setViewSizeMargin(confirmPassword, 0, 30 * Ry, 0, 0);
-			UIUtil.setViewSizeMargin(commit, 0, 345 * Ry, 0, 0);
+			UIUtil.setViewSizeMargin(accountEd, 0, 420 * Ry, 0, 0);
+			UIUtil.setViewSizeMargin(codesLin, 0, 60 * Ry, 0, 0);
+			UIUtil.setViewSizeMargin(timeCount, 0, 5 * Ry, 20 * Rx, 0);
+			UIUtil.setViewSizeMargin(inputPassword, 0, 60 * Ry, 0, 0);
+			UIUtil.setViewSizeMargin(confirmPassword, 0, 60 * Ry, 0, 0);
+			UIUtil.setViewSizeMargin(commit, 0, 205 * Ry, 0, 0);
+			UIUtil.setViewSizeMargin(inputPassword.visibleButton, 0, 0, 30 * Rx, 0);
+			UIUtil.setViewSizeMargin(confirmPassword.visibleButton, 0, 0, 30 * Rx, 0);
+			UIUtil.setViewSizeMargin(getCodes, 0, 0, 30 * Rx, 0);
+			
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

@@ -1,32 +1,21 @@
 package com.jiqu.activity;
 
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-import java.util.regex.PatternSyntaxException;
 
 import com.jiqu.store.BaseActivity;
 import com.jiqu.store.R;
-import com.jiqu.store.R.id;
-import com.jiqu.store.R.layout;
 import com.jiqu.tools.UIUtil;
 import com.jiqu.view.PasswordView;
+import com.jiqu.view.QuickLoginView;
 import com.jiqu.view.TitleView;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.text.Editable;
 import android.text.InputType;
-import android.text.Selection;
-import android.text.TextWatcher;
-import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
-import android.widget.EditText;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.TextView;
 
 public class MemberLoginActivity extends BaseActivity implements OnClickListener{
 	private TitleView titleView;
@@ -35,6 +24,7 @@ public class MemberLoginActivity extends BaseActivity implements OnClickListener
 	private PasswordView accountInputView,passwordInputView;
 	private Button login;
 	private LinearLayout forgetPdLin;
+	private QuickLoginView quickLoginView;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -54,6 +44,7 @@ public class MemberLoginActivity extends BaseActivity implements OnClickListener
 		passwordInputView = (PasswordView) findViewById(R.id.passwordInputView);
 		login = (Button) findViewById(R.id.login);
 		forgetPdLin = (LinearLayout) findViewById(R.id.forgetPdLin);
+		quickLoginView = (QuickLoginView) findViewById(R.id.quickLoginView);
 		
 		accountInputView.visibleButton.setVisibility(View.GONE);
 		accountInputView.editText.setInputType(InputType.TYPE_CLASS_TEXT);
@@ -71,18 +62,19 @@ public class MemberLoginActivity extends BaseActivity implements OnClickListener
 		UIUtil.setViewSize(accountInputView, 800 * Rx, 100 * Ry);
 		UIUtil.setViewSize(passwordInputView, 800 * Rx, 100 * Ry);
 		UIUtil.setViewHeight(login, 100 * Ry);
+		UIUtil.setViewHeight(quickLoginView, 480 * Ry);
 		
 		UIUtil.setTextSize(login, 50);
 		UIUtil.setTextSize(forgetPassword, 35);
 		UIUtil.setTextSize(register, 35);
 		
-		
 		try {
-			UIUtil.setViewSizeMargin(accountIcon, 0, 380 * Ry, 0, 0);
-			UIUtil.setViewSizeMargin(accountInputView, 0, 95 * Ry, 0, 0);
-			UIUtil.setViewSizeMargin(passwordInputView, 0, 35 * Ry, 0, 0);
-			UIUtil.setViewSizeMargin(login, 0, 500 * Ry, 0, 0);
-			UIUtil.setViewSizeMargin(forgetPdLin, 0, 45 * Ry, 0, 0);
+			UIUtil.setViewSizeMargin(accountIcon, 0, 365 * Ry, 0, 0);
+			UIUtil.setViewSizeMargin(accountInputView, 0, 140 * Ry, 0, 0);
+			UIUtil.setViewSizeMargin(passwordInputView, 0, 66 * Ry, 0, 0);
+			UIUtil.setViewSizeMargin(login, 0, 120 * Ry, 0, 0);
+			UIUtil.setViewSizeMargin(forgetPdLin, 0, 30 * Ry, 0, 0);
+			UIUtil.setViewSizeMargin(passwordInputView.visibleButton, 0, 0, 30 * Rx, 0);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

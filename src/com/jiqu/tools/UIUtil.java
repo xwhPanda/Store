@@ -1,6 +1,8 @@
 package com.jiqu.tools;
 
-import com.jiqu.application.StoreApplication;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 import android.content.Context;
 import android.content.pm.PackageInfo;
@@ -66,6 +68,10 @@ public class UIUtil {
 			e.printStackTrace();
 			return "";
 		}
-		
+	}
+	
+	public static List<String> getDataFromXML(Context context,int resID){
+		String[] strings = context.getResources().getStringArray(resID);
+		return Arrays.asList(strings);
 	}
 }

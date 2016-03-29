@@ -95,21 +95,20 @@ public class ToolFragment extends Fragment implements OnClickListener{
 		UIUtil.setViewSize(messageImg, 60 * Rx, 40	 * Ry);
 		UIUtil.setViewSize(level, 155 * Rx, 50 * Ry);
 		
-		UIUtil.setViewSize(downloadItem, 320 * Rx, 320 * Rx);
+		UIUtil.setViewSize(downloadItem, 320 * Rx, 320 * Ry);
 		UIUtil.setViewWidth(resourcesItem, 320 * Rx);
 		UIUtil.setViewWidth(uninstallItem, 320 * Rx);
 		
-		UIUtil.setViewHeight(clearCacheItem, 320 * Rx);
-		UIUtil.setViewHeight(commomProblemItem, 320 * Rx);
-		
+		UIUtil.setViewHeight(clearCacheItem, 320 * Ry);
+		UIUtil.setViewHeight(commomProblemItem, 320 * Ry);
 		
 		UIUtil.setTextSize(accountName, 45);
 		UIUtil.setTextSize(level, 30);
 		
 		try {
 			UIUtil.setViewSizeMargin(accountIcon, 0, 65 *Ry, 0, 0);
-			UIUtil.setViewSizeMargin(accountLin, 0, 40 *Ry, 0, 0);
-			UIUtil.setViewSizeMargin(level, 0, 40 *Ry, 0, 0);
+			UIUtil.setViewSizeMargin(accountLin, 0, 30 *Ry, 0, 0);
+			UIUtil.setViewSizeMargin(level, 0, 30 *Ry, 0, 0);
 			
 			UIUtil.setViewSizeMargin(resourcesItem, 20 * Rx, 0, 0, 0);
 			UIUtil.setViewSizeMargin(uninstallItem, 20 * Rx, 0, 0, 0);

@@ -17,31 +17,111 @@
         android:background="@drawable/yonghuicon"/>
     
     <TextView 
+        android:id="@+id/nickName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_below="@id/accountImg"
+        android:textColor="@color/yellow"/>
+    
+    <TextView 
         android:id="@+id/level"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
         android:background="@drawable/dengji"
-        android:layout_below="@id/accountImg"
+        android:layout_below="@id/nickName"
         android:gravity="center"/>
+	
+    <RelativeLayout 
+        android:id="@+id/genderRel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_below="@id/level"
+    	android:background="@drawable/ziliao">
+        
+        <TextView 
+            android:id="@+id/gender"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:textColor="@color/white"
+            android:text="@string/gender"/>
+        
+        <com.jiqu.view.SpinnerView
+            android:id="@+id/genderSpinner"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"/>
+    </RelativeLayout>
     
-   <ListView 
-       android:id="@+id/accountInformationList"
-       android:layout_width="wrap_content"
-       android:layout_height="wrap_content"
-       android:layout_centerHorizontal="true"
-       android:layout_below="@id/level"
-       android:scrollbars="none"
-       android:listSelector="@null"/>
-
+    <RelativeLayout 
+        android:id="@+id/birthRel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/genderRel"
+        android:layout_alignLeft="@id/genderRel"
+        android:layout_alignRight="@id/genderRel"
+        android:layout_centerHorizontal="true"
+    	android:background="@drawable/ziliao">
+        
+        <TextView 
+            android:id="@+id/birth"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:textColor="@color/white"
+            android:text="@string/birthday"/>
+    </RelativeLayout>
+    
+    <RelativeLayout 
+        android:id="@+id/phoneRel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/birthRel"
+        android:layout_alignLeft="@id/birthRel"
+        android:layout_alignRight="@id/birthRel"
+        android:layout_centerHorizontal="true"
+    	android:background="@drawable/ziliao">
+        
+        <TextView 
+            android:id="@+id/phone"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:textColor="@color/white"
+            android:text="@string/phone"/>
+    </RelativeLayout>
+    
+    <RelativeLayout 
+        android:id="@+id/qqRel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/phoneRel"
+        android:layout_alignLeft="@id/phoneRel"
+        android:layout_alignRight="@id/phoneRel"
+        android:layout_centerHorizontal="true"
+    	android:background="@drawable/ziliao">
+        
+        <TextView 
+            android:id="@+id/qq"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:textColor="@color/white"
+            android:text="@string/qq"/>
+    </RelativeLayout>
+    
    <Button 
        android:id="@+id/modifyBtn"
        android:layout_width="wrap_content"
        android:layout_height="wrap_content"
        android:layout_centerHorizontal="true"
-       android:layout_below="@id/accountInformationList"
-       android:layout_alignLeft="@id/accountInformationList"
-       android:layout_alignRight="@id/accountInformationList"
+       android:layout_below="@id/qqRel"
+       android:layout_alignLeft="@id/qqRel"
+       android:layout_alignRight="@id/qqRel"
        android:background="@drawable/xiugai"
        android:text="@string/modify"
        android:textColor="@color/white"/>
