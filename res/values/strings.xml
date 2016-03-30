@@ -49,8 +49,8 @@
     <string name="commit">提交</string>
     <string name="sendCodeAgain">秒后重新发送</string>
     <string name="setPasswordAgain">重设密码</string>
-    <string name="man">汉字</string>
-    <string name="female">妹子</string>
+    <string name="man">男</string>
+    <string name="female">女</string>
     <string name="register">注册</string>
     <string name="memberInformation">会员资料</string>
     <string name="setting">设置</string>

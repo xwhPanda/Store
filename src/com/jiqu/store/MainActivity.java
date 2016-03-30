@@ -93,14 +93,14 @@ public class MainActivity extends FragmentActivity implements OnClickListener,Li
 		init();
 		setOnclick();
 		
-//		new CustomDialog(this).setNegativeButton(new DialogInterface.OnClickListener() {
-//			
-//			@Override
-//			public void onClick(DialogInterface dialog, int which) {
-//				// TODO Auto-generated method stub
-//				dialog.dismiss();
-//			}
-//		}).initView().show();
+		new CustomDialog(this).setNegativeButton(new DialogInterface.OnClickListener() {
+			
+			@Override
+			public void onClick(DialogInterface dialog, int which) {
+				// TODO Auto-generated method stub
+				dialog.dismiss();
+			}
+		}).initView().show();
 	}
 	
 	/**
