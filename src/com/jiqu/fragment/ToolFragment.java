@@ -1,6 +1,8 @@
 package com.jiqu.fragment;
 
 import com.jiqu.activity.AppUninstallActivity;
+import com.jiqu.activity.ClearCacheActivity;
+import com.jiqu.activity.DeepClearActivity;
 import com.jiqu.activity.DownloadManagerActivity;
 import com.jiqu.store.R;
 import com.jiqu.tools.MetricsTool;
@@ -148,10 +150,11 @@ public class ToolFragment extends Fragment implements OnClickListener{
 			break;
 
 		case R.id.clearCacheItem:
+			startActivity(new Intent(getActivity(), ClearCacheActivity.class));
 			break;
 			
 		case R.id.clearUpItem:
-			
+			startActivity(new Intent(getActivity(), DeepClearActivity.class));
 			break;
 
 		case R.id.powerItem:

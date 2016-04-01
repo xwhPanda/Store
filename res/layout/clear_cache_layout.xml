@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent" 
+    android:background="@drawable/toolbg">
+    
+    <com.jiqu.view.TitleView 
+        android:id="@+id/titleView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+    
+	<RelativeLayout 
+	    android:id="@+id/clearImgRel"
+	    android:layout_width="wrap_content"
+	    android:layout_height="wrap_content"
+	    android:layout_centerHorizontal="true">
+	    
+	    <ImageView 
+	        android:id="@+id/clearImgBg"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:layout_centerInParent="true"
+	    android:background="@drawable/saomiao"/>
+	    
+	    <ImageView 
+	        android:id="@+id/clearImg"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:layout_centerInParent="true"
+	        android:background="@drawable/qingjie_icon"/>
+	</RelativeLayout>
+	
+	<TextView 
+	    android:id="@+id/clearTip"
+	    android:layout_width="wrap_content"
+	    android:layout_height="wrap_content"
+	    android:layout_below="@id/clearImgRel"
+	    android:layout_centerHorizontal="true"
+	    android:textColor="@color/green"
+	    android:text="@string/clearCache"/>
+	
+	<RelativeLayout 
+	    android:id="@+id/appCacheRel"
+	    android:layout_width="wrap_content"
+	    android:layout_height="wrap_content"
+	    android:layout_centerHorizontal="true"
+	    android:layout_below="@id/clearTip"
+	    android:background="@drawable/ziliao">
+	    
+	    <ImageView 
+	        android:id="@+id/appCacheImg"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:layout_centerVertical="true"
+	        android:background="@drawable/shuaxin_nor"/>
+	    
+	    <TextView 
+	        android:id="@+id/appCacheTitle"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:layout_centerVertical="true"
+	        android:layout_toRightOf="@id/appCacheImg"
+	        android:textColor="@color/white"
+	        android:text="@string/systemCache"/>
+	    
+	    <TextView 
+	        android:id="@+id/findAppCache"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:layout_centerVertical="true"
+	        android:layout_alignParentRight="true"
+	        android:textColor="@color/white"/>
+	</RelativeLayout>
+	
+	<RelativeLayout 
+	    android:id="@+id/systemCacheRel"
+	    android:layout_width="wrap_content"
+	    android:layout_height="wrap_content"
+	    android:layout_centerHorizontal="true"
+	    android:layout_below="@id/appCacheRel"
+	    android:background="@drawable/ziliao">
+	    
+	    <ImageView 
+	        android:id="@+id/systemCacheImg"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:layout_centerVertical="true"
+	        android:background="@drawable/shuaxin_nor"/>
+	    
+	    <TextView 
+	        android:id="@+id/systemCacheTitle"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:layout_centerVertical="true"
+	        android:layout_toRightOf="@id/systemCacheImg"
+	        android:textColor="@color/white"
+	        android:text="@string/appCache"/>
+	    
+	    <TextView 
+	        android:id="@+id/findSystemCache"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:layout_centerVertical="true"
+	        android:layout_alignParentRight="true"
+	        android:textColor="@color/white"/>
+	</RelativeLayout>
+	
+	<Button 
+	    android:id="@+id/clear"
+	    android:layout_width="wrap_content"
+	    android:layout_height="wrap_content"
+	    android:layout_alignRight="@id/systemCacheRel"
+	    android:layout_alignLeft="@id/systemCacheRel"
+	    android:layout_below="@id/systemCacheRel"
+	    android:text="@string/clearCache"
+	    android:textColor="@color/white"
+	    android:background="@drawable/qingjie_btn"/>
+    
+</RelativeLayout>

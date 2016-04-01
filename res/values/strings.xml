@@ -88,6 +88,20 @@
     <string name="loginTip">嬷嬷哒~要登录才能查看信息的哟~</string>
     <string name="cancle">取消</string>
     <string name="quickLogin">快捷登录</string>
+    <string name="appCache">软件缓存</string>
+    <string name="systemCache">系统缓存</string>
+    <string name="clearCache">清理缓存</string>
+    <string name="clearCacheIng">正在清理缓存</string>
+    <string name="clearCacheed">清理完成</string>
+    <string name="cleared">完成</string>
+    <string name="deepClear">深度清洁</string>
+    <string name="startScan">开始扫描</string>
+    <string name="scaning">正在扫描</string>
+    <string name="scaned">扫描完成</string>
+    <string name="close_background_process">关闭后台应用</string>
+    <string name="clear_rubish">清理垃圾</string>
+    <string name="auto_start">后台自启应用</string>
+    <string name="speed_up">加速</string>
     
     <string name="pull_to_refresh">下拉刷新</string>
     <string name="release_to_refresh">释放立即刷新</string>

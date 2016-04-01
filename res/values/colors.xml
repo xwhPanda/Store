@@ -29,4 +29,6 @@
     
     <color name="progressColor">#43ff6d</color>
     <color name="progressBgColor">#dfdfdf</color>
+    
+    <color name="green">#00ba28</color>
 </resources>

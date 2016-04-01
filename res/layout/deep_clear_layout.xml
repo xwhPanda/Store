@@ -1,0 +1,159 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent" 
+    android:background="@drawable/toolbg">
+    
+    <com.jiqu.view.TitleView
+        android:id="@+id/titleView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+    
+    <RelativeLayout 
+        android:id="@+id/scanRel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true">
+        <ImageView 
+            android:id="@+id/scanBg"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:background="@drawable/saomiao"/>
+        
+        <RelativeLayout 
+            android:id="@+id/scanTipRel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true">
+            <TextView 
+                android:id="@+id/scanScore"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/yellow"
+                android:layout_centerHorizontal="true"
+                android:text="100"
+                android:textStyle="bold"/>
+            
+            <TextView 
+                android:id="@+id/scanTip"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/scanScore"
+                android:layout_centerHorizontal="true"
+                android:text="@string/startScan"
+                android:textColor="@color/yellow"/>
+        </RelativeLayout>
+    </RelativeLayout>
+    
+    <RelativeLayout 
+	    android:id="@+id/closeProcessRel"
+	    android:layout_width="wrap_content"
+	    android:layout_height="wrap_content"
+	    android:layout_centerHorizontal="true"
+	    android:layout_below="@id/scanRel"
+	    android:background="@drawable/ziliao">
+	    
+	    <ImageView 
+	        android:id="@+id/closeProcessImg"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:layout_centerVertical="true"
+	        android:background="@drawable/shuaxin_nor"/>
+	    
+	    <TextView 
+	        android:id="@+id/closeProcessTitle"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:layout_centerVertical="true"
+	        android:layout_toRightOf="@id/closeProcessImg"
+	        android:textColor="@color/white"
+	        android:text="@string/close_background_process"/>
+	    
+	    <TextView 
+	        android:id="@+id/closeProcessCount"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:layout_centerVertical="true"
+	        android:layout_alignParentRight="true"
+	        android:textColor="@color/white"/>
+	</RelativeLayout>
+	
+    <RelativeLayout 
+	    android:id="@+id/clearRubishRel"
+	    android:layout_width="wrap_content"
+	    android:layout_height="wrap_content"
+	    android:layout_centerHorizontal="true"
+	    android:layout_below="@id/closeProcessRel"
+	    android:background="@drawable/ziliao">
+	    
+	    <ImageView 
+	        android:id="@+id/clearRubishImg"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:layout_centerVertical="true"
+	        android:background="@drawable/shuaxin_nor"/>
+	    
+	    <TextView 
+	        android:id="@+id/clearRubishTitle"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:layout_centerVertical="true"
+	        android:layout_toRightOf="@id/clearRubishImg"
+	        android:textColor="@color/white"
+	        android:text="@string/clear_rubish"/>
+	    
+	    <TextView 
+	        android:id="@+id/clearRubishCount"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:layout_centerVertical="true"
+	        android:layout_alignParentRight="true"
+	        android:textColor="@color/white"/>
+	</RelativeLayout>
+	
+    <RelativeLayout 
+	    android:id="@+id/autoStartRel"
+	    android:layout_width="wrap_content"
+	    android:layout_height="wrap_content"
+	    android:layout_centerHorizontal="true"
+	    android:layout_below="@id/clearRubishRel"
+	    android:background="@drawable/ziliao">
+	    
+	    <ImageView 
+	        android:id="@+id/autoStartImg"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:layout_centerVertical="true"
+	        android:background="@drawable/shuaxin_nor"/>
+	    
+	    <TextView 
+	        android:id="@+id/autoStartTitle"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:layout_centerVertical="true"
+	        android:layout_toRightOf="@id/autoStartImg"
+	        android:textColor="@color/white"
+	        android:text="@string/auto_start"/>
+	    
+	    <TextView 
+	        android:id="@+id/autoStartCount"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:layout_centerVertical="true"
+	        android:layout_alignParentRight="true"
+	        android:textColor="@color/white"/>
+	</RelativeLayout>
+	
+    <Button 
+	    android:id="@+id/speedUp"
+	    android:layout_width="wrap_content"
+	    android:layout_height="wrap_content"
+	    android:layout_alignRight="@id/autoStartRel"
+	    android:layout_alignLeft="@id/autoStartRel"
+	    android:layout_below="@id/autoStartRel"
+	    android:text="@string/speed_up"
+	    android:textColor="@color/white"
+	    android:background="@drawable/qingjie_btn"/>
+
+</RelativeLayout>

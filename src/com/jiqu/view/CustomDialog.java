@@ -81,6 +81,7 @@ public class CustomDialog extends Dialog {
 		initViewSize(view);
 
 		dialog.setContentView(view);
+		dialog.setCancelable(false);
 
 		return dialog;
 	}

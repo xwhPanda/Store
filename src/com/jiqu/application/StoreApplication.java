@@ -24,6 +24,8 @@ public class StoreApplication extends Application {
 	
 	private RequestQueue requestQueue;
 	private ImageLoader imageLoader;
+	public static String PACKAGE_NAME;
+	public static String DATA_CACHE_PATH;
 	
 	@Override
 	public void onCreate() {
@@ -32,6 +34,9 @@ public class StoreApplication extends Application {
 		instance = this;
 		mMainLooper = getMainLooper();
 		getDaoSession();
+		
+		PACKAGE_NAME = getPackageName();
+		DATA_CACHE_PATH = getCacheDir().getAbsolutePath();
 	}
 	
 	public static synchronized StoreApplication getInstance(){
