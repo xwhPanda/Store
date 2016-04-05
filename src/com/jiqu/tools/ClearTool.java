@@ -9,9 +9,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
+import com.jiqu.activity.DeepClearActivity;
 import com.jiqu.application.StoreApplication;
 import com.jiqu.download.ThreadManager;
 
+import android.annotation.SuppressLint;
 import android.app.ActivityManager;
 import android.app.ActivityManager.MemoryInfo;
 import android.app.ActivityManager.RunningAppProcessInfo;
@@ -208,62 +210,95 @@ public class ClearTool {
 	 */
 	public static String getDataSize(long size){
 		DecimalFormat formater = new DecimalFormat("####.00");
-		if(size<1024){
-			return size+"B";
-		}else if(size<1024*1024){
-			float kbsize = size/1024f;  
-			return formater.format(kbsize)+"KB";
-		}else if(size<1024*1024*1024){
-			float mbsize = size/1024f/1024f;  
-			return formater.format(mbsize)+"M";
-		}else if(size<1024*1024*1024*1024){
-			float gbsize = size/1024f/1024f/1024f;  
-			return formater.format(gbsize)+"G";
-		}else{
-			return "size: error";
+		if (size >= 0) {
+			if(size < 1024){
+				return size+"B";
+			}else if(size<1024*1024){
+				float kbsize = size/1024f;  
+				return formater.format(kbsize)+"KB";
+			}else if(size<1024*1024*1024){
+				float mbsize = size/1024f/1024f;  
+				return formater.format(mbsize)+"M";
+			}else if(size<1024*1024*1024*1024){
+				float gbsize = size/1024f/1024f/1024f;  
+				return formater.format(gbsize)+"G";
+			}else{
+				return 0 + "KB";
+			}
+		}else {
+			return 0 + "KB";
 		}
 	}
 	
-	public void killProcess(Context context){
+	public void getProcess(Context context,Handler handler){
 		ActivityManager am = (ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE);
         List<RunningAppProcessInfo> infoList = am.getRunningAppProcesses();
         List<ActivityManager.RunningServiceInfo> serviceInfos = am.getRunningServices(100);
 
         long beforeMem = getAvailMemory(context);
-        Log.d("TAG", "-----------before memory info : " + beforeMem);
         int count = 0;
+        Message msg = handler.obtainMessage();
+        msg.what = DeepClearActivity.SCAN_PROCESS_COMPLETED;
+        msg.arg1 = infoList.size();
+        handler.sendMessageDelayed(msg, 2 * 1000);
         if (infoList != null) {
             for (int i = 0; i < infoList.size(); ++i) {
                 RunningAppProcessInfo appProcessInfo = infoList.get(i);
                 //importance 该进程的重要程度  分为几个级别，数值越低就越重要。
                 Log.d("TAG", "importance : " + appProcessInfo.importance);
-
+                
                 // 一般数值大于RunningAppProcessInfo.IMPORTANCE_SERVICE的进程都长时间没用或者空进程了
                 // 一般数值大于RunningAppProcessInfo.IMPORTANCE_VISIBLE的进程都是非可见进程，也就是在后台运行着
                 if (appProcessInfo.importance > RunningAppProcessInfo.IMPORTANCE_VISIBLE) {
                     String[] pkgList = appProcessInfo.pkgList;
-                    for (int j = 0; j < pkgList.length; ++j) {//pkgList 得到该进程下运行的包名
-                        Log.d("TAG", "It will be killed, package name : " + pkgList[j]);
-                        am.killBackgroundProcesses(pkgList[j]);
-                        count++;
-                    }
                 }
 
             }
         }
+	}
+	
+	public void killProcess(Context context,Handler handler){
+		ActivityManager am = (ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE);
+        List<RunningAppProcessInfo> infoList = am.getRunningAppProcesses();
+        List<ActivityManager.RunningServiceInfo> serviceInfos = am.getRunningServices(100);
 
-        long afterMem = getAvailMemory(context);
-        Log.d("TAG", "----------- after memory info : " + afterMem);
+        if (infoList != null) {
+            for (int i = 0; i < infoList.size(); ++i) {
+                RunningAppProcessInfo appProcessInfo = infoList.get(i);
+                //importance 该进程的重要程度  分为几个级别，数值越低就越重要。
+                Log.d("TAG", "importance : " + appProcessInfo.importance);
+                
+                // 一般数值大于RunningAppProcessInfo.IMPORTANCE_SERVICE的进程都长时间没用或者空进程了
+                // 一般数值大于RunningAppProcessInfo.IMPORTANCE_VISIBLE的进程都是非可见进程，也就是在后台运行着
+                if (appProcessInfo.importance > RunningAppProcessInfo.IMPORTANCE_VISIBLE) {
+                    String[] pkgList = appProcessInfo.pkgList;
+                    for (String pgk : pkgList) {
+						am.killBackgroundProcesses(pgk);
+					}
+                }
+
+            }
+        }
+        handler.sendEmptyMessageDelayed(DeepClearActivity.KILL_PROCESS_COMPLETED, 2 * 1000);
     }
 	
 	   //获取可用内存大小
-    private long getAvailMemory(Context context) {
+	public long getAvailMemory(Context context) {
         // 获取android当前可用内存大小
         ActivityManager am = (ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE);
         MemoryInfo mi = new MemoryInfo();
         am.getMemoryInfo(mi);
         //mi.availMem; 当前系统的可用内存
         //return Formatter.formatFileSize(context, mi.availMem);// 将获取的内存大小规格化
-        return mi.availMem / (1024 * 1024);
+        return mi.availMem;
+    }
+    
+    @SuppressLint("NewApi")
+	public int getScore(Context context){
+    	ActivityManager am = (ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE);
+        MemoryInfo mi = new MemoryInfo();
+        am.getMemoryInfo(mi);
+        
+        return (int) ((mi.availMem * 100) / mi.totalMem);
     }
 }

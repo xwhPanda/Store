@@ -160,7 +160,6 @@ public class ClearCacheActivity extends BaseActivity implements OnClickListener{
 				clear.setTextColor(getResources().getColor(R.color.itemDesColor));
 				clear.setClickable(false);
 				
-				clearTool.killProcess(ClearCacheActivity.this);
 			}
 		};
 	};

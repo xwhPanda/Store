@@ -20,4 +20,6 @@
     <declare-styleable name="RatingBarAttr">
         <attr name="rating" format="float" />
     </declare-styleable>
+    
+    <attr name="fontPath" format="string"/>
 </resources>

@@ -1,8 +1,11 @@
 package com.jiqu.store;
 
+import uk.co.chrisjenx.calligraphy.CalligraphyContextWrapper;
+
 import com.jiqu.tools.MetricsTool;
 
 import android.app.Activity;
+import android.content.Context;
 import android.os.Bundle;
 
 public abstract class BaseActivity extends Activity {
@@ -16,6 +19,12 @@ public abstract class BaseActivity extends Activity {
 		Rx = MetricsTool.Rx;
 		Ry = MetricsTool.Ry;
 		setContentView(getContentView());
+	}
+	
+	@Override
+	protected void attachBaseContext(Context newBase) {
+		// TODO Auto-generated method stub
+		super.attachBaseContext(new CalligraphyContextWrapper(newBase));
 	}
 	
 	public abstract int getContentView();

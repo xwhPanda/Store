@@ -1,5 +1,7 @@
 package com.jiqu.application;
 
+import uk.co.chrisjenx.calligraphy.CalligraphyConfig;
+
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.ImageLoader;
@@ -7,6 +9,7 @@ import com.android.volley.toolbox.Volley;
 import com.jiqu.database.DaoMaster;
 import com.jiqu.database.DaoMaster.DevOpenHelper;
 import com.jiqu.database.DaoSession;
+import com.jiqu.store.R;
 import com.jiqu.tools.LruBitmapCache;
 import com.jiqu.tools.MetricsTool;
 
@@ -31,6 +34,7 @@ public class StoreApplication extends Application {
 	public void onCreate() {
 		// TODO Auto-generated method stub
 		super.onCreate();
+		CalligraphyConfig.initDefault("fonts/lantinghei.ttf", R.attr.fontPath);
 		instance = this;
 		mMainLooper = getMainLooper();
 		getDaoSession();
