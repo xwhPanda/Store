@@ -1,8 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent" 
-    android:background="@drawable/toolbg">
+    android:background="@drawable/toolbg"
+    tools:ignore="MissingPrefix" >
     
     <com.jiqu.view.TitleView 
         android:id="@+id/titleView"
@@ -22,7 +24,8 @@
             android:layout_height="wrap_content"
             android:text="@string/personalAPP"
             android:background="@drawable/xinxi_sel"
-            android:textColor="@color/white"/>
+            android:textColor="@color/white"
+            fontPath="fonts/lantinghei.ttf"/>
         
         <Button 
             android:id="@+id/systemAPP"
@@ -30,7 +33,8 @@
             android:layout_height="wrap_content"
             android:text="@string/systemAPP"
             android:background="@drawable/xinxi_nor"
-            android:textColor="@color/blue"/>
+            android:textColor="@color/blue"
+            fontPath="fonts/lantinghei.ttf"/>
     </LinearLayout>
     
     <RelativeLayout 
@@ -56,7 +60,8 @@
             android:layout_alignParentRight="true"
             android:text="@string/allUninstall"
             android:textColor="@color/white"
-            android:background="@color/blue"/>
+            android:background="@color/blue"
+            fontPath="fonts/lantinghei.ttf"/>
     </RelativeLayout>
     
     <ListView 

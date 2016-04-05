@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content" >
+    android:layout_height="wrap_content"
+    tools:ignore="MissingPrefix" >
 
     <RelativeLayout
         android:id="@+id/parent"
@@ -12,14 +14,15 @@
             android:id="@+id/btnRel"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_centerHorizontal="true" 
-            android:background="@drawable/ziliao">
+            android:layout_centerHorizontal="true"
+            android:background="@drawable/ziliao" >
 
             <Button
                 android:id="@+id/cancle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerVertical="true"
+                fontPath="fonts/lantinghei.ttf"
                 android:background="@drawable/quxiao" />
 
             <Button
@@ -28,6 +31,7 @@
                 android:layout_height="wrap_content"
                 android:layout_alignParentRight="true"
                 android:layout_alignTop="@id/cancle"
+                fontPath="fonts/lantinghei.ttf"
                 android:background="@drawable/queren" />
         </RelativeLayout>
 
@@ -44,18 +48,20 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@id/line"
-            android:background="@drawable/ziliao" 
-            android:textColor="@color/white"
-            android:text="@string/man"/>
-        
+            fontPath="fonts/lantinghei.ttf"
+            android:background="@drawable/ziliao"
+            android:text="@string/man"
+            android:textColor="@color/white" />
+
         <Button
             android:id="@+id/female"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@id/man"
+            fontPath="fonts/lantinghei.ttf"
+            android:background="@drawable/ziliao"
             android:text="@string/female"
-            android:textColor="@color/white"
-            android:background="@drawable/ziliao" />
+            android:textColor="@color/white" />
     </RelativeLayout>
 
 </RelativeLayout>

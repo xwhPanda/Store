@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="wrap_content"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    tools:ignore="MissingPrefix" >
     
     <RelativeLayout 
         android:id="@+id/parentView"
@@ -24,7 +26,8 @@
 	        android:layout_centerHorizontal="true"
 	        android:singleLine="true"
 	        android:ellipsize="end"
-	        android:textColor="@color/bottomFocus"/>
+	        android:textColor="@color/bottomFocus"
+            fontPath="fonts/lantinghei.ttf"/>
 	    
 	    <TextView 
 	        android:id="@+id/gameDescription"
@@ -34,7 +37,8 @@
 	        android:layout_below="@id/gameName"
 	        android:singleLine="true"
 	        android:ellipsize="end"
-	        android:textColor="@color/itemDesColor"/>
+	        android:textColor="@color/itemDesColor"
+            fontPath="fonts/lantinghei.ttf"/>
     </RelativeLayout>
 
 </LinearLayout>

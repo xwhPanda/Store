@@ -1,37 +1,40 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent" >
-    
-    <RelativeLayout 
+    android:layout_height="match_parent"
+    tools:ignore="MissingPrefix" >
+
+    <RelativeLayout
         android:id="@+id/titleRel"
         android:layout_width="match_parent"
-        android:layout_height="50dp">
-        
-        <TextView 
+        android:layout_height="50dp" >
+
+        <TextView
             android:id="@+id/listTitle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:maxEms="10"
-            android:singleLine="true"
-            android:ellipsize="end"
+            android:layout_alignParentLeft="true"
             android:layout_centerVertical="true"
-            android:layout_alignParentLeft="true"/>
-        
-        <Button 
+            fontPath="fonts/lantinghei.ttf"
+            android:ellipsize="end"
+            android:maxEms="10"
+            android:singleLine="true" />
+
+        <Button
             android:id="@+id/moreBtn"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            fontPath="fonts/lantinghei.ttf"
             android:drawableRight="@drawable/ic_launcher"
-            android:text="更多"/>
+            android:text="更多" />
     </RelativeLayout>
-    
-    
-    <LinearLayout 
+
+    <LinearLayout
         android:id="@+id/recommendGameLin"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical">
-        
+        android:orientation="vertical" >
     </LinearLayout>
+
 </RelativeLayout>

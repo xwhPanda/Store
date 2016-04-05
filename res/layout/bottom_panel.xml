@@ -1,10 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/bottomPanel"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="horizontal" 
-    android:background="@color/bottomBgColor">
+    android:background="@color/bottomBgColor"
+    tools:ignore="MissingPrefix" >
     
     <LinearLayout
         android:id="@+id/recommendLin"
@@ -27,7 +29,8 @@
             android:layout_height="wrap_content"
             android:textSize="12sp"
             android:textColor="@color/white"
-            android:text="@string/recomendTx"/>
+            android:text="@string/recomendTx"
+            fontPath="fonts/lantinghei.ttf"/>
         
         
     </LinearLayout>
@@ -53,7 +56,8 @@
             android:layout_height="wrap_content"
             android:textSize="12sp"
             android:textColor="@color/white"
-            android:text="@string/informationTx"/>
+            android:text="@string/informationTx"
+            fontPath="fonts/lantinghei.ttf"/>
         
     </LinearLayout>
     
@@ -78,7 +82,8 @@
             android:layout_height="wrap_content"
             android:textSize="12sp"
             android:textColor="@color/white"
-            android:text="@string/gameTx"/>
+            android:text="@string/gameTx"
+            fontPath="fonts/lantinghei.ttf"/>
         
     </LinearLayout>
     
@@ -103,7 +108,8 @@
             android:layout_height="wrap_content"
             android:textSize="12sp"
             android:textColor="@color/white"
-            android:text="@string/evaluationTx"/>
+            android:text="@string/evaluationTx"
+            fontPath="fonts/lantinghei.ttf"/>
         
     </LinearLayout>
     
@@ -128,7 +134,8 @@
             android:layout_height="wrap_content"
             android:textSize="12sp"
             android:textColor="@color/white"
-            android:text="@string/toolTx"/>
+            android:text="@string/toolTx"
+            fontPath="fonts/lantinghei.ttf"/>
         
     </LinearLayout>
 

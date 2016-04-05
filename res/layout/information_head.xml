@@ -1,8 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent" 
-    android:background="@color/bottomBgColor">
+    android:layout_height="match_parent"
+    android:background="@color/bottomBgColor"
+    tools:ignore="MissingPrefix" >
 
     <RelativeLayout
         android:id="@+id/informationImgRel"
@@ -31,56 +33,58 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/informationImgRel" >
-	
-        <LinearLayout 
+
+        <LinearLayout
             android:id="@+id/explosiveHeadlinesLin"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
+            android:background="@color/sortTitleColor"
             android:clickable="true"
             android:gravity="center"
-            android:background="@color/sortTitleColor"
-            android:orientation="horizontal">
-            
-            <ImageView 
+            android:orientation="horizontal" >
+
+            <ImageView
                 android:id="@+id/explosiveHeadlinesImg"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:background="@drawable/zuibao"/>
-            
-            <TextView 
+                android:background="@drawable/zuibao" />
+
+            <TextView
                 android:id="@+id/explosiveHeadlinesTx"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="@dimen/HeadlinesTxMargingL"
-                android:textColor="@color/white"
-                android:text="@string/explosiveHeadlines"/>
+                fontPath="fonts/lantinghei.ttf"
+                android:text="@string/explosiveHeadlines"
+                android:textColor="@color/white" />
         </LinearLayout>
 
-        <LinearLayout 
+        <LinearLayout
             android:id="@+id/allHeadlinesLin"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
+            android:background="@color/itemDesColor"
             android:clickable="true"
             android:gravity="center"
-            android:background="@color/itemDesColor"
-            android:orientation="horizontal">
-            
-            <ImageView 
+            android:orientation="horizontal" >
+
+            <ImageView
                 android:id="@+id/allHeadlinesImg"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:background="@drawable/quanbu"/>
-            
-            <TextView 
+                android:background="@drawable/quanbu" />
+
+            <TextView
                 android:id="@+id/allHeadlinesTx"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="@dimen/HeadlinesTxMargingL"
-                android:textColor="@color/white"
-                android:text="@string/allHeadlines"/>
+                fontPath="fonts/lantinghei.ttf"
+                android:text="@string/allHeadlines"
+                android:textColor="@color/white" />
         </LinearLayout>
-        
     </LinearLayout>
+
 </RelativeLayout>

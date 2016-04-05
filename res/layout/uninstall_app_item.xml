@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent" >
+    android:layout_height="match_parent" 
+    tools:ignore="MissingPrefix" >
     
     <CheckBox 
         android:id="@+id/checkBox"
@@ -23,7 +25,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_toRightOf="@id/appIcon"
-        android:textColor="@color/white"/>
+        android:textColor="@color/white"
+        fontPath="fonts/lantinghei.ttf"/>
     
     <TextView 
         android:id="@+id/appVersionName"
@@ -31,7 +34,8 @@
         android:layout_height="wrap_content"
         android:layout_below="@id/appName"
         android:layout_alignLeft="@id/appName"
-        android:textColor="@color/itemDesColor"/>
+        android:textColor="@color/itemDesColor"
+        fontPath="fonts/lantinghei.ttf"/>
     
     <Button 
         android:id="@+id/uninstall"
@@ -39,6 +43,7 @@
         android:layout_height="wrap_content"
         android:layout_centerVertical="true"
         android:layout_alignParentRight="true"
-        android:background="@drawable/uninstall"/>
+        android:background="@drawable/uninstall"
+        fontPath="fonts/lantinghei.ttf"/>
 
 </RelativeLayout>

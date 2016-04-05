@@ -1,61 +1,67 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent" >
-    
-    <CheckBox 
+    android:layout_height="match_parent"
+    tools:ignore="MissingPrefix" >
+
+    <CheckBox
         android:id="@+id/checkBox"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerVertical="true"
-        android:button="@null"
-        android:background="@drawable/checkbox_yellow_sel"/>
-    
-    <Button 
+        android:background="@drawable/checkbox_yellow_sel"
+        android:button="@null" />
+
+    <Button
         android:id="@+id/open"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_centerVertical="true"
         android:layout_alignParentRight="true"
-        android:background="@drawable/runing_selector"/>
-    
-    <ImageView 
+        android:layout_centerVertical="true"
+        fontPath="fonts/lantinghei.ttf"
+        android:background="@drawable/runing_selector" />
+
+    <ImageView
         android:id="@+id/appIcon"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerVertical="true"
-        android:layout_toRightOf="@+id/checkBox"/>
-    
-    <TextView 
+        android:layout_toRightOf="@+id/checkBox" />
+
+    <TextView
         android:id="@+id/appName"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_toRightOf="@id/appIcon"
-        android:textColor="@color/white"/>
-    
-    <TextView 
+        fontPath="fonts/lantinghei.ttf"
+        android:textColor="@color/white" />
+
+    <TextView
         android:id="@+id/appDes"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/appName"
         android:layout_alignLeft="@id/appName"
+        android:layout_below="@id/appName"
         android:layout_toLeftOf="@id/open"
-        android:singleLine="true"
+        fontPath="fonts/lantinghei.ttf"
         android:ellipsize="end"
-        android:textColor="@color/itemDesColor"/>
-    
-    <com.jiqu.view.RatingBarView 
+        android:singleLine="true"
+        android:textColor="@color/itemDesColor" />
+
+    <com.jiqu.view.RatingBarView
         android:id="@+id/appScore"
         android:layout_width="wrap_content"
-		android:layout_height="wrap_content"
-		android:layout_below="@id/appDes"
-		android:layout_alignLeft="@id/appDes"/>
-    
-    <TextView 
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@id/appDes"
+        android:layout_below="@id/appDes" />
+
+    <TextView
         android:id="@+id/appSize"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_alignTop="@id/appScore"
         android:layout_toRightOf="@id/appScore"
-        android:layout_alignTop="@id/appScore"/>
-    
+        fontPath="fonts/lantinghei.ttf" />
+
 </RelativeLayout>

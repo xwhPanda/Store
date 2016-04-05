@@ -1,49 +1,51 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="horizontal" 
-    android:background="@color/bottomBgColor">
+    android:background="@color/bottomBgColor"
+    android:orientation="horizontal"
+    tools:ignore="MissingPrefix" >
 
-    <TextView 
+    <TextView
         android:id="@+id/sortName"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:singleLine="true"
-        android:maxLength="10"
-        android:ellipsize="end"
         android:layout_centerVertical="true"
-        android:textColor="@color/sortTitleColor"
-        android:textSize="14sp"
+        android:layout_marginBottom="@dimen/sortNameMargin"
         android:layout_marginLeft="@dimen/sortNameMargin"
         android:layout_marginTop="@dimen/sortNameMargin"
-        android:layout_marginBottom="@dimen/sortNameMargin"
-        android:text="动作冒险"/>
-    
-    <LinearLayout 
+        fontPath="fonts/lantinghei.ttf"
+        android:ellipsize="end"
+        android:maxLength="10"
+        android:singleLine="true"
+        android:text="动作冒险"
+        android:textColor="@color/sortTitleColor"
+        android:textSize="14sp" />
+
+    <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
         android:layout_centerVertical="true"
-        android:clickable="true"
         android:layout_marginRight="@dimen/sortNameMargin"
-        android:layout_alignParentRight="true">
-        
-        <TextView 
+        android:clickable="true" >
+
+        <TextView
             android:id="@+id/moreTx"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            fontPath="fonts/lantinghei.ttf"
             android:text="@string/more"
-            android:textSize="12sp"
-            android:textColor="@color/itemColor"/>
-        
-	    <ImageView 
-	        android:id="@+id/moreBt"
-	        android:layout_width="@dimen/moreBtnSize"
-	        android:layout_height="@dimen/moreBtnSize"
-	        android:layout_gravity="center_vertical"
-	        android:background="@drawable/more"/>
-    
+            android:textColor="@color/itemColor"
+            android:textSize="12sp" />
+
+        <ImageView
+            android:id="@+id/moreBt"
+            android:layout_width="@dimen/moreBtnSize"
+            android:layout_height="@dimen/moreBtnSize"
+            android:layout_gravity="center_vertical"
+            android:background="@drawable/more" />
     </LinearLayout>
-    
 
 </RelativeLayout>

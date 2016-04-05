@@ -1,24 +1,28 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical" >
-    
-    <TextView 
+    android:orientation="vertical"
+    tools:ignore="MissingPrefix" >
+
+    <TextView
         android:id="@+id/evaluationTitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:singleLine="true"/>
-    
-    <TextView 
+        fontPath="fonts/lantinghei.ttf"
+        android:singleLine="true" />
+
+    <TextView
         android:id="@+id/evaluationInformation"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
-    
-    <ImageView 
+        android:layout_height="wrap_content"
+        fontPath="fonts/lantinghei.ttf" />
+
+    <ImageView
         android:id="@+id/gameIntroductionImg"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal"/>
+        android:layout_gravity="center_horizontal" />
 
 </LinearLayout>

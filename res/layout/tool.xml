@@ -1,8 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/toolbg" >
+    android:background="@drawable/toolbg" 
+    tools:ignore="MissingPrefix" >
 
     <ImageView
         android:id="@+id/accountIcon"
@@ -25,7 +27,8 @@
             android:layout_height="wrap_content"
             android:text="sdfsfdafdfa"
             android:textColor="@color/informationListGameColor"
-            android:textSize="14sp" />
+            android:textSize="14sp" 
+        fontPath="fonts/lantinghei.ttf"/>
 
         <ImageView
             android:id="@+id/messageImg"
@@ -45,7 +48,8 @@
         android:gravity="center"
         android:text="LV5"
         android:textColor="@color/informationListGameColor"
-        android:textSize="14sp" />
+        android:textSize="14sp" 
+        fontPath="fonts/lantinghei.ttf"/>
 
     <RelativeLayout 
         android:id="@+id/itemRel"

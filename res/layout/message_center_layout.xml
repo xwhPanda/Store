@@ -1,34 +1,38 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/toolbg">
-    
-    <com.jiqu.view.TitleView 
+    android:background="@drawable/toolbg"
+    tools:ignore="MissingPrefix" >
+
+    <com.jiqu.view.TitleView
         android:id="@+id/titleView"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
+        android:layout_height="wrap_content" />
 
     <RelativeLayout
         android:id="@+id/btnLayout"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true">
+        android:layout_centerHorizontal="true" >
 
         <Button
             android:id="@+id/notice"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content" 
+            android:layout_height="wrap_content"
+            fontPath="fonts/lantinghei.ttf"
             android:padding="0dp"
-            android:text="@string/notic"/>
+            android:text="@string/notic" />
 
         <Button
-            android:id="@+id/privateLetter"	
+            android:id="@+id/privateLetter"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_toRightOf="@id/notice"
+            fontPath="fonts/lantinghei.ttf"
             android:padding="0dp"
-            android:layout_toRightOf="@id/notice" 
-            android:text="@string/privateLetter"/>
+            android:text="@string/privateLetter" />
     </RelativeLayout>
 
     <com.jiqu.view.PullToRefreshLayout
@@ -52,13 +56,13 @@
 
         <include layout="@layout/load_more" />
     </com.jiqu.view.PullToRefreshLayout>
-    
+
     <com.jiqu.view.PullToRefreshLayout
         android:id="@+id/messageRefreshView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@id/btnLayout" 
-        android:visibility="invisible">
+        android:layout_below="@id/btnLayout"
+        android:visibility="invisible" >
 
         <include layout="@layout/refresh_head" />
 
@@ -75,5 +79,5 @@
 
         <include layout="@layout/load_more" />
     </com.jiqu.view.PullToRefreshLayout>
-    
+
 </RelativeLayout>

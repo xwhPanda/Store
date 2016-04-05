@@ -1,8 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent" 
-    android:background="@drawable/toolbg">
+    android:background="@drawable/toolbg"
+    tools:ignore="MissingPrefix" >
     
     <com.jiqu.view.TitleView
         android:id="@+id/titleView"
@@ -53,7 +55,8 @@
         android:layout_alignRight="@id/confirmPasswordView"
         android:background="@drawable/tijiao"
         android:text="@string/register"
-        android:textColor="@color/white"/>
+        android:textColor="@color/white"
+            fontPath="fonts/lantinghei.ttf"/>
     
     <com.jiqu.view.QuickLoginView
         android:id="@+id/quickLoginView"

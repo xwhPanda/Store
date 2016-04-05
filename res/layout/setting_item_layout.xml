@@ -1,8 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content" 
-    android:background="@drawable/ziliao">
+    android:background="@drawable/ziliao"
+    tools:ignore="MissingPrefix" >
     
     <TextView 
         android:id="@+id/title"
@@ -23,7 +25,8 @@
 	        android:id="@+id/subtract"
 	        android:layout_width="wrap_content"
 	        android:layout_height="wrap_content"
-	        android:background="@drawable/subtract_selector"/>
+	        android:background="@drawable/subtract_selector"
+            fontPath="fonts/lantinghei.ttf"/>
 	    
 	    <TextView 
 	        android:id="@+id/size"
@@ -32,13 +35,15 @@
 	        android:background="@drawable/zengjia"
 	        android:layout_gravity="center_vertical"
 	        android:textColor="@color/white"
-	        android:gravity="center"/>
+	        android:gravity="center"
+            fontPath="fonts/lantinghei.ttf"/>
 	    
 	    <Button 
 	        android:id="@+id/add"
 	        android:layout_width="wrap_content"
 	        android:layout_height="wrap_content"
-	        android:background="@drawable/add_selector"/>
+	        android:background="@drawable/add_selector"
+            fontPath="fonts/lantinghei.ttf"/>
 	    
 	</LinearLayout>
 	
@@ -48,7 +53,8 @@
 	    android:layout_height="wrap_content"
 	    android:layout_centerVertical="true"
 	    android:layout_alignParentRight="true"
-	    android:background="@drawable/next"/>
+	    android:background="@drawable/next"
+            fontPath="fonts/lantinghei.ttf"/>
 	
 	<ToggleButton 
 	    android:id="@+id/toggle"
@@ -66,5 +72,6 @@
 	    android:layout_height="wrap_content"
 	    android:layout_centerVertical="true"
 	    android:layout_alignParentRight="true"
-	    android:textColor="@color/yellow"/>
+	    android:textColor="@color/yellow"
+            fontPath="fonts/lantinghei.ttf"/>
 </RelativeLayout>

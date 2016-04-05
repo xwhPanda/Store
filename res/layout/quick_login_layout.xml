@@ -1,8 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent" 
-    android:background="@drawable/kuaisudenglu">
+    android:background="@drawable/kuaisudenglu"
+    tools:ignore="MissingPrefix" >
     
 	<RelativeLayout 
 	    android:id="@+id/titleRel"
@@ -30,7 +32,8 @@
 	        android:layout_height="wrap_content"
 	        android:layout_centerInParent="true"
 	        android:textColor="@color/itemDesColor"
-	        android:text="@string/quickLogin"/>
+	        android:text="@string/quickLogin"
+            fontPath="fonts/lantinghei.ttf"/>
 	    
 	</RelativeLayout>
     
@@ -44,7 +47,8 @@
 	        android:id="@+id/qqLogin"
 	        android:layout_width="wrap_content"
 	        android:layout_height="wrap_content"
-	        android:background="@drawable/qq"/>
+	        android:background="@drawable/qq"
+            fontPath="fonts/lantinghei.ttf"/>
 	    
 	    <Button 
 	        android:id="@+id/weixinLogin"
@@ -53,7 +57,8 @@
 	        android:layout_toRightOf="@id/qqLogin"
 	        android:layout_alignTop="@id/qqLogin"
 	        android:layout_alignBottom="@id/qqLogin"
-	        android:background="@drawable/weixin"/>
+	        android:background="@drawable/weixin"
+            fontPath="fonts/lantinghei.ttf"/>
 	    
 	    <Button 
 	        android:id="@+id/sinaLogin"
@@ -62,7 +67,8 @@
 	        android:layout_toRightOf="@id/weixinLogin"
 	        android:layout_alignTop="@id/weixinLogin"
 	        android:layout_alignBottom="@id/weixinLogin"
-	        android:background="@drawable/weibo"/>
+	        android:background="@drawable/weibo"
+            fontPath="fonts/lantinghei.ttf"/>
 	</RelativeLayout>
 	
 </RelativeLayout>

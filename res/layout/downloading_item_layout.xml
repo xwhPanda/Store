@@ -1,54 +1,59 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent" >
-    
-    <CheckBox 
+    android:layout_height="match_parent"
+    tools:ignore="MissingPrefix" >
+
+    <CheckBox
         android:id="@+id/checkBox"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerVertical="true"
-        android:button="@null"
-        android:background="@drawable/checkbox_yellow_sel"/>
-    
-    <ImageView 
+        android:background="@drawable/checkbox_yellow_sel"
+        android:button="@null" />
+
+    <ImageView
         android:id="@+id/appIcon"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerVertical="true"
-        android:layout_toRightOf="@+id/checkBox"/>
-    
-    <TextView 
+        android:layout_toRightOf="@+id/checkBox" />
+
+    <TextView
         android:id="@+id/appName"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_toRightOf="@id/appIcon"
-        android:textColor="@color/white"/>
-    
-    <ProgressBar 
+        fontPath="fonts/lantinghei.ttf"
+        android:textColor="@color/white" />
+
+    <ProgressBar
         android:id="@+id/downloadPrg"
+        style="@style/mProgress_horizontal"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/appName"
         android:layout_alignLeft="@id/appName"
+        android:layout_below="@id/appName"
         android:background="@color/red"
-        android:max="100"
-        style="@style/mProgress_horizontal" />
-    
-    <TextView 
+        android:max="100" />
+
+    <TextView
         android:id="@+id/progressTx"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textColor="@color/itemDesColor"
+        android:layout_alignLeft="@id/appName"
         android:layout_below="@id/downloadPrg"
-        android:layout_alignLeft="@id/appName"/>
-    
-    <Button 
+        fontPath="fonts/lantinghei.ttf"
+        android:textColor="@color/itemDesColor" />
+
+    <Button
         android:id="@+id/pause"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_centerVertical="true"
         android:layout_alignParentRight="true"
-        android:background="@drawable/jixu"/>
+        android:layout_centerVertical="true"
+        fontPath="fonts/lantinghei.ttf"
+        android:background="@drawable/jixu" />
 
 </RelativeLayout>

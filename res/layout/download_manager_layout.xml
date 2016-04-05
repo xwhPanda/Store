@@ -1,110 +1,116 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent" 
-    android:background="@drawable/toolbg">
-    
-    <com.jiqu.view.TitleView 
+    android:layout_height="match_parent"
+    android:background="@drawable/toolbg"
+    tools:ignore="MissingPrefix" >
+
+    <com.jiqu.view.TitleView
         android:id="@+id/titleView"
-		android:layout_width="wrap_content"
-		android:layout_height="wrap_content"/>
-    
-    <LinearLayout 
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
+    <LinearLayout
         android:id="@+id/btnLin"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:layout_centerHorizontal="true">
-        
-        <Button 
+        android:layout_centerHorizontal="true"
+        android:orientation="horizontal" >
+
+        <Button
             android:id="@+id/downloading"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/downloading"
+            fontPath="fonts/lantinghei.ttf"
             android:background="@drawable/xinxi_sel"
-            android:textColor="@color/white"/>
-        
-        <Button 
+            android:text="@string/downloading"
+            android:textColor="@color/white" />
+
+        <Button
             android:id="@+id/downloaded"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/downloaded"
+            fontPath="fonts/lantinghei.ttf"
             android:background="@drawable/xinxi_nor"
-            android:textColor="@color/blue"/>
+            android:text="@string/downloaded"
+            android:textColor="@color/blue" />
     </LinearLayout>
-    
-    <RelativeLayout 
+
+    <RelativeLayout
         android:id="@+id/allStartRel"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        android:background="@color/black">
-        
-        <CheckBox 
+        android:background="@color/black" >
+
+        <CheckBox
             android:id="@+id/allStartCB"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
-            android:button="@null"
-            android:background="@drawable/checkbox_blue_sel"/>
-        
-        <Button 
+            android:background="@drawable/checkbox_blue_sel"
+            android:button="@null" />
+
+        <Button
             android:id="@+id/allStartBtn"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_centerVertical="true"
             android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            fontPath="fonts/lantinghei.ttf"
+            android:background="@color/blue"
             android:text="@string/allStart"
-            android:textColor="@color/white"
-            android:background="@color/blue"/>
+            android:textColor="@color/white" />
     </RelativeLayout>
-    
-    <RelativeLayout 
+
+    <RelativeLayout
         android:id="@+id/allDeleteRel"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:background="@color/black"
-        android:visibility="gone">
-        
-        <CheckBox 
+        android:visibility="gone" >
+
+        <CheckBox
             android:id="@+id/allDeleteCB"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
-            android:button="@null"
-            android:background="@drawable/checkbox_blue_sel"/>
-        
-        <Button 
+            android:background="@drawable/checkbox_blue_sel"
+            android:button="@null" />
+
+        <Button
             android:id="@+id/allDeleteBtn"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_centerVertical="true"
             android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            fontPath="fonts/lantinghei.ttf"
+            android:background="@color/blue"
             android:text="@string/allDelete"
-            android:textColor="@color/white"
-            android:background="@color/blue"/>
+            android:textColor="@color/white" />
     </RelativeLayout>
-    
-    <ListView 
+
+    <ListView
         android:id="@+id/downloadingList"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/btnLin"
         android:layout_above="@id/allStartRel"
+        android:layout_below="@id/btnLin"
         android:divider="@drawable/xian"
         android:dividerHeight="1dp"
-        android:scrollbars="none"/>
-    
-    <ListView 
+        android:scrollbars="none" />
+
+    <ListView
         android:id="@+id/downloadedList"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/btnLin"
         android:layout_above="@id/allStartRel"
+        android:layout_below="@id/btnLin"
         android:divider="@drawable/xian"
         android:dividerHeight="1dp"
         android:scrollbars="none"
-        android:visibility="invisible"/>
+        android:visibility="invisible" />
 
 </RelativeLayout>

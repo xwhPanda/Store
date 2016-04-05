@@ -1,40 +1,45 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
-    
-    <RelativeLayout 
+    android:layout_height="match_parent"
+    tools:ignore="MissingPrefix" >
+
+    <RelativeLayout
         android:id="@+id/parentView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-    	android:background="@drawable/tool_top_bg" >
-	    <ImageButton
-	        android:id="@+id/backBtn"
-	        android:layout_width="wrap_content"
-	        android:layout_height="wrap_content"
-	        android:layout_centerVertical="true"
-	        android:layout_marginLeft="5dp"
-	        android:background="@drawable/guanbi" />
-	
-	    <TextView
-	        android:id="@+id/tip"
-	        android:layout_width="wrap_content"
-	        android:layout_height="wrap_content"
-	        android:layout_centerInParent="true"
-	        android:ellipsize="end"
-	        android:maxLength="20"
-	        android:singleLine="true"
-	        android:textColor="@color/white" />
-    
-	    <Button 
-	        android:id="@+id/editBtn"
-	        android:layout_width="wrap_content"
-	        android:layout_height="wrap_content"
-	        android:layout_alignParentRight="true"
-	        android:layout_centerVertical="true"
-	        android:layout_marginRight="5dp"
-	        android:background="@drawable/bianji"
-	        android:visibility="gone"/>
+        android:background="@drawable/tool_top_bg" >
+
+        <ImageButton
+            android:id="@+id/backBtn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="5dp"
+            android:background="@drawable/guanbi" />
+
+        <TextView
+            android:id="@+id/tip"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            fontPath="fonts/lantinghei.ttf"
+            android:ellipsize="end"
+            android:maxLength="20"
+            android:singleLine="true"
+            android:textColor="@color/white" />
+
+        <Button
+            android:id="@+id/editBtn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="5dp"
+            fontPath="fonts/lantinghei.ttf"
+            android:background="@drawable/bianji"
+            android:visibility="gone" />
     </RelativeLayout>
 
 </RelativeLayout>
