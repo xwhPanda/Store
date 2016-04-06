@@ -1,6 +1,9 @@
 package com.jiqu.tools;
 
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.InputStreamReader;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.text.DecimalFormat;
@@ -293,12 +296,40 @@ public class ClearTool {
         return mi.availMem;
     }
     
-    @SuppressLint("NewApi")
 	public int getScore(Context context){
     	ActivityManager am = (ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE);
         MemoryInfo mi = new MemoryInfo();
         am.getMemoryInfo(mi);
+        long total = getTotalRam(context);
+        if (total == 0) {
+			return 100;
+		}else {
+			return (int) ((mi.availMem * 100) / total);
+		}
         
-        return (int) ((mi.availMem * 100) / mi.totalMem);
     }
+	
+	public static long getTotalRam(Context context) {
+
+		try {
+			File file = new File("/proc/meminfo");
+			FileInputStream fis = new FileInputStream(file);
+			BufferedReader br = new BufferedReader(new InputStreamReader(fis));
+			String totalRam = br.readLine();
+			StringBuffer sb = new StringBuffer();
+			char[] cs = totalRam.toCharArray();
+			for (char c : cs) {
+				if (c >= '0' && c <= '9') {
+					sb.append(c);
+				}
+			}
+			long result = Long.parseLong(sb.toString()) * 1024;
+			return result;
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return 0;
+		}
+
+	}
 }

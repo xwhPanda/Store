@@ -30,11 +30,6 @@ public class ToolItemView extends LinearLayout {
 		init(context);
 	}
 	
-	public ToolItemView(Context context,AttributeSet attributeSet,int style){
-		super(context, attributeSet, style);
-		init(context);
-	}
-	
 	private void init(Context context){
 		inflater = LayoutInflater.from(context);
 		//

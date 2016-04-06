@@ -4,6 +4,7 @@ import com.jiqu.activity.AppUninstallActivity;
 import com.jiqu.activity.ClearCacheActivity;
 import com.jiqu.activity.DeepClearActivity;
 import com.jiqu.activity.DownloadManagerActivity;
+import com.jiqu.activity.PowerManagerActivity;
 import com.jiqu.store.R;
 import com.jiqu.tools.MetricsTool;
 import com.jiqu.tools.UIUtil;
@@ -17,7 +18,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
-import android.webkit.WebView.FindListener;
 import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -158,6 +158,7 @@ public class ToolFragment extends Fragment implements OnClickListener{
 			break;
 
 		case R.id.powerItem:
+			startActivity(new Intent(getActivity(), PowerManagerActivity.class));
 			break;
 			
 		case R.id.commomProblemItem:

@@ -14,6 +14,7 @@ import com.jiqu.tools.LruBitmapCache;
 import com.jiqu.tools.MetricsTool;
 
 import android.app.Application;
+import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Looper;
 import android.text.TextUtils;
@@ -29,6 +30,7 @@ public class StoreApplication extends Application {
 	private ImageLoader imageLoader;
 	public static String PACKAGE_NAME;
 	public static String DATA_CACHE_PATH;
+	public static Context context;
 	
 	@Override
 	public void onCreate() {
@@ -41,6 +43,8 @@ public class StoreApplication extends Application {
 		
 		PACKAGE_NAME = getPackageName();
 		DATA_CACHE_PATH = getCacheDir().getAbsolutePath();
+		
+		context = this;
 	}
 	
 	public static synchronized StoreApplication getInstance(){

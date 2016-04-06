@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent" 
+    tools:ignore="MissingPrefix" >
+    
+    <com.jiqu.view.WaveView 
+        android:id="@+id/waveView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"/>
+    
+    <TextView 
+        android:id="@+id/batteryUse"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_below="@id/waveView"
+        android:textColor="@color/blue"
+        fontPath="fonts/lantinghei.ttf"/>
+    
+    <ImageView 
+        android:id="@+id/view1"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@drawable/divider"
+        android:layout_below="@id/batteryUse"/>
+
+    <RelativeLayout
+        android:id="@+id/saveBatteryRel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/view1">
+        
+        <TextView 
+            android:id="@+id/saveBatteryTx"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:textColor="@color/white"
+        	fontPath="fonts/lantinghei.ttf"
+        	android:text="@string/saveBattery"/>
+        
+        <ToggleButton 
+            android:id="@+id/saveBatteryTog"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"/>
+    </RelativeLayout>
+    
+    <ImageView 
+        android:id="@+id/view2"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@drawable/divider"
+        android:layout_below="@id/saveBatteryRel"/>
+    
+    <RelativeLayout
+        android:id="@+id/showPreBatteryRel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/view2">
+        <TextView 
+            android:id="@+id/showPreBatteryTx"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:textColor="@color/white"
+        	fontPath="fonts/lantinghei.ttf"
+        	android:text="@string/batteryPrec"/>
+        
+        <ToggleButton 
+            android:id="@+id/showPreBatteryTog"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"/>
+    </RelativeLayout>
+
+</RelativeLayout>

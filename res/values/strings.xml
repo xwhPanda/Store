@@ -1,4 +1,4 @@
-<resources>
+<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
 
     <string name="app_name">Store</string>
     
@@ -105,6 +105,10 @@
     <string name="auto_start">后台自启应用</string>
     <string name="speed_up">加速</string>
     
+    <string name="batteryManager">电量管理</string>
+    <string name="saveBattery">开启省电模式</string>
+    <string name="batteryPrec">电池百分比</string>
+    
     <string name="pull_to_refresh">下拉刷新</string>
     <string name="release_to_refresh">释放立即刷新</string>
     <string name="refreshing">正在刷新...</string>
@@ -128,5 +132,28 @@
     
     <string name="file_path">multidownload</string>
     <string name="image_data">imageData</string>
+    
+    <string name="refresh_normal">normal</string>
+    <string name="refresh_cpu">cpu</string>
+    <string name="power_screen">显示屏</string>
+    <string name="power_wifi">Wi-Fi</string>
+    <string name="power_bluetooth">蓝牙</string>
+    <string name="power_cell">手机信号</string>
+    <string name="power_phone">语音通话</string>
+    <string name="power_idle">手机待机</string>
+    <string name="process_kernel_label">Android OS</string>
+    <string name="process_mediaserver_label">媒体服务器</string>
+    <string name="battery_history_days"><xliff:g id="DAYS">%1$d</xliff:g> 天 <xliff:g id="HOURS">%2$d</xliff:g> 小时 <xliff:g id="MINUTES">%3$d</xliff:g> 分 <xliff:g id="SECONDS">%4$d</xliff:g> 秒</string>
+    <string name="battery_history_hours"><xliff:g id="HOURS">%1$d</xliff:g> 小时 <xliff:g id="MINUTES">%2$d</xliff:g> 分 <xliff:g id="SECONDS">%3$d</xliff:g> 秒</string>
+    <string name="battery_history_minutes"><xliff:g id="MINUTES">%1$d</xliff:g> 分 <xliff:g id="SECONDS">%2$d</xliff:g> 秒</string>
+    <string name="battery_history_seconds"><xliff:g id="SECONDS">%1$d</xliff:g> 秒</string>
+    <string name="battery_info_status_charging_ac">（交流电）</string>
+    <string name="battery_info_status_charging_usb">(USB)</string>
+    <string name="battery_info_status_discharging">正在耗电</string>
+    <string name="battery_info_status_not_charging">未在充电</string>
+    <string name="battery_info_status_full">电量充足</string>
+    <string name="battery_info_status_unknown">未知</string>
+    <string name="battery_info_status_charging">正在充电</string>
+    <string name="power_usage_level_and_status"><xliff:g id="LEVEL">%1$s</xliff:g> - <xliff:g id="STATUS">%2$s</xliff:g></string>
     
 </resources>

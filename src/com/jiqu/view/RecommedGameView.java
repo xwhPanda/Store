@@ -32,10 +32,6 @@ public class RecommedGameView extends LinearLayout {
 		init(context);
 	}
 	
-	public RecommedGameView(Context context,AttributeSet attributeSet,int style){
-		super(context,attributeSet,style);
-		init(context);
-	}
 	
 	public void init(Context context){
 		LayoutInflater inflater = LayoutInflater.from(context);
