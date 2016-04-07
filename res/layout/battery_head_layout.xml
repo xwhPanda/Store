@@ -7,8 +7,8 @@
     
     <com.jiqu.view.WaveView 
         android:id="@+id/waveView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="500dp"
+        android:layout_height="500dp"
         android:layout_centerHorizontal="true"/>
     
     <TextView 
@@ -16,15 +16,15 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
-        android:layout_below="@id/waveView"
         android:textColor="@color/blue"
+        android:layout_below="@id/waveView"
         fontPath="fonts/lantinghei.ttf"/>
     
     <ImageView 
         android:id="@+id/view1"
         android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:background="@drawable/divider"
+        android:layout_height="2dp"
+        android:background="@drawable/xian"
         android:layout_below="@id/batteryUse"/>
 
     <RelativeLayout
@@ -47,14 +47,18 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
+            android:background="@drawable/battery_toggle_selector"
+            android:checked="false"
+            android:textOn=""
+            android:textOff=""
             android:layout_centerVertical="true"/>
     </RelativeLayout>
     
     <ImageView 
         android:id="@+id/view2"
         android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:background="@drawable/divider"
+        android:layout_height="2dp"
+        android:background="@drawable/xian"
         android:layout_below="@id/saveBatteryRel"/>
     
     <RelativeLayout
@@ -76,6 +80,10 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
+            android:background="@drawable/battery_toggle_selector"
+            android:checked="true"
+            android:textOn=""
+            android:textOff=""
             android:layout_centerVertical="true"/>
     </RelativeLayout>
 

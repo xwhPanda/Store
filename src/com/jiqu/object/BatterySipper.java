@@ -40,7 +40,7 @@ public class BatterySipper implements Comparable<BatterySipper> {
 		Drawable icon;
 	}
 
-	public BatterySipper(Context context, String pkgName, double time) {
+	public BatterySipper(Context context, String pkgName, double time) throws NameNotFoundException {
 		mContext = context;
 		value = time;
 		drainType = DrainType.APP;
@@ -106,15 +106,11 @@ public class BatterySipper implements Comparable<BatterySipper> {
 		return (int) (other.getValue() - getValue());
 	}
 
-	private void getQuickNameIcon(String pkgName) {
+	private void getQuickNameIcon(String pkgName) throws NameNotFoundException{
 		PackageManager pm = mContext.getPackageManager();
-		try {
 			ApplicationInfo appInfo = pm.getApplicationInfo(pkgName, 0);
 			icon = appInfo.loadIcon(pm);// pm.getApplicationIcon(appInfo);
 			name = appInfo.loadLabel(pm).toString();// pm.getApplicationLabel(appInfo).toString();
-		} catch (NameNotFoundException e) {
-			e.printStackTrace();
-		}
 	}
 
 	private void getQuickNameIconForUid(Uid uidObj) {

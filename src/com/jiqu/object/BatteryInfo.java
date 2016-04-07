@@ -4,6 +4,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -14,9 +15,11 @@ import java.util.Map;
 import android.app.ActivityManager;
 import android.app.ActivityManager.RunningAppProcessInfo;
 import android.content.Context;
+import android.content.pm.PackageManager.NameNotFoundException;
 import android.hardware.SensorManager;
 import android.os.BatteryStats;
 import android.os.BatteryStats.Uid;
+import android.os.FileUtils;
 import android.os.Parcel;
 import android.os.Process;
 import android.os.ServiceManager;
@@ -27,6 +30,7 @@ import android.util.SparseArray;
 import com.android.internal.app.IBatteryStats;
 import com.android.internal.os.BatteryStatsImpl;
 import com.android.internal.os.PowerProfile;
+import com.jiqu.download.StringUtil;
 import com.jiqu.process.models.AndroidAppProcess;
 import com.jiqu.processes.ProcessManager;
 import com.jiqu.tools.Utils;
@@ -44,7 +48,7 @@ public class BatteryInfo {
 	private PowerProfile mPowerProfile;
 	private static BatteryStatsImpl mStats;
 
-	private double mMinPercentOfTotal = 0;
+	private double mMinPercentOfTotal = 0.1;
 	private long mStatsPeriod = 0;
 	public double mMaxPower = 1;
 	private double mTotalPower;
@@ -205,11 +209,21 @@ public class BatteryInfo {
 		for (AndroidAppProcess processInfo : processInfos) {
 			final long time = getAppProcessTime(processInfo.pid);
 			String pkg = processInfo.getPackageName();
+			if (pkg == null || pkg.equals("")) {
+				continue;
+			}
 			if (templist.containsKey(pkg)) {
 				BatterySipper sipper = templist.get(pkg);
 				sipper.setValue(sipper.getValue() + time);
 			} else {
-				templist.put(pkg, new BatterySipper(mContext, pkg, time));
+				try {
+					BatterySipper bs = new BatterySipper(mContext, pkg, time);
+					if (bs.getName() != null) {
+						templist.put(pkg, bs);
+					}
+				} catch (NameNotFoundException e) {
+					e.printStackTrace();
+				} 
 			}
 			totalTime += time;
 		}
@@ -221,10 +235,12 @@ public class BatteryInfo {
 		for (int i = list.size() - 1; i >= 0; i--) {
 			BatterySipper sipper = list.get(i);
 			double percentOfTotal = sipper.getValue() * 100 / totalTime;
+			DecimalFormat formater = new DecimalFormat("0.0");
+			String str = formater.format(percentOfTotal);
 			if (percentOfTotal < mMinPercentOfTotal) {
 				list.remove(i);
 			} else {
-				sipper.setPercent(percentOfTotal);
+				sipper.setPercent(Double.parseDouble(str));
 			}
 		}
 
@@ -262,7 +278,15 @@ public class BatteryInfo {
 					BatterySipper sipper = templist.get(info.processName);
 					sipper.setValue(sipper.getValue() + time);
 				} else {
-					templist.put(info.processName, new BatterySipper(mContext, info.processName, time));
+					
+					try {
+						BatterySipper bs = new BatterySipper(mContext, info.processName, time);
+						if (bs.getName() != null) {
+							templist.put(info.processName, bs);
+						}
+					} catch (NameNotFoundException e) {
+						e.printStackTrace();
+					} 
 				}
 				totalTime += time;
 			} else {
@@ -271,7 +295,14 @@ public class BatteryInfo {
 						BatterySipper sipper = templist.get(pkgName);
 						sipper.setValue(sipper.getValue() + time);
 					} else {
-						templist.put(pkgName, new BatterySipper(mContext, pkgName, time));
+						try {
+							BatterySipper bs = new BatterySipper(mContext, info.processName, time);
+							if (bs.getName() != null) {
+								templist.put(info.processName, bs);
+							}
+						} catch (NameNotFoundException e) {
+							e.printStackTrace();
+						} 
 					}
 					totalTime += time;
 				}

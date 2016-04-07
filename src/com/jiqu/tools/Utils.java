@@ -89,10 +89,10 @@ public class Utils {
 		}
 	}
 
-	public static String getBatteryPercentage(Intent batteryChangedIntent) {
+	public static int getBatteryPercentage(Intent batteryChangedIntent) {
 		int level = batteryChangedIntent.getIntExtra("level", 0);
 		int scale = batteryChangedIntent.getIntExtra("scale", 100);
-		return String.valueOf(level * 100 / scale) + "%";
+		return level * 100 / scale;
 	}
 
 	public static String getBatteryStatus(Resources res, Intent batteryChangedIntent) {

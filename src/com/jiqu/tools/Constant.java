@@ -12,4 +12,10 @@ public class Constant {
 	public static final int MAX_DOWANLOAD_THREAD_NUMBER = 5;
 	/** 设置界面自更改同时下载数的KEY **/
 	public static final String DOWNLOAD_THREAD_COUNTS = "downloadThreadCounts";
+	/**	电量管理prefrences **/
+	public static final String BATTERY_SHARE_PREFERENCE_NAME = "battery";
+	/** 显示百分比 **/
+	public static final String DISPLAY_BATTERY_PERCENT = "displayBattery";
+	/** 省电模式 **/
+	public static final String POWER_SAVING_MODE = "powerSaving";
 }
