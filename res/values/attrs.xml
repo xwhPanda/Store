@@ -21,5 +21,11 @@
         <attr name="rating" format="float" />
     </declare-styleable>
     
+    <declare-styleable name="ShareAttr">
+        <attr name="imgBg" format="reference"/>
+        <attr name="titleText" format="reference"/>
+        <attr name="shareBg" format="reference"/>
+    </declare-styleable>
+    
     <attr name="fontPath" format="string"/>
 </resources>

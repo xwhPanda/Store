@@ -1,10 +1,14 @@
 package com.jiqu.fragment;
 
+import com.jiqu.activity.AboutUsActivity;
 import com.jiqu.activity.AppUninstallActivity;
 import com.jiqu.activity.ClearCacheActivity;
+import com.jiqu.activity.CommomProblemActivity;
 import com.jiqu.activity.DeepClearActivity;
 import com.jiqu.activity.DownloadManagerActivity;
 import com.jiqu.activity.PowerManagerActivity;
+import com.jiqu.activity.ResourceManagementActivity;
+import com.jiqu.activity.ShareActivity;
 import com.jiqu.store.R;
 import com.jiqu.tools.MetricsTool;
 import com.jiqu.tools.UIUtil;
@@ -143,6 +147,7 @@ public class ToolFragment extends Fragment implements OnClickListener{
 			break;
 
 		case R.id.resourcesItem:
+			startActivity(new Intent(getActivity(), ResourceManagementActivity.class));
 			break;
 			
 		case R.id.uninstallItem:
@@ -162,13 +167,15 @@ public class ToolFragment extends Fragment implements OnClickListener{
 			break;
 			
 		case R.id.commomProblemItem:
-			
+			startActivity(new Intent(getActivity(), CommomProblemActivity.class));
 			break;
 
 		case R.id.shareItem:
+			startActivity(new Intent(getActivity(), ShareActivity.class));
 			break;
 			
 		case R.id.aboutUsItem:
+			startActivity(new Intent(getActivity(), AboutUsActivity.class));
 			break;
 		}
 	}

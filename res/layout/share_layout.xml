@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:share="http://schemas.android.com/apk/res/com.jiqu.store"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent" 
+    android:background="@drawable/toolbg">
+    
+    <com.jiqu.view.TitleView 
+        android:id="@+id/titleView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+    
+    <com.jiqu.view.FriendShareItem
+        android:id="@+id/contacts"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        share:imgBg="@drawable/tongxinlu_share"
+        share:titleText="@string/contacts"
+        android:clickable="true"
+        share:shareBg="@drawable/commom_problem_info_btn"/>
+    
+    <ImageView 
+        android:id="@+id/view1"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@drawable/xian"
+        android:layout_below="@id/contacts"/>
+    
+    <com.jiqu.view.FriendShareItem
+        android:id="@+id/qq"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        share:imgBg="@drawable/qq_share"
+        share:titleText="@string/qqShare"
+        android:clickable="true"
+        share:shareBg="@drawable/commom_problem_info_btn"
+        android:layout_below="@id/view1"/>
+    
+    <ImageView 
+        android:id="@+id/view2"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@drawable/xian"
+        android:layout_below="@id/qq"/>
+    
+    <com.jiqu.view.FriendShareItem
+        android:id="@+id/weixin"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        share:imgBg="@drawable/weixin_share"
+        share:titleText="@string/weixinShare"
+        android:clickable="true"
+        share:shareBg="@drawable/commom_problem_info_btn"
+        android:layout_below="@id/view2"/>
+    
+    <ImageView 
+        android:id="@+id/view3"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@drawable/xian"
+        android:layout_below="@id/weixin"/>
+    
+    <com.jiqu.view.FriendShareItem
+        android:id="@+id/weibo"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        share:imgBg="@drawable/weibo_share"
+        share:titleText="@string/weiboShare"
+        android:clickable="true"
+        share:shareBg="@drawable/commom_problem_info_btn"
+        android:layout_below="@id/view3"/>
+
+    <com.jiqu.view.PullToRefreshLayout 
+        android:id="@+id/refreshView" 
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/weibo">
+        
+        <include layout="@layout/refresh_head"/>
+        
+        <com.jiqu.view.PullableListView 
+            android:id="@+id/friendListView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:dividerHeight="1dp"
+            android:divider="@drawable/divider"
+            android:scrollbars="none"/>
+        
+        <include layout="@layout/load_more"/>
+    </com.jiqu.view.PullToRefreshLayout>
+</RelativeLayout>

@@ -75,6 +75,18 @@
         
         <activity android:name="com.jiqu.activity.PowerManagerActivity"
             android:screenOrientation="portrait"></activity>
+        
+        <activity android:name="com.jiqu.activity.CommomProblemActivity"
+            android:screenOrientation="portrait"></activity>
+        
+        <activity android:name="com.jiqu.activity.AboutUsActivity"
+            android:screenOrientation="portrait"></activity>
+        
+        <activity android:name="com.jiqu.activity.ResourceManagementActivity"
+            android:screenOrientation="portrait"></activity>
+        
+        <activity android:name="com.jiqu.activity.ShareActivity"
+            android:screenOrientation="portrait"></activity>
     </application>
 
 </manifest>

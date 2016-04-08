@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:ignore="MissingPrefix" 
+    android:background="@drawable/toolbg">
+
+    <com.jiqu.view.TitleView
+        android:id="@+id/titleView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
+    <RelativeLayout
+        android:id="@+id/appInfoRel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true" >
+
+        <ImageView
+            android:id="@+id/companyLogo"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true" 
+            android:background="@drawable/yonghuicon"/>
+
+        <LinearLayout
+            android:id="@+id/appInfoLin"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_toRightOf="@id/companyLogo"
+            android:orientation="vertical" >
+
+            <TextView
+                android:id="@+id/appName"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                fontPath="fonts/lantinghei.ttf"
+                android:text="@string/appName"
+                android:textColor="@color/blue" />
+
+            <TextView
+                android:id="@+id/copyrightInfo"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                fontPath="fonts/lantinghei.ttf"
+                android:text="@string/copyrightInfo"
+                android:textColor="@color/itemDesColor" />
+
+            <TextView
+                android:id="@+id/releaseDate"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                fontPath="fonts/lantinghei.ttf"
+                android:text="@string/releaseDate"
+                android:textColor="@color/itemDesColor" />
+        </LinearLayout>
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/websiteRel"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/appInfoRel" 
+        android:background="@drawable/ziliao">
+
+        <TextView
+            android:id="@+id/websiteTx"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            fontPath="fonts/lantinghei.ttf"
+            android:textColor="@color/white" 
+            android:text="@string/officialWebsite"/>
+
+        <TextView
+            android:id="@+id/website"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            fontPath="fonts/lantinghei.ttf"
+            android:textColor="@color/white" />
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/weiboRel"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/websiteRel"  
+        android:background="@drawable/ziliao">
+
+        <TextView
+            android:id="@+id/weiboTx"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            fontPath="fonts/lantinghei.ttf"
+            android:textColor="@color/white" 
+            android:text="@string/officialWeibo"/>
+
+        <TextView
+            android:id="@+id/weibo"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            fontPath="fonts/lantinghei.ttf"
+            android:textColor="@color/white" />
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/noPublicRel"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/weiboRel"  
+        android:background="@drawable/ziliao">
+
+        <TextView
+            android:id="@+id/noPublicTx"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            fontPath="fonts/lantinghei.ttf"
+            android:textColor="@color/white" 
+            android:text="@string/noPublic"/>
+
+        <TextView
+            android:id="@+id/noPublic"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            fontPath="fonts/lantinghei.ttf"
+            android:textColor="@color/white" />
+    </RelativeLayout>
+
+</RelativeLayout>

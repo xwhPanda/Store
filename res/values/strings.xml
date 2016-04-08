@@ -109,6 +109,26 @@
     <string name="saveBattery">开启省电模式</string>
     <string name="batteryPrec">电池百分比</string>
     
+    <string name="commomProblem">常见问题</string>
+    <string name="support">帮助</string>
+    <string name="feedback">用户反馈</string>
+    
+    <string name="aboutUs">关于我们</string>
+    <string name="appName">都玩VR助手</string>
+    <string name="copyrightInfo">版权信息：</string>
+    <string name="releaseDate">发布日期：</string>
+    <string name="officialWebsite">官方网址：</string>
+    <string name="officialWeibo">官方微博：</string>
+    <string name="noPublic">公众号</string>
+    
+    <string name="resourceManagement">资源管理</string>
+    
+    <string name="friendShare">好友分享</string>
+    <string name="contacts">通信录分享</string>
+    <string name="qqShare">QQ分享</string>
+    <string name="weixinShare">微信分享</string>
+    <string name="weiboShare">微博分享</string>
+    
     <string name="pull_to_refresh">下拉刷新</string>
     <string name="release_to_refresh">释放立即刷新</string>
     <string name="refreshing">正在刷新...</string>

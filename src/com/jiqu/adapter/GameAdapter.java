@@ -125,6 +125,7 @@ public class GameAdapter extends BaseAdapter implements DownloadObserver{
 		case 1:
 			if (convertView == null) {
 				holder2 = new Holder2(context);
+				convertView = holder2.getRootView();
 			}else {
 				holder2 = (Holder2) convertView.getTag();
 			}
