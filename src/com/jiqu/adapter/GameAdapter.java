@@ -19,6 +19,7 @@ import com.jiqu.download.FileUtil;
 import com.jiqu.store.R;
 import com.jiqu.tools.MetricsTool;
 import com.jiqu.tools.UIUtil;
+import com.jiqu.view.RatingBarView;
 
 import android.content.Context;
 import android.content.Intent;
@@ -48,12 +49,21 @@ public class GameAdapter extends BaseAdapter implements DownloadObserver{
 	
 	private List<Holder2> mDisplayedHolders;
 	private Context context;
+	private int[] resIds = new int[3];
 	
 	public GameAdapter(Context context,List<AppInfo> informations){
 		this.informations = informations;
 		inflater = LayoutInflater.from(context);
 		mDisplayedHolders = new ArrayList<GameAdapter.Holder2>();
 		this.context = context;
+		
+		initIds();
+	}
+	
+	private void initIds(){
+		resIds[0] = R.drawable.ratingbg;
+		resIds[1] = R.drawable.rating_sencond_progress;
+		resIds[2] = R.drawable.rating_progress;
 	}
 
 	@Override
@@ -172,7 +182,7 @@ public class GameAdapter extends BaseAdapter implements DownloadObserver{
 		private ImageView icon;
 		private TextView gameName;
 		private TextView gameDes;
-		private RatingBar gameScore;
+		private RatingBarView gameScore;
 		private TextView gameSize;
 		private Button downloadBtn;
 		private TextView subscriptTx;
@@ -206,11 +216,13 @@ public class GameAdapter extends BaseAdapter implements DownloadObserver{
 			icon = (ImageView) view.findViewById(R.id.icon);
 			gameName = (TextView) view.findViewById(R.id.gameName);
 			gameDes = (TextView) view.findViewById(R.id.gameDes);
-			gameScore = (RatingBar) view.findViewById(R.id.gameScore);
+			gameScore = (RatingBarView) view.findViewById(R.id.gameScore);
 			gameSize = (TextView) view.findViewById(R.id.gameSize);
 			downloadBtn = (Button) view.findViewById(R.id.downloadBtn);
 			subscriptTx = (TextView) view.findViewById(R.id.subscriptTx);
 			hotIcon = (ImageView) view.findViewById(R.id.hotIcon);
+			
+			gameScore.setResID(resIds);
 			
 			gameDes.setText("哈佛哈减肥哈弗哈佛哈佛哈克繁华过后");
 			
@@ -252,7 +264,7 @@ public class GameAdapter extends BaseAdapter implements DownloadObserver{
 			
 			try {
 				UIUtil.setViewSizeMargin(icon, 35 * MetricsTool.Rx, 30 * MetricsTool.Ry, 35 * MetricsTool.Rx, 30 * MetricsTool.Ry);
-				UIUtil.setViewSizeMargin(downloadBtn, 30, 0, 35 * MetricsTool.Rx, 0);
+				UIUtil.setViewSizeMargin(downloadBtn,0, 0, 35 * MetricsTool.Rx, 0);
 			} catch (Exception e) {
 				e.printStackTrace();
 			}

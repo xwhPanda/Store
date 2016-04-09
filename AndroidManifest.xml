@@ -87,6 +87,15 @@
         
         <activity android:name="com.jiqu.activity.ShareActivity"
             android:screenOrientation="portrait"></activity>
+        
+        <activity android:name="com.jiqu.activity.SortInfoActivity"
+            android:screenOrientation="portrait"></activity>
+        
+        <activity android:name="com.jiqu.activity.SortActivity"
+            android:screenOrientation="portrait"></activity>
+        
+        <activity android:name="com.jiqu.activity.RankingActivity"
+            android:screenOrientation="portrait"></activity>
     </application>
 
 </manifest>

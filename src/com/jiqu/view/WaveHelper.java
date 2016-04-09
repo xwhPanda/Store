@@ -42,11 +42,11 @@ public class WaveHelper {
 
         // vertical animation.
         // water level increases from 0 to center of WaveView
-        ObjectAnimator waterLevelAnim = ObjectAnimator.ofFloat(
-                mWaveView, "waterLevelRatio", 0f, 0.5f);
-        waterLevelAnim.setDuration(10000);
-        waterLevelAnim.setInterpolator(new DecelerateInterpolator());
-        animators.add(waterLevelAnim);
+//        ObjectAnimator waterLevelAnim = ObjectAnimator.ofFloat(
+//                mWaveView, "waterLevelRatio", 0f, 0.5f);
+//        waterLevelAnim.setDuration(10000);
+//        waterLevelAnim.setInterpolator(new DecelerateInterpolator());
+//        animators.add(waterLevelAnim);
 
         // amplitude animation.
         // wave grows big then grows small, repeatedly

@@ -127,7 +127,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             fontPath="fonts/lantinghei.ttf"
-            android:text="排行"
+            android:text="分类"
             android:textColor="@drawable/recommend_category_text_selector"
             android:textSize="12sp" />
     </LinearLayout>

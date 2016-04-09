@@ -12,6 +12,8 @@ import com.android.volley.Response.ErrorListener;
 import com.android.volley.Response.Listener;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
+import com.jiqu.activity.RankingActivity;
+import com.jiqu.activity.SortActivity;
 import com.jiqu.adapter.GameAdapter;
 import com.jiqu.application.StoreApplication;
 import com.jiqu.download.AppInfo;
@@ -25,6 +27,7 @@ import com.jiqu.view.PullToRefreshLayout.OnRefreshListener;
 import com.jiqu.view.RecommedGameView;
 import com.jiqu.view.RecommendGameItemView;
 
+import android.content.Intent;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
@@ -40,6 +43,7 @@ import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.HorizontalScrollView;
 import android.widget.ImageView;
@@ -49,7 +53,7 @@ import android.widget.LinearLayout.LayoutParams;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
 
-public class RecommendFragment extends Fragment implements OnPageChangeListener,OnRefreshListener,Listener<String>,ErrorListener{
+public class RecommendFragment extends Fragment implements OnPageChangeListener,OnRefreshListener,Listener<String>,ErrorListener,OnClickListener{
 	private float Rx,Ry;
 	private View view;
 	private View headView;
@@ -204,6 +208,11 @@ public class RecommendFragment extends Fragment implements OnPageChangeListener,
 		rankingLin = (LinearLayout) headView.findViewById(R.id.rankingLin);
 		sortLin = (LinearLayout) headView.findViewById(R.id.sortLin);
 		
+		boutiqueLin.setOnClickListener(this);
+		thematicLin.setOnClickListener(this);
+		rankingLin.setOnClickListener(this);
+		sortLin.setOnClickListener(this);
+		
 		boutiqueImg = (ImageView) headView.findViewById(R.id.boutiqueImg);
 		thematicImg = (ImageView) headView.findViewById(R.id.thematicImg);
 		rankingImg = (ImageView) headView.findViewById(R.id.rankingImg);
@@ -284,6 +293,27 @@ public class RecommendFragment extends Fragment implements OnPageChangeListener,
 			adapter.notifyDataSetChanged();
 		} catch (JSONException e) {
 			e.printStackTrace();
+		}
+	}
+
+	@Override
+	public void onClick(View v) {
+		// TODO Auto-generated method stub
+		switch (v.getId()) {
+		case R.id.boutiqueLin:
+			
+			break;
+
+		case R.id.thematicLin:
+			break;
+			
+		case R.id.rankingLin:
+			startActivity(new Intent(getActivity(), RankingActivity.class));
+			break;
+			
+		case R.id.sortLin:
+			startActivity(new Intent(getActivity(), SortActivity.class));
+			break;
 		}
 	}
 }

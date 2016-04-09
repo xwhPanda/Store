@@ -8,15 +8,15 @@
 
     <ImageView
         android:id="@+id/icon"
-        android:layout_width="@dimen/listViewGameIconSize"
-        android:layout_height="@dimen/listViewGameIconSize"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_centerVertical="true" />
 
     <RelativeLayout
         android:id="@+id/informationLin"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignTop="@id/icon"
+        android:layout_centerVertical="true"
         android:layout_toRightOf="@id/icon" >
 
         <RelativeLayout
@@ -59,7 +59,7 @@
             android:layout_height="wrap_content"
             android:layout_below="@id/gameDes" >
 
-            <RatingBar
+            <com.jiqu.view.RatingBarView
                 android:id="@+id/gameScore"
                 style="@style/RatingStyle"
                 android:layout_width="wrap_content"

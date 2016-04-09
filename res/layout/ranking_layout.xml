@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/bottomBgColor"
+    tools:ignore="MissingPrefix" >
+
+    <com.jiqu.view.TitleView
+        android:id="@+id/titleView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
+    <LinearLayout
+        android:id="@+id/rankLin"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/titleView"
+        android:layout_centerHorizontal="true"
+        android:orientation="horizontal" >
+
+        <Button
+            android:id="@+id/favorableComment"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="0dp"
+            fontPath="fonts/lantinghei.ttf"
+            android:textColor="@color/white" 
+            android:text="@string/favorableComment"
+            android:background="@color/blue"/>
+
+        <Button
+            android:id="@+id/hot"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="0dp"
+            fontPath="fonts/lantinghei.ttf"
+            android:textColor="@color/white" 
+            android:text="@string/hot"
+            android:background="@color/itemDesColor"/>
+    </LinearLayout>
+
+    <com.jiqu.view.PullToRefreshLayout
+        android:id="@+id/favorableRefreshView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" 
+        android:layout_below="@id/rankLin">
+
+        <include layout="@layout/refresh_head" />
+        <!-- 支持所有实现Pullable接口的View -->
+
+        <com.jiqu.view.PullableListView
+	        android:id="@+id/favorableListView"
+	        android:layout_width="match_parent"
+	        android:layout_height="match_parent"
+	        android:background="@color/bottomBgColor"
+	        android:dividerHeight="1dp" 
+	        android:divider="@drawable/divider"
+	        android:listSelector="@null"
+	        android:scrollbars="none"/>
+
+        <include layout="@layout/load_more" />
+    </com.jiqu.view.PullToRefreshLayout>
+    
+    <com.jiqu.view.PullToRefreshLayout
+        android:id="@+id/hotRefreshView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" 
+        android:layout_below="@id/rankLin"
+        android:visibility="invisible">
+
+        <include layout="@layout/refresh_head" />
+        <!-- 支持所有实现Pullable接口的View -->
+
+        <com.jiqu.view.PullableListView
+	        android:id="@+id/hotListView"
+	        android:layout_width="match_parent"
+	        android:layout_height="match_parent"
+	        android:background="@color/bottomBgColor"
+	        android:dividerHeight="1dp" 
+	        android:divider="@drawable/divider"
+	        android:listSelector="@null"
+	        android:scrollbars="none"/>
+
+        <include layout="@layout/load_more" />
+    </com.jiqu.view.PullToRefreshLayout>
+
+</RelativeLayout>

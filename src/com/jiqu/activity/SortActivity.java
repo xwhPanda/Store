@@ -1,38 +1,37 @@
 package com.jiqu.activity;
 
-import android.os.Bundle;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.widget.ImageView;
-import android.widget.ListView;
-import android.widget.TextView;
+import java.util.ArrayList;
+import java.util.List;
 
-import com.jiqu.adapter.RecommendGameAdapter;
+import android.content.Intent;
+import android.os.Bundle;
+import android.view.View;
+import android.view.View.OnClickListener;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
+import android.widget.GridView;
+
+import com.jiqu.adapter.SortAdapter;
+import com.jiqu.object.SortItem;
 import com.jiqu.store.BaseActivity;
 import com.jiqu.store.R;
-import com.jiqu.view.PullToRefreshLayout;
-import com.jiqu.view.PullToRefreshLayout.OnRefreshListener;
-import com.jiqu.view.SortTitleView;
+import com.jiqu.tools.MetricsTool;
+import com.jiqu.view.TitleView;
 
-public class SortActivity extends BaseActivity implements OnRefreshListener{
-	private View headView;
-	private SortTitleView sortTitle;
-	private ListView sortListView;
-	private PullToRefreshLayout refreshLayout;
-	private RecommendGameAdapter adapter;
+public class SortActivity extends BaseActivity {
+	private TitleView titleView;
+	private GridView sortGridView;
 	
-	private ImageView sortHeadNewAddGameImg;
-	private TextView sortHeadNewAddGameContent;
-	//分类的类型
-	private int type = 0;
-	
+	private SortAdapter adapter;
+	private List<SortItem> sortItems = new ArrayList<SortItem>();
+
 	@Override
-		protected void onCreate(Bundle savedInstanceState) {
-			// TODO Auto-generated method stub
-			super.onCreate(savedInstanceState);
-			
-			init();
-		}
+	protected void onCreate(Bundle savedInstanceState) {
+		// TODO Auto-generated method stub
+		super.onCreate(savedInstanceState);
+		
+		initView();
+	}
 
 	@Override
 	public int getContentView() {
@@ -40,31 +39,45 @@ public class SortActivity extends BaseActivity implements OnRefreshListener{
 		return R.layout.sort_layout;
 	}
 	
-	private void init(){
-		sortTitle = (SortTitleView) findViewById(R.id.sortTitle);
-		sortTitle.setActivity(this);
-		sortListView = (ListView) findViewById(R.id.sortListView);
-		refreshLayout = (PullToRefreshLayout) findViewById(R.id.refreshLayout);
-		refreshLayout.setOnRefreshListener(this);
+	private void initView(){
+		titleView = (TitleView) findViewById(R.id.titleView);
+		sortGridView = (GridView) findViewById(R.id.sortGridView);
 		
-		//根据分类的不同加载不同的头部
-		LayoutInflater inflater = LayoutInflater.from(this);
-		headView = inflater.inflate(R.layout.sort_head_new_add_game, null);
-		sortHeadNewAddGameImg = (ImageView) headView.findViewById(R.id.sortHeadNewAddGameImg);
-		sortHeadNewAddGameContent = (TextView) headView.findViewById(R.id.sortHeadNewAddGameContent);
-		sortListView.addView(headView);
-	}
+		titleView.parentView.setBackgroundColor(getResources().getColor(R.color.bottomBgColor));
+		titleView.setActivity(this);
+		titleView.tip.setText(getResources().getString(R.string.sort));
+		titleView.back.setBackgroundResource(R.drawable.fanhui);
+		titleView.editBtn.setBackgroundResource(R.drawable.fenxiang_white);
+		titleView.editBtn.setVisibility(View.VISIBLE);
+		
+		sortGridView.setVerticalSpacing((int)(75 * MetricsTool.Rx));
+		
+		titleView.editBtn.setOnClickListener(new OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				
+			}
+		});
+		
+		for(int i = 0 ; i < 9 ; i++){
+			SortItem sortItem = new SortItem();
+			sortItem.setTitle("射击游戏");
+			sortItem.setNewAddCount(2);
+			sortItem.setTotal(23);
+			sortItems.add(sortItem);
+		}
+		adapter = new SortAdapter(this, sortItems);
+		sortGridView.setAdapter(adapter);
+		
+		
+		sortGridView.setOnItemClickListener(new OnItemClickListener() {
 
-	@Override
-	public void onRefresh(PullToRefreshLayout pullToRefreshLayout) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void onLoadMore(PullToRefreshLayout pullToRefreshLayout) {
-		// TODO Auto-generated method stub
-		
+			@Override
+			public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+				startActivity(new Intent(SortActivity.this, SortInfoActivity.class));
+			}
+		});
 	}
 
 }

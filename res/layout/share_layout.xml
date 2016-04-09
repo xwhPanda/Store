@@ -70,11 +70,35 @@
         share:shareBg="@drawable/commom_problem_info_btn"
         android:layout_below="@id/view3"/>
 
+    <ImageView 
+        android:id="@+id/view4"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@drawable/xian"
+        android:layout_below="@id/weibo"/>
+    
+    <TextView 
+        android:id="@+id/inviteTip"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textColor="@color/itemDesColor"
+        android:layout_below="@id/view4"
+        android:gravity="center_vertical"
+        android:text="@string/inviteTip"
+        android:background="@drawable/ziliao"/>
+    
+    <ImageView 
+        android:id="@+id/view5"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@drawable/xian"
+        android:layout_below="@id/inviteTip"/>
+    
     <com.jiqu.view.PullToRefreshLayout 
         android:id="@+id/refreshView" 
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/weibo">
+        android:layout_below="@id/view5">
         
         <include layout="@layout/refresh_head"/>
         

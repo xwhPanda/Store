@@ -17,7 +17,7 @@ import android.widget.TextView;
 
 public class TitleView extends RelativeLayout implements OnClickListener{
 	private View view;
-	private RelativeLayout parentView;
+	public RelativeLayout parentView;
 	public ImageButton back;
 	public Button editBtn;
 	public TextView tip;
@@ -63,6 +63,9 @@ public class TitleView extends RelativeLayout implements OnClickListener{
 		UIUtil.setViewSize(editBtn, 64 * MetricsTool.Rx, 64 * MetricsTool.Rx);
 		UIUtil.setTextSize(tip, 45);
 		UIUtil.setViewSize(parentView, MetricsTool.width, 165 * MetricsTool.Ry);
+		
+		LayoutParams lp = new LayoutParams(LayoutParams.MATCH_PARENT, (int) (165 * MetricsTool.Ry));
+		view.setLayoutParams(lp);
 	}
 
 	@Override
