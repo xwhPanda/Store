@@ -96,6 +96,12 @@
         
         <activity android:name="com.jiqu.activity.RankingActivity"
             android:screenOrientation="portrait"></activity>
+        
+        <activity android:name="com.jiqu.activity.BoutiqueActivity"
+            android:screenOrientation="portrait"></activity>
+        
+        <activity android:name="com.jiqu.activity.ThematicActivity"
+            android:screenOrientation="portrait"></activity>
     </application>
 
 </manifest>

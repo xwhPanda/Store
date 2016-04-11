@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent" >
+
+    <com.jiqu.view.TitleView
+        android:id="@+id/titleView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
+    <com.jiqu.view.PullToRefreshLayout
+        android:id="@+id/refreshView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/titleView" >
+
+        <include layout="@layout/refresh_head" />
+
+        <com.jiqu.view.HeaderGridView
+            android:id="@+id/thematicGridView"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:gravity="center_horizontal"
+            android:listSelector="@color/transparent"
+            android:numColumns="2"
+            android:scrollbars="none" />
+
+        <include layout="@layout/load_more" />
+    </com.jiqu.view.PullToRefreshLayout>
+
+</RelativeLayout>

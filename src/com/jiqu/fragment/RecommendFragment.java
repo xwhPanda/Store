@@ -12,8 +12,10 @@ import com.android.volley.Response.ErrorListener;
 import com.android.volley.Response.Listener;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
+import com.jiqu.activity.BoutiqueActivity;
 import com.jiqu.activity.RankingActivity;
 import com.jiqu.activity.SortActivity;
+import com.jiqu.activity.ThematicActivity;
 import com.jiqu.adapter.GameAdapter;
 import com.jiqu.application.StoreApplication;
 import com.jiqu.download.AppInfo;
@@ -301,10 +303,11 @@ public class RecommendFragment extends Fragment implements OnPageChangeListener,
 		// TODO Auto-generated method stub
 		switch (v.getId()) {
 		case R.id.boutiqueLin:
-			
+			startActivity(new Intent(getActivity(), BoutiqueActivity.class));
 			break;
 
 		case R.id.thematicLin:
+			startActivity(new Intent(getActivity(), ThematicActivity.class));
 			break;
 			
 		case R.id.rankingLin:

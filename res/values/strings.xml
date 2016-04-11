@@ -134,6 +134,10 @@
     <string name="rank">排行</string>
     <string name="favorableComment">好评榜</string>
     <string name="hot">最热榜</string>
+    <string name="boutiqueTitle">都玩VR助手精选游戏</string>
+    <string name="thematic">专题</string>
+    <string name="leftBrackets">(</string>
+    <string name="rightBrackets">)</string>
     
     <string name="pull_to_refresh">下拉刷新</string>
     <string name="release_to_refresh">释放立即刷新</string>

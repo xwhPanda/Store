@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent" 
+    tools:ignore="MissingPrefix" >
+    
+    <RelativeLayout
+        android:id="@+id/pagerRel"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true">
+        
+        <android.support.v4.view.ViewPager
+            android:id="@+id/viewPager"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"/>
+        
+        <LinearLayout
+            android:id="@+id/viewGroup"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_alignParentBottom="true"
+            android:orientation="horizontal">
+            
+        </LinearLayout>
+            
+    </RelativeLayout>
+    
+    <RelativeLayout 
+        android:id="@+id/allGameRel"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/pagerRel"
+        android:layout_centerHorizontal="true"
+        android:background="@color/blue">
+        
+        <ImageView 
+            android:id="@+id/totalGameImg"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:background="@drawable/zuire_icon"/>
+        
+        <TextView 
+            android:id="@+id/totalGameTx"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/white"
+            android:layout_toRightOf="@id/totalGameImg"
+            android:layout_centerVertical="true"
+            fontPath="fonts/lantinghei.ttf"
+            android:text="速度放缓是了范围"/>
+        
+        <TextView 
+            android:id="@+id/addedTiem"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_alignParentRight="true"
+            android:textColor="@color/white"
+            fontPath="fonts/lantinghei.ttf"
+            android:text="上架时间：2016-4-11"/>
+        
+    </RelativeLayout>
+
+</RelativeLayout>

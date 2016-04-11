@@ -84,7 +84,6 @@ public class StoreApplication extends Application {
 	}
 	
 	public <T> void addToRequestQueue(Request<T> req, String tag) {
-        // ���tagΪ�յĻ���������Ĭ��TAG
         req.setTag(TextUtils.isEmpty(tag) ? TAG : tag);
 
         getRequestQueue().add(req);
@@ -95,7 +94,6 @@ public class StoreApplication extends Application {
         getRequestQueue().add(req);
     }
 
-    // ͨ����Request�����Tag����ȡ������
     public void cancelPendingRequests(Object tag) {
         if (requestQueue != null) {
             requestQueue.cancelAll(tag);
