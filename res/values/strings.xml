@@ -65,11 +65,11 @@
     <string name="messageCenter">消息中心</string>
     <string name="gameEvaluation">游戏测评</string>
     
-    <string name="screenSense">画面感 ：</string>
-    <string name="immersion">沉浸感 ：</string>
-    <string name="gameplay">游戏性 ：</string>
-    <string name="difficultyNumber">难度数 ：</string>
-    <string name="vertigo">眩晕感 ：</string>
+    <string name="screenSense">画面感  : </string>
+    <string name="immersion">沉浸感  : </string>
+    <string name="gameplay">游戏性  : </string>
+    <string name="difficultyNumber">难度数  : </string>
+    <string name="vertigo">眩晕感  :</string>
     <string name="comprehensive">综合评定</string>
     <string name="evaluationDetailed">详细测评</string>
     <string name="downloadNow">立刻下载</string>
@@ -138,6 +138,14 @@
     <string name="thematic">专题</string>
     <string name="leftBrackets">(</string>
     <string name="rightBrackets">)</string>
+    <string name="newHeadlines">最新头条</string>
+    
+    <string name="headControl">头控</string>
+    <string name="handle">手柄</string>
+    <string name="low">L</string>
+    <string name="hight">H</string>
+    <string name="gameIntroductionTitle">游戏介绍</string>
+    <string name="download">下载</string>
     
     <string name="pull_to_refresh">下拉刷新</string>
     <string name="release_to_refresh">释放立即刷新</string>

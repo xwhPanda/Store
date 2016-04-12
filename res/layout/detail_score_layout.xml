@@ -1,0 +1,183 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    tools:ignore="MissingPrefix" >
+
+    <ImageView
+        android:id="@+id/view1"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@drawable/xian" />
+
+    <LinearLayout
+        android:id="@+id/scoreLin"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/view1"
+        android:orientation="horizontal" >
+
+        <RelativeLayout
+            android:id="@+id/coefficientRel"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_gravity="center"
+            android:layout_weight="1"
+            android:gravity="center" >
+
+            <RelativeLayout
+                android:id="@+id/screenSenseRel"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true" >
+
+                <TextView
+                    android:id="@+id/screenSense"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    fontPath="fonts/lantinghei.ttf"
+                    android:singleLine="true"
+                    android:text="@string/screenSense"
+                    android:textColor="@color/white" />
+
+                <com.jiqu.view.RatingBarView
+                    android:id="@+id/screenSenseBar"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_marginRight="3dp"
+                    android:layout_toRightOf="@id/screenSense" />
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:id="@+id/immersionRel"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/screenSenseRel"
+                android:layout_centerHorizontal="true" >
+
+                <TextView
+                    android:id="@+id/immersion"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    fontPath="fonts/lantinghei.ttf"
+                    android:singleLine="true"
+                    android:text="@string/immersion"
+                    android:textColor="@color/white" />
+
+                <com.jiqu.view.RatingBarView
+                    android:id="@+id/immersionBar"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_marginRight="3dp"
+                    android:layout_toRightOf="@id/immersion" />
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:id="@+id/gameplayRel"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/immersionRel"
+                android:layout_centerHorizontal="true" >
+
+                <TextView
+                    android:id="@+id/gameplay"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    fontPath="fonts/lantinghei.ttf"
+                    android:singleLine="true"
+                    android:text="@string/gameplay"
+                    android:textColor="@color/white" />
+
+                <com.jiqu.view.RatingBarView
+                    android:id="@+id/gameplayBar"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_marginRight="3dp"
+                    android:layout_toRightOf="@id/gameplay" />
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:id="@+id/difficultyNumberRel"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/gameplayRel"
+                android:layout_centerHorizontal="true" >
+
+                <TextView
+                    android:id="@+id/difficultyNumber"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    fontPath="fonts/lantinghei.ttf"
+                    android:singleLine="true"
+                    android:text="@string/difficultyNumber"
+                    android:textColor="@color/white" />
+
+                <com.jiqu.view.RatingBarView
+                    android:id="@+id/difficultyBar"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_marginRight="3dp"
+                    android:layout_toRightOf="@id/difficultyNumber" />
+            </RelativeLayout>
+        </RelativeLayout>
+
+        <ImageView
+            android:id="@+id/view2"
+            android:layout_width="1dp"
+            android:layout_height="match_parent"
+            android:background="@drawable/xiaotiao" />
+
+        <RelativeLayout
+            android:id="@+id/comprehensiveRel"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:layout_weight="1" >
+
+            <TextView
+                android:id="@+id/comprehensiveEvaluation"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                fontPath="fonts/lantinghei.ttf"
+                android:singleLine="true"
+                android:text="@string/comprehensive"
+                android:textColor="@color/blue" />
+
+            <TextView
+                android:id="@+id/evaluationScore"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/comprehensiveEvaluation"
+                android:layout_centerHorizontal="true"
+                fontPath="fonts/lantinghei.ttf"
+                android:text="9.8"
+                android:textColor="@color/blue"
+                android:textStyle="bold|italic" />
+
+            <com.jiqu.view.RatingBarView
+                android:id="@+id/comprehensiveBar"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/evaluationScore"
+                android:layout_centerHorizontal="true" />
+        </RelativeLayout>
+    </LinearLayout>
+
+    <ImageView
+        android:id="@+id/view3"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_below="@id/scoreLin"
+        android:background="@drawable/xian" />
+
+</RelativeLayout>

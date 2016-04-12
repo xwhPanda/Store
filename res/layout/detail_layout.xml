@@ -1,0 +1,252 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:ignore="MissingPrefix" 
+    android:background="@drawable/toolbg">
+
+    <com.jiqu.view.TitleView
+        android:id="@+id/titleView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
+    <ScrollView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/titleView" >
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" >
+
+            <LinearLayout
+                android:id="@+id/gameIconLin"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal" >
+
+                <ImageView
+                    android:id="@+id/gameIcon"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:background="@color/red" />
+
+                <RelativeLayout
+                    android:id="@+id/titleLine"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical" >
+
+                    <TextView
+                        android:id="@+id/gameName"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        fontPath="fonts/lantinghei.ttf"
+                        android:singleLine="true"
+                        android:text="复苏步伐维护"
+                        android:textColor="@color/white" />
+
+                    <TextView
+                        android:id="@+id/downloadCount"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignLeft="@id/gameName"
+                        android:layout_below="@id/gameName"
+                        fontPath="fonts/lantinghei.ttf"
+                        android:text="123456人下载"
+                        android:textColor="@color/itemDesColor" />
+
+                    <TextView
+                        android:id="@+id/version"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignTop="@id/downloadCount"
+                        android:layout_toRightOf="@id/downloadCount"
+                        fontPath="fonts/lantinghei.ttf"
+                        android:text="版本:1.0.0"
+                        android:textColor="@color/itemDesColor" />
+
+                    <TextView
+                        android:id="@+id/type"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignLeft="@id/downloadCount"
+                        android:layout_below="@id/downloadCount"
+                        fontPath="fonts/lantinghei.ttf"
+                        android:text="动作模拟"
+                        android:textColor="@color/itemDesColor" />
+
+                    <TextView
+                        android:id="@+id/size"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignTop="@id/type"
+                        android:layout_toRightOf="@id/type"
+                        fontPath="fonts/lantinghei.ttf"
+                        android:text="45MB"
+                        android:textColor="@color/itemDesColor" />
+                </RelativeLayout>
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/controlWayLin"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/gameIconLin"
+                android:layout_centerHorizontal="true"
+                android:orientation="horizontal" >
+
+                <RelativeLayout
+                    android:id="@+id/headControlRel"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@color/blue"
+                	android:padding="0dp"
+                    android:gravity="center" >
+
+                    <ImageView
+                        android:id="@+id/headControlImg"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerVertical="true"
+                        android:background="@drawable/toukong_icon" />
+
+                    <TextView
+                        android:id="@+id/headControlTx"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerVertical="true"
+                        android:layout_toRightOf="@id/headControlImg"
+                        android:text="@string/headControl"
+                        fontPath="fonts/lantinghei.ttf"
+                        android:textColor="@color/white" />
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:id="@+id/handleRel"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@color/blue"
+                	android:padding="0dp"
+                    android:gravity="center" >
+
+                    <ImageView
+                        android:id="@+id/handleImg"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerVertical="true"
+                        android:background="@drawable/shougan_icon" />
+
+                    <TextView
+                        android:id="@+id/handleTx"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerVertical="true"
+                        android:layout_toRightOf="@id/handleImg"
+                        android:text="@string/handle"
+                        fontPath="fonts/lantinghei.ttf"
+                        android:textColor="@color/white"/>
+                </RelativeLayout>
+            </LinearLayout>
+
+            <include
+                android:id="@+id/scoreLayout"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/controlWayLin"
+                layout="@layout/detail_score_layout" />
+
+            <RelativeLayout
+                android:id="@+id/vertigoLin"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/scoreLayout"
+                android:layout_centerHorizontal="true" >
+
+                <TextView
+                    android:id="@+id/vertigo"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:text="@string/vertigo"
+                        fontPath="fonts/lantinghei.ttf"
+                    android:textColor="@color/white" />
+
+                <ImageView
+                    android:id="@+id/vertigoValue"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_toRightOf="@id/vertigo" 
+                    android:background="@drawable/jindu3"/>
+
+                <TextView
+                    android:id="@+id/low"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignLeft="@id/vertigoValue"
+                    android:layout_below="@id/vertigoValue"
+                    android:text="@string/low"
+                        fontPath="fonts/lantinghei.ttf"
+                    android:textColor="@color/green"
+                    android:textStyle="bold|italic" />
+
+                <TextView
+                    android:id="@+id/high"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignRight="@id/vertigoValue"
+                    android:layout_below="@id/vertigoValue"
+                    android:text="@string/hight"
+                        fontPath="fonts/lantinghei.ttf"
+                    android:textColor="@color/white"
+                    android:textStyle="bold|italic" />
+            </RelativeLayout>
+
+            <ImageView
+                android:id="@+id/view"
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_below="@id/vertigoLin"
+                android:background="@drawable/xian" />
+
+            <RelativeLayout 
+                android:id="@+id/pagerRel"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:layout_below="@id/view">
+                
+	            <android.support.v4.view.ViewPager
+	                android:id="@+id/viewPager"
+	                android:layout_width="match_parent"
+	                android:layout_height="match_parent"
+	                android:layout_centerHorizontal="true" 
+	                android:background="@color/red"/>
+	            
+	            <LinearLayout 
+	                android:id="@+id/viewGroup"
+	                android:layout_width="wrap_content"
+	                android:layout_height="wrap_content"
+	                android:layout_centerHorizontal="true"
+	                android:orientation="horizontal"
+	                android:layout_alignParentBottom="true">
+	                
+	            </LinearLayout>
+            </RelativeLayout>
+            
+            <Button 
+                android:id="@+id/download"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:layout_below="@id/pagerRel"
+                android:textColor="@color/white"
+                android:text="@string/download"
+                android:background="@drawable/tijiao"/>
+        </RelativeLayout>
+    </ScrollView>
+
+</RelativeLayout>

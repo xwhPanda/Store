@@ -13,6 +13,9 @@ import com.android.volley.Response.Listener;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.jiqu.activity.BoutiqueActivity;
+import com.jiqu.activity.DetailActivity;
+import com.jiqu.activity.GameEvaluationInformationActivity;
+import com.jiqu.activity.HeadlineActivity;
 import com.jiqu.activity.RankingActivity;
 import com.jiqu.activity.SortActivity;
 import com.jiqu.activity.ThematicActivity;
@@ -66,6 +69,7 @@ public class RecommendFragment extends Fragment implements OnPageChangeListener,
 	private LinearLayout recommendGameList;
 	private LinearLayout recommendCategory;
 	private LinearLayout headlinesLin;
+	private RelativeLayout headlineContenLin;
 	private TextView headlinesTx;
 	private ImageView headlineContenImg;
 	private TextView headlinesInformation;
@@ -221,9 +225,12 @@ public class RecommendFragment extends Fragment implements OnPageChangeListener,
 		sortImg = (ImageView) headView.findViewById(R.id.sortImg);
 		
 		headlinesLin = (LinearLayout) headView.findViewById(R.id.headlinesLin);
+		headlineContenLin = (RelativeLayout) headView.findViewById(R.id.headlineContenLin);
 		headlinesTx = (TextView) headView.findViewById(R.id.headlinesTx);
 		headlineContenImg = (ImageView) headView.findViewById(R.id.headlineContenImg);
 		headlinesInformation = (TextView) headView.findViewById(R.id.headlinesInformation);
+		
+		headlineContenLin.setOnClickListener(this);
 		
 		boutiqueTx = (TextView) headView.findViewById(R.id.boutiquTx);
 		thematicTx = (TextView) headView.findViewById(R.id.thematicTx);
@@ -316,6 +323,11 @@ public class RecommendFragment extends Fragment implements OnPageChangeListener,
 			
 		case R.id.sortLin:
 			startActivity(new Intent(getActivity(), SortActivity.class));
+			break;
+			
+		case R.id.headlineContenLin:
+//			startActivity(new Intent(getActivity(), HeadlineActivity.class));
+			startActivity(new Intent(getActivity(), DetailActivity.class));
 			break;
 		}
 	}

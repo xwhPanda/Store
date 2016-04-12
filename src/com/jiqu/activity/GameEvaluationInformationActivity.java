@@ -1,15 +1,10 @@
 package com.jiqu.activity;
 
-import android.R.integer;
 import android.os.Bundle;
-import android.provider.Contacts.Intents.UI;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.LinearLayout.LayoutParams;
-import android.widget.ListView;
-import android.widget.RatingBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -22,7 +17,6 @@ import com.jiqu.view.EvaluationItemView;
 import com.jiqu.view.PullToRefreshLayout;
 import com.jiqu.view.PullToRefreshLayout.OnRefreshListener;
 import com.jiqu.view.RatingBarView;
-import com.jiqu.view.SortTitleView;
 import com.jiqu.view.TitleView;
 
 public class GameEvaluationInformationActivity extends BaseActivity implements OnRefreshListener{
@@ -88,7 +82,6 @@ public class GameEvaluationInformationActivity extends BaseActivity implements O
 		information = (TextView) findViewById(R.id.information);
 		view1 = (ImageView) findViewById(R.id.view1);
 		view3 = (ImageView) findViewById(R.id.view3);
-		comprehensiveRel = (RelativeLayout) findViewById(R.id.comprehensiveRel);
 		scoreLin = (LinearLayout) findViewById(R.id.scoreLin);
 		
 		screenSense = (TextView) findViewById(R.id.screenSense);
@@ -181,7 +174,7 @@ public class GameEvaluationInformationActivity extends BaseActivity implements O
 		UIUtil.setViewSize(gameImg, 1030 * Rx, 515 * Ry);
 		
 		try {
-			UIUtil.setViewSizeMargin(evaluationTitle, 0, 210 * Ry, 0, 0);
+			UIUtil.setViewSizeMargin(evaluationTitle, 0, 35 * Ry, 0, 0);
 			UIUtil.setViewSizeMargin(informationLin, 0, 20 * Ry, 0, 0);
 			UIUtil.setViewSizeMargin(gameImg, 0, 30 * Ry, 0, 0);
 			UIUtil.setViewSizeMargin(information, 0, 45 * Ry, 0, 0);

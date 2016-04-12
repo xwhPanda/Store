@@ -16,14 +16,16 @@
 
         <include layout="@layout/refresh_head" />
 
-        <com.jiqu.view.HeaderGridView
-            android:id="@+id/thematicGridView"
+        <com.jiqu.view.PullableListView
+            android:id="@+id/thematicListView"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:gravity="center_horizontal"
             android:listSelector="@color/transparent"
+            android:divider="@color/bottomBgColor"
             android:numColumns="2"
-            android:scrollbars="none" />
+            android:scrollbars="none" 
+        	android:background="@color/bottomBgColor"/>
 
         <include layout="@layout/load_more" />
     </com.jiqu.view.PullToRefreshLayout>

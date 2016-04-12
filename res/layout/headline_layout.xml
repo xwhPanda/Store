@@ -8,12 +8,19 @@
 
     <com.jiqu.view.TitleView
         android:id="@+id/titleView"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content" />
+
+    <com.jiqu.view.EvaluationBottomView
+        android:id="@+id/evaGameView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true" />
 
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_above="@id/evaGameView"
         android:layout_below="@id/titleView"
         android:scrollbars="none" >
 
@@ -25,6 +32,7 @@
                 android:id="@+id/evaluationTitle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_below="@id/title"
                 android:layout_centerHorizontal="true"
                 fontPath="fonts/lantinghei.ttf"
                 android:ellipsize="end"
@@ -91,45 +99,21 @@
                 android:text="防水防奇偶推荐给公司计划和基金公司的管理键盘以及天津哈飞和放假了符合日哦俄特国内首个绿色可能给人类价格收购计划开了更好的了解历史较高"
                 android:textColor="@color/itemDesColor" />
 
-            <include
-                android:id="@+id/scoreLayout"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_below="@id/information"
-                layout="@layout/detail_score_layout" />
-
-            <TextView
-                android:id="@+id/detailedTitle"
+            <ImageView
+                android:id="@+id/view"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_below="@id/scoreLayout"
-                fontPath="fonts/lantinghei.ttf"
-                android:background="@drawable/heise"
-                android:gravity="center_vertical"
-                android:text="@string/evaluationDetailed"
-                android:textColor="@color/blue" />
-
+                android:layout_height="1dp"
+                android:layout_below="@id/information"
+                android:background="@drawable/xian" />
+            
             <LinearLayout
                 android:id="@+id/detailedEvaLin"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_below="@id/detailedTitle"
+                android:layout_below="@id/view"
                 android:orientation="vertical" >
             </LinearLayout>
-
-            <TextView
-                android:id="@+id/emptyView"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_below="@id/detailedEvaLin"
-                fontPath="fonts/lantinghei.ttf" />
         </RelativeLayout>
     </ScrollView>
-
-    <com.jiqu.view.EvaluationBottomView
-        android:id="@+id/evaGameView"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true" />
 
 </RelativeLayout>

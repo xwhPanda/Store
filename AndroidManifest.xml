@@ -102,6 +102,12 @@
         
         <activity android:name="com.jiqu.activity.ThematicActivity"
             android:screenOrientation="portrait"></activity>
+        
+        <activity android:name="com.jiqu.activity.HeadlineActivity"
+            android:screenOrientation="portrait"></activity>
+        
+        <activity android:name="com.jiqu.activity.DetailActivity"
+            android:screenOrientation="portrait"></activity>
     </application>
 
 </manifest>

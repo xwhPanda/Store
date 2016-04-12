@@ -9,7 +9,7 @@
         android:id="@+id/parentView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@drawable/tool_top_bg" >
+        android:background="@drawable/heise" >
 
         <ImageButton
             android:id="@+id/backBtn"

@@ -8,12 +8,17 @@ import android.support.v4.view.ViewPager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.GridView;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.LinearLayout.LayoutParams;
+import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.jiqu.adapter.ThematicAdapter;
+import com.jiqu.adapter.ThematicItemAdapter;
 import com.jiqu.object.ThematicInfo;
+import com.jiqu.object.ThematicItemInfo;
 import com.jiqu.store.BaseActivity;
 import com.jiqu.store.R;
 import com.jiqu.tools.MetricsTool;
@@ -21,12 +26,13 @@ import com.jiqu.tools.UIUtil;
 import com.jiqu.view.HeaderGridView;
 import com.jiqu.view.PullToRefreshLayout;
 import com.jiqu.view.PullableGridView;
+import com.jiqu.view.PullableListView;
 import com.jiqu.view.TitleView;
 
 public class ThematicActivity extends BaseActivity {
 	private TitleView titleView;
 	private PullToRefreshLayout refreshView;
-	private HeaderGridView thematicGridView;
+	private ListView thematicListView;
 	
 	private View headView;
 	private ViewPager viewPager;
@@ -34,8 +40,10 @@ public class ThematicActivity extends BaseActivity {
 	private TextView title;
 	private LinearLayout viewGroup;
 	
-	private List<ThematicInfo> thematicInfos = new ArrayList<ThematicInfo>();
+	private List<ThematicItemInfo> thematicInfos = new ArrayList<ThematicItemInfo>();
 	private ThematicAdapter adapter;
+	
+	private ImageView[] imageViews;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -55,9 +63,9 @@ public class ThematicActivity extends BaseActivity {
 		initHeadView();
 		titleView = (TitleView) findViewById(R.id.titleView);
 		refreshView = (PullToRefreshLayout) findViewById(R.id.refreshView);
-		thematicGridView = (HeaderGridView) findViewById(R.id.thematicGridView);
+		thematicListView = (PullableListView) findViewById(R.id.thematicListView);
 		
-		thematicGridView.addHeaderView(headView);
+		thematicListView.addHeaderView(headView);
 		
 		titleView.tip.setText(getResources().getString(R.string.thematic));
 		titleView.setActivity(this);
@@ -67,13 +75,24 @@ public class ThematicActivity extends BaseActivity {
 		titleView.parentView.setBackgroundColor(getResources().getColor(R.color.bottomBgColor));
 		
 		for(int i = 0 ; i < 20 ; i++){
-			ThematicInfo thematicInfo = new ThematicInfo();
-			thematicInfos.add(thematicInfo);
+			List<ThematicInfo> infos = new ArrayList<ThematicInfo>();
+			int count = (int) (Math.random() * 5 +1);
+			for(int j = 0 ;j < count;j++){
+				ThematicInfo thematicInfo = new ThematicInfo();
+				infos.add(thematicInfo);
+			}
+			ThematicItemInfo thematicItemInfo = new ThematicItemInfo();
+			thematicItemInfo.setThematicInfos(infos);
+			thematicItemInfo.setTitle("今日热门");
+			
+			thematicInfos.add(thematicItemInfo);
 		}
 		adapter = new ThematicAdapter(this, thematicInfos);
-		thematicGridView.setAdapter(adapter);
+		thematicListView.setAdapter(adapter);
 		
 		initViewSize();
+		
+		initData();
 	}
 	
 	private void initHeadView(){
@@ -86,6 +105,19 @@ public class ThematicActivity extends BaseActivity {
 		viewGroup = (LinearLayout) headView.findViewById(R.id.viewGroup);
 	}
 	
+	private void initData(){
+		imageViews = new ImageView[4];
+		for(int i = 0; i < 4; i++){
+			ImageView img = new ImageView(this);
+			LayoutParams lp = new LayoutParams((int)(22 * Rx), (int) (22 * Rx));
+			img.setLayoutParams(lp);
+			img.setBackgroundResource(R.drawable.dian_white);
+			imageViews[i] = img;
+			viewGroup.addView(img);
+			
+		}
+	}
+	
 	private void initViewSize(){
 		UIUtil.setViewSize(groupRel, MetricsTool.width, 85 * Ry);
 		UIUtil.setViewHeight(viewPager, 460 * Ry);
@@ -93,7 +125,7 @@ public class ThematicActivity extends BaseActivity {
 		
 		UIUtil.setTextSize(title, 35);
 		
-		thematicGridView.setVerticalSpacing((int)(40 * Ry));
+		thematicListView.setDividerHeight((int)(40 * Ry));
 		
 		try {
 			UIUtil.setViewSizeMargin(title, 40 * Rx, 0, 0, 0);
