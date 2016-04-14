@@ -14,7 +14,7 @@ public class DownloadInfo {
 	private String iconUrl;
 	private String path;//
 	private boolean  hasFinished= false;
-	/** ��AppInfo�й�����һ��DownLoadInfo */
+	
 	public static DownloadInfo clone(AppInfo info) {
 		DownloadInfo downloadInfo = new DownloadInfo();
 		downloadInfo.id = info.getId();
@@ -24,7 +24,7 @@ public class DownloadInfo {
 		downloadInfo.downloadState = DownloadManager.STATE_NONE;
 		downloadInfo.url = info.getDown_url();
 		downloadInfo.iconUrl = info.getLogo_url_160();
-		downloadInfo.path = FileUtil.getDownloadDir(AppUtil.getContext()) + File.separator + downloadInfo.appName + ".apk";
+		downloadInfo.path = FileUtil.getApkDownloadDir(AppUtil.getContext()) + File.separator + downloadInfo.appName + ".apk";
 		return downloadInfo;
 	}
 	
@@ -36,7 +36,7 @@ public class DownloadInfo {
 		downloadAppinfo.setDownloadState(info.getDownloadState());
 		downloadAppinfo.setIconUrl(info.getIconUrl());
 		downloadAppinfo.setId(info.getId());
-		downloadAppinfo.setPath(info.getPath());
+		downloadAppinfo.setApkPath(info.getPath());
 		downloadAppinfo.setUrl(info.getUrl());
 		
 		return downloadAppinfo;

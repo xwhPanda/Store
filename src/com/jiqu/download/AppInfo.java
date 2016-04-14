@@ -2,6 +2,8 @@ package com.jiqu.download;
 
 import java.io.File;
 
+import android.text.TextUtils;
+
 import com.jiqu.database.DownloadAppinfo;
 
 
@@ -9,6 +11,7 @@ public class AppInfo {
     private long id;//游戏id
     private String name;//游戏名
     private String apkid;//游戏包名
+    private String logo_url;
     private String logo_url_160;//简介图
     private String download_times;//下载次数
     private String version_name;//版本号
@@ -85,6 +88,13 @@ public class AppInfo {
 		this.adapterType = adapterType;
 	}
 	
+	public synchronized String getLogo_url() {
+		return logo_url;
+	}
+	public synchronized void setLogo_url(String logo_url) {
+		this.logo_url = logo_url;
+	}
+	
 	public static DownloadAppinfo toDownloadAppInfo(AppInfo info){
 		DownloadAppinfo downloadInfo = new DownloadAppinfo();
 		downloadInfo.setPackageName(info.apkid);
@@ -94,8 +104,12 @@ public class AppInfo {
 		downloadInfo.setCurrentSize((long) 0);
 		downloadInfo.setDownloadState(DownloadManager.STATE_NONE);
 		downloadInfo.setUrl(info.down_url);
-		downloadInfo.setIconUrl(info.logo_url_160);
-		downloadInfo.setPath(FileUtil.getDownloadDir(AppUtil.getContext()) + File.separator + info.name + ".apk");
+		if (TextUtils.isEmpty(info.logo_url_160)) {
+			downloadInfo.setIconUrl(info.logo_url);
+		}else {
+			downloadInfo.setIconUrl(info.logo_url_160);
+		}
+		downloadInfo.setApkPath(FileUtil.getApkDownloadDir(AppUtil.getContext()) + File.separator + info.name + ".apk");
 		return downloadInfo;
 	}
 	

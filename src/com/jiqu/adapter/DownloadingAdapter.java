@@ -3,6 +3,9 @@ package com.jiqu.adapter;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.android.volley.toolbox.ImageLoader;
+import com.android.volley.toolbox.ImageLoader.ImageListener;
+import com.jiqu.application.StoreApplication;
 import com.jiqu.database.DownloadAppinfo;
 import com.jiqu.database.DownloadAppinfoDao.Properties;
 import com.jiqu.download.AppUtil;
@@ -185,13 +188,8 @@ public class DownloadingAdapter extends BaseAdapter implements DownloadObserver{
 		
 		private void setData(DownloadAppinfo appinfo){
 			this.info = appinfo;
-			
-			byte[] bytes = appinfo.getIconByte();
-			if (bytes == null || bytes.length == 0) {
-				appIcon.setImageBitmap(BitmapFactory.decodeResource(context.getResources(), R.drawable.ic_launcher));
-			}else {
-				appIcon.setImageBitmap(BitmapFactory.decodeByteArray(bytes, 0, bytes.length));
-			}
+			ImageListener listener = ImageLoader.getImageListener(appIcon,R.drawable.ic_launcher, R.drawable.ic_launcher);
+			StoreApplication.getInstance().getImageLoader().get(info.getIconUrl(), listener);
 			appName.setText(appinfo.getAppName());
 			
 			checkBox.setChecked(isChecked);
@@ -202,7 +200,7 @@ public class DownloadingAdapter extends BaseAdapter implements DownloadObserver{
 		public void refreshView(DownloadAppinfo appinfo){
 			pause.clearAnimation();
 			downloadPrg.setProgress((int)(appinfo.getProgress() * 100));
-			progressTx.setText(FileUtil.getSize(appinfo.getCurrentSize()) + "/" + FileUtil.getSize(Long.parseLong(appinfo.getAppSize())));
+			progressTx.setText(FileUtil.getFileSize(appinfo.getCurrentSize()) + "/" + FileUtil.getFileSize(Long.parseLong(appinfo.getAppSize())));
 			switch (appinfo.getDownloadState()) {
 			case DownloadManager.STATE_NONE:
 				pause.setBackgroundResource(R.drawable.download_selector);

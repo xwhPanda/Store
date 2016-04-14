@@ -22,6 +22,7 @@ public class AboutUsActivity extends BaseActivity {
 	private TextView weiboTx,weibo;
 	private TextView noPublicTx,noPublic;
 
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
@@ -29,7 +30,7 @@ public class AboutUsActivity extends BaseActivity {
 		
 		initView();
 	}
-
+	
 	@Override
 	public int getContentView() {
 		// TODO Auto-generated method stub

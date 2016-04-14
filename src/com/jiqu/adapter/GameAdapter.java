@@ -7,6 +7,8 @@ import java.util.List;
 
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
+import com.android.volley.toolbox.ImageLoader;
+import com.android.volley.toolbox.ImageLoader.ImageListener;
 import com.android.volley.toolbox.ImageRequest;
 import com.jiqu.application.StoreApplication;
 import com.jiqu.database.DownloadAppinfo;
@@ -16,7 +18,10 @@ import com.jiqu.download.DownloadInfo;
 import com.jiqu.download.DownloadManager;
 import com.jiqu.download.DownloadManager.DownloadObserver;
 import com.jiqu.download.FileUtil;
+import com.jiqu.download.UnZipManager;
+import com.jiqu.object.GameInfo;
 import com.jiqu.store.R;
+import com.jiqu.tools.Constant;
 import com.jiqu.tools.MetricsTool;
 import com.jiqu.tools.UIUtil;
 import com.jiqu.view.RatingBarView;
@@ -42,7 +47,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 public class GameAdapter extends BaseAdapter implements DownloadObserver{
-	private List<AppInfo> informations;
+	private List<GameInfo> informations;
 	private LayoutInflater inflater;
 	private Holder1 holder1 = null;
 	private Holder3 holder3 = null;
@@ -51,7 +56,9 @@ public class GameAdapter extends BaseAdapter implements DownloadObserver{
 	private Context context;
 	private int[] resIds = new int[3];
 	
-	public GameAdapter(Context context,List<AppInfo> informations){
+	private boolean firstIn = false;
+	
+	public GameAdapter(Context context,List<GameInfo> informations){
 		this.informations = informations;
 		inflater = LayoutInflater.from(context);
 		mDisplayedHolders = new ArrayList<GameAdapter.Holder2>();
@@ -104,7 +111,7 @@ public class GameAdapter extends BaseAdapter implements DownloadObserver{
 		DownloadManager.getInstance().unRegisterObserver(this);
 	}
 	
-	public void addItems(List<AppInfo> infos){
+	public void addItems(List<GameInfo> infos){
 		informations.addAll(infos);
 	}
 
@@ -140,7 +147,7 @@ public class GameAdapter extends BaseAdapter implements DownloadObserver{
 				holder2 = (Holder2) convertView.getTag();
 			}
 			
-			holder2.setData(AppInfo.toDownloadAppInfo(informations.get(position)));
+			holder2.setData(GameInfo.toDownloadAppInfo(informations.get(position)));
 			mDisplayedHolders.add(holder2);
 			break;
 		case 2:
@@ -154,7 +161,7 @@ public class GameAdapter extends BaseAdapter implements DownloadObserver{
 			}
 			break;
 		}
-		return type == 1?holder2.getRootView():convertView;
+		return convertView;
 	}
 	
 	public List<Holder2> getDisplayedHolders() {
@@ -192,6 +199,8 @@ public class GameAdapter extends BaseAdapter implements DownloadObserver{
 		private LinearLayout subscriptLin;
 		
 		private View rootView;
+		
+		private boolean installDialogShowed = false;
 		
 		private int mState;
 		private float mProgress;
@@ -237,6 +246,7 @@ public class GameAdapter extends BaseAdapter implements DownloadObserver{
 					if (mState == DownloadManager.STATE_NONE 
 							|| mState == DownloadManager.STATE_PAUSED
 							|| mState == DownloadManager.STATE_ERROR) {
+						Log.i("TAG", mData.getUrl());
 						mDownloadManager.download(mData);
 					}else if (mState == DownloadManager.STATE_DOWNLOADING
 							|| mState == DownloadManager.STATE_WAITING) {
@@ -274,7 +284,12 @@ public class GameAdapter extends BaseAdapter implements DownloadObserver{
 			if (mDownloadManager == null) {
 				mDownloadManager = DownloadManager.getInstance();
 			}
-			String filePath = FileUtil.getDownloadDir(AppUtil.getContext()) + File.separator + data.getAppName() + ".apk";
+			String filePath = "";
+			if (data.getIsZip()) {
+				filePath = data.getZipPath();
+			}else {
+				filePath = data.getApkPath();
+			}
 			boolean existsFile = FileUtil.isExistsFile(filePath);
 			if (existsFile) {
 				long fileSize = FileUtil.getFileSize(filePath);
@@ -308,27 +323,16 @@ public class GameAdapter extends BaseAdapter implements DownloadObserver{
 //			gameDes.setText(mData.getDesinfo());
 			gameScore.setRating((float) 4.5);
 			gameSize.setText(FileUtil.getSize(Long.parseLong(mData.getAppSize())));
+			ImageListener listener = ImageLoader.getImageListener(icon,R.drawable.ic_launcher, R.drawable.ic_launcher);
+			StoreApplication.getInstance().getImageLoader().get(mData.getIconUrl(), listener);
 			
-			@SuppressWarnings("deprecation")
-			ImageRequest imageRequest = new ImageRequest(
-					mData.getIconUrl(),  
-			        new Response.Listener<Bitmap>() {  
-			            @Override  
-			            public void onResponse(Bitmap response) { 
-			            	ByteArrayOutputStream baos = new ByteArrayOutputStream();
-			            	response.compress(Bitmap.CompressFormat.PNG, 100, baos);
-			            	mData.setIconByte(baos.toByteArray());
-			                icon.setImageBitmap(response); 
-			            }  
-			        }, 0, 0, Config.RGB_565, new Response.ErrorListener() {  
-			            @Override  
-			            public void onErrorResponse(VolleyError error) {  
-			            	icon.setImageResource(R.drawable.ic_launcher);  
-			            }  
-			        });
-			StoreApplication.getInstance().getRequestQueue().add(imageRequest);
+			String path = ""; 
+			if (mData.getIsZip()) {
+				path = mData.getZipPath();
+			}else {
+				path = mData.getApkPath();
+			}
 			
-			String  path=FileUtil.getDownloadDir(AppUtil.getContext()) + File.separator + mData.getAppName() + ".apk";
 			hasAttached = FileUtil.isValidAttach(path, false);
 
 			DownloadAppinfo downloadInfo = mDownloadManager.getDownloadInfo(mData.getId());
@@ -337,7 +341,12 @@ public class GameAdapter extends BaseAdapter implements DownloadObserver{
 
 					mState = DownloadManager.STATE_DOWNLOADED;
 				}else{
-					mState = DownloadManager.STATE_PAUSED;
+					if (!firstIn) {
+						mState = DownloadManager.STATE_PAUSED;
+						firstIn = true;
+					}else {
+						mState = downloadInfo.getDownloadState();
+					}
 
 				}
 
@@ -360,6 +369,7 @@ public class GameAdapter extends BaseAdapter implements DownloadObserver{
 				break;
 
 			case DownloadManager.STATE_PAUSED:
+				Log.i("TAG", "STATE_PAUSED");
 				downloadBtn.setBackgroundResource(R.drawable.zanting);
 				break;
 			case DownloadManager.STATE_ERROR:
@@ -372,12 +382,20 @@ public class GameAdapter extends BaseAdapter implements DownloadObserver{
 				downloadBtn.startAnimation(animation);
 				break;
 			case DownloadManager.STATE_DOWNLOADING:
+				Log.i("TAG", "STATE_DOWNLOADING");
 				downloadBtn.setBackgroundResource(R.drawable.jixu);
 				break;
 			case DownloadManager.STATE_DOWNLOADED:
 				downloadBtn.setBackgroundResource(R.drawable.runing_selector);
-				if (!isFirst) {
-					mDownloadManager.install(mData);
+				if (!isFirst && !installDialogShowed) {
+					installDialogShowed = true;
+					if (mData.getIsZip()) {
+						Log.i("TAG", mData.getAppName() + " : 下载完成");
+						UnZipManager.getInstance().unzip(mData, Constant.PASSWORD);
+					}else {
+						mDownloadManager.install(mData);
+					}
+					
 				}
 				break;
 			default:

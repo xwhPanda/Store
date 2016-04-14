@@ -21,6 +21,7 @@ import com.jiqu.activity.SearchActivity;
 import com.jiqu.activity.SettingActivity;
 import com.jiqu.activity.ShowAccountInformatiomActivity;
 import com.jiqu.download.AppInfo;
+import com.jiqu.download.DownloadManager;
 import com.jiqu.fragment.EvaluationFragment;
 import com.jiqu.fragment.GameFragment;
 import com.jiqu.fragment.InformationFragment;
@@ -35,6 +36,7 @@ import android.annotation.SuppressLint;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Process;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
@@ -49,6 +51,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 public class MainActivity extends FragmentActivity implements OnClickListener,Listener<String>,ErrorListener{
 	private float Rx,Ry;
@@ -79,6 +82,8 @@ public class MainActivity extends FragmentActivity implements OnClickListener,Li
 	private List<ImageView> imageViews = new ArrayList<ImageView>();
 	private List<TextView> textViews = new ArrayList<TextView>();
 	private int currentIndex = 0;
+	
+	private long mExitTime = 0;
 	
 	
 	@Override
@@ -393,6 +398,18 @@ public class MainActivity extends FragmentActivity implements OnClickListener,Li
 	@Override
 	public boolean onKeyDown(int keyCode, KeyEvent event) {
 		// TODO Auto-generated method stub
-		return super.onKeyDown(keyCode, event);
+	       if (keyCode == KeyEvent.KEYCODE_BACK) {
+               if ((System.currentTimeMillis() - mExitTime) > 2000) {
+                       Object mHelperUtils;
+                       Toast.makeText(this, "再按一次退出程序", Toast.LENGTH_SHORT).show();
+                       mExitTime = System.currentTimeMillis();
+                       
+               } else {
+            	   DownloadManager.getInstance().pauseExit();
+            	   Process.killProcess(Process.myPid());
+               }
+               return true;
+       }
+       return super.onKeyDown(keyCode, event);
 	}
 }

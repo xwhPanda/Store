@@ -18,13 +18,20 @@ public class DownloadAppinfo {
     /** Not-null value. */
     private String url;
     private String iconUrl;
-    /** Not-null value. */
-    private String path;
+    private String apkPath;
+    private String zipPath;
+    private String unzipPath;
     private Boolean hasFinished;
     private String des;
     private Integer score;
     private Float progress;
     private byte[] iconByte;
+    private Boolean isZip;
+    private Long thread1;
+    private Long thread2;
+    private Long thread3;
+    private Long thread4;
+    private Long thread5;
 
     public DownloadAppinfo() {
     }
@@ -33,7 +40,7 @@ public class DownloadAppinfo {
         this.id = id;
     }
 
-    public DownloadAppinfo(String packageName, String appName, Long id, Long currentSize, String appSize, int downloadState, String url, String iconUrl, String path, Boolean hasFinished, String des, Integer score, Float progress, byte[] iconByte) {
+    public DownloadAppinfo(String packageName, String appName, Long id, Long currentSize, String appSize, int downloadState, String url, String iconUrl, String apkPath, String zipPath, String unzipPath, Boolean hasFinished, String des, Integer score, Float progress, byte[] iconByte, Boolean isZip, Long thread1, Long thread2, Long thread3, Long thread4, Long thread5) {
         this.packageName = packageName;
         this.appName = appName;
         this.id = id;
@@ -42,12 +49,20 @@ public class DownloadAppinfo {
         this.downloadState = downloadState;
         this.url = url;
         this.iconUrl = iconUrl;
-        this.path = path;
+        this.apkPath = apkPath;
+        this.zipPath = zipPath;
+        this.unzipPath = unzipPath;
         this.hasFinished = hasFinished;
         this.des = des;
         this.score = score;
         this.progress = progress;
         this.iconByte = iconByte;
+        this.isZip = isZip;
+        this.thread1 = thread1;
+        this.thread2 = thread2;
+        this.thread3 = thread3;
+        this.thread4 = thread4;
+        this.thread5 = thread5;
     }
 
     /** Not-null value. */
@@ -122,14 +137,28 @@ public class DownloadAppinfo {
         this.iconUrl = iconUrl;
     }
 
-    /** Not-null value. */
-    public String getPath() {
-        return path;
+    public String getApkPath() {
+        return apkPath;
     }
 
-    /** Not-null value; ensure this value is available before it is saved to the database. */
-    public void setPath(String path) {
-        this.path = path;
+    public void setApkPath(String apkPath) {
+        this.apkPath = apkPath;
+    }
+
+    public String getZipPath() {
+        return zipPath;
+    }
+
+    public void setZipPath(String zipPath) {
+        this.zipPath = zipPath;
+    }
+
+    public String getUnzipPath() {
+        return unzipPath;
+    }
+
+    public void setUnzipPath(String unzipPath) {
+        this.unzipPath = unzipPath;
     }
 
     public Boolean getHasFinished() {
@@ -170,6 +199,54 @@ public class DownloadAppinfo {
 
     public void setIconByte(byte[] iconByte) {
         this.iconByte = iconByte;
+    }
+
+    public Boolean getIsZip() {
+        return isZip;
+    }
+
+    public void setIsZip(Boolean isZip) {
+        this.isZip = isZip;
+    }
+
+    public Long getThread1() {
+        return thread1;
+    }
+
+    public void setThread1(Long thread1) {
+        this.thread1 = thread1;
+    }
+
+    public Long getThread2() {
+        return thread2;
+    }
+
+    public void setThread2(Long thread2) {
+        this.thread2 = thread2;
+    }
+
+    public Long getThread3() {
+        return thread3;
+    }
+
+    public void setThread3(Long thread3) {
+        this.thread3 = thread3;
+    }
+
+    public Long getThread4() {
+        return thread4;
+    }
+
+    public void setThread4(Long thread4) {
+        this.thread4 = thread4;
+    }
+
+    public Long getThread5() {
+        return thread5;
+    }
+
+    public void setThread5(Long thread5) {
+        this.thread5 = thread5;
     }
 
 }

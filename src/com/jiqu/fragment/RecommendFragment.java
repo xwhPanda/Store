@@ -1,17 +1,20 @@
 package com.jiqu.fragment;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import com.alibaba.fastjson.JSON;
+import com.android.volley.Request.Method;
 import com.android.volley.Response.ErrorListener;
 import com.android.volley.Response.Listener;
 import com.android.volley.VolleyError;
-import com.android.volley.toolbox.StringRequest;
+import com.android.volley.toolbox.JsonObjectRequest;
 import com.jiqu.activity.BoutiqueActivity;
 import com.jiqu.activity.DetailActivity;
 import com.jiqu.activity.GameEvaluationInformationActivity;
@@ -22,34 +25,27 @@ import com.jiqu.activity.ThematicActivity;
 import com.jiqu.adapter.GameAdapter;
 import com.jiqu.application.StoreApplication;
 import com.jiqu.download.AppInfo;
+import com.jiqu.download.UnZipManager;
+import com.jiqu.object.GameInfo;
 import com.jiqu.object.GameInformation;
 import com.jiqu.store.R;
 import com.jiqu.tools.MetricsTool;
 import com.jiqu.tools.UIUtil;
-import com.jiqu.view.MyImageView;
 import com.jiqu.view.PullToRefreshLayout;
 import com.jiqu.view.PullToRefreshLayout.OnRefreshListener;
 import com.jiqu.view.RecommedGameView;
-import com.jiqu.view.RecommendGameItemView;
 
 import android.content.Intent;
-import android.graphics.BitmapFactory;
-import android.graphics.drawable.BitmapDrawable;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
-import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v4.view.ViewPager.OnPageChangeListener;
 import android.util.Log;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.View.OnClickListener;
-import android.widget.Button;
 import android.widget.HorizontalScrollView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -58,7 +54,7 @@ import android.widget.LinearLayout.LayoutParams;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
 
-public class RecommendFragment extends Fragment implements OnPageChangeListener,OnRefreshListener,Listener<String>,ErrorListener,OnClickListener{
+public class RecommendFragment extends Fragment implements OnPageChangeListener,OnRefreshListener,ErrorListener,OnClickListener, Listener<JSONObject>{
 	private float Rx,Ry;
 	private View view;
 	private View headView;
@@ -86,7 +82,7 @@ public class RecommendFragment extends Fragment implements OnPageChangeListener,
 	private PullToRefreshLayout pullToRefreshLayout;
 	private ListView recommendListView;
 	private GameAdapter adapter;
-	private List<AppInfo> resultList = new ArrayList<AppInfo>();
+	private List<GameInfo> resultList = new ArrayList<GameInfo>();
 	
 	@Override
 	@Nullable
@@ -99,9 +95,26 @@ public class RecommendFragment extends Fragment implements OnPageChangeListener,
 		
 		initAdapter();
 		
-		String url_qihoo360 = "http://recommend.api.sj.360.cn/inew/getRecomendApps?iszip=1&logo_type=2&deflate_field=1&apiversion=2&os=19&model=G620S-UL00&sn=4.589389937671455&cu=qualcomm+technologies%2C+inc+msm8916&bannertype=1&withext=1&vc=300030184&zjbb=1&datatype=adgame&page=1&fm=home&m=b033525c2a96a00c2bfd48c673522449&m2=3363e38bf819414c6c81d886ff878e2a&v=3.1.84&re=1&ch=432403&ppi=720x1280&startCount=1&snt=-1";
-		final StringRequest stringRequest = new StringRequest(url_qihoo360, this, this);
-		StoreApplication.getInstance().getRequestQueue().add(stringRequest);
+//		String url_qihoo360 = "http://recommend.api.sj.360.cn/inew/getRecomendApps?iszip=1&logo_type=2&deflate_field=1&apiversion=2&os=19&model=G620S-UL00&sn=4.589389937671455&cu=qualcomm+technologies%2C+inc+msm8916&bannertype=1&withext=1&vc=300030184&zjbb=1&datatype=adgame&page=1&fm=home&m=b033525c2a96a00c2bfd48c673522449&m2=3363e38bf819414c6c81d886ff878e2a&v=3.1.84&re=1&ch=432403&ppi=720x1280&startCount=1&snt=-1";
+////		final StringRequest stringRequest = new StringRequest(url_qihoo360, this, this);
+//		JsonObjectRequest objectRequest = new JsonObjectRequest(Method.GET,url_qihoo360, this, this);
+//		StoreApplication.getInstance().addToRequestQueue(objectRequest, "recommend");
+//		StoreApplication.getInstance().getRequestQueue().start();
+		
+		String url = "http://xu8api.91xuxu.com/api/1.0/getHomeRecommend";
+		Map<String, String> map = new HashMap<String, String>();
+		map.put("android_id", "a9f7234301030848");
+		map.put("imei", "000000000000000");
+		map.put("start_position", "0");
+		map.put("versionCode", "127");
+		map.put("versionName", "0.1.27");
+		map.put("size", "200");
+		map.put("device_id", "000000000000000");
+		map.put("mac", "08:00:27:d3:53:ef");
+		JSONObject object = new JSONObject(map);
+		JsonObjectRequest objectRequest = new JsonObjectRequest(Method.POST, url, object, this, this);
+		StoreApplication.getInstance().addToRequestQueue(objectRequest, "recommend");
+		StoreApplication.getInstance().getRequestQueue().start();
 		
 		return view;
 	}
@@ -276,28 +289,28 @@ public class RecommendFragment extends Fragment implements OnPageChangeListener,
 	@Override
 	public void onErrorResponse(VolleyError arg0) {
 		// TODO Auto-generated method stub
-		
+		Log.i("TAG", "onErrorResponse");
 	}
-
+	
 	@Override
-	public void onResponse(String response) {
+	public void onResponse(JSONObject arg0) {
 		// TODO Auto-generated method stub
+		Log.i("TAG", "onResponse");
 		try {
-			JSONObject obj = new JSONObject(response);
-			int errNo = obj.getInt("errno");
-			if (errNo == 0) {
-				if (resultList.size() > 0) {
-					resultList.clear();
-				}
-				JSONObject object = (JSONObject) obj.get("data");
-				JSONArray array = (JSONArray) object.get("fixed");
-				resultList = JSON.parseArray(array.toString(), AppInfo.class);
+//			int errNo = arg0.getInt("errno");
+//			if (errNo == 0) {
+//				if (resultList.size() > 0) {
+//					resultList.clear();
+//				}
+//				JSONObject object = (JSONObject) arg0.get("item");
+				JSONArray array = (JSONArray) arg0.get("item");
+				resultList = JSON.parseArray(array.toString(), GameInfo.class);
 				
 				adapter.clearAllItem();
 				adapter.addItems(resultList);
-			}
-			for(AppInfo appInfos:resultList){
-				appInfos.setAdapterType(1);
+//			}
+			for(GameInfo gameInfo:resultList){
+				gameInfo.setAdapterType(1);
 			}
 			adapter.notifyDataSetChanged();
 		} catch (JSONException e) {
@@ -331,4 +344,5 @@ public class RecommendFragment extends Fragment implements OnPageChangeListener,
 			break;
 		}
 	}
+
 }

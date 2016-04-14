@@ -31,12 +31,20 @@ public class DownloadAppinfoDao extends AbstractDao<DownloadAppinfo, Long> {
         public final static Property DownloadState = new Property(5, int.class, "downloadState", false, "DOWNLOAD_STATE");
         public final static Property Url = new Property(6, String.class, "url", false, "URL");
         public final static Property IconUrl = new Property(7, String.class, "iconUrl", false, "ICON_URL");
-        public final static Property Path = new Property(8, String.class, "path", false, "PATH");
-        public final static Property HasFinished = new Property(9, Boolean.class, "hasFinished", false, "HAS_FINISHED");
-        public final static Property Des = new Property(10, String.class, "des", false, "DES");
-        public final static Property Score = new Property(11, Integer.class, "score", false, "SCORE");
-        public final static Property Progress = new Property(12, Float.class, "progress", false, "PROGRESS");
-        public final static Property IconByte = new Property(13, byte[].class, "iconByte", false, "ICON_BYTE");
+        public final static Property ApkPath = new Property(8, String.class, "apkPath", false, "APK_PATH");
+        public final static Property ZipPath = new Property(9, String.class, "zipPath", false, "ZIP_PATH");
+        public final static Property UnzipPath = new Property(10, String.class, "unzipPath", false, "UNZIP_PATH");
+        public final static Property HasFinished = new Property(11, Boolean.class, "hasFinished", false, "HAS_FINISHED");
+        public final static Property Des = new Property(12, String.class, "des", false, "DES");
+        public final static Property Score = new Property(13, Integer.class, "score", false, "SCORE");
+        public final static Property Progress = new Property(14, Float.class, "progress", false, "PROGRESS");
+        public final static Property IconByte = new Property(15, byte[].class, "iconByte", false, "ICON_BYTE");
+        public final static Property IsZip = new Property(16, Boolean.class, "isZip", false, "IS_ZIP");
+        public final static Property Thread1 = new Property(17, Long.class, "thread1", false, "THREAD1");
+        public final static Property Thread2 = new Property(18, Long.class, "thread2", false, "THREAD2");
+        public final static Property Thread3 = new Property(19, Long.class, "thread3", false, "THREAD3");
+        public final static Property Thread4 = new Property(20, Long.class, "thread4", false, "THREAD4");
+        public final static Property Thread5 = new Property(21, Long.class, "thread5", false, "THREAD5");
     };
 
 
@@ -60,12 +68,20 @@ public class DownloadAppinfoDao extends AbstractDao<DownloadAppinfo, Long> {
                 "\"DOWNLOAD_STATE\" INTEGER NOT NULL ," + // 5: downloadState
                 "\"URL\" TEXT NOT NULL ," + // 6: url
                 "\"ICON_URL\" TEXT," + // 7: iconUrl
-                "\"PATH\" TEXT NOT NULL ," + // 8: path
-                "\"HAS_FINISHED\" INTEGER," + // 9: hasFinished
-                "\"DES\" TEXT," + // 10: des
-                "\"SCORE\" INTEGER," + // 11: score
-                "\"PROGRESS\" REAL," + // 12: progress
-                "\"ICON_BYTE\" BLOB);"); // 13: iconByte
+                "\"APK_PATH\" TEXT," + // 8: apkPath
+                "\"ZIP_PATH\" TEXT," + // 9: zipPath
+                "\"UNZIP_PATH\" TEXT," + // 10: unzipPath
+                "\"HAS_FINISHED\" INTEGER," + // 11: hasFinished
+                "\"DES\" TEXT," + // 12: des
+                "\"SCORE\" INTEGER," + // 13: score
+                "\"PROGRESS\" REAL," + // 14: progress
+                "\"ICON_BYTE\" BLOB," + // 15: iconByte
+                "\"IS_ZIP\" INTEGER," + // 16: isZip
+                "\"THREAD1\" INTEGER," + // 17: thread1
+                "\"THREAD2\" INTEGER," + // 18: thread2
+                "\"THREAD3\" INTEGER," + // 19: thread3
+                "\"THREAD4\" INTEGER," + // 20: thread4
+                "\"THREAD5\" INTEGER);"); // 21: thread5
     }
 
     /** Drops the underlying database table. */
@@ -98,31 +114,75 @@ public class DownloadAppinfoDao extends AbstractDao<DownloadAppinfo, Long> {
         if (iconUrl != null) {
             stmt.bindString(8, iconUrl);
         }
-        stmt.bindString(9, entity.getPath());
+ 
+        String apkPath = entity.getApkPath();
+        if (apkPath != null) {
+            stmt.bindString(9, apkPath);
+        }
+ 
+        String zipPath = entity.getZipPath();
+        if (zipPath != null) {
+            stmt.bindString(10, zipPath);
+        }
+ 
+        String unzipPath = entity.getUnzipPath();
+        if (unzipPath != null) {
+            stmt.bindString(11, unzipPath);
+        }
  
         Boolean hasFinished = entity.getHasFinished();
         if (hasFinished != null) {
-            stmt.bindLong(10, hasFinished ? 1L: 0L);
+            stmt.bindLong(12, hasFinished ? 1L: 0L);
         }
  
         String des = entity.getDes();
         if (des != null) {
-            stmt.bindString(11, des);
+            stmt.bindString(13, des);
         }
  
         Integer score = entity.getScore();
         if (score != null) {
-            stmt.bindLong(12, score);
+            stmt.bindLong(14, score);
         }
  
         Float progress = entity.getProgress();
         if (progress != null) {
-            stmt.bindDouble(13, progress);
+            stmt.bindDouble(15, progress);
         }
  
         byte[] iconByte = entity.getIconByte();
         if (iconByte != null) {
-            stmt.bindBlob(14, iconByte);
+            stmt.bindBlob(16, iconByte);
+        }
+ 
+        Boolean isZip = entity.getIsZip();
+        if (isZip != null) {
+            stmt.bindLong(17, isZip ? 1L: 0L);
+        }
+ 
+        Long thread1 = entity.getThread1();
+        if (thread1 != null) {
+            stmt.bindLong(18, thread1);
+        }
+ 
+        Long thread2 = entity.getThread2();
+        if (thread2 != null) {
+            stmt.bindLong(19, thread2);
+        }
+ 
+        Long thread3 = entity.getThread3();
+        if (thread3 != null) {
+            stmt.bindLong(20, thread3);
+        }
+ 
+        Long thread4 = entity.getThread4();
+        if (thread4 != null) {
+            stmt.bindLong(21, thread4);
+        }
+ 
+        Long thread5 = entity.getThread5();
+        if (thread5 != null) {
+            stmt.bindLong(22, thread5);
         }
     }
 
@@ -144,12 +204,20 @@ public class DownloadAppinfoDao extends AbstractDao<DownloadAppinfo, Long> {
             cursor.getInt(offset + 5), // downloadState
             cursor.getString(offset + 6), // url
             cursor.isNull(offset + 7) ? null : cursor.getString(offset + 7), // iconUrl
-            cursor.getString(offset + 8), // path
-            cursor.isNull(offset + 9) ? null : cursor.getShort(offset + 9) != 0, // hasFinished
-            cursor.isNull(offset + 10) ? null : cursor.getString(offset + 10), // des
-            cursor.isNull(offset + 11) ? null : cursor.getInt(offset + 11), // score
-            cursor.isNull(offset + 12) ? null : cursor.getFloat(offset + 12), // progress
-            cursor.isNull(offset + 13) ? null : cursor.getBlob(offset + 13) // iconByte
+            cursor.isNull(offset + 8) ? null : cursor.getString(offset + 8), // apkPath
+            cursor.isNull(offset + 9) ? null : cursor.getString(offset + 9), // zipPath
+            cursor.isNull(offset + 10) ? null : cursor.getString(offset + 10), // unzipPath
+            cursor.isNull(offset + 11) ? null : cursor.getShort(offset + 11) != 0, // hasFinished
+            cursor.isNull(offset + 12) ? null : cursor.getString(offset + 12), // des
+            cursor.isNull(offset + 13) ? null : cursor.getInt(offset + 13), // score
+            cursor.isNull(offset + 14) ? null : cursor.getFloat(offset + 14), // progress
+            cursor.isNull(offset + 15) ? null : cursor.getBlob(offset + 15), // iconByte
+            cursor.isNull(offset + 16) ? null : cursor.getShort(offset + 16) != 0, // isZip
+            cursor.isNull(offset + 17) ? null : cursor.getLong(offset + 17), // thread1
+            cursor.isNull(offset + 18) ? null : cursor.getLong(offset + 18), // thread2
+            cursor.isNull(offset + 19) ? null : cursor.getLong(offset + 19), // thread3
+            cursor.isNull(offset + 20) ? null : cursor.getLong(offset + 20), // thread4
+            cursor.isNull(offset + 21) ? null : cursor.getLong(offset + 21) // thread5
         );
         return entity;
     }
@@ -165,12 +233,20 @@ public class DownloadAppinfoDao extends AbstractDao<DownloadAppinfo, Long> {
         entity.setDownloadState(cursor.getInt(offset + 5));
         entity.setUrl(cursor.getString(offset + 6));
         entity.setIconUrl(cursor.isNull(offset + 7) ? null : cursor.getString(offset + 7));
-        entity.setPath(cursor.getString(offset + 8));
-        entity.setHasFinished(cursor.isNull(offset + 9) ? null : cursor.getShort(offset + 9) != 0);
-        entity.setDes(cursor.isNull(offset + 10) ? null : cursor.getString(offset + 10));
-        entity.setScore(cursor.isNull(offset + 11) ? null : cursor.getInt(offset + 11));
-        entity.setProgress(cursor.isNull(offset + 12) ? null : cursor.getFloat(offset + 12));
-        entity.setIconByte(cursor.isNull(offset + 13) ? null : cursor.getBlob(offset + 13));
+        entity.setApkPath(cursor.isNull(offset + 8) ? null : cursor.getString(offset + 8));
+        entity.setZipPath(cursor.isNull(offset + 9) ? null : cursor.getString(offset + 9));
+        entity.setUnzipPath(cursor.isNull(offset + 10) ? null : cursor.getString(offset + 10));
+        entity.setHasFinished(cursor.isNull(offset + 11) ? null : cursor.getShort(offset + 11) != 0);
+        entity.setDes(cursor.isNull(offset + 12) ? null : cursor.getString(offset + 12));
+        entity.setScore(cursor.isNull(offset + 13) ? null : cursor.getInt(offset + 13));
+        entity.setProgress(cursor.isNull(offset + 14) ? null : cursor.getFloat(offset + 14));
+        entity.setIconByte(cursor.isNull(offset + 15) ? null : cursor.getBlob(offset + 15));
+        entity.setIsZip(cursor.isNull(offset + 16) ? null : cursor.getShort(offset + 16) != 0);
+        entity.setThread1(cursor.isNull(offset + 17) ? null : cursor.getLong(offset + 17));
+        entity.setThread2(cursor.isNull(offset + 18) ? null : cursor.getLong(offset + 18));
+        entity.setThread3(cursor.isNull(offset + 19) ? null : cursor.getLong(offset + 19));
+        entity.setThread4(cursor.isNull(offset + 20) ? null : cursor.getLong(offset + 20));
+        entity.setThread5(cursor.isNull(offset + 21) ? null : cursor.getLong(offset + 21));
      }
     
     /** @inheritdoc */

@@ -18,4 +18,6 @@ public class Constant {
 	public static final String DISPLAY_BATTERY_PERCENT = "displayBattery";
 	/** 省电模式 **/
 	public static final String POWER_SAVING_MODE = "powerSaving";
+	/** 解压密码 **/
+	public static final String PASSWORD = "JiLe20150413";
 }

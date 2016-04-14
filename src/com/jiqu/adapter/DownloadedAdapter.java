@@ -4,6 +4,9 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.android.volley.toolbox.ImageLoader;
+import com.android.volley.toolbox.ImageLoader.ImageListener;
+import com.jiqu.application.StoreApplication;
 import com.jiqu.database.DownloadAppinfo;
 import com.jiqu.database.DownloadAppinfoDao.Properties;
 import com.jiqu.download.AppUtil;
@@ -115,14 +118,36 @@ public class DownloadedAdapter extends BaseAdapter {
 							DownloadAppinfo info = (DownloadAppinfo) qb.where(Properties.Id.eq(appinfo.getId())).unique();
 							if (info != null) {
 								DownloadManager.DBManager.getDownloadAppinfoDao().delete(info);
-								File file = new File(info.getPath());
-								if (file.exists()) {
-									file.delete();
+								if (info.getIsZip()) {
+									File file1 = new File(info.getZipPath());
+									if (file1.exists()) {
+										file1.delete();
+									}
+									File file2 = new File(info.getUnzipPath());
+									if (file2.exists()) {
+										file2.delete();
+									}
+								}else {
+									File file = new File(info.getApkPath());
+									if (file.exists()) {
+										file.delete();
+									}
 								}
 							}else {
-								File file = new File(appinfo.getPath());
-								if (file.exists()) {
-									file.delete();
+								if (info.getIsZip()) {
+									File file1 = new File(info.getZipPath());
+									if (file1.exists()) {
+										file1.delete();
+									}
+									File file2 = new File(info.getUnzipPath());
+									if (file2.exists()) {
+										file2.delete();
+									}
+								}else {
+									File file = new File(info.getApkPath());
+									if (file.exists()) {
+										file.delete();
+									}
 								}
 							}
 						}
@@ -229,13 +254,8 @@ public class DownloadedAdapter extends BaseAdapter {
 		
 		public void setData(DownloadAppinfo info){
 			this.info = info;
-			
-			byte[] bytes = info.getIconByte();
-			if (bytes == null || bytes.length == 0) {
-				appIcon.setImageBitmap(BitmapFactory.decodeResource(context.getResources(), R.drawable.ic_launcher));
-			}else {
-				appIcon.setImageBitmap(BitmapFactory.decodeByteArray(bytes, 0, bytes.length));
-			}
+			ImageListener listener = ImageLoader.getImageListener(appIcon,R.drawable.ic_launcher, R.drawable.ic_launcher);
+			StoreApplication.getInstance().getImageLoader().get(info.getIconUrl(), listener);
 			checkBox.setChecked(isChecked);
 			appName.setText(info.getAppName());
 			appDes.setText("换个哦it回家哈哈佛入伍辐射范围荣夫妇警方随即离开家里居然叫我加快老旧家具ioui哦");

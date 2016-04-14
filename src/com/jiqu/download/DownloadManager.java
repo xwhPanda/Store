@@ -3,10 +3,14 @@ package com.jiqu.download;
 import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.FileOutputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.RandomAccessFile;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -15,9 +19,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import com.jiqu.application.StoreApplication;
 import com.jiqu.database.DaoSession;
 import com.jiqu.database.DownloadAppinfo;
-import com.jiqu.database.DownloadAppinfoDao;
 import com.jiqu.database.DownloadAppinfoDao.Properties;
-import com.jiqu.download.HttpHelper.HttpResult;
 
 import de.greenrobot.dao.query.QueryBuilder;
 
@@ -38,15 +40,21 @@ public class DownloadManager {
 	public static final int STATE_DOWNLOADED = 4;
 	/** 下载失败 */
 	public static final int STATE_ERROR = 5;
+	/** 等待解压 */
+	public static final int WAITING_UNZIP = 6;
+	/** 正在解压 */
+	public static final int UNZIPING = 7;
+	/** 解压完成 */
+	public static final int UNZIPED = 8;
 
 	// public static final int STATE_READ = 6;
 
 	private static DownloadManager instance;
-	
+
 	public static DaoSession DBManager;
-	
+
 	private static final int UPDATE_DB_PER_SIZE = 2 * 1024;
-	
+
 	private static final int BUFFER_SIZE = 4 * 1024;
 
 	private DownloadManager() {
@@ -54,7 +62,8 @@ public class DownloadManager {
 	}
 
 	/** 用于记录下载信息，如果是正式项目，需要持久化保存 */
-//	private Map<Long, DownloadInfo> mDownloadMap = new ConcurrentHashMap<Long, DownloadInfo>();
+	// private Map<Long, DownloadInfo> mDownloadMap = new
+	// ConcurrentHashMap<Long, DownloadInfo>();
 	/** 用于记录观察者，当信息发送了改变，需要通知他们 */
 	private List<DownloadObserver> mObservers = new ArrayList<DownloadObserver>();
 	/** 用于记录所有下载的任务，方便在取消下载时，通过id能找到该任务进行删除 */
@@ -106,8 +115,8 @@ public class DownloadManager {
 	/** 下载，需要传入一个appInfo对象 */
 	public synchronized void download(DownloadAppinfo appInfo) {
 		// 先判断是否有这个app的下载信息
-		
-//		DownloadInfo info = mDownloadMap.get(appInfo.getId());
+
+		// DownloadInfo info = mDownloadMap.get(appInfo.getId());
 		DownloadAppinfo info = DBManager.getDownloadAppinfoDao().queryBuilder().where(Properties.Id.eq(appInfo.getId())).unique();
 		if (info == null) {// 如果没有，则根据appInfo创建一个新的下载信息
 			info = appInfo;
@@ -116,9 +125,14 @@ public class DownloadManager {
 			info.setDes("");
 			info.setScore(2);
 			DBManager.getDownloadAppinfoDao().insertOrReplace(info);
-//			mDownloadMap.put(appInfo.getId(), info);
-		}else {
-			String path = info.getPath();
+			// mDownloadMap.put(appInfo.getId(), info);
+		} else {
+			String path = "";
+			if (appInfo.getIsZip()) {
+				path = appInfo.getZipPath();
+			} else {
+				path = info.getApkPath();
+			}
 			boolean existsFile = FileUtil.isExistsFile(path);
 			if (existsFile) {
 				long fileSize = FileUtil.getFileSize(path);
@@ -127,11 +141,11 @@ public class DownloadManager {
 					info.setHasFinished(true);
 					info.setProgress((fileSize + 0.0f) / Float.parseFloat(info.getAppSize()));
 					info.setDownloadState(DownloadManager.STATE_DOWNLOADED);
-				}else {
+				} else {
 					info.setCurrentSize(fileSize);
 					info.setHasFinished(false);
 				}
-			}else {
+			} else {
 				info.setCurrentSize(0l);
 				info.setHasFinished(false);
 				info.setProgress(0.0f);
@@ -140,9 +154,7 @@ public class DownloadManager {
 			setDownloadInfo(info.getId(), info);
 		}
 		// 判断状态是否为STATE_NONE、STATE_PAUSED、STATE_ERROR。只有这3种状态才能进行下载，其他状态不予处理
-		if (info.getDownloadState() == STATE_NONE
-				|| info.getDownloadState() == STATE_PAUSED
-				|| info.getDownloadState() == STATE_ERROR) {
+		if (info.getDownloadState() == STATE_NONE || info.getDownloadState() == STATE_PAUSED || info.getDownloadState() == STATE_ERROR) {
 			// 下载之前，把状态设置为STATE_WAITING，因为此时并没有产开始下载，只是把任务放入了线程池中，当任务真正开始执行时，才会改为STATE_DOWNLOADING
 			info.setDownloadState(STATE_WAITING);
 			notifyDownloadStateChanged(info);// 每次状态发生改变，都需要回调该方法通知所有观察者
@@ -155,7 +167,7 @@ public class DownloadManager {
 	/** 暂停下载 */
 	public synchronized void pause(DownloadAppinfo appInfo) {
 		stopDownload(appInfo);
-//		DownloadInfo info = mDownloadMap.get(appInfo.getId());// 找出下载信息
+		// DownloadInfo info = mDownloadMap.get(appInfo.getId());// 找出下载信息
 		DownloadAppinfo info = DBManager.getDownloadAppinfoDao().queryBuilder().where(Properties.Id.eq(appInfo.getId())).unique();
 		if (info != null) {// 修改下载状态
 			info.setDownloadState(STATE_PAUSED);
@@ -163,16 +175,32 @@ public class DownloadManager {
 		}
 	}
 
+	public synchronized void pauseExit() {
+		for (Map.Entry<Long, DownloadTask> entry : mTaskMap.entrySet()) {
+			DownloadAppinfo info = DBManager.getDownloadAppinfoDao().queryBuilder().where(Properties.Id.eq(entry.getKey())).unique();
+			if (info != null) {
+				stopDownload(info);
+				info.setDownloadState(STATE_PAUSED);
+				DBManager.getDownloadAppinfoDao().insertOrReplace(info);
+			}
+		}
+	}
+
 	/** 取消下载，逻辑和暂停类似，只是需要删除已下载的文件 */
 	public synchronized void cancel(DownloadAppinfo appInfo) {
 		stopDownload(appInfo);
-//		DownloadInfo info = mDownloadMap.get(appInfo.getId());// 找出下载信息
+		// DownloadInfo info = mDownloadMap.get(appInfo.getId());// 找出下载信息
 		DownloadAppinfo info = DBManager.getDownloadAppinfoDao().queryBuilder().where(Properties.Id.eq(appInfo.getId())).unique();
 		if (info != null) {// 修改下载状态并删除文件
 			info.setDownloadState(STATE_NONE);
 			notifyDownloadStateChanged(info);
 			info.setCurrentSize((long) 0);
-			File file = new File(info.getPath());
+			File file = null;
+			if (appInfo.getIsZip()) {
+				file = new File(info.getZipPath());
+			} else {
+				file = new File(info.getApkPath());
+			}
 			file.delete();
 		}
 	}
@@ -180,36 +208,41 @@ public class DownloadManager {
 	/** 安装应用 */
 	public synchronized void install(DownloadAppinfo appInfo) {
 		stopDownload(appInfo);
-//		DownloadInfo info = mDownloadMap.get(appInfo.getId());// 找出下载信息
+		// DownloadInfo info = mDownloadMap.get(appInfo.getId());// 找出下载信息
 		DownloadAppinfo info = DBManager.getDownloadAppinfoDao().queryBuilder().where(Properties.Id.eq(appInfo.getId())).unique();
 		if (info != null) {// 发送安装的意图
 			Intent installIntent = new Intent(Intent.ACTION_VIEW);
 			installIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-			installIntent.setDataAndType(Uri.parse("file://" + info.getPath()),
-					"application/vnd.android.package-archive");
+			String path = "";
+			if (info.getIsZip()) {
+				path = info.getUnzipPath() + File.separator + info.getPackageName() + ".apk";
+			} else {
+				path = info.getApkPath();
+			}
+			installIntent.setDataAndType(Uri.parse("file://" + path), "application/vnd.android.package-archive");
 			AppUtil.getContext().startActivity(installIntent);
 		}
-//		notifyDownloadStateChanged(info);
+		// notifyDownloadStateChanged(info);
 	}
-	
-	/** 使用ADB命令进行安装  需放到线程里面执行*/
+
+	/** 使用ADB命令进行安装 需放到线程里面执行 */
 	public synchronized void installByADB(DownloadInfo appInfo) {
 		Process install = null;
 		try {
 			// 安装apk命令
 			install = Runtime.getRuntime().exec("adb install " + appInfo.getPath());
-//			install = Runtime.getRuntime().exec("pm install -r   +  /storage/sdcard0/cccfile/ccc.apk");
-			
-			BufferedReader reader = new BufferedReader(  
-                    new InputStreamReader(install.getInputStream()));  
-            int read;  
-            char[] buffer = new char[4096];  
-            StringBuffer output = new StringBuffer();  
-            while ((read = reader.read(buffer)) > 0) {  
-                output.append(buffer, 0, read);  
-            }  
-            reader.close();
-            
+			// install =
+			// Runtime.getRuntime().exec("pm install -r   +  /storage/sdcard0/cccfile/ccc.apk");
+
+			BufferedReader reader = new BufferedReader(new InputStreamReader(install.getInputStream()));
+			int read;
+			char[] buffer = new char[4096];
+			StringBuffer output = new StringBuffer();
+			while ((read = reader.read(buffer)) > 0) {
+				output.append(buffer, 0, read);
+			}
+			reader.close();
+
 			install.waitFor();
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -221,49 +254,48 @@ public class DownloadManager {
 
 		}
 	}
-	
+
 	public synchronized void installByPM(DownloadInfo appInfo) {
-		String result = execCommand("pm", "install", "-f",appInfo.getPath());
+		String result = execCommand("pm", "install", "-f", appInfo.getPath());
 		Log.i("installByPM", result + " ： result");
 	}
-	
-	public static String execCommand(String ...command)  {    
-	    Process process=null;    
-	    InputStream errIs=null;    
-	    InputStream inIs=null;    
-	    String result="a";    
-	  
-	    try {
-	        process=new ProcessBuilder().command(command).start();    
-	        ByteArrayOutputStream baos = new ByteArrayOutputStream();    
-	        int read = -1;    
-	        errIs=process.getErrorStream();             
-	        while((read=errIs.read())!=-1){    
-	            baos.write(read);    
-	        }    
-	        inIs=process.getInputStream();    
-	        while((read=inIs.read())!=-1){    
-	            baos.write(read);    
-	        }    
-	        result = new String(baos.toByteArray());    
-	        if(inIs!=null)    
-	            inIs.close();    
-	        if(errIs!=null)    
-	            errIs.close();    
-	        process.destroy();    
-	    } catch (IOException e) {    
-	        result = e.getMessage();    
-	    }    
-	    return result;    
-	}    
+
+	public static String execCommand(String... command) {
+		Process process = null;
+		InputStream errIs = null;
+		InputStream inIs = null;
+		String result = "a";
+
+		try {
+			process = new ProcessBuilder().command(command).start();
+			ByteArrayOutputStream baos = new ByteArrayOutputStream();
+			int read = -1;
+			errIs = process.getErrorStream();
+			while ((read = errIs.read()) != -1) {
+				baos.write(read);
+			}
+			inIs = process.getInputStream();
+			while ((read = inIs.read()) != -1) {
+				baos.write(read);
+			}
+			result = new String(baos.toByteArray());
+			if (inIs != null)
+				inIs.close();
+			if (errIs != null)
+				errIs.close();
+			process.destroy();
+		} catch (IOException e) {
+			result = e.getMessage();
+		}
+		return result;
+	}
 
 	/** 启动应用，启动应用是最后一个 */
 	public synchronized void open(AppInfo appInfo) {
 		try {
 			Context context = AppUtil.getContext();
 			// 获取启动Intent
-			Intent intent = context.getPackageManager()
-					.getLaunchIntentForPackage(appInfo.getApkid());
+			Intent intent = context.getPackageManager().getLaunchIntentForPackage(appInfo.getApkid());
 			context.startActivity(intent);
 		} catch (Exception e) {
 		}
@@ -272,28 +304,32 @@ public class DownloadManager {
 	/** 如果该下载任务还处于线程池中，且没有执行，先从线程池中移除 */
 	private void stopDownload(DownloadAppinfo appInfo) {
 		DownloadTask task = mTaskMap.remove(appInfo.getId());// 先从集合中找出下载任务
+		Log.i("TAG", "---------------------1----------------" + appInfo.getAppName());
 		if (task != null) {
+			Log.i("TAG", "---------------------2");
 			ThreadManager.getDownloadPool().cancel(task);// 然后从线程池中移除
 		}
 	}
 
 	/** 获取下载信息 */
 	public synchronized DownloadAppinfo getDownloadInfo(long id) {
-//		return mDownloadMap.get(id);
+		// return mDownloadMap.get(id);
 		QueryBuilder qb = DBManager.getDownloadAppinfoDao().queryBuilder();
 		DownloadAppinfo appinfo = (DownloadAppinfo) qb.where(Properties.Id.eq(id)).unique();
 		return appinfo;
 	}
 
 	public synchronized void setDownloadInfo(long id, DownloadAppinfo info) {
-//		mDownloadMap.put(id, info);
+		// mDownloadMap.put(id, info);
 		DBManager.getDownloadAppinfoDao().insertOrReplace(info);
 	}
 
 	/** 下载任务 */
 	public class DownloadTask implements Runnable {
 		private DownloadAppinfo info;
-//		private DownloadAppinfo downloadAppinfo;
+		private DownloadThread[] threads = new DownloadThread[5];
+
+		// private DownloadAppinfo downloadAppinfo;
 
 		public DownloadTask(DownloadAppinfo info) {
 			this.info = info;
@@ -303,96 +339,267 @@ public class DownloadManager {
 		public void run() {
 			info.setDownloadState(STATE_DOWNLOADING);// 先改变下载状态
 			notifyDownloadStateChanged(info);
-			File file = new File(info.getPath());// 获取下载文件
-			HttpResult httpResult = null;
+			String path = "";
+			if (info.getIsZip()) {
+				path = info.getZipPath();
+			} else {
+				path = info.getApkPath();
+			}
+			File file = new File(path);
 			InputStream stream = null;
-			if (info.getCurrentSize() == 0 || !file.exists()
-					|| file.length() != info.getCurrentSize()) {
+			if (info.getCurrentSize() == 0 || !file.exists()) {
 				// 如果文件不存在，或者进度为0，或者进度和文件长度不相符，就需要重新下载
 
 				info.setCurrentSize((long) 0);
 				file.delete();
+				
 			}
-			httpResult = HttpHelper.download(info.getUrl());
-			// else {
-			// // //文件存在且长度和进度相等，采用断点下载
-			// httpResult = HttpHelper.download(info.getUrl() + "&range=" +
-			// info.getCurrentSize());
-			// }
-			if (httpResult == null
-					|| (stream = httpResult.getInputStream()) == null) {
-				info.setDownloadState(STATE_ERROR);// 没有下载内容返回，修改为错误状态
-				notifyDownloadStateChanged(info);
-			} else {
+			if (!file.exists()) {
 				try {
-					skipBytesFromStream(stream, info.getCurrentSize());
-				} catch (Exception e1) {
-					e1.printStackTrace();
+					file.createNewFile();
+				} catch (IOException e) {
+					e.printStackTrace();
+					return;
 				}
-				FileOutputStream fos = null;
-				long length = 0;
-				boolean isChanged = false;
+			}
+			HttpURLConnection connection = null;
+			long length = 0;
+			long complete = 0;
+			try {
+				
+				long apkSize = Long.parseLong(info.getAppSize());
+				Log.i("TAG", "size 0 : " + apkSize);
+				if (apkSize <= 0l) {
+					URL url = new URL(info.getUrl());
+					connection = (HttpURLConnection) url.openConnection();
+					connection.setConnectTimeout(30000);
+					connection.setReadTimeout(1000 * 60 * 2);
+					connection.setRequestProperty("Accept-Encoding", "identity");
+					connection.setRequestMethod("GET");
+					
+					int stateCode = connection.getResponseCode();
+					if (stateCode == 200) {
+						apkSize = connection.getContentLength();
+						Log.i("TAG", "size 1 : " + apkSize);
+						RandomAccessFile randomAccessFile = new RandomAccessFile(path, "rwd");
+						randomAccessFile.setLength(apkSize);
+						randomAccessFile.close();
+						connection.disconnect();
+					}else {
+						return;
+					}
+				}else {
+					Log.i("TAG", "size 2 : " + apkSize);
+					int threadCount = threads.length;
+					long sectionSize = apkSize / threadCount;
+					for (int i = 0; i < threadCount - 1; i++) {
+						threads[i] = new DownloadThread(i, i * sectionSize, getCompelete(i), (i + 1) * sectionSize);
+						threads[i].start();
+					}
+					threads[threadCount -1] = new DownloadThread(threadCount - 1, (threadCount - 1) * sectionSize, getCompelete(threadCount - 1), apkSize - 1);
+					threads[threadCount -1].start();
+				}
+				
+				
+//				RandomAccessFile randomAccessFile = new RandomAccessFile(path, "rwd");
+//				randomAccessFile.seek(file.length());
+//				complete = file.length();
+//				int count = -1;
+//				byte[] buffer = new byte[4 * 1024];
+//				while (((count = stream.read(buffer)) != -1) && info.getDownloadState() == STATE_DOWNLOADING) {
+//					// 每次读取到数据后，都需要判断是否为下载状态，如果不是，下载需要终止，如果是，则刷新进度
+//					randomAccessFile.write(buffer, 0, count);
+//					complete += count;
+//					info.setCurrentSize(complete);
+//					if (complete - length > UPDATE_DB_PER_SIZE) {
+//						// 写入数据库
+//						length = complete;
+//						info.setProgress((info.getCurrentSize() + 0.0f) / Float.parseFloat(info.getAppSize()));
+//						DBManager.getDownloadAppinfoDao().insertOrReplace(info);
+//					}
+//
+//					notifyDownloadProgressed(info);// 刷新进度
+//				}
+//				Log.i("TAG", info.getCurrentSize() + "/" + info.getAppSize() + "/" + complete);
+			} catch (Exception e) {
+				e.printStackTrace();
+//				info.setDownloadState(STATE_ERROR);
+//				notifyDownloadStateChanged(info);
+			} finally {
 				try {
-					fos = new FileOutputStream(file, true);
-					int count = -1;
-					byte[] buffer = new byte[4 * 1024];
-					while (((count = stream.read(buffer)) != -1)
-							&& info.getDownloadState() == STATE_DOWNLOADING) {
-						// 每次读取到数据后，都需要判断是否为下载状态，如果不是，下载需要终止，如果是，则刷新进度
-						fos.write(buffer, 0, count);
-						fos.flush();
-						info.setCurrentSize(info.getCurrentSize() + count);
-						if (file.length() - length > UPDATE_DB_PER_SIZE) {
-							//写入数据库
-							length = file.length();
-//							info.setCurrentSize(file.length());
-							info.setProgress((info.getCurrentSize() + 0.0f) / Float.parseFloat(info.getAppSize()));
+					if (stream != null) {
+						stream.close();
+					}
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+				if (connection != null) {
+					connection.disconnect();
+				}
+			}
+			
+			new Thread(){
+				public void run() {
+					while (true) {
+						synchronized (info) {
+							try {
+								sleep(100);
+								if (info.getCurrentSize() >= Long.parseLong(info.getAppSize())) {
+									return;
+								}
+								info.setCurrentSize(info.getThread1() + info.getThread2() + info.getThread3() + info.getThread4() + info.getThread5());
+								info.setProgress((info.getCurrentSize() + 0.0f) / Float.parseFloat(info.getAppSize()));
+								DBManager.getDownloadAppinfoDao().insertOrReplace(info);
+								notifyDownloadProgressed(info);
+							} catch (InterruptedException e) {
+								// TODO Auto-generated catch block
+								e.printStackTrace();
+							}
+						}
+					}
+				};
+			}.start();
+
+//			if (info.getCurrentSize() == Long.parseLong(info.getAppSize())) {
+//				info.setDownloadState(STATE_DOWNLOADED);
+//				info.setProgress(1.0f);
+//				DBManager.getDownloadAppinfoDao().insertOrReplace(info);
+//				notifyDownloadStateChanged(info);
+//			} else if (info.getDownloadState() == STATE_PAUSED) {// 判断状态
+//				DBManager.getDownloadAppinfoDao().insertOrReplace(info);
+//				notifyDownloadStateChanged(info);
+//			} else {
+//				info.setDownloadState(STATE_ERROR);
+//				// DBManager.getDownloadAppinfoDao().delete(info);
+//				notifyDownloadStateChanged(info);
+//				// info.setCurrentSize((long) 0);// 错误状态需要删除文件
+//				// file.delete();
+//			}
+//
+//			mTaskMap.remove(info.getId());
+		}
+		
+		private long getCompelete(int i){
+			long size = 0;
+			switch (i) {
+			case 0:
+				size = info.getThread1();
+				break;
+			case 1:
+				size = info.getThread2();
+				break;
+			case 2:
+				size = info.getThread3();
+				break;
+			case 3:
+				size = info.getThread4();
+				break;
+			case 4:
+				size = info.getThread5();
+				break;
+			}
+			
+			return size;
+		}
+		
+		
+		private class DownloadThread extends Thread{
+			private int threadId;
+			private long startPos;
+			private long endPos;
+			private long compeleteSize;
+			
+			public DownloadThread(int threadId,long startPos,long compeleteSize,long endPos){
+				this.threadId = threadId;
+				this.startPos = startPos;
+				this.endPos = endPos;
+				
+				Log.i("TAG", startPos + "/" + compeleteSize + "/" + endPos);
+			}
+			
+			private synchronized void setComplete(){
+				if (threadId == 0) {
+					info.setThread1(compeleteSize);
+				}else if (threadId == 1) {
+					info.setThread2(compeleteSize);
+				}else if (threadId == 2) {
+					info.setThread3(compeleteSize);
+				}else if (threadId == 3) {
+					info.setThread4(compeleteSize);
+				}else if (threadId == 4) {
+					info.setThread5(compeleteSize);
+				}
+			}
+			
+			@Override
+			public void run() {
+				// TODO Auto-generated method stub
+				String path = "";
+				if (info.getIsZip()) {
+					path = info.getZipPath();
+				}else {
+					path = info.getApkPath();
+				}
+				HttpURLConnection connection = null;
+				InputStream is = null;
+				byte[] bf = new byte[8 * 1024];
+				RandomAccessFile randomAccessFile = null;
+				try {
+					randomAccessFile = new RandomAccessFile(path, "rwd");
+					randomAccessFile.seek(startPos + compeleteSize);
+					connection = (HttpURLConnection) new URL(info.getUrl()).openConnection();
+					connection.setConnectTimeout(60 * 1000);
+					connection.setReadTimeout(60 * 1000);
+					connection.setRequestMethod("GET");
+					connection.setRequestProperty("Accept-Encoding", "identity");
+					connection.setRequestProperty("Range", "bytes=" + (compeleteSize + startPos) + "-" + endPos);
+					is = connection.getInputStream();
+					int length = 0;
+					while ((length = is.read(bf)) != -1 && info.getDownloadState() == STATE_DOWNLOADING) {
+						randomAccessFile.write(bf, 0, length);
+						compeleteSize += length;
+						synchronized (this) {
+							setComplete();
 							DBManager.getDownloadAppinfoDao().insertOrReplace(info);
 						}
-						
-						notifyDownloadProgressed(info);// 刷新进度
 					}
-				} catch (Exception e) {
+				} catch (FileNotFoundException e) {
+					// TODO Auto-generated catch block
 					e.printStackTrace();
-					info.setDownloadState(STATE_ERROR);
-					notifyDownloadStateChanged(info);
-					info.setCurrentSize((long) 0);
-					file.delete();
-				} finally {
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}finally{
+					if (is != null) {
+						try {
+							is.close();
+						} catch (IOException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
+					}
+					if (connection != null) {
+						connection.disconnect();
+					}
 					try {
-						if (fos != null) {
-							fos.close();
+						if (randomAccessFile != null) {
+							randomAccessFile.close();
 						}
 					} catch (IOException e) {
+						// TODO Auto-generated catch block
 						e.printStackTrace();
 					}
-					if (httpResult != null) {
-						httpResult.close();
+					synchronized (this) {
+						setComplete();
+						DBManager.getDownloadAppinfoDao().insertOrReplace(info);
 					}
-				}
-
-				// 判断进度是否和app总长度相等
-				
-				if (info.getCurrentSize() == Long.parseLong(info.getAppSize())) {
-					info.setDownloadState(STATE_DOWNLOADED);
-					info.setProgress(1.0f);
-					DBManager.getDownloadAppinfoDao().insertOrReplace(info);
-					notifyDownloadStateChanged(info);
-				} else if (info.getDownloadState() == STATE_PAUSED) {// 判断状态
-					DBManager.getDownloadAppinfoDao().insertOrReplace(info);
-					notifyDownloadStateChanged(info);
-				} else {
-					info.setDownloadState(STATE_ERROR);
-					DBManager.getDownloadAppinfoDao().delete(info);
-					notifyDownloadStateChanged(info);
-					info.setCurrentSize((long) 0);// 错误状态需要删除文件
-					file.delete();
 				}
 				
 			}
-			mTaskMap.remove(info.getId());
 		}
 	}
+	
+	
 
 	public interface DownloadObserver {
 
@@ -419,8 +626,7 @@ public class DownloadManager {
 		while (remaining > 0) {
 			try {
 				long skip = inputStream.skip(10000);
-				nr = inputStream.read(localSkipBuffer, 0,
-						(int) Math.min(SKIP_BUFFER_SIZE, remaining));
+				nr = inputStream.read(localSkipBuffer, 0, (int) Math.min(SKIP_BUFFER_SIZE, remaining));
 			} catch (IOException e) {
 				e.printStackTrace();
 			}

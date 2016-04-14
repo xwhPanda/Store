@@ -69,9 +69,16 @@ public class FileUtil {
 		return path;
 	}
 
-	public static String getDownloadDir(Context context) {
+	public static String getApkDownloadDir(Context context) {
 		String path = getPhoneMemoryPath(context) + File.separator
-				+ "mdownload" + File.separator + "download";
+				+ "mdownload" + File.separator + "apkDownload";
+		createNewDir(path);
+		return path;
+	}
+	
+	public static String getZipDownloadDir(Context context) {
+		String path = getPhoneMemoryPath(context) + File.separator
+				+ "mdownload" + File.separator + "zipDownload";
 		createNewDir(path);
 		return path;
 	}
@@ -393,6 +400,28 @@ public class FileUtil {
 		}
 
 		return false;
+	}
+	
+	public static String getFileSize(long size){
+		DecimalFormat formater = new DecimalFormat("####.0");
+		if (size >= 0) {
+			if(size < 1024){
+				return size+"B";
+			}else if(size<1024*1024){
+				float kbsize = size/1024f;  
+				return formater.format(kbsize)+"KB";
+			}else if(size<1024*1024*1024){
+				float mbsize = size/1024f/1024f;  
+				return formater.format(mbsize)+"M";
+			}else if(size<1024*1024*1024*1024){
+				float gbsize = size/1024f/1024f/1024f;  
+				return formater.format(gbsize)+"G";
+			}else{
+				return 0 + "KB";
+			}
+		}else {
+			return 0 + "KB";
+		}
 	}
 	
 	public static String getSize(long size){
