@@ -109,7 +109,6 @@ public class ThreadManager {
 			}
 		}
 
-		/** 取消线程池中某个还未执行的任务 */
 		public synchronized boolean contains(Runnable run) {
 			if (mPool != null && (!mPool.isShutdown() || mPool.isTerminating())) {
 				return mPool.getQueue().contains(run);

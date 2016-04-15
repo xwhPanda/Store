@@ -38,7 +38,14 @@ public class GameInfo {
 	private String noread_key = "noread_key";
 	
 	private int adapterType;//布局类型
+	private int state = -1;
 	
+	public synchronized int getState() {
+		return state;
+	}
+	public synchronized void setState(int state) {
+		this.state = state;
+	}
 	public synchronized int getAdapterType() {
 		return adapterType;
 	}
@@ -210,7 +217,11 @@ public class GameInfo {
 		downloadInfo.setAppName(info.name);
 		downloadInfo.setAppSize(info.app_size);
 		downloadInfo.setCurrentSize((long) 0);
-		downloadInfo.setDownloadState(DownloadManager.STATE_NONE);
+		if (info.state != -1) {
+			downloadInfo.setDownloadState(info.state);
+		}else {
+			downloadInfo.setDownloadState(DownloadManager.STATE_NONE);
+		}
 		downloadInfo.setUrl(info.url);
 		downloadInfo.setIconUrl(info.ldpi_icon_url);
 		downloadInfo.setApkPath(FileUtil.getApkDownloadDir(AppUtil.getContext()) + File.separator + info.name + ".apk");
@@ -221,6 +232,10 @@ public class GameInfo {
 		downloadInfo.setThread3(0l);
 		downloadInfo.setThread4(0l);
 		downloadInfo.setThread5(0l);
+		downloadInfo.setProgress(0.0f);
+		downloadInfo.setHasFinished(false);
+		downloadInfo.setDes("");
+		downloadInfo.setScore(2);
 		if (!info.url.endsWith(".apk")) {
 			downloadInfo.setIsZip(true);
 		}else {

@@ -26,6 +26,7 @@ import de.greenrobot.dao.query.QueryBuilder;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
+import android.renderscript.Light;
 import android.util.Log;
 
 public class DownloadManager {
@@ -43,9 +44,13 @@ public class DownloadManager {
 	/** 等待解压 */
 	public static final int WAITING_UNZIP = 6;
 	/** 正在解压 */
-	public static final int UNZIPING = 7;
+	public static final int STATE_UNZIPING = 7;
 	/** 解压完成 */
-	public static final int UNZIPED = 8;
+	public static final int STATE_UNZIPED = 8;
+	/** 已安装 */
+	public static final int STATE_INSTALLED = 9;
+	/** 升级  */
+	public static final int STATE_NEED_UPDATE = 10;
 
 	// public static final int STATE_READ = 6;
 
@@ -120,10 +125,6 @@ public class DownloadManager {
 		DownloadAppinfo info = DBManager.getDownloadAppinfoDao().queryBuilder().where(Properties.Id.eq(appInfo.getId())).unique();
 		if (info == null) {// 如果没有，则根据appInfo创建一个新的下载信息
 			info = appInfo;
-			info.setProgress(0.0f);
-			info.setHasFinished(false);
-			info.setDes("");
-			info.setScore(2);
 			DBManager.getDownloadAppinfoDao().insertOrReplace(info);
 			// mDownloadMap.put(appInfo.getId(), info);
 		} else {
@@ -133,21 +134,33 @@ public class DownloadManager {
 			} else {
 				path = info.getApkPath();
 			}
-			boolean existsFile = FileUtil.isExistsFile(path);
-			if (existsFile) {
+			File file = new File(path);
+			if (file.exists()) {
 				long fileSize = FileUtil.getFileSize(path);
-				if (fileSize == Long.parseLong(info.getAppSize())) {
-					info.setCurrentSize(fileSize);
+				if (info.getCurrentSize() > fileSize) {
+					file.delete();
+					info.setCurrentSize(0l);
+					info.setHasFinished(false);
+					info.setThread1(0l);
+					info.setThread2(0l);
+					info.setThread3(0l);
+					info.setThread4(0l);
+					info.setThread5(0l);
+					info.setProgress(0.0f);
+					info.setDownloadState(DownloadManager.STATE_NONE);
+				}else if (info.getCurrentSize() == fileSize) {
 					info.setHasFinished(true);
 					info.setProgress((fileSize + 0.0f) / Float.parseFloat(info.getAppSize()));
 					info.setDownloadState(DownloadManager.STATE_DOWNLOADED);
-				} else {
-					info.setCurrentSize(fileSize);
-					info.setHasFinished(false);
 				}
 			} else {
 				info.setCurrentSize(0l);
 				info.setHasFinished(false);
+				info.setThread1(0l);
+				info.setThread2(0l);
+				info.setThread3(0l);
+				info.setThread4(0l);
+				info.setThread5(0l);
 				info.setProgress(0.0f);
 				info.setDownloadState(DownloadManager.STATE_NONE);
 			}
@@ -167,7 +180,6 @@ public class DownloadManager {
 	/** 暂停下载 */
 	public synchronized void pause(DownloadAppinfo appInfo) {
 		stopDownload(appInfo);
-		// DownloadInfo info = mDownloadMap.get(appInfo.getId());// 找出下载信息
 		DownloadAppinfo info = DBManager.getDownloadAppinfoDao().queryBuilder().where(Properties.Id.eq(appInfo.getId())).unique();
 		if (info != null) {// 修改下载状态
 			info.setDownloadState(STATE_PAUSED);
@@ -291,11 +303,11 @@ public class DownloadManager {
 	}
 
 	/** 启动应用，启动应用是最后一个 */
-	public synchronized void open(AppInfo appInfo) {
+	public synchronized void open(String pkg) {
 		try {
 			Context context = AppUtil.getContext();
 			// 获取启动Intent
-			Intent intent = context.getPackageManager().getLaunchIntentForPackage(appInfo.getApkid());
+			Intent intent = context.getPackageManager().getLaunchIntentForPackage(pkg);
 			context.startActivity(intent);
 		} catch (Exception e) {
 		}
@@ -304,9 +316,8 @@ public class DownloadManager {
 	/** 如果该下载任务还处于线程池中，且没有执行，先从线程池中移除 */
 	private void stopDownload(DownloadAppinfo appInfo) {
 		DownloadTask task = mTaskMap.remove(appInfo.getId());// 先从集合中找出下载任务
-		Log.i("TAG", "---------------------1----------------" + appInfo.getAppName());
 		if (task != null) {
-			Log.i("TAG", "---------------------2");
+			task.setPause();
 			ThreadManager.getDownloadPool().cancel(task);// 然后从线程池中移除
 		}
 	}
@@ -329,10 +340,12 @@ public class DownloadManager {
 		private DownloadAppinfo info;
 		private DownloadThread[] threads = new DownloadThread[5];
 
-		// private DownloadAppinfo downloadAppinfo;
-
 		public DownloadTask(DownloadAppinfo info) {
 			this.info = info;
+		}
+		
+		public void setPause(){
+			info.setDownloadState(STATE_PAUSED);
 		}
 
 		@Override
@@ -347,12 +360,16 @@ public class DownloadManager {
 			}
 			File file = new File(path);
 			InputStream stream = null;
-			if (info.getCurrentSize() == 0 || !file.exists()) {
-				// 如果文件不存在，或者进度为0，或者进度和文件长度不相符，就需要重新下载
-
-				info.setCurrentSize((long) 0);
+//			if (info.getCurrentSize() == 0 || !file.exists()) {
+//				// 如果文件不存在，或者进度为0，或者进度和文件长度不相符，就需要重新下载
+//
+//				info.setCurrentSize((long) 0);
+//				file.delete();
+//				
+//			}
+			if (file.length() > Long.parseLong(info.getAppSize())) {
+				info.setCurrentSize(0l);
 				file.delete();
-				
 			}
 			if (!file.exists()) {
 				try {
@@ -362,13 +379,12 @@ public class DownloadManager {
 					return;
 				}
 			}
+			
 			HttpURLConnection connection = null;
 			long length = 0;
 			long complete = 0;
 			try {
-				
 				long apkSize = Long.parseLong(info.getAppSize());
-				Log.i("TAG", "size 0 : " + apkSize);
 				if (apkSize <= 0l) {
 					URL url = new URL(info.getUrl());
 					connection = (HttpURLConnection) url.openConnection();
@@ -380,7 +396,6 @@ public class DownloadManager {
 					int stateCode = connection.getResponseCode();
 					if (stateCode == 200) {
 						apkSize = connection.getContentLength();
-						Log.i("TAG", "size 1 : " + apkSize);
 						RandomAccessFile randomAccessFile = new RandomAccessFile(path, "rwd");
 						randomAccessFile.setLength(apkSize);
 						randomAccessFile.close();
@@ -389,7 +404,6 @@ public class DownloadManager {
 						return;
 					}
 				}else {
-					Log.i("TAG", "size 2 : " + apkSize);
 					int threadCount = threads.length;
 					long sectionSize = apkSize / threadCount;
 					for (int i = 0; i < threadCount - 1; i++) {
@@ -438,23 +452,30 @@ public class DownloadManager {
 				}
 			}
 			
+			
 			new Thread(){
 				public void run() {
-					while (true) {
+					while (info.getDownloadState() == STATE_DOWNLOADING) {
 						synchronized (info) {
-							try {
-								sleep(100);
+//							try {
+//								sleep(100);
 								if (info.getCurrentSize() >= Long.parseLong(info.getAppSize())) {
+									info.setDownloadState(STATE_DOWNLOADED);
+									info.setProgress(1.0f);
+									DBManager.getDownloadAppinfoDao().insertOrReplace(info);
+//									notifyDownloadProgressed(info);
+									notifyDownloadStateChanged(info);
+									mTaskMap.remove(info.getId());
 									return;
 								}
 								info.setCurrentSize(info.getThread1() + info.getThread2() + info.getThread3() + info.getThread4() + info.getThread5());
 								info.setProgress((info.getCurrentSize() + 0.0f) / Float.parseFloat(info.getAppSize()));
 								DBManager.getDownloadAppinfoDao().insertOrReplace(info);
 								notifyDownloadProgressed(info);
-							} catch (InterruptedException e) {
-								// TODO Auto-generated catch block
-								e.printStackTrace();
-							}
+//							} catch (InterruptedException e) {
+//								// TODO Auto-generated catch block
+//								e.printStackTrace();
+//							}
 						}
 					}
 				};
@@ -513,8 +534,8 @@ public class DownloadManager {
 				this.threadId = threadId;
 				this.startPos = startPos;
 				this.endPos = endPos;
+				this.compeleteSize = compeleteSize;
 				
-				Log.i("TAG", startPos + "/" + compeleteSize + "/" + endPos);
 			}
 			
 			private synchronized void setComplete(){
@@ -558,18 +579,17 @@ public class DownloadManager {
 					while ((length = is.read(bf)) != -1 && info.getDownloadState() == STATE_DOWNLOADING) {
 						randomAccessFile.write(bf, 0, length);
 						compeleteSize += length;
-						synchronized (this) {
+//						synchronized (this) {
 							setComplete();
-							DBManager.getDownloadAppinfoDao().insertOrReplace(info);
-						}
+//							DBManager.getDownloadAppinfoDao().insertOrReplace(info);
+//						}
 					}
-				} catch (FileNotFoundException e) {
+				} catch (Exception e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
-				} catch (IOException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}finally{
+					info.setDownloadState(STATE_ERROR);
+					mTaskMap.remove(info.getId());
+				} finally{
 					if (is != null) {
 						try {
 							is.close();

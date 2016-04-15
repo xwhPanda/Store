@@ -7,6 +7,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
+import com.jiqu.application.StoreApplication;
+import com.jiqu.download.DownloadManager;
 import com.jiqu.download.ThreadManager;
 import com.jiqu.interfaces.UninstallStateObserver;
 import com.jiqu.object.InstalledApp;
@@ -148,6 +150,21 @@ public class InstalledAppTool {
 		return app;
 	}
 	
+	public static int contain(String pkg,int versionCode){
+		int state = -1;
+		List<InstalledApp> apps = getPersonalApp(StoreApplication.context);
+		for (InstalledApp app : apps) {
+			if (pkg.equals(app.packageName)) {
+				Log.i("TAG", pkg);
+				if (app.versionCode < versionCode) {
+					state = DownloadManager.STATE_NEED_UPDATE;
+				}
+				state = DownloadManager.STATE_INSTALLED;
+			}
+		}
+		
+		return state;
+	}
 
 	public static boolean RootCommand(String command) {
 		Process process = null;

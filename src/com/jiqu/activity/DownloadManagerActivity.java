@@ -1,5 +1,6 @@
 package com.jiqu.activity;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import android.os.Bundle;
@@ -42,8 +43,8 @@ public class DownloadManagerActivity extends BaseActivity implements OnClickList
 	private ListView downloadingList,downloadedList;
 	private DownloadingAdapter downloadingAdapter;
 	private DownloadedAdapter downloadedAdapter;
-	private List<DownloadAppinfo> downloadingApps;
-	private List<DownloadAppinfo> downloadedApps;
+	private List<DownloadAppinfo> downloadingApps = new ArrayList<DownloadAppinfo>();
+	private List<DownloadAppinfo> downloadedApps = new ArrayList<DownloadAppinfo>();
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -138,15 +139,19 @@ public class DownloadManagerActivity extends BaseActivity implements OnClickList
 	
 	private void initData(){
 		QueryBuilder<DownloadAppinfo> qb = StoreApplication.daoSession.getDownloadAppinfoDao().queryBuilder();
-		downloadingApps = qb.where(qb.or(Properties.DownloadState.eq(DownloadManager.STATE_DOWNLOADING)
+		List<DownloadAppinfo> infos1 = qb.where(qb.or(Properties.DownloadState.eq(DownloadManager.STATE_DOWNLOADING)
 				, Properties.DownloadState.eq(DownloadManager.STATE_ERROR)
 				, Properties.DownloadState.eq(DownloadManager.STATE_NONE)
 				,Properties.DownloadState.eq(DownloadManager.STATE_PAUSED)
 				,Properties.DownloadState.eq(DownloadManager.STATE_WAITING))).list();
+		downloadingApps.clear();
+		downloadingApps.addAll(infos1);
 		downloadingAdapter = new DownloadingAdapter(this, downloadingApps,handler);
 		downloadingList.setAdapter(downloadingAdapter);
 		
-		downloadedApps = StoreApplication.daoSession.getDownloadAppinfoDao().queryBuilder().where(Properties.DownloadState.eq(DownloadManager.STATE_DOWNLOADED)).list();
+		List<DownloadAppinfo> infos2 = StoreApplication.daoSession.getDownloadAppinfoDao().queryBuilder().where(Properties.DownloadState.eq(DownloadManager.STATE_DOWNLOADED)).list();
+		downloadedApps.clear();
+		downloadingApps.addAll(infos2);
 		downloadedAdapter = new DownloadedAdapter(this, downloadedApps);
 		downloadedList.setAdapter(downloadedAdapter);
 	}

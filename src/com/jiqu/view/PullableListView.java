@@ -10,7 +10,9 @@ import android.widget.ListView;
 
 public class PullableListView extends ListView implements Pullable
 {
-	private Boolean isCanPullDown = false;
+	private boolean isCanPullDown = false;
+	private boolean isCanPullUp = true;
+	private boolean hasHead = false;//是否有头部
 
 	public PullableListView(Context context)
 	{
@@ -30,6 +32,14 @@ public class PullableListView extends ListView implements Pullable
 	public void setCanPullDown(boolean canPullDown){
 		isCanPullDown = canPullDown;
 	}
+	
+	public void setCanPullUp(boolean canPullUp){
+		isCanPullUp = canPullUp;
+	}
+	
+	public void setHasHead(boolean hasHead){
+		this.hasHead = hasHead;
+	}
 
 	@Override
 	public boolean canPullDown()
@@ -38,7 +48,7 @@ public class PullableListView extends ListView implements Pullable
 			if (getCount() == 0)
 			{
 				// 没有item的时候也可以下拉刷新
-				return true;
+				return false;
 			} else if (getFirstVisiblePosition() == 0
 					&& getChildAt(0).getTop() >= 0)
 			{
@@ -54,19 +64,27 @@ public class PullableListView extends ListView implements Pullable
 	@Override
 	public boolean canPullUp()
 	{
-		if (getCount() == 0)
-		{
-			// 没有item的时候也可以上拉加载
-			return true;
-		} else if (getLastVisiblePosition() == (getCount() - 1))
-		{
-			// 滑到底部了
-			if (getChildAt(getLastVisiblePosition() - getFirstVisiblePosition()) != null
-					&& getChildAt(
-							getLastVisiblePosition()
-									- getFirstVisiblePosition()).getBottom() <= getMeasuredHeight())
-				return true;
+		if (isCanPullUp) {
+			int count = 0;
+			if (hasHead) {
+				count = 1;
+			}
+			if (getCount() == count)
+			{
+				// 没有item的时候也可以上拉加载
+				return false;
+			} else if (getLastVisiblePosition() == (getCount() - 1))
+			{
+				// 滑到底部了
+				if (getChildAt(getLastVisiblePosition() - getFirstVisiblePosition()) != null
+						&& getChildAt(
+								getLastVisiblePosition()
+								- getFirstVisiblePosition()).getBottom() <= getMeasuredHeight())
+					return true;
+			}
+			return false;
+		}else {
+			return false;
 		}
-		return false;
 	}
 }
