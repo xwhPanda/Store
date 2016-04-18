@@ -1,21 +1,28 @@
 package com.jiqu.download;
 
 import java.io.File;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 import net.lingala.zip4j.core.ZipFile;
 import net.lingala.zip4j.exception.ZipException;
+import net.lingala.zip4j.model.FileHeader;
 import net.lingala.zip4j.progress.ProgressMonitor;
 
+import android.os.Handler;
 import android.util.Log;
 
 import com.jiqu.database.DownloadAppinfo;
 
 public class UnZipManager {
 	private static final String UNZIP_THREADPOOL_NAME = "SINGLE_UNZIP_THREADPOOL_NAME";
+	public static final int UNZIP_SUCCESS = 0;
+	public static final int UNZIP_FAILE = 1;
 
 	private static UnZipManager instance;
+	private Handler handler;
+	int percent = 0;
 	
 	private Map<String, UnZipRunnable> map = new ConcurrentHashMap<String, UnZipManager.UnZipRunnable>();
 	
@@ -27,7 +34,8 @@ public class UnZipManager {
 		return instance;
 	}
 	
-	public void unzip(DownloadAppinfo downloadAppinfo ,String password){
+	public void unzip(DownloadAppinfo downloadAppinfo ,String password,Handler handler){
+		this.handler = handler;
 		UnZipRunnable runnable = map.get(downloadAppinfo.getPackageName());
 		if (runnable == null) {
 			runnable = new UnZipRunnable(downloadAppinfo, password);
@@ -51,10 +59,11 @@ public class UnZipManager {
 			// TODO Auto-generated method stub
 			try {
 				ZipFile zFile = new ZipFile(downloadAppinfo.getZipPath());
-				zFile.setFileNameCharset("GBK");  
+				zFile.setFileNameCharset("GBK");
 				  
 		        if (!zFile.isValidZipFile()){
-		            throw new ZipException("exception!");  
+		        	handler.sendEmptyMessage(UNZIP_FAILE);
+		            return;
 		        }  
 		        File destDir = new File(downloadAppinfo.getUnzipPath());
 		        if (destDir.isDirectory() && !destDir.exists()){
@@ -62,24 +71,46 @@ public class UnZipManager {
 		        }  
 		        if (zFile.isEncrypted()){
 		            zFile.setPassword(password); // 设置解压密码  
-		        }  
-		        zFile.setRunInThread(true); //true 在子线程中进行解压 , false主线程中解压  
-		        zFile.extractAll(downloadAppinfo.getUnzipPath());
-		        ProgressMonitor monitor = zFile.getProgressMonitor();
-		        while (unziping) {
-//		        	Log.i("TAG", "解压进度 ： " + monitor.getPercentDone());
-		        	if (monitor.getPercentDone() >= 100) {
-		        		map.remove(downloadAppinfo.getPackageName());
-		        		reName(downloadAppinfo.getUnzipPath() + "/.apk/" 
-		        		+ downloadAppinfo.getPackageName() + ".txt",  
-		        		downloadAppinfo.getPackageName() + ".apk");
-		        		unziping = false;
-		        	}
-				}
+		        }
+		        final ProgressMonitor monitor = zFile.getProgressMonitor();
 		        
+		        new Thread(){
+		        	public void run() {
+		        		try {
+							 while (true) {
+								 sleep(1000);
+						        	percent = monitor.getPercentDone();
+						        	Log.i("TAG", "解压进度 ： " + percent);
+						        	if (percent >= 100) {
+						        		map.remove(downloadAppinfo.getPackageName());
+						        		reName(downloadAppinfo.getUnzipPath() + "/.apk/" 
+						        		+ downloadAppinfo.getPackageName() + ".txt",  
+						        		downloadAppinfo.getPackageName() + ".apk");
+						        		handler.sendEmptyMessage(UNZIP_SUCCESS);
+						        		break;
+						        	}
+								}
+						} catch (InterruptedException e) {
+							e.printStackTrace();
+						}
+		        	};
+		        }.start();
+//		       
+//		        zFile.setRunInThread(true); //true 在子线程中进行解压 , false主线程中解压  
+//		        zFile.extractAll(downloadAppinfo.getUnzipPath());
+		        
+		        List fileHeaderList = zFile.getFileHeaders();
+		        for(int i = 0 ; i<fileHeaderList.size() ; i++){
+		        	Log.i("TAG", ((FileHeader)fileHeaderList.get(i)).getFileName());
+		        	String name = ((FileHeader)fileHeaderList.get(i)).getFileName();
+		        	if (name.endsWith(".txt") || name.endsWith(".obb")) {
+						zFile.extractFile(name, downloadAppinfo.getUnzipPath());
+					}
+		        }
 			} catch (ZipException e) {
 				map.remove(downloadAppinfo.getPackageName());
 				unziping = false;
+				handler.sendEmptyMessage(UNZIP_FAILE);
 				e.printStackTrace();
 			}  
 	        

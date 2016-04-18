@@ -16,7 +16,6 @@ public class InstalledApp implements Serializable {
 	public Drawable appIcon;
 	public int versionCode;
 	public String versionName;
-	public String activityName;
 	//用来计算应用大小
 	public String filePath;
 	public boolean isSystem = false;
@@ -26,6 +25,6 @@ public class InstalledApp implements Serializable {
 	
 	@Override
 	public String toString() {
-		return "InstalledApp [name=" + name + ", packageName=" + packageName + ", appIcon=" + appIcon + ", versionCode=" + versionCode + ", versionName=" + versionName + ", activityName=" + activityName + ", filePath=" + filePath + ", isSystem=" + isSystem + ", state=" + state + ", checkState=" + checkState + "]";
+		return "InstalledApp [name=" + name + ", packageName=" + packageName + ", appIcon=" + appIcon + ", versionCode=" + versionCode + ", versionName=" + versionName + ", filePath=" + filePath + ", isSystem=" + isSystem + ", state=" + state + ", checkState=" + checkState + "]";
 	}
 }

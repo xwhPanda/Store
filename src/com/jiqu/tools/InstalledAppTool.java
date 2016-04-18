@@ -53,98 +53,66 @@ public class InstalledAppTool {
 		}
 	}
 
-	private static List<ResolveInfo> getInstallApp(Context context) {
-		PackageManager pm = context.getPackageManager();
-		Intent intent = new Intent(Intent.ACTION_MAIN, null);
-		intent.addCategory(Intent.CATEGORY_LAUNCHER);
-		List<ResolveInfo> infoList = pm.queryIntentActivities(intent, 0);
-		return infoList;
+	private static List<PackageInfo> getInstallAppsPkg(Context context){
+		return context.getPackageManager().getInstalledPackages(0);
 	}
 
 	public static List<InstalledApp> getPersonalApp(Context context) {
 		List<InstalledApp> apps = new ArrayList<InstalledApp>();
-		List<ResolveInfo> resolveInfos = getInstallApp(context);
+		List<PackageInfo> packageInfos = getInstallAppsPkg(context);
 		PackageManager pm = context.getPackageManager();
-		for (ResolveInfo info : resolveInfos) {
-			String pkg = info.activityInfo.packageName;
-			PackageInfo packageInfo = null;
-			try {
-				packageInfo = pm.getPackageInfo(pkg, 0);
-				if ((packageInfo.applicationInfo.flags & ApplicationInfo.FLAG_SYSTEM) <= 0) {
-					// 第三方应用
-					InstalledApp app = new InstalledApp();
-					app.activityName = info.activityInfo.name;
-					app.name = (String) info.loadLabel(pm);
-					app.packageName = packageInfo.packageName;
-					app.appIcon = info.loadIcon(pm);
-					app.versionCode = packageInfo.versionCode;
-					app.versionName = packageInfo.versionName;
-					app.filePath = packageInfo.applicationInfo.publicSourceDir;
-					app.isSystem = false;
-					apps.add(app);
-				}
-			} catch (NameNotFoundException e) {
-				// TODO Auto-generated catch block
+		
+		for (PackageInfo packageInfo:packageInfos) {
+			if ((packageInfo.applicationInfo.flags & ApplicationInfo.FLAG_SYSTEM) <= 0) {
+				// 第三方应用
+				InstalledApp app = new InstalledApp();
+				app.name = (String) packageInfo.applicationInfo.loadLabel(pm);
+				app.packageName = packageInfo.packageName;
+				app.appIcon = packageInfo.applicationInfo.loadIcon(pm);
+				app.versionCode = packageInfo.versionCode;
+				app.versionName = packageInfo.versionName;
+				app.filePath = packageInfo.applicationInfo.publicSourceDir;
+				app.isSystem = false;
+				apps.add(app);
 			}
-
 		}
 		return apps;
 	}
 
 	public static List<InstalledApp> getSystemApp(Context context) {
 		List<InstalledApp> apps = new ArrayList<InstalledApp>();
-		List<ResolveInfo> resolveInfos = getInstallApp(context);
 		PackageManager pm = context.getPackageManager();
-		for (ResolveInfo info : resolveInfos) {
-			String pkg = info.activityInfo.packageName;
-			PackageInfo packageInfo = null;
-			try {
-				packageInfo = pm.getPackageInfo(pkg, 0);
-				if ((packageInfo.applicationInfo.flags & ApplicationInfo.FLAG_SYSTEM) > 0) {
-					// 系统应用
-					InstalledApp app = new InstalledApp();
-					app.activityName = info.activityInfo.name;
-					app.name = (String) info.loadLabel(pm);
-					app.packageName = packageInfo.packageName;
-					app.appIcon = info.loadIcon(pm);
-					app.versionCode = packageInfo.versionCode;
-					app.versionName = packageInfo.versionName;
-					app.filePath = packageInfo.applicationInfo.publicSourceDir;
-					app.isSystem = true;
-					apps.add(app);
-				}
-			} catch (NameNotFoundException e) {
-				// TODO Auto-generated catch block
+		List<PackageInfo> packageInfos = getInstallAppsPkg(context);
+		for (PackageInfo packageInfo:packageInfos) {
+			if ((packageInfo.applicationInfo.flags & ApplicationInfo.FLAG_SYSTEM) > 0) {
+				// 系统应用
+				InstalledApp app = new InstalledApp();
+				app.name = (String) packageInfo.applicationInfo.loadLabel(pm);
+				app.packageName = packageInfo.packageName;
+				app.appIcon = packageInfo.applicationInfo.loadIcon(pm);
+				app.versionCode = packageInfo.versionCode;
+				app.versionName = packageInfo.versionName;
+				app.filePath = packageInfo.applicationInfo.publicSourceDir;
+				app.isSystem = false;
+				apps.add(app);
 			}
-
 		}
 		return apps;
 	}
 	
 	public static InstalledApp getInstallApp(Context context,String pkgName) {
-		List<ResolveInfo> resolveInfos = getInstallApp(context);
+		List<PackageInfo> packageInfos = getInstallAppsPkg(context);
 		InstalledApp app = new InstalledApp();
 		PackageManager pm = context.getPackageManager();
-		for (ResolveInfo info : resolveInfos) {
-			String pkg = info.activityInfo.packageName;
-			if (pkgName.equals(pkg)) {
-				PackageInfo packageInfo = null;
-				try {
-					packageInfo = pm.getPackageInfo(pkg, 0);
-					if ((packageInfo.applicationInfo.flags & ApplicationInfo.FLAG_SYSTEM) <= 0) {
-						app.activityName = info.activityInfo.name;
-						app.name = (String) info.loadLabel(pm);
-						app.packageName = packageInfo.packageName;
-						app.appIcon = info.loadIcon(pm);
-						app.versionCode = packageInfo.versionCode;
-						app.versionName = packageInfo.versionName;
-						app.filePath = packageInfo.applicationInfo.publicSourceDir;
-						app.isSystem = true;
-					}
-				} catch (NameNotFoundException e) {
-					// TODO Auto-generated catch block
-				}
-				break;
+		for (PackageInfo packageInfo:packageInfos) {
+			if ((packageInfo.applicationInfo.flags & ApplicationInfo.FLAG_SYSTEM) <= 0) {
+				app.name = (String) packageInfo.applicationInfo.loadLabel(pm);
+				app.packageName = packageInfo.packageName;
+				app.appIcon = packageInfo.applicationInfo.loadIcon(pm);
+				app.versionCode = packageInfo.versionCode;
+				app.versionName = packageInfo.versionName;
+				app.filePath = packageInfo.applicationInfo.publicSourceDir;
+				app.isSystem = false;
 			}
 		}
 		return app;

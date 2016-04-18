@@ -31,6 +31,7 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Bitmap.Config;
 import android.graphics.drawable.BitmapDrawable;
+import android.os.Handler;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -205,7 +206,6 @@ public class GameAdapter extends BaseAdapter implements DownloadObserver{
 		private boolean installDialogShowed = false;
 		
 		private int mState;
-		private float mProgress;
 		public DownloadAppinfo mData;
 		private DownloadManager mDownloadManager;
 		private boolean hasAttached;
@@ -295,39 +295,37 @@ public class GameAdapter extends BaseAdapter implements DownloadObserver{
 			}else {
 				filePath = data.getApkPath();
 			}
-			if (data.getDownloadState() != DownloadManager.STATE_INSTALLED
-					&& data.getDownloadState() != DownloadManager.STATE_NEED_UPDATE
-					&& data.getDownloadState() != DownloadManager.STATE_UNZIPING
-					&& data.getDownloadState() != DownloadManager.STATE_UNZIPED) {
-				
-				boolean existsFile = FileUtil.isExistsFile(filePath);
-				if (existsFile) {
-					long fileSize = FileUtil.getFileSize(filePath);
-					if (fileSize == Long.parseLong(data.getAppSize())) {
-						data.setCurrentSize(fileSize);
-						data.setHasFinished(true);
-						data.setProgress(1.0f);
-						data.setDownloadState(DownloadManager.STATE_DOWNLOADED);
-						mDownloadManager.setDownloadInfo(data.getId(), data);
-					}
-				}
-			}
 			
-			DownloadAppinfo downloadInfo = mDownloadManager.getDownloadInfo(data.getId());
-			if (downloadInfo != null) {
-				if (downloadInfo.getDownloadState() == DownloadManager.STATE_DOWNLOADED) {
-					if (data.getDownloadState() == DownloadManager.STATE_INSTALLED) {
-						mState = DownloadManager.STATE_INSTALLED;
+			mState = data.getDownloadState();
+			
+			if (data.getDownloadState() != DownloadManager.STATE_INSTALLED
+					&& data.getDownloadState() != DownloadManager.STATE_NEED_UPDATE) {
+				DownloadAppinfo downloadInfo = mDownloadManager.getDownloadInfo(data.getId());
+				hasAttached = FileUtil.isValidAttach(filePath, false);
+				if (downloadInfo != null) {
+					mState = downloadInfo.getDownloadState();
+					
+					if (hasAttached) {
+						if(!downloadInfo.getHasFinished()){
+							if (!firstIn) {
+								//上次异常退出
+								if (data.getDownloadState() == DownloadManager.STATE_DOWNLOADING) {
+									mState = DownloadManager.STATE_PAUSED;
+									firstIn = true;
+								}
+							}else {
+								mState = downloadInfo.getDownloadState();
+							}
+						}
 					}else {
-						mState = downloadInfo.getDownloadState();
+						mState = DownloadManager.STATE_NONE;
+						mDownloadManager.DBManager.delete(data);
 					}
 				}else {
-					mState = downloadInfo.getDownloadState();
+					mState = DownloadManager.STATE_NONE;
 				}
-				mProgress = downloadInfo.getProgress();
 			}else {
-				mState = DownloadManager.STATE_NONE;
-				mProgress = 0;
+				mDownloadManager.DBManager.getDownloadAppinfoDao().insertOrReplace(data);
 			}
 			this.mData = data;
 			refreshView();
@@ -345,41 +343,11 @@ public class GameAdapter extends BaseAdapter implements DownloadObserver{
 			ImageListener listener = ImageLoader.getImageListener(icon,R.drawable.ic_launcher, R.drawable.ic_launcher);
 			StoreApplication.getInstance().getImageLoader().get(mData.getIconUrl(), listener);
 			
-			String path = ""; 
-			if (mData.getIsZip()) {
-				path = mData.getZipPath();
-			}else {
-				path = mData.getApkPath();
-			}
-			
-			hasAttached = FileUtil.isValidAttach(path, false);
-
-//			DownloadAppinfo downloadInfo = mDownloadManager.getDownloadInfo(mData.getId());
-//			if (downloadInfo != null && hasAttached) {
-//				if(downloadInfo.getHasFinished()){
-////					mState = DownloadManager.STATE_DOWNLOADED;
-//				}else{
-//					if (!firstIn) {
-//						mState = DownloadManager.STATE_PAUSED;
-//						firstIn = true;
-//					}else {
-////						mState = downloadInfo.getDownloadState();
-//					}
-//
-//				}
-//
-//			} else {
-//				mState = DownloadManager.STATE_NONE;
-//				if(downloadInfo !=null){
-//					downloadInfo.setDownloadState(mState);
-//				}
-//			}
-			refreshState(mState, mProgress,true);
+			refreshState(mState, true);
 		}
 		
-		public void refreshState(int state , float progress,boolean isFirst){
+		public void refreshState(int state ,boolean isFirst){
 			mState = state;
-			mProgress = progress;
 			downloadBtn.clearAnimation();
 			switch (mState) {
 			case DownloadManager.STATE_NONE:
@@ -387,7 +355,6 @@ public class GameAdapter extends BaseAdapter implements DownloadObserver{
 				break;
 
 			case DownloadManager.STATE_PAUSED:
-				Log.i("TAG", "STATE_PAUSED");
 				downloadBtn.setBackgroundResource(R.drawable.zanting);
 				break;
 			case DownloadManager.STATE_ERROR:
@@ -410,9 +377,9 @@ public class GameAdapter extends BaseAdapter implements DownloadObserver{
 					installDialogShowed = true;
 					if (mData.getIsZip()) {
 						Log.i("TAG", mData.getAppName() + " : 下载完成 2");
-						UnZipManager.getInstance().unzip(mData, Constant.PASSWORD);
+						UnZipManager.getInstance().unzip(mData, Constant.PASSWORD,handler);
 						mData.setDownloadState(DownloadManager.STATE_UNZIPING);
-						refreshState(state, progress, isFirst);
+						refreshState(state, isFirst);
 					}else {
 						mDownloadManager.install(mData);
 						Log.i("TAG", mData.getAppName() + " : 下载完成 3");
@@ -426,6 +393,7 @@ public class GameAdapter extends BaseAdapter implements DownloadObserver{
 				Toast.makeText(context, "解压完成", Toast.LENGTH_SHORT).show();
 				break;
 			case DownloadManager.STATE_INSTALLED:
+				downloadBtn.setBackgroundResource(R.drawable.runing_selector);
 				Toast.makeText(context, "应用已安装", Toast.LENGTH_SHORT).show();
 				break;
 			case DownloadManager.STATE_NEED_UPDATE:
@@ -435,6 +403,17 @@ public class GameAdapter extends BaseAdapter implements DownloadObserver{
 				break;
 			}
 		}
+		
+		Handler handler = new Handler(){
+			public void handleMessage(android.os.Message msg) {
+				int what = msg.what;
+				if (what == UnZipManager.UNZIP_SUCCESS) {
+					Toast.makeText(context, "解压完成", Toast.LENGTH_SHORT).show();
+				}else if (what == UnZipManager.UNZIP_FAILE) {
+					Toast.makeText(context, "解压失败", Toast.LENGTH_SHORT).show();
+				}
+			};
+		};
 	}
 	
 	private class Holder3{
@@ -452,7 +431,7 @@ public class GameAdapter extends BaseAdapter implements DownloadObserver{
 					@Override
 					public void run() {
 						// TODO Auto-generated method stub
-						holder2.refreshState(info.getDownloadState(), info.getProgress(),false);
+						holder2.refreshState(info.getDownloadState(), false);
 					}
 				});
 			}

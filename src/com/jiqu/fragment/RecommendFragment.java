@@ -180,18 +180,6 @@ public class RecommendFragment extends Fragment implements OnPageChangeListener,
 		recommendListView.addHeaderView(headView);
 		recommendListView.setHasHead(true);
 
-		List<GameInformation> gameInformations = new ArrayList<GameInformation>();
-
-		for (int i = 0; i < 30; i++) {
-			GameInformation game = new GameInformation();
-			if (i % 4 == 1) {
-				game.adapterType = 0;
-			} else {
-				game.adapterType = 1;
-			}
-			gameInformations.add(game);
-		}
-
 		initViewSize();
 	}
 
