@@ -34,8 +34,7 @@ public class UnZipManager {
 		return instance;
 	}
 	
-	public void unzip(DownloadAppinfo downloadAppinfo ,String password,Handler handler){
-		this.handler = handler;
+	public void unzip(DownloadAppinfo downloadAppinfo ,String password){
 		UnZipRunnable runnable = map.get(downloadAppinfo.getPackageName());
 		if (runnable == null) {
 			runnable = new UnZipRunnable(downloadAppinfo, password);
@@ -44,10 +43,15 @@ public class UnZipManager {
 		ThreadManager.getSinglePool(UNZIP_THREADPOOL_NAME).execute(runnable);
 	}
 	
+	public boolean isUnZiping(String packageName){
+		return map.get(packageName) == null?false:true;
+	}
+	
 	private class UnZipRunnable implements Runnable{
 		private DownloadAppinfo downloadAppinfo;
 		private String password;
 		private boolean unziping = true;
+		ProgressMonitor monitor;
 		
 		public UnZipRunnable(DownloadAppinfo downloadAppinfo,String password){
 			this.downloadAppinfo = downloadAppinfo;
@@ -72,21 +76,24 @@ public class UnZipManager {
 		        if (zFile.isEncrypted()){
 		            zFile.setPassword(password); // 设置解压密码  
 		        }
-		        final ProgressMonitor monitor = zFile.getProgressMonitor();
+		        monitor = zFile.getProgressMonitor();
 		        
 		        new Thread(){
 		        	public void run() {
 		        		try {
-							 while (true) {
+							 while (unziping) {
 								 sleep(1000);
 						        	percent = monitor.getPercentDone();
 						        	Log.i("TAG", "解压进度 ： " + percent);
 						        	if (percent >= 100) {
+						        		unziping = false;
 						        		map.remove(downloadAppinfo.getPackageName());
 						        		reName(downloadAppinfo.getUnzipPath() + "/.apk/" 
 						        		+ downloadAppinfo.getPackageName() + ".txt",  
 						        		downloadAppinfo.getPackageName() + ".apk");
-						        		handler.sendEmptyMessage(UNZIP_SUCCESS);
+						        		DownloadManager.getInstance().install(downloadAppinfo);
+						        		downloadAppinfo.setDownloadState(DownloadManager.STATE_UNZIPED);
+						        		DownloadManager.DBManager.insertOrReplace(downloadAppinfo);
 						        		break;
 						        	}
 								}
@@ -95,25 +102,25 @@ public class UnZipManager {
 						}
 		        	};
 		        }.start();
-//		       
-//		        zFile.setRunInThread(true); //true 在子线程中进行解压 , false主线程中解压  
-//		        zFile.extractAll(downloadAppinfo.getUnzipPath());
+
+		        zFile.setRunInThread(false); //true 在子线程中进行解压 , false主线程中解压  
+		        zFile.extractAll(downloadAppinfo.getUnzipPath());
 		        
-		        List fileHeaderList = zFile.getFileHeaders();
-		        for(int i = 0 ; i<fileHeaderList.size() ; i++){
-		        	Log.i("TAG", ((FileHeader)fileHeaderList.get(i)).getFileName());
-		        	String name = ((FileHeader)fileHeaderList.get(i)).getFileName();
-		        	if (name.endsWith(".txt") || name.endsWith(".obb")) {
-						zFile.extractFile(name, downloadAppinfo.getUnzipPath());
-					}
-		        }
+//		        List fileHeaderList = zFile.getFileHeaders();
+//		        for(int i = 0 ; i<fileHeaderList.size() ; i++){
+//		        	Log.i("TAG", ((FileHeader)fileHeaderList.get(i)).getFileName());
+//		        	String name = ((FileHeader)fileHeaderList.get(i)).getFileName();
+//		        	if (name.endsWith(".txt") || name.endsWith(".obb")) {
+//						zFile.extractFile(name, downloadAppinfo.getUnzipPath());
+//					}
+//		        }
 			} catch (ZipException e) {
 				map.remove(downloadAppinfo.getPackageName());
 				unziping = false;
-				handler.sendEmptyMessage(UNZIP_FAILE);
+				downloadAppinfo.setDownloadState(DownloadManager.STATE_UNZIP_FAILED);
+        		DownloadManager.DBManager.insertOrReplace(downloadAppinfo);
 				e.printStackTrace();
-			}  
-	        
+			}
 		}
 		
 	}
@@ -121,7 +128,7 @@ public class UnZipManager {
 	private void reName(String path,String newName){
 		File file = new File(path);
 		if (file.exists()) {
-			file.renameTo(new File(file.getParent() + File.separator + "com.beenoculus.timecoaster.apk"));
+			file.renameTo(new File(file.getParent() + File.separator + newName));
 		}else {
 			Log.i("UnZipManager", "file not exists !");
 		}

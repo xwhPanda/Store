@@ -24,7 +24,9 @@ import com.jiqu.activity.SortActivity;
 import com.jiqu.activity.ThematicActivity;
 import com.jiqu.adapter.GameAdapter;
 import com.jiqu.application.StoreApplication;
+import com.jiqu.database.DownloadAppinfo;
 import com.jiqu.download.AppInfo;
+import com.jiqu.download.DownloadManager;
 import com.jiqu.download.UnZipManager;
 import com.jiqu.object.GameInfo;
 import com.jiqu.object.GameInformation;
@@ -38,8 +40,12 @@ import com.jiqu.view.PullableListView;
 import com.jiqu.view.RecommedGameView;
 
 import android.R.integer;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
@@ -86,6 +92,11 @@ public class RecommendFragment extends Fragment implements OnPageChangeListener,
 	private PullableListView recommendListView;
 	private GameAdapter adapter;
 	private List<GameInfo> resultList = new ArrayList<GameInfo>();
+	
+	private Map<String, String> map = new HashMap<String, String>();
+	private String url = "http://xu8api.91xuxu.com/api/1.0/getHomeRecommend";
+	
+	private boolean refreshShow = false;
 
 	@Override
 	@Nullable
@@ -93,6 +104,16 @@ public class RecommendFragment extends Fragment implements OnPageChangeListener,
 		// TODO Auto-generated method stub
 		view = inflater.inflate(R.layout.recommend_1, container, false);
 		headView = inflater.inflate(R.layout.recommend_head, null);
+		
+		IntentFilter filter = new IntentFilter();
+		filter.addAction(Intent.ACTION_PACKAGE_ADDED);
+		filter.addAction(Intent.ACTION_PACKAGE_REMOVED);
+		filter.addDataScheme("package");
+		getActivity().registerReceiver(appInstallReceiver, filter);
+		
+		IntentFilter filter2 = new IntentFilter();
+		filter2.addAction("deleted_downloaded_files_action");
+		getActivity().registerReceiver(deleteReceiver, filter2);
 
 		initView();
 
@@ -108,8 +129,6 @@ public class RecommendFragment extends Fragment implements OnPageChangeListener,
 		// "recommend");
 		// StoreApplication.getInstance().getRequestQueue().start();
 
-		String url = "http://xu8api.91xuxu.com/api/1.0/getHomeRecommend";
-		Map<String, String> map = new HashMap<String, String>();
 		map.put("android_id", "a9f7234301030848");
 		map.put("imei", "000000000000000");
 		map.put("start_position", "0");
@@ -267,13 +286,19 @@ public class RecommendFragment extends Fragment implements OnPageChangeListener,
 	@Override
 	public void onRefresh(PullToRefreshLayout pullToRefreshLayout) {
 		// TODO Auto-generated method stub
-
 	}
 
 	@Override
 	public void onLoadMore(PullToRefreshLayout pullToRefreshLayout) {
 		// TODO Auto-generated method stub
-
+		Log.i("TAG", "onLoadMore");
+		map.put("size", String.valueOf(resultList.size() + 20));
+		JSONObject object = new JSONObject(map);
+		JsonObjectRequest objectRequest = new JsonObjectRequest(Method.POST, url, object, this, this);
+		StoreApplication.getInstance().addToRequestQueue(objectRequest, "recommend");
+		StoreApplication.getInstance().getRequestQueue().start();
+		
+		refreshShow = true;
 	}
 
 	@Override
@@ -285,7 +310,11 @@ public class RecommendFragment extends Fragment implements OnPageChangeListener,
 	public void onResponse(JSONObject arg0) {
 		// TODO Auto-generated method stub
 		Log.i("TAG", "onResponse");
-		try {  
+		if (refreshShow) {
+			refreshShow = false;
+			pullToRefreshLayout.refreshFinish(PullToRefreshLayout.SUCCEED);
+		}
+		try {
 			JSONArray array = (JSONArray) arg0.get("item");
 			resultList = JSON.parseArray(array.toString(), GameInfo.class);
 
@@ -294,21 +323,23 @@ public class RecommendFragment extends Fragment implements OnPageChangeListener,
 
 			for (GameInfo gameInfo : resultList) {
 				gameInfo.setAdapterType(1);
-			}
-			
-			for (GameInfo gameInfo : resultList) {
-				int state = InstalledAppTool.contain(gameInfo.getPackagename(), Integer.parseInt(gameInfo.getVersion_code()));
-				if (state != -1) {
-					gameInfo.setState(state);
+				if (gameInfo.getUrl().endsWith(".zip")) {
+					Log.i("TAG", gameInfo.getName() + "/" + gameInfo.getApp_size() + "/" + gameInfo.getUrl());
 				}
 			}
-
+			
+			for(int i = resultList.size() - 20;i<resultList.size();i++){
+				int state = InstalledAppTool.contain(resultList.get(i).getPackagename(), Integer.parseInt(resultList.get(i).getVersion_code()));
+				if (state != -1) {
+					resultList.get(i).setState(state);
+				}
+			}
 			adapter.notifyDataSetChanged();
 		} catch (JSONException e) {
 			e.printStackTrace();
 		}
 	}
-
+	
 	@Override
 	public void onClick(View v) {
 		// TODO Auto-generated method stub
@@ -335,5 +366,44 @@ public class RecommendFragment extends Fragment implements OnPageChangeListener,
 			break;
 		}
 	}
+	
+	private BroadcastReceiver deleteReceiver = new BroadcastReceiver(){
+		public void onReceive(Context context, Intent intent) {
+			String action = intent.getAction();
+			if ("deleted_downloaded_files_action".equals(action)) {
+				String pkg = intent.getStringExtra("pkg");
+				for(GameInfo info : resultList){
+					if (info.getPackagename().equals(pkg)) {
+						info.setState(DownloadManager.STATE_NONE);
+					}
+				}
+				adapter.notifyDataSetChanged();
+			}
+		};
+	};
 
+	private BroadcastReceiver appInstallReceiver = new BroadcastReceiver(){
+
+		@Override
+		public void onReceive(Context context, Intent intent) {
+			// TODO Auto-generated method stub
+			String action = intent.getAction();
+			if (Intent.ACTION_PACKAGE_ADDED.equals(action)) {
+				String addPkg = intent.getDataString().split(":")[1];
+			}else if (Intent.ACTION_PACKAGE_REMOVED.equals(action)) {
+				String removePkg = intent.getDataString().split(":")[1];
+				for(GameInfo info : resultList){
+					if (info.getPackagename().equals(removePkg)) {
+						info.setState(DownloadManager.STATE_NONE);
+					}
+				}
+				adapter.notifyDataSetChanged();
+			}
+		}
+	};
+	
+	public void onDestroyView() {
+		super.onDestroyView();
+		getActivity().unregisterReceiver(appInstallReceiver);
+	};
 }

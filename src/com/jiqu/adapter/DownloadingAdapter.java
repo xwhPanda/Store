@@ -243,16 +243,18 @@ public class DownloadingAdapter extends BaseAdapter implements DownloadObserver{
 		List<Holder> displayedHolder2s = getDisplayedHolders();
 		for(int i = 0; i < displayedHolder2s.size(); i++){
 			final Holder holder = displayedHolder2s.get(i);
-			final DownloadAppinfo appInfo = holder.getData();
-			if (appInfo.getId().longValue() == info.getId().longValue()) {
-				AppUtil.post(new Runnable() {
-					
-					@Override
-					public void run() {
-						// TODO Auto-generated method stub
-						holder.refreshView(appInfo);
-					}
-				});
+			if (holder != null) {
+				final DownloadAppinfo appInfo = holder.getData();
+				if (appInfo.getId().longValue() == info.getId().longValue()) {
+					AppUtil.post(new Runnable() {
+						
+						@Override
+						public void run() {
+							// TODO Auto-generated method stub
+							holder.refreshView(appInfo);
+						}
+					});
+				}
 			}
 		}
 	}

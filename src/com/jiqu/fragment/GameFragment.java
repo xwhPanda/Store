@@ -6,7 +6,6 @@ import java.util.List;
 import com.jiqu.adapter.GameAdapter;
 import com.jiqu.adapter.InformationAdapter;
 import com.jiqu.object.GameInformation;
-import com.jiqu.store.MyListener;
 import com.jiqu.store.R;
 import com.jiqu.view.PullToRefreshLayout;
 
@@ -63,7 +62,6 @@ public class GameFragment extends Fragment {
 		}
 //		GameAdapter adapter = new GameAdapter(getActivity(), gameInformations);
 		ptrl = ((PullToRefreshLayout) view.findViewById(R.id.refresh_view));
-		ptrl.setOnRefreshListener(new MyListener());
 //		gameListView.setAdapter(adapter);
 	}
 }

@@ -10,6 +10,8 @@ public class DownloadAppinfo {
     private String packageName;
     /** Not-null value. */
     private String appName;
+    private String versionCode;
+    private String versionName;
     private Long id;
     private Long currentSize;
     /** Not-null value. */
@@ -40,9 +42,11 @@ public class DownloadAppinfo {
         this.id = id;
     }
 
-    public DownloadAppinfo(String packageName, String appName, Long id, Long currentSize, String appSize, int downloadState, String url, String iconUrl, String apkPath, String zipPath, String unzipPath, Boolean hasFinished, String des, Integer score, Float progress, byte[] iconByte, Boolean isZip, Long thread1, Long thread2, Long thread3, Long thread4, Long thread5) {
+    public DownloadAppinfo(String packageName, String appName, String versionCode, String versionName, Long id, Long currentSize, String appSize, int downloadState, String url, String iconUrl, String apkPath, String zipPath, String unzipPath, Boolean hasFinished, String des, Integer score, Float progress, byte[] iconByte, Boolean isZip, Long thread1, Long thread2, Long thread3, Long thread4, Long thread5) {
         this.packageName = packageName;
         this.appName = appName;
+        this.versionCode = versionCode;
+        this.versionName = versionName;
         this.id = id;
         this.currentSize = currentSize;
         this.appSize = appSize;
@@ -83,6 +87,22 @@ public class DownloadAppinfo {
     /** Not-null value; ensure this value is available before it is saved to the database. */
     public void setAppName(String appName) {
         this.appName = appName;
+    }
+
+    public String getVersionCode() {
+        return versionCode;
+    }
+
+    public void setVersionCode(String versionCode) {
+        this.versionCode = versionCode;
+    }
+
+    public String getVersionName() {
+        return versionName;
+    }
+
+    public void setVersionName(String versionName) {
+        this.versionName = versionName;
     }
 
     public Long getId() {

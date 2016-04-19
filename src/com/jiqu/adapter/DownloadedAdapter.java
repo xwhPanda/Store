@@ -12,7 +12,9 @@ import com.jiqu.database.DownloadAppinfoDao.Properties;
 import com.jiqu.download.AppUtil;
 import com.jiqu.download.DownloadManager;
 import com.jiqu.download.FileUtil;
+import com.jiqu.download.UnZipManager;
 import com.jiqu.store.R;
+import com.jiqu.tools.Constant;
 import com.jiqu.tools.MetricsTool;
 import com.jiqu.tools.UIUtil;
 import com.jiqu.view.RatingBarView;
@@ -21,9 +23,11 @@ import de.greenrobot.dao.query.QueryBuilder;
 
 import android.R.integer;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.BitmapFactory;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.AbsListView;
 import android.widget.BaseAdapter;
@@ -114,6 +118,10 @@ public class DownloadedAdapter extends BaseAdapter {
 						// TODO Auto-generated method stub
 						QueryBuilder qb = DownloadManager.DBManager.getDownloadAppinfoDao().queryBuilder();
 						DownloadAppinfo appinfo = holder.getData();
+						Intent intent = new Intent();
+						intent.setAction("deleted_downloaded_files_action");
+						intent.putExtra("pkg", appinfo.getPackageName());
+						context.sendBroadcast(intent);
 						if (appinfo != null) {
 							DownloadAppinfo info = (DownloadAppinfo) qb.where(Properties.Id.eq(appinfo.getId())).unique();
 							if (info != null) {
@@ -133,18 +141,19 @@ public class DownloadedAdapter extends BaseAdapter {
 										file.delete();
 									}
 								}
+								DownloadManager.DBManager.getDownloadAppinfoDao().delete(info);
 							}else {
-								if (info.getIsZip()) {
-									File file1 = new File(info.getZipPath());
+								if (appinfo.getIsZip()) {
+									File file1 = new File(appinfo.getZipPath());
 									if (file1.exists()) {
 										file1.delete();
 									}
-									File file2 = new File(info.getUnzipPath());
+									File file2 = new File(appinfo.getUnzipPath());
 									if (file2.exists()) {
 										file2.delete();
 									}
 								}else {
-									File file = new File(info.getApkPath());
+									File file = new File(appinfo.getApkPath());
 									if (file.exists()) {
 										file.delete();
 									}
@@ -213,6 +222,36 @@ public class DownloadedAdapter extends BaseAdapter {
 				public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
 					// TODO Auto-generated method stub
 					 setCheckedValue(isChecked);
+				}
+			});
+			
+			open.setOnClickListener(new OnClickListener() {
+				
+				@Override
+				public void onClick(View v) {
+					// TODO Auto-generated method stub
+					if (info != null) {
+						if (!info.getIsZip()) {
+							if (info.getHasFinished()) {
+								if (info.getDownloadState() == DownloadManager.STATE_INSTALLED) {
+									DownloadManager.getInstance().open(info.getPackageName());
+								}else if (info.getDownloadState() == DownloadManager.STATE_DOWNLOADED) {
+									DownloadManager.getInstance().install(info);
+								}
+							}
+						}else {
+							if (info.getHasFinished()) {
+								if (info.getDownloadState() == DownloadManager.STATE_UNZIP_FAILED
+										|| info.getDownloadState() == DownloadManager.STATE_DOWNLOADED) {
+									UnZipManager.getInstance().unzip(info, Constant.PASSWORD);
+								}else if (info.getDownloadState() == DownloadManager.STATE_UNZIPED) {
+									DownloadManager.getInstance().install(info);
+								}else if (info.getDownloadState() == DownloadManager.STATE_INSTALLED) {
+									DownloadManager.getInstance().open(info.getPackageName());
+								}
+							}
+						}
+					}
 				}
 			});
 			

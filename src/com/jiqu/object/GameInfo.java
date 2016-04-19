@@ -224,6 +224,8 @@ public class GameInfo {
 		}
 		downloadInfo.setUrl(info.url);
 		downloadInfo.setIconUrl(info.ldpi_icon_url);
+		downloadInfo.setVersionCode(info.getVersion_code());
+		downloadInfo.setVersionName(info.getVersion_name());
 		downloadInfo.setApkPath(FileUtil.getApkDownloadDir(AppUtil.getContext()) + File.separator + info.name + ".apk");
 		downloadInfo.setZipPath(FileUtil.getZipDownloadDir(AppUtil.getContext()) + File.separator + info.name + ".zip");
 		downloadInfo.setUnzipPath(FileUtil.getZipDownloadDir(AppUtil.getContext()) + File.separator + info.name);

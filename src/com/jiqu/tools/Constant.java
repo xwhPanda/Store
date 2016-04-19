@@ -20,4 +20,10 @@ public class Constant {
 	public static final String POWER_SAVING_MODE = "powerSaving";
 	/** 解压密码 **/
 	public static final String PASSWORD = "JiLe20150413";
+	
+	public static String RECOMMEND_TAG = "recommend";
+	public static String INFORMATION_TAG = "information";
+	public static String GAME_TAG = "game";
+	public static String EVALUATION_TAG = "evaluation";
+	public static String TOOL_TAG = "tool";
 }

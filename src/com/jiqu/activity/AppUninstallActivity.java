@@ -18,11 +18,16 @@ import android.widget.RelativeLayout;
 
 import com.jiqu.adapter.UninstallAppAdatpter;
 import com.jiqu.adapter.UninstallSystemAppAdapter;
+import com.jiqu.database.DownloadAppinfo;
+import com.jiqu.database.DownloadAppinfoDao.Properties;
+import com.jiqu.download.DownloadManager;
 import com.jiqu.store.BaseActivity;
 import com.jiqu.store.R;
 import com.jiqu.tools.InstalledAppTool;
 import com.jiqu.tools.UIUtil;
 import com.jiqu.view.TitleView;
+
+import de.greenrobot.dao.query.QueryBuilder;
 
 public class AppUninstallActivity extends BaseActivity implements OnClickListener,OnCheckedChangeListener{
 	private TitleView titleView;
@@ -42,11 +47,6 @@ public class AppUninstallActivity extends BaseActivity implements OnClickListene
 		
 		initView();
 		
-		IntentFilter filter = new IntentFilter();
-		filter.addAction(Intent.ACTION_PACKAGE_ADDED);
-		filter.addAction(Intent.ACTION_PACKAGE_REMOVED);
-		filter.addDataScheme("package");
-		registerReceiver(appInstallReceiver, filter);
 		adapter.startObserver();
 	}
 	
@@ -140,31 +140,9 @@ public class AppUninstallActivity extends BaseActivity implements OnClickListene
 		}
 	}
 	
-	private BroadcastReceiver appInstallReceiver = new BroadcastReceiver(){
-
-		@Override
-		public void onReceive(Context context, Intent intent) {
-			// TODO Auto-generated method stub
-			String action = intent.getAction();
-			if (Intent.ACTION_PACKAGE_ADDED.equals(action)) {
-				String addPkg = intent.getDataString().split(":")[1];
-				//应用安装
-				if (adapter != null) {
-					adapter.changeAppPkg(addPkg, 0);
-				}
-			}else if (Intent.ACTION_PACKAGE_REMOVED.equals(action)) {
-				String removePkg = intent.getDataString().split(":")[1];
-				//应用卸载
-				if (adapter != null) {
-					adapter.changeAppPkg(removePkg, 1);
-				}
-			}
-		}
-	};
 	
 	protected void onDestroy() {
 		super.onDestroy();
-		unregisterReceiver(appInstallReceiver);
 		adapter.stopObserver();
 	}
 
@@ -177,4 +155,20 @@ public class AppUninstallActivity extends BaseActivity implements OnClickListene
 			}
 		}
 	};
+	
+	@Override
+	protected void installEvent(String installPackageName) {
+		// TODO Auto-generated method stub
+		if (adapter != null) {
+			adapter.changeAppPkg(installPackageName, 0);
+		}
+	}
+	
+	@Override
+	protected void unInstallEvent(String uninstallPackageName) {
+		// TODO Auto-generated method stub
+		if (adapter != null) {
+			adapter.changeAppPkg(uninstallPackageName, 1);
+		}
+	}
 }

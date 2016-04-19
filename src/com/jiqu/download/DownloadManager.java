@@ -23,11 +23,13 @@ import com.jiqu.database.DownloadAppinfoDao.Properties;
 
 import de.greenrobot.dao.query.QueryBuilder;
 
+import android.R.integer;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.renderscript.Light;
 import android.util.Log;
+import android.widget.Toast;
 
 public class DownloadManager {
 	public static final int STATE_NONE = 0;
@@ -51,6 +53,8 @@ public class DownloadManager {
 	public static final int STATE_INSTALLED = 9;
 	/** 升级  */
 	public static final int STATE_NEED_UPDATE = 10;
+	/** 解压失败 */
+	public static final int STATE_UNZIP_FAILED = 11;
 
 	// public static final int STATE_READ = 6;
 
@@ -81,6 +85,10 @@ public class DownloadManager {
 		return instance;
 	}
 
+	public boolean isDownloading(Long id){
+		return mTaskMap.get(id) == null?false:true;
+	}
+	
 	/** 注册观察者 */
 	public void registerObserver(DownloadObserver observer) {
 		synchronized (mObservers) {
@@ -120,7 +128,7 @@ public class DownloadManager {
 	/** 下载，需要传入一个appInfo对象 */
 	public synchronized void download(DownloadAppinfo appInfo) {
 		// 先判断是否有这个app的下载信息
-
+		Log.i("TAG", appInfo.getUrl());
 		// DownloadInfo info = mDownloadMap.get(appInfo.getId());
 		DownloadAppinfo info = DBManager.getDownloadAppinfoDao().queryBuilder().where(Properties.Id.eq(appInfo.getId())).unique();
 		if (info == null) {// 如果没有，则根据appInfo创建一个新的下载信息
@@ -227,7 +235,7 @@ public class DownloadManager {
 			installIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 			String path = "";
 			if (info.getIsZip()) {
-				path = info.getUnzipPath() + File.separator + info.getPackageName() + ".apk";
+				path = info.getUnzipPath() + File.separator + ".apk" + File.separator + info.getPackageName() + ".apk";
 			} else {
 				path = info.getApkPath();
 			}
@@ -310,6 +318,7 @@ public class DownloadManager {
 			Intent intent = context.getPackageManager().getLaunchIntentForPackage(pkg);
 			context.startActivity(intent);
 		} catch (Exception e) {
+			Toast.makeText(StoreApplication.context, "应用未安装", Toast.LENGTH_SHORT).show();
 		}
 	}
 
@@ -462,10 +471,12 @@ public class DownloadManager {
 								if (info.getCurrentSize() >= Long.parseLong(info.getAppSize())) {
 									info.setDownloadState(STATE_DOWNLOADED);
 									info.setProgress(1.0f);
+									info.setHasFinished(true);
 									DBManager.getDownloadAppinfoDao().insertOrReplace(info);
 //									notifyDownloadProgressed(info);
 									notifyDownloadStateChanged(info);
 									mTaskMap.remove(info.getId());
+									install(info);
 									return;
 								}
 								info.setCurrentSize(info.getThread1() + info.getThread2() + info.getThread3() + info.getThread4() + info.getThread5());

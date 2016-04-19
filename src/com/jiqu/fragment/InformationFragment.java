@@ -5,7 +5,6 @@ import java.util.List;
 
 import com.jiqu.adapter.InformationAdapter;
 import com.jiqu.object.GameInformation;
-import com.jiqu.store.MyListener;
 import com.jiqu.store.R;
 import com.jiqu.tools.MetricsTool;
 import com.jiqu.tools.UIUtil;
@@ -95,7 +94,6 @@ public class InformationFragment extends Fragment implements OnClickListener{
 		}
 		InformationAdapter adapter = new InformationAdapter(getActivity(), gameInformations,0);
 		ptrl = ((PullToRefreshLayout) view.findViewById(R.id.refresh_view));
-		ptrl.setOnRefreshListener(new MyListener());
 		informationListView.setAdapter(adapter);
 		
 		initViewSize();
