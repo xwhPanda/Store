@@ -16,6 +16,8 @@ import com.jiqu.tools.MetricsTool;
 import android.app.Application;
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Looper;
 import android.text.TextUtils;
 import android.util.Log;
@@ -98,5 +100,13 @@ public class StoreApplication extends Application {
         if (requestQueue != null) {
             requestQueue.cancelAll(tag);
         }
+    }
+    
+    public void getNetType(){
+    	ConnectivityManager cm = (ConnectivityManager) context.getSystemService(CONNECTIVITY_SERVICE);
+    	NetworkInfo info = cm.getActiveNetworkInfo();
+    	if (info != null) {
+			Log.i("TAG", "netInfo : " + info.getType());
+		}
     }
 }

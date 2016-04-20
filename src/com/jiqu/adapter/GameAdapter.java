@@ -299,18 +299,18 @@ public class GameAdapter extends BaseAdapter implements DownloadObserver{
 				if (downloadInfo != null) {
 					if (hasAttached) {
 						if(!downloadInfo.getHasFinished()){
-//							if (!firstIn) {
 								//上次异常退出
 								if (downloadInfo.getDownloadState() == DownloadManager.STATE_DOWNLOADING) {
 									mState = DownloadManager.STATE_PAUSED;
-//									firstIn = true;
+								}else {
+									mState = downloadInfo.getDownloadState();
 								}
-//							}else {
-//								mState = downloadInfo.getDownloadState();
-//							}
-						}else if (downloadInfo.getDownloadState() == DownloadManager.STATE_UNZIPING) {
-							mState = DownloadManager.STATE_UNZIP_FAILED;
-//							firstIn = true;
+						}else {
+							if (downloadInfo.getDownloadState() == DownloadManager.STATE_UNZIPING) {
+								mState = DownloadManager.STATE_UNZIP_FAILED;
+							}else {
+								mState = downloadInfo.getDownloadState();
+							}
 						}
 						Log.i("TAG", data.getAppName() + " mstate : " + mState);
 						downloadInfo.setDownloadState(mState);

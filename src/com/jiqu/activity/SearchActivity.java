@@ -2,7 +2,6 @@ package com.jiqu.activity;
 
 import java.util.ArrayList;
 import java.util.List;
-import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -41,7 +40,6 @@ public class SearchActivity extends BaseActivity implements OnClickListener{
 		return R.layout.search_list_item;
 	}
 
-	@SuppressLint("ResourceAsColor")
 	private void initView(){
 		searchLayout = (RelativeLayout) findViewById(R.id.searchLayout);
 		backBtn = (Button) findViewById(R.id.backBtn);

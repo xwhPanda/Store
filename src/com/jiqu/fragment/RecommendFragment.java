@@ -10,11 +10,14 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import com.alibaba.fastjson.JSON;
+import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.Request.Method;
 import com.android.volley.Response.ErrorListener;
 import com.android.volley.Response.Listener;
 import com.android.volley.VolleyError;
+import com.android.volley.toolbox.ImageLoader;
 import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.ImageLoader.ImageListener;
 import com.jiqu.activity.BoutiqueActivity;
 import com.jiqu.activity.DetailActivity;
 import com.jiqu.activity.GameEvaluationInformationActivity;
@@ -23,6 +26,7 @@ import com.jiqu.activity.RankingActivity;
 import com.jiqu.activity.SortActivity;
 import com.jiqu.activity.ThematicActivity;
 import com.jiqu.adapter.GameAdapter;
+import com.jiqu.adapter.ViewPagerAdapter;
 import com.jiqu.application.StoreApplication;
 import com.jiqu.database.DownloadAppinfo;
 import com.jiqu.download.AppInfo;
@@ -30,6 +34,7 @@ import com.jiqu.download.DownloadManager;
 import com.jiqu.download.UnZipManager;
 import com.jiqu.object.GameInfo;
 import com.jiqu.object.GameInformation;
+import com.jiqu.object.TopRecommendtInfo;
 import com.jiqu.store.R;
 import com.jiqu.tools.InstalledAppTool;
 import com.jiqu.tools.MetricsTool;
@@ -45,6 +50,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
+import android.os.CountDownTimer;
 import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -57,6 +63,7 @@ import android.view.ViewGroup;
 import android.view.View.OnClickListener;
 import android.widget.HorizontalScrollView;
 import android.widget.ImageView;
+import android.widget.ImageView.ScaleType;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.LinearLayout.LayoutParams;
@@ -82,9 +89,10 @@ public class RecommendFragment extends Fragment implements OnPageChangeListener,
 	private HorizontalScrollView scrollView;
 	private TextView emptyView;
 
+	private LinearLayout imgList;
 	private RelativeLayout recommendImgRel;
 	private ViewPager recommendImgViewPager;
-	private List<View> views = new ArrayList<View>();
+	private ImageView[] radioImgs,contentImgs;
 	private View view1, view2, view3;
 	private int currentItem = 0;
 
@@ -95,8 +103,13 @@ public class RecommendFragment extends Fragment implements OnPageChangeListener,
 	
 	private Map<String, String> map = new HashMap<String, String>();
 	private String url = "http://xu8api.91xuxu.com/api/1.0/getHomeRecommend";
+	private String topUrl = "http://xu8api.91xuxu.com/api/1.0/getTopRecommend";
+	private String recommedAppsUrl = "http://xu8api.91xuxu.com/api/1.0/recommendApps";
+	private JsonObjectRequest objectRequest;
+	private TopRecommendtInfo topRecommendtInfo = new TopRecommendtInfo();
 	
 	private boolean refreshShow = false;
+	private int currentIndex = 0;
 
 	@Override
 	@Nullable
@@ -119,16 +132,6 @@ public class RecommendFragment extends Fragment implements OnPageChangeListener,
 
 		initAdapter();
 
-		// String url_qihoo360 =
-		// "http://recommend.api.sj.360.cn/inew/getRecomendApps?iszip=1&logo_type=2&deflate_field=1&apiversion=2&os=19&model=G620S-UL00&sn=4.589389937671455&cu=qualcomm+technologies%2C+inc+msm8916&bannertype=1&withext=1&vc=300030184&zjbb=1&datatype=adgame&page=1&fm=home&m=b033525c2a96a00c2bfd48c673522449&m2=3363e38bf819414c6c81d886ff878e2a&v=3.1.84&re=1&ch=432403&ppi=720x1280&startCount=1&snt=-1";
-		// // final StringRequest stringRequest = new
-		// StringRequest(url_qihoo360, this, this);
-		// JsonObjectRequest objectRequest = new
-		// JsonObjectRequest(Method.GET,url_qihoo360, this, this);
-		// StoreApplication.getInstance().addToRequestQueue(objectRequest,
-		// "recommend");
-		// StoreApplication.getInstance().getRequestQueue().start();
-
 		map.put("android_id", "a9f7234301030848");
 		map.put("imei", "000000000000000");
 		map.put("start_position", "0");
@@ -138,11 +141,85 @@ public class RecommendFragment extends Fragment implements OnPageChangeListener,
 		map.put("device_id", "000000000000000");
 		map.put("mac", "08:00:27:d3:53:ef");
 		JSONObject object = new JSONObject(map);
-		JsonObjectRequest objectRequest = new JsonObjectRequest(Method.POST, url, object, this, this);
+		objectRequest = new JsonObjectRequest(Method.POST, url, object, this, this);
+		objectRequest.setRetryPolicy(new DefaultRetryPolicy(5 * 1000, 2, 2));
 		StoreApplication.getInstance().addToRequestQueue(objectRequest, "recommend");
 		StoreApplication.getInstance().getRequestQueue().start();
+		
+		loadTopData();
 
+		new CountDownTimer(Integer.MAX_VALUE, 5000) {
+			
+			@Override
+			public void onTick(long millisUntilFinished) {
+				// TODO Auto-generated method stub
+				
+				recommendImgViewPager.setCurrentItem(currentIndex % 3);
+				currentIndex++;
+			}
+			
+			@Override
+			public void onFinish() {
+				// TODO Auto-generated method stub
+				
+			}
+		}.start();
+		
 		return view;
+	}
+	
+	private void loadTopData() {
+		JSONObject object = new JSONObject(map);
+		JsonObjectRequest topJsonObjectRequest = new JsonObjectRequest(Method.POST, topUrl, object, new Listener<JSONObject>() {
+
+			@Override
+			public void onResponse(JSONObject arg0) {
+				// TODO Auto-generated method stub
+				topRecommendtInfo = JSON.parseObject(arg0.toString(), TopRecommendtInfo.class);
+				initTop();
+			}
+		}, new ErrorListener() {
+
+			@Override
+			public void onErrorResponse(VolleyError arg0) {
+				// TODO Auto-generated method stub
+
+			}
+		});
+		StoreApplication.getInstance().addToRequestQueue(topJsonObjectRequest, "topRecommend");
+		StoreApplication.getInstance().getRequestQueue().start();
+	}
+	
+	private void initTop(){
+		int count = topRecommendtInfo.getCount();
+		radioImgs = new ImageView[count];
+		contentImgs = new ImageView[count];
+		for (int i = 0; i < count; i++) {
+			ImageView view = new ImageView(getActivity());
+			LayoutParams lp = new LayoutParams((int)(20 * Rx), (int) (20 * Rx));
+			if (i != 0) {
+				lp.leftMargin = (int) (10 * Rx);
+			}
+			view.setLayoutParams(lp);
+			if (i== 0) {
+				view.setBackgroundResource(R.drawable.dian_blue);
+			}else {
+				view.setBackgroundResource(R.drawable.dian_white);
+			}
+			radioImgs[i] = view;
+			imgList.addView(view);
+			
+			ImageView contentImg = new ImageView(getActivity());
+			LayoutParams params = new LayoutParams(android.support.v4.view.ViewPager.LayoutParams.MATCH_PARENT,
+					android.support.v4.view.ViewPager.LayoutParams.MATCH_PARENT);
+			contentImg.setLayoutParams(params);
+			contentImg.setScaleType(ScaleType.FIT_XY);
+			ImageListener listener = ImageLoader.getImageListener(contentImg,R.drawable.ic_launcher, R.drawable.ic_launcher);
+			StoreApplication.getInstance().getImageLoader().get(topRecommendtInfo.getItem()[i].getPic(),listener);
+			contentImgs[i] = contentImg;
+		}
+		ViewPagerAdapter adapter = new ViewPagerAdapter(getActivity(), contentImgs);
+		recommendImgViewPager.setAdapter(adapter);
 	}
 
 	@Override
@@ -174,6 +251,7 @@ public class RecommendFragment extends Fragment implements OnPageChangeListener,
 	public void onPageScrollStateChanged(int arg0) {
 		// TODO Auto-generated method stub
 		recommendImgViewPager.getCurrentItem();
+		
 	}
 
 	@Override
@@ -184,6 +262,13 @@ public class RecommendFragment extends Fragment implements OnPageChangeListener,
 	@Override
 	public void onPageSelected(int arg0) {
 		// TODO Auto-generated method stub
+		for(int i = 0;i<radioImgs.length;i++){
+			if (arg0 == i) {
+				radioImgs[i].setBackgroundResource(R.drawable.dian_blue);
+			}else {
+				radioImgs[i].setBackgroundResource(R.drawable.dian_white);
+			}
+		}
 	}
 
 	private void initView() {
@@ -226,12 +311,18 @@ public class RecommendFragment extends Fragment implements OnPageChangeListener,
 		try {
 			UIUtil.setViewSizeMargin(scrollView, 0, 30 * Ry, 0, 0);
 			UIUtil.setViewSizeMargin(recommendGameInformationImg, 0, 25 * Ry, 0, 0);
+			UIUtil.setViewSizeMargin(imgList, 0, 0, 0, 30 * Ry);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}
 
 	private void initHeadView() {
+		imgList = (LinearLayout) headView.findViewById(R.id.imgList);
+		recommendImgViewPager = (ViewPager) headView.findViewById(R.id.recommendImgViewPager);
+		
+		recommendImgViewPager.setOnPageChangeListener(this);
+		
 		boutiqueLin = (LinearLayout) headView.findViewById(R.id.boutiqueLin);
 		thematicLin = (LinearLayout) headView.findViewById(R.id.thematicLin);
 		rankingLin = (LinearLayout) headView.findViewById(R.id.rankingLin);
@@ -304,6 +395,7 @@ public class RecommendFragment extends Fragment implements OnPageChangeListener,
 	@Override
 	public void onErrorResponse(VolleyError arg0) {
 		// TODO Auto-generated method stub
+		Log.i("TAG", "onErrorResponse");
 	}
 
 	@Override

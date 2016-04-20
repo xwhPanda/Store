@@ -22,6 +22,8 @@ public class CustomDialog extends Dialog {
 	private RelativeLayout parent;
 	private Button cancle;
 	private Button login;
+	
+	private CustomDialog dialog;
 
 	private OnClickListener positiveButtonClickListener;
 	private OnClickListener negativeButtonClickListener;
@@ -35,6 +37,7 @@ public class CustomDialog extends Dialog {
 	public CustomDialog(Context context, int theme) {
 		super(context, theme);
 		// TODO Auto-generated constructor stub
+		
 	}
 
 	public CustomDialog(Context context, boolean cancelable, OnCancelListener cancelListener) {
@@ -53,7 +56,7 @@ public class CustomDialog extends Dialog {
 	}
 
 	public CustomDialog initView() {
-		final CustomDialog dialog = new CustomDialog(context, R.style.Dialog);
+		dialog = new CustomDialog(context, R.style.Dialog);
 		LayoutInflater inflater = LayoutInflater.from(context);
 		View view = inflater.inflate(R.layout.custom_dialog_layout, null);
 		img = (ImageView) view.findViewById(R.id.img);

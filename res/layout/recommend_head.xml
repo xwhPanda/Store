@@ -7,7 +7,7 @@
     <RelativeLayout
         android:id="@+id/recommendImgRel"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/recommendViewPagerHeight" >
+        android:layout_height="wrap_content">
 
         <android.support.v4.view.ViewPager
             android:id="@+id/recommendImgViewPager"
@@ -17,12 +17,11 @@
 
         <LinearLayout
             android:id="@+id/imgList"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"
             android:layout_centerHorizontal="true"
-            android:layout_marginBottom="40dp"
-            android:orientation="horizontal" >
+            android:orientation="horizontal">
         </LinearLayout>
     </RelativeLayout>
 

@@ -4,7 +4,6 @@ import com.jiqu.store.R;
 import com.jiqu.tools.MetricsTool;
 import com.jiqu.tools.UIUtil;
 
-import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.util.AttributeSet;
@@ -60,7 +59,6 @@ public class SettingsItem extends RelativeLayout {
 		initViewSize();
 	}
 	
-	@SuppressLint("Recycle")
 	private void initViewVisible(AttributeSet attrs){
 		TypedArray ta = getContext().obtainStyledAttributes(attrs, R.styleable.settingViewDefineAttr);
 		boolean isThreadPool = ta.getBoolean(R.styleable.settingViewDefineAttr_isThreadPool, false);

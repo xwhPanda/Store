@@ -195,6 +195,7 @@ public class DownloadManager {
 		}
 	}
 
+	/** 退出应用时调用 */
 	public synchronized void pauseExit() {
 		for (Map.Entry<Long, DownloadTask> entry : mTaskMap.entrySet()) {
 			DownloadAppinfo info = DBManager.getDownloadAppinfoDao().queryBuilder().where(Properties.Id.eq(entry.getKey())).unique();
@@ -202,6 +203,32 @@ public class DownloadManager {
 				stopDownload(info);
 				info.setDownloadState(STATE_PAUSED);
 				DBManager.getDownloadAppinfoDao().insertOrReplace(info);
+			}
+		}
+	}
+	
+	/** 网络变化时调用 */
+	public synchronized void pauseAllExit() {
+		for (Map.Entry<Long, DownloadTask> entry : mTaskMap.entrySet()) {
+			DownloadAppinfo info = DBManager.getDownloadAppinfoDao().queryBuilder().where(Properties.Id.eq(entry.getKey())).unique();
+			if (info != null) {
+				pauseDownload(info);
+				info.setDownloadState(STATE_PAUSED);
+				notifyDownloadStateChanged(info);
+				DBManager.getDownloadAppinfoDao().insertOrReplace(info);
+			}
+		}
+	}
+	
+	/** 网络变化时调用 */
+	public void startAll(){
+		for (Map.Entry<Long, DownloadTask> entry : mTaskMap.entrySet()) {
+			DownloadTask task = mTaskMap.get(entry.getKey());
+			if (task != null) {
+				DownloadAppinfo info = DBManager.getDownloadAppinfoDao().queryBuilder().where(Properties.Id.eq(entry.getKey())).unique();
+				if (info != null) {
+					download(info);
+				}
 			}
 		}
 	}
@@ -330,7 +357,17 @@ public class DownloadManager {
 			ThreadManager.getDownloadPool().cancel(task);// 然后从线程池中移除
 		}
 	}
-
+	
+	/** 如果该下载任务还处于线程池中，且没有执行，先从线程池中移除 */
+	private void pauseDownload(DownloadAppinfo appInfo) {
+		DownloadTask task = mTaskMap.get(appInfo.getId());// 先从集合中找出下载任务
+		if (task != null) {
+			task.setPause();
+			ThreadManager.getDownloadPool().cancel(task);// 然后从线程池中移除
+		}
+	}
+	
+	
 	/** 获取下载信息 */
 	public synchronized DownloadAppinfo getDownloadInfo(long id) {
 		// return mDownloadMap.get(id);
@@ -356,6 +393,7 @@ public class DownloadManager {
 		public void setPause(){
 			info.setDownloadState(STATE_PAUSED);
 		}
+		
 
 		@Override
 		public void run() {

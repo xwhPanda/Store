@@ -7,19 +7,9 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import com.alibaba.fastjson.JSON;
-import com.android.volley.Response.ErrorListener;
-import com.android.volley.Response.Listener;
-import com.android.volley.VolleyError;
-import com.jiqu.activity.AppUninstallActivity;
-import com.jiqu.activity.DownloadManagerActivity;
-import com.jiqu.activity.GameEvaluationInformationActivity;
-import com.jiqu.activity.MemberLoginActivity;
-import com.jiqu.activity.MessageCenterActivity;
-import com.jiqu.activity.ModifyPasswordActivity;
 import com.jiqu.activity.SearchActivity;
-import com.jiqu.activity.SettingActivity;
 import com.jiqu.activity.ShowAccountInformatiomActivity;
+import com.jiqu.application.StoreApplication;
 import com.jiqu.download.AppInfo;
 import com.jiqu.download.DownloadManager;
 import com.jiqu.fragment.EvaluationFragment;
@@ -28,11 +18,11 @@ import com.jiqu.fragment.InformationFragment;
 import com.jiqu.fragment.RecommendFragment;
 import com.jiqu.fragment.ToolFragment;
 import com.jiqu.tools.MetricsTool;
-import com.jiqu.tools.SharePreferenceTool;
+import com.jiqu.tools.NetReceiver;
+import com.jiqu.tools.NetReceiver.OnNetChangeListener;
 import com.jiqu.tools.UIUtil;
 import com.jiqu.view.CustomDialog;
 
-import android.annotation.SuppressLint;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
@@ -53,7 +43,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-public class MainActivity extends FragmentActivity implements OnClickListener,Listener<String>,ErrorListener{
+public class MainActivity extends FragmentActivity implements OnClickListener,OnNetChangeListener{
 	private float Rx,Ry;
 	private Button accountImg;
 	private EditText searchEd;
@@ -85,6 +75,12 @@ public class MainActivity extends FragmentActivity implements OnClickListener,Li
 	
 	private long mExitTime = 0;
 	
+	private NetReceiver netReceiver;
+	
+	private CustomDialog dialog;
+	
+	private boolean firstIn = true;
+	
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -92,20 +88,41 @@ public class MainActivity extends FragmentActivity implements OnClickListener,Li
 		super.onCreate(savedInstanceState);
 		MetricsTool.initMetrics(getWindowManager());
 		
+		netReceiver = NetReceiver.getInstance();
+		netReceiver.setNetChangeListener(this);
+		netReceiver.registerReceive(StoreApplication.context);
+		
+		dialog = new CustomDialog(this)
+				.setNegativeButton(new DialogInterface.OnClickListener() {
+					
+					@Override
+					public void onClick(DialogInterface dialog, int which) {
+						// TODO Auto-generated method stub
+						dialog.dismiss();
+					}
+				})
+				.setPositiveButton(new DialogInterface.OnClickListener() {
+					
+					@Override
+					public void onClick(DialogInterface dialog, int which) {
+						// TODO Auto-generated method stub
+						DownloadManager.getInstance().startAll();
+						dialog.dismiss();
+					}
+				}).initView();
+		
 		Rx = MetricsTool.Rx;
 		Ry = MetricsTool.Ry;
 		setContentView(R.layout.main);
 		init();
 		setOnclick();
-		
-		new CustomDialog(this).setNegativeButton(new DialogInterface.OnClickListener() {
-			
-			@Override
-			public void onClick(DialogInterface dialog, int which) {
-				// TODO Auto-generated method stub
-				dialog.dismiss();
-			}
-		}).initView().show();
+	}
+	
+	@Override
+	protected void onDestroy() {
+		// TODO Auto-generated method stub
+		super.onDestroy();
+		netReceiver.unregisterReceive(StoreApplication.context);
 	}
 	
 	/**
@@ -185,11 +202,6 @@ public class MainActivity extends FragmentActivity implements OnClickListener,Li
 		mFragmentTransaction.commit();
 		currentIndex = 0;
 		changeFocusState(currentIndex, true);
-		
-		
-//		String url_qihoo360 = "http://recommend.api.sj.360.cn/inew/getRecomendApps?iszip=1&logo_type=2&deflate_field=1&apiversion=2&os=19&model=G620S-UL00&sn=4.589389937671455&cu=qualcomm+technologies%2C+inc+msm8916&bannertype=1&withext=1&vc=300030184&zjbb=1&datatype=adgame&page=1&fm=home&m=b033525c2a96a00c2bfd48c673522449&m2=3363e38bf819414c6c81d886ff878e2a&v=3.1.84&re=1&ch=432403&ppi=720x1280&startCount=1&snt=-1";
-//		final StringRequest stringRequest = new StringRequest(url_qihoo360, this, this);
-//		StoreApplication.getInstance().getRequestQueue().add(stringRequest);
 		
 		setViewSize();
 	}
@@ -281,7 +293,6 @@ public class MainActivity extends FragmentActivity implements OnClickListener,Li
 		}
 	}
 
-	@SuppressLint("NewApi")
 	@Override
 	public void onClick(View v) {
 		// TODO Auto-generated method stub
@@ -373,29 +384,6 @@ public class MainActivity extends FragmentActivity implements OnClickListener,Li
 	}
 
 	@Override
-	public void onErrorResponse(VolleyError error) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void onResponse(String response) {
-		// TODO Auto-generated method stub
-		try {
-			List<AppInfo> resultList = new ArrayList<AppInfo>();
-			JSONObject obj = new JSONObject(response);
-			int errNo = obj.getInt("errno");
-			if (errNo == 0) {
-				JSONObject object = (JSONObject) obj.get("data");
-				JSONArray array = (JSONArray) object.get("fixed");
-				resultList = JSON.parseArray(array.toString(), AppInfo.class);
-			}
-		} catch (JSONException e) {
-			e.printStackTrace();
-		}
-	}
-	
-	@Override
 	public boolean onKeyDown(int keyCode, KeyEvent event) {
 		// TODO Auto-generated method stub
 	       if (keyCode == KeyEvent.KEYCODE_BACK) {
@@ -411,5 +399,19 @@ public class MainActivity extends FragmentActivity implements OnClickListener,Li
                return true;
        }
        return super.onKeyDown(keyCode, event);
+	}
+
+	@Override
+	public void onNetChange(int netType) {
+		// TODO Auto-generated method stub
+		Toast.makeText(this, "网络类型 ：" + netType, Toast.LENGTH_SHORT).show();
+		if ((netType == NetReceiver.NET_NOBILE || netType == NetReceiver.NET_NONE)
+				&& !firstIn) {
+			firstIn = false;
+			if (!dialog.isShowing()) {
+				DownloadManager.getInstance().pauseAllExit();
+				dialog.show();
+			}
+		}
 	}
 }
