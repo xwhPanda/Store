@@ -1,21 +1,47 @@
 package com.jiqu.activity;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import org.json.JSONObject;
+
 import android.os.Bundle;
 import android.support.v4.view.ViewPager;
+import android.support.v4.view.ViewPager.OnPageChangeListener;
+import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.ImageView.ScaleType;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
+import android.widget.RelativeLayout.LayoutParams;
 import android.widget.TextView;
 
+import com.alibaba.fastjson.JSON;
+import com.android.volley.Response.ErrorListener;
+import com.android.volley.Response.Listener;
+import com.android.volley.toolbox.ImageLoader;
+import com.android.volley.toolbox.ImageLoader.ImageListener;
+import com.android.volley.VolleyError;
+import com.jiqu.adapter.ViewPagerAdapter;
+import com.jiqu.application.StoreApplication;
+import com.jiqu.database.DownloadAppinfo;
+import com.jiqu.database.DownloadAppinfoDao.Properties;
+import com.jiqu.download.DownloadManager;
+import com.jiqu.object.GameDetailInfo;
 import com.jiqu.store.BaseActivity;
 import com.jiqu.store.R;
+import com.jiqu.tools.RequestTool;
 import com.jiqu.tools.UIUtil;
 import com.jiqu.view.RatingBarView;
 import com.jiqu.view.TitleView;
 
-public class DetailActivity extends BaseActivity {
+import de.greenrobot.dao.query.QueryBuilder;
+
+public class DetailActivity extends BaseActivity implements Listener<JSONObject> , ErrorListener,OnPageChangeListener,OnClickListener{
 	private TitleView titleView;
 	private LinearLayout gameIconLin;
 	private ImageView gameIcon;
@@ -53,13 +79,29 @@ public class DetailActivity extends BaseActivity {
 	
 	private int[] IDs = new int[3];
 	private int[] blueIDs = new int[3];
+	
+	private RequestTool requestTool;
+	//游戏ID
+	private String p_id;
+	private ImageView[] imgs;
+	private ImageView[] radioImgs;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
 		super.onCreate(savedInstanceState);
+		requestTool = RequestTool.getInstance();
+		p_id = getIntent().getStringExtra("p_id");
 		
 		initView();
+		
+		loadDetail();
+	}
+	
+	private void loadDetail(){
+		requestTool.initParam();
+		requestTool.setParam("P_ID", p_id);
+		requestTool.startGameDetailRequest(this, this);
 	}
 
 	@Override
@@ -130,23 +172,22 @@ public class DetailActivity extends BaseActivity {
 		comprehensiveBar = (RatingBarView) findViewById(R.id.comprehensiveBar);
 		
 		titleView.back.setBackgroundResource(R.drawable.fanhui);
-		titleView.tip.setText("的风景海湾");
+		titleView.tip.setText("");
 		titleView.tip.setTextColor(getResources().getColor(R.color.blue));
 		titleView.editBtn.setVisibility(View.VISIBLE);
 		titleView.editBtn.setBackgroundResource(R.drawable.fenxiang_white);
+		
+		gameIcon.setScaleType(ScaleType.FIT_XY);
+		viewPager.setOnPageChangeListener(this);
+		download.setOnClickListener(this);
 		
 		screenSenseBar.setResID(IDs);
 		immersionBar.setResID(IDs);
 		gameplayBar.setResID(IDs);
 		difficultyBar.setResID(IDs);
 		
-		screenSenseBar.setRating(2.5);
-		immersionBar.setRating(2.5);
-		gameplayBar.setRating(2.5);
-		difficultyBar.setRating(2.5);
-		
 		comprehensiveBar.setResID(blueIDs);
-		comprehensiveBar.setRating(2.5);
+		comprehensiveBar.setStep(1.0f);
 		
 		initViewSize();
 	}
@@ -200,8 +241,141 @@ public class DetailActivity extends BaseActivity {
 			UIUtil.setViewSizeMargin(high, 0, 5 * Ry, 0, 0);
 			UIUtil.setViewSizeMargin(pagerRel, 0, 15 * Ry, 0, 0);
 			UIUtil.setViewSizeMargin(download, 0, 105 * Ry, 0, 0);
+			UIUtil.setViewSizeMargin(viewGroup, 0, 0, 0, 30 * Ry);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+	}
+
+	@Override
+	public void onErrorResponse(VolleyError arg0) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void onResponse(JSONObject arg0) {
+		// TODO Auto-generated method stub
+		if (arg0 != null) {
+			GameDetailInfo info = JSON.parseObject(arg0.toString(), GameDetailInfo.class);
+			setData(info);
+		}
+	}
+	
+	private void setData(GameDetailInfo info){
+		ImageListener listener = ImageLoader.getImageListener(gameIcon, R.drawable.ic_launcher, R.drawable.ic_launcher);
+		StoreApplication.getInstance().getImageLoader().get(info.getLdpi_icon_url(), listener);
+		titleView.tip.setText(info.getName());
+		gameName.setText(info.getName());
+		downloadCount.setText(info.getDownload_count() + "人下载");
+		version.setText("版本:" + info.getVersion_name());
+		type.setText(info.getProduct_type());
+		size.setText(UIUtil.getDataSize(Long.parseLong(info.getApp_size())));
+		
+		List<String> screenshot = new ArrayList<String>();
+		if (!TextUtils.isEmpty(info.getScreenshot_1())) {
+			screenshot.add(info.getScreenshot_1());
+		}
+		if (!TextUtils.isEmpty(info.getScreenshot_2())) {
+			screenshot.add(info.getScreenshot_2());
+		}
+		if (!TextUtils.isEmpty(info.getScreenshot_3())) {
+			screenshot.add(info.getScreenshot_3());
+		}
+		if (!TextUtils.isEmpty(info.getScreenshot_4())) {
+			screenshot.add(info.getScreenshot_4());
+		}
+		if (!TextUtils.isEmpty(info.getScreenshot_5())) {
+			screenshot.add(info.getScreenshot_5());
+		}
+		int count = screenshot.size();
+		if (count > 0) {
+			imgs = new ImageView[count];
+			radioImgs = new ImageView[count];
+			for(int i = 0;i < count;i++){
+				ImageView view = new ImageView(this);
+				ImageListener imageListener = ImageLoader.getImageListener(view, R.drawable.ic_launcher, R.drawable.ic_launcher);
+				StoreApplication.getInstance().getImageLoader().get(screenshot.get(i), imageListener);
+				view.setScaleType(ScaleType.FIT_XY);
+				LayoutParams lp = new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT);
+				view.setLayoutParams(lp);
+				imgs[i] = view;
+				
+				ImageView radio = new ImageView(this);
+				if (i== 0) {
+					radio.setBackgroundResource(R.drawable.dian_blue);
+				}else {
+					radio.setBackgroundResource(R.drawable.dian_white);
+				}
+				android.widget.LinearLayout.LayoutParams params  = new android.widget.LinearLayout.LayoutParams((int)(20 * Rx), (int)(20 * Rx));
+				if (i != 0) {
+					params.leftMargin = (int) (10 * Rx);
+				}
+				radio.setLayoutParams(params);
+				radioImgs[i] = radio;
+				viewGroup.addView(radio);
+			}
+			
+			ViewPagerAdapter adapter = new ViewPagerAdapter(this, imgs);
+			viewPager.setAdapter(adapter);
+		}
+		
+		float vertigo = Float.parseFloat(info.getGrade_vertigo());
+		if (vertigo == 0) {
+			vertigoValue.setBackgroundResource(R.drawable.jindu1);
+		}else if (vertigo > 0 && vertigo < 1.2) {
+			vertigoValue.setBackgroundResource(R.drawable.jindu2);
+		}else if (vertigo >= 1.4 && vertigo <= 2.0) {
+			vertigoValue.setBackgroundResource(R.drawable.jindu3);
+		}else if (vertigo > 2.0) {
+			vertigoValue.setBackgroundResource(R.drawable.jindu4);
+		}
+		float frames = Float.parseFloat(info.getGrade_frames());
+		float immersive = Float.parseFloat(info.getGrade_immersive());
+		float gameplay = Float.parseFloat(info.getGrade_gameplay());
+		float difficulty = Float.parseFloat(info.getGrade_difficulty());
+		
+		screenSenseBar.setRating(frames);
+		immersionBar.setRating(immersive);
+		gameplayBar.setRating(gameplay);
+		difficultyBar.setRating(difficulty);
+		
+		float rat = (frames + immersive + gameplay + difficulty + vertigo);
+		evaluationScore.setText(rat + "");
+		comprehensiveBar.setRating(rat);
+		
+		QueryBuilder<DownloadAppinfo> qb = StoreApplication.daoSession.getDownloadAppinfoDao().queryBuilder();
+		DownloadAppinfo downloadAppinfo = qb.where(Properties.Id.eq(Long.parseLong(p_id))).unique();
+		if (downloadAppinfo != null) {
+		}
+	}
+
+	@Override
+	public void onPageScrollStateChanged(int arg0) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void onPageScrolled(int arg0, float arg1, int arg2) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void onPageSelected(int arg0) {
+		// TODO Auto-generated method stub
+		for(int i = 0;i<radioImgs.length;i++){
+			if (arg0 == i) {
+				radioImgs[i].setBackgroundResource(R.drawable.dian_blue);
+			}else {
+				radioImgs[i].setBackgroundResource(R.drawable.dian_white);
+			}
+		}
+	}
+
+	@Override
+	public void onClick(View v) {
+		// TODO Auto-generated method stub
 	}
 }

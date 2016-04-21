@@ -11,6 +11,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.ImageView.ScaleType;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -41,6 +42,8 @@ public class RecommedGameView extends LinearLayout {
 		gameIcon = (ImageView) view.findViewById(R.id.gameIcon);
 		gameName = (TextView) view.findViewById(R.id.gameName);
 		gameDescription = (TextView) view.findViewById(R.id.gameDescription);
+		
+		gameIcon.setScaleType(ScaleType.FIT_XY);
 		
 		initViewSize();
 	}

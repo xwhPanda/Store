@@ -1,17 +1,8 @@
 package com.jiqu.object;
 
-import java.io.File;
-
-import android.text.TextUtils;
-
-import com.jiqu.database.DownloadAppinfo;
-import com.jiqu.download.AppUtil;
-import com.jiqu.download.DownloadManager;
-import com.jiqu.download.FileUtil;
-
-public class GameInfo {
+public class GameDetailInfo {
 	private String p_id;
-	private String sub_category;
+	private String sub_categoryl;
 	private String version_code;
 	private String app_size;
 	private String short_description;
@@ -35,34 +26,30 @@ public class GameInfo {
 	private String name;
 	private String ratings_count;
 	private String grade_gameplay;
-	private String noread_key;
+	private String icon_url;
+	private String rating;
+	private String screenshot_1;
+	private String screenshot_2;
+	private String screenshot_3;
+	private String screenshot_4;
+	private String screenshot_5;
+	private String up_time;
+	private String up_reason;
+	private String long_description;
+	private String comments_count;
+	private String tags;
 	
-	private int adapterType;//布局类型
-	private int state = -1;
-	
-	public synchronized int getState() {
-		return state;
-	}
-	public synchronized void setState(int state) {
-		this.state = state;
-	}
-	public synchronized int getAdapterType() {
-		return adapterType;
-	}
-	public synchronized void setAdapterType(int adapterType) {
-		this.adapterType = adapterType;
-	}
 	public synchronized String getP_id() {
 		return p_id;
 	}
 	public synchronized void setP_id(String p_id) {
 		this.p_id = p_id;
 	}
-	public synchronized String getSub_category() {
-		return sub_category;
+	public synchronized String getSub_categoryl() {
+		return sub_categoryl;
 	}
-	public synchronized void setSub_category(String sub_category) {
-		this.sub_category = sub_category;
+	public synchronized void setSub_categoryl(String sub_categoryl) {
+		this.sub_categoryl = sub_categoryl;
 	}
 	public synchronized String getVersion_code() {
 		return version_code;
@@ -202,54 +189,83 @@ public class GameInfo {
 	public synchronized void setGrade_gameplay(String grade_gameplay) {
 		this.grade_gameplay = grade_gameplay;
 	}
-	public synchronized String getNoread_key() {
-		return noread_key;
+	public synchronized String getIcon_url() {
+		return icon_url;
 	}
-	public synchronized void setNoread_key(String noread_key) {
-		this.noread_key = noread_key;
+	public synchronized void setIcon_url(String icon_url) {
+		this.icon_url = icon_url;
 	}
-	
-	public static DownloadAppinfo toDownloadAppInfo(GameInfo info){
-		DownloadAppinfo downloadInfo = new DownloadAppinfo();
-		
-		downloadInfo.setPackageName(info.packagename);
-		downloadInfo.setId(Long.parseLong(info.p_id));
-		downloadInfo.setAppName(info.name);
-		downloadInfo.setAppSize(info.app_size);
-		downloadInfo.setCurrentSize((long) 0);
-		if (info.state != -1) {
-			downloadInfo.setDownloadState(info.state);
-		}else {
-			downloadInfo.setDownloadState(DownloadManager.STATE_NONE);
-		}
-		downloadInfo.setUrl(info.url);
-		downloadInfo.setIconUrl(info.ldpi_icon_url);
-		downloadInfo.setDes(info.short_description);
-		downloadInfo.setVersionCode(info.getVersion_code());
-		downloadInfo.setVersionName(info.getVersion_name());
-		downloadInfo.setApkPath(FileUtil.getApkDownloadDir(AppUtil.getContext()) + File.separator + info.name + ".apk");
-		downloadInfo.setZipPath(FileUtil.getZipDownloadDir(AppUtil.getContext()) + File.separator + info.name + ".zip");
-		downloadInfo.setUnzipPath(FileUtil.getZipDownloadDir(AppUtil.getContext()) + File.separator + info.name);
-		downloadInfo.setThread1(0l);
-		downloadInfo.setThread2(0l);
-		downloadInfo.setThread3(0l);
-		downloadInfo.setThread4(0l);
-		downloadInfo.setThread5(0l);
-		downloadInfo.setProgress(0.0f);
-		downloadInfo.setHasFinished(false);
-		downloadInfo.setScore(2);
-		if (!info.url.endsWith(".apk")) {
-			downloadInfo.setIsZip(true);
-		}else {
-			downloadInfo.setIsZip(false);
-		}
-		
-		return downloadInfo;
+	public synchronized String getRating() {
+		return rating;
+	}
+	public synchronized void setRating(String rating) {
+		this.rating = rating;
+	}
+	public synchronized String getScreenshot_1() {
+		return screenshot_1;
+	}
+	public synchronized void setScreenshot_1(String screenshot_1) {
+		this.screenshot_1 = screenshot_1;
+	}
+	public synchronized String getScreenshot_2() {
+		return screenshot_2;
+	}
+	public synchronized void setScreenshot_2(String screenshot_2) {
+		this.screenshot_2 = screenshot_2;
+	}
+	public synchronized String getScreenshot_3() {
+		return screenshot_3;
+	}
+	public synchronized void setScreenshot_3(String screenshot_3) {
+		this.screenshot_3 = screenshot_3;
+	}
+	public synchronized String getScreenshot_4() {
+		return screenshot_4;
+	}
+	public synchronized void setScreenshot_4(String screenshot_4) {
+		this.screenshot_4 = screenshot_4;
+	}
+	public synchronized String getScreenshot_5() {
+		return screenshot_5;
+	}
+	public synchronized void setScreenshot_5(String screenshot_5) {
+		this.screenshot_5 = screenshot_5;
+	}
+	public synchronized String getUp_time() {
+		return up_time;
+	}
+	public synchronized void setUp_time(String up_time) {
+		this.up_time = up_time;
+	}
+	public synchronized String getUp_reason() {
+		return up_reason;
+	}
+	public synchronized void setUp_reason(String up_reason) {
+		this.up_reason = up_reason;
+	}
+	public synchronized String getLong_description() {
+		return long_description;
+	}
+	public synchronized void setLong_description(String long_description) {
+		this.long_description = long_description;
+	}
+	public synchronized String getComments_count() {
+		return comments_count;
+	}
+	public synchronized void setComments_count(String comments_count) {
+		this.comments_count = comments_count;
+	}
+	public synchronized String getTags() {
+		return tags;
+	}
+	public synchronized void setTags(String tags) {
+		this.tags = tags;
 	}
 	
 	@Override
 	public String toString() {
-		return "GameInfo [p_id=" + p_id + ", sub_category=" + sub_category + ", version_code=" + version_code + ", app_size=" + app_size + ", short_description=" + short_description + ", pay_category=" + pay_category + ", category_id=" + category_id + ", en_name=" + en_name + ", product_type=" + product_type + ", url=" + url + ", filemd5=" + filemd5 + ", version_name=" + version_name + ", ldpi_icon_url=" + ldpi_icon_url + ", is_star=" + is_star + ", grade_difficulty=" + grade_difficulty + ", update_time=" + update_time + ", packagename=" + packagename + ", download_count=" + download_count + ", grade_vertigo=" + grade_vertigo + ", grade_immersive=" + grade_immersive + ", source_type=" + source_type + ", grade_frames=" + grade_frames + ", name=" + name + ", ratings_count=" + ratings_count
-				+ ", grade_gameplay=" + grade_gameplay + ", noread_key=" + noread_key + "]";
+		return "GameDetailInfo [p_id=" + p_id + ", sub_categoryl=" + sub_categoryl + ", version_code=" + version_code + ", app_size=" + app_size + ", short_description=" + short_description + ", pay_category=" + pay_category + ", category_id=" + category_id + ", en_name=" + en_name + ", product_type=" + product_type + ", url=" + url + ", filemd5=" + filemd5 + ", version_name=" + version_name + ", ldpi_icon_url=" + ldpi_icon_url + ", is_star=" + is_star + ", grade_difficulty=" + grade_difficulty + ", update_time=" + update_time + ", packagename=" + packagename + ", download_count=" + download_count + ", grade_vertigo=" + grade_vertigo + ", grade_immersive=" + grade_immersive + ", source_type=" + source_type + ", grade_frames=" + grade_frames + ", name=" + name + ", ratings_count="
+				+ ratings_count + ", grade_gameplay=" + grade_gameplay + ", icon_url=" + icon_url + ", rating=" + rating + ", screenshot_1=" + screenshot_1 + ", screenshot_2=" + screenshot_2 + ", screenshot_3=" + screenshot_3 + ", screenshot_4=" + screenshot_4 + ", screenshot_5=" + screenshot_5 + ", up_time=" + up_time + ", up_reason=" + up_reason + ", long_description=" + long_description + ", comments_count=" + comments_count + ", tags=" + tags + "]";
 	}
+	
 }

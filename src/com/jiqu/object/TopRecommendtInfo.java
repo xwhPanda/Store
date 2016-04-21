@@ -5,7 +5,7 @@ import java.util.Arrays;
 
 public class TopRecommendtInfo {
 
-	private Integer count;
+	private int count;
 	private TopRecommendItem[] item;
 	
 	public TopRecommendtInfo() {

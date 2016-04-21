@@ -1,5 +1,6 @@
 package com.jiqu.tools;
 
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -73,5 +74,32 @@ public class UIUtil {
 	public static List<String> getDataFromXML(Context context,int resID){
 		String[] strings = context.getResources().getStringArray(resID);
 		return Arrays.asList(strings);
+	}
+	
+	/**
+	 * 返回byte的数据大小对应的文本
+	 * @param size
+	 * @return
+	 */
+	public static String getDataSize(long size){
+		DecimalFormat formater = new DecimalFormat("####.0");
+		if (size >= 0) {
+			if(size < 1024){
+				return size+"B";
+			}else if(size<1024*1024){
+				float kbsize = size/1024f;  
+				return formater.format(kbsize)+"KB";
+			}else if(size<1024*1024*1024){
+				float mbsize = size/1024f/1024f;  
+				return formater.format(mbsize)+"M";
+			}else if(size<1024*1024*1024*1024){
+				float gbsize = size/1024f/1024f/1024f;  
+				return formater.format(gbsize)+"G";
+			}else{
+				return 0 + "KB";
+			}
+		}else {
+			return 0 + "KB";
+		}
 	}
 }

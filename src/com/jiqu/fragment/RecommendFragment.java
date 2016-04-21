@@ -34,10 +34,12 @@ import com.jiqu.download.DownloadManager;
 import com.jiqu.download.UnZipManager;
 import com.jiqu.object.GameInfo;
 import com.jiqu.object.GameInformation;
+import com.jiqu.object.RecommendAppsInfo;
 import com.jiqu.object.TopRecommendtInfo;
 import com.jiqu.store.R;
 import com.jiqu.tools.InstalledAppTool;
 import com.jiqu.tools.MetricsTool;
+import com.jiqu.tools.RequestTool;
 import com.jiqu.tools.UIUtil;
 import com.jiqu.view.PullToRefreshLayout;
 import com.jiqu.view.PullToRefreshLayout.OnRefreshListener;
@@ -61,6 +63,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.View.OnClickListener;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
 import android.widget.HorizontalScrollView;
 import android.widget.ImageView;
 import android.widget.ImageView.ScaleType;
@@ -101,12 +105,9 @@ public class RecommendFragment extends Fragment implements OnPageChangeListener,
 	private GameAdapter adapter;
 	private List<GameInfo> resultList = new ArrayList<GameInfo>();
 	
-	private Map<String, String> map = new HashMap<String, String>();
-	private String url = "http://xu8api.91xuxu.com/api/1.0/getHomeRecommend";
-	private String topUrl = "http://xu8api.91xuxu.com/api/1.0/getTopRecommend";
-	private String recommedAppsUrl = "http://xu8api.91xuxu.com/api/1.0/recommendApps";
 	private JsonObjectRequest objectRequest;
 	private TopRecommendtInfo topRecommendtInfo = new TopRecommendtInfo();
+	private RequestTool requestTool;
 	
 	private boolean refreshShow = false;
 	private int currentIndex = 0;
@@ -132,62 +133,86 @@ public class RecommendFragment extends Fragment implements OnPageChangeListener,
 
 		initAdapter();
 
-		map.put("android_id", "a9f7234301030848");
-		map.put("imei", "000000000000000");
-		map.put("start_position", "0");
-		map.put("versionCode", "127");
-		map.put("versionName", "0.1.27");
-		map.put("size", "20");
-		map.put("device_id", "000000000000000");
-		map.put("mac", "08:00:27:d3:53:ef");
-		JSONObject object = new JSONObject(map);
-		objectRequest = new JsonObjectRequest(Method.POST, url, object, this, this);
-		objectRequest.setRetryPolicy(new DefaultRetryPolicy(5 * 1000, 2, 2));
-		StoreApplication.getInstance().addToRequestQueue(objectRequest, "recommend");
-		StoreApplication.getInstance().getRequestQueue().start();
+		requestTool = RequestTool.getInstance();
+		requestTool.initParam();
+		requestTool.setParam("start_position", "0");
+		requestTool.setParam("zise", "20");
+		requestTool.startHomeRecommendRequest(this, this,true);
 		
 		loadTopData();
+		loadRecommendApps();
 
-		new CountDownTimer(Integer.MAX_VALUE, 5000) {
-			
-			@Override
-			public void onTick(long millisUntilFinished) {
-				// TODO Auto-generated method stub
-				
-				recommendImgViewPager.setCurrentItem(currentIndex % 3);
-				currentIndex++;
-			}
-			
-			@Override
-			public void onFinish() {
-				// TODO Auto-generated method stub
-				
-			}
-		}.start();
-		
 		return view;
 	}
 	
+	/**
+	 * 顶部轮换图片
+	 */
 	private void loadTopData() {
-		JSONObject object = new JSONObject(map);
-		JsonObjectRequest topJsonObjectRequest = new JsonObjectRequest(Method.POST, topUrl, object, new Listener<JSONObject>() {
+		requestTool.initParam();
+		requestTool.startTopRecommendRequest(new Listener<JSONObject>() {
 
 			@Override
 			public void onResponse(JSONObject arg0) {
 				// TODO Auto-generated method stub
 				topRecommendtInfo = JSON.parseObject(arg0.toString(), TopRecommendtInfo.class);
-				initTop();
+				if (topRecommendtInfo != null) {
+					initTop();
+				}
 			}
 		}, new ErrorListener() {
 
 			@Override
 			public void onErrorResponse(VolleyError arg0) {
 				// TODO Auto-generated method stub
-
+				
 			}
 		});
-		StoreApplication.getInstance().addToRequestQueue(topJsonObjectRequest, "topRecommend");
-		StoreApplication.getInstance().getRequestQueue().start();
+	}
+	
+	/**
+	 * 获取推荐游戏
+	 */
+	private void loadRecommendApps(){
+		requestTool.initParam();
+		requestTool.setParam("start_position", "0");
+		requestTool.setParam("size", "5");
+		requestTool.startRecommendAppsRequest(new Listener<JSONObject>() {
+
+			@Override
+			public void onResponse(JSONObject arg0) {
+				// TODO Auto-generated method stub
+				RecommendAppsInfo info = JSON.parseObject(arg0.toString(), RecommendAppsInfo.class);
+				initRecommendApps(info);
+			}
+		}, new ErrorListener() {
+
+			@Override
+			public void onErrorResponse(VolleyError arg0) {
+				// TODO Auto-generated method stub
+				
+			}
+		});
+	}
+	
+	private void initRecommendApps(RecommendAppsInfo info){
+		if (info != null && info.getItem().length > 0) {
+			int count = info.getItem().length;
+			for (int i = 0; i < count; i++) {
+				GameInfo gameInfo = info.getItem()[i];
+				RecommedGameView gameView = new RecommedGameView(getActivity());
+				gameView.gameName.setText(gameInfo.getName());
+				gameView.getDesView().setText(gameInfo.getShort_description());
+				ImageListener listener = ImageLoader.getImageListener(gameView.gameIcon,R.drawable.ic_launcher, R.drawable.ic_launcher);
+				StoreApplication.getInstance().getImageLoader().get(gameInfo.getLdpi_icon_url(),listener);
+				recommendGameList.addView(gameView);
+				
+					TextView view = new TextView(getActivity());
+					LayoutParams lp = new LayoutParams((int) (30 * Rx), LayoutParams.MATCH_PARENT);
+					view.setLayoutParams(lp);
+					recommendGameList.addView(view);
+			}
+		}
 	}
 	
 	private void initTop(){
@@ -220,6 +245,23 @@ public class RecommendFragment extends Fragment implements OnPageChangeListener,
 		}
 		ViewPagerAdapter adapter = new ViewPagerAdapter(getActivity(), contentImgs);
 		recommendImgViewPager.setAdapter(adapter);
+		
+		new CountDownTimer(Integer.MAX_VALUE, 5000) {
+			
+			@Override
+			public void onTick(long millisUntilFinished) {
+				// TODO Auto-generated method stub
+				
+				recommendImgViewPager.setCurrentItem(currentIndex % 3);
+				currentIndex++;
+			}
+			
+			@Override
+			public void onFinish() {
+				// TODO Auto-generated method stub
+				
+			}
+		}.start();
 	}
 
 	@Override
@@ -284,6 +326,16 @@ public class RecommendFragment extends Fragment implements OnPageChangeListener,
 		recommendListView.addHeaderView(headView);
 		recommendListView.setHasHead(true);
 
+		recommendListView.setOnItemClickListener(new OnItemClickListener() {
+
+			@Override
+			public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+				// TODO Auto-generated method stub
+				startActivity(new Intent(getActivity(), DetailActivity.class).putExtra("p_id", resultList.get(position - 1).getP_id()));
+			}
+		});
+		
+		
 		initViewSize();
 	}
 
@@ -359,19 +411,6 @@ public class RecommendFragment extends Fragment implements OnPageChangeListener,
 		recommendGameList = (LinearLayout) headView.findViewById(R.id.recommendGameList);
 
 		recommendGameInformationImg = (ImageView) headView.findViewById(R.id.recommendGameInformationImg);
-
-		for (int i = 0; i < 3; i++) {
-			RecommedGameView gameView = new RecommedGameView(getActivity());
-			gameView.gameName.setText("英雄联盟");
-			gameView.getDesView().setText("哈哈哈哈哈哈哈");
-			recommendGameList.addView(gameView);
-			if (i < 2) {
-				TextView view = new TextView(getActivity());
-				LayoutParams lp = new LayoutParams((int) (30 * Rx), LayoutParams.MATCH_PARENT);
-				view.setLayoutParams(lp);
-				recommendGameList.addView(view);
-			}
-		}
 	}
 
 	@Override
@@ -382,12 +421,9 @@ public class RecommendFragment extends Fragment implements OnPageChangeListener,
 	@Override
 	public void onLoadMore(PullToRefreshLayout pullToRefreshLayout) {
 		// TODO Auto-generated method stub
-		Log.i("TAG", "onLoadMore");
-		map.put("size", String.valueOf(resultList.size() + 20));
-		JSONObject object = new JSONObject(map);
-		JsonObjectRequest objectRequest = new JsonObjectRequest(Method.POST, url, object, this, this);
-		StoreApplication.getInstance().addToRequestQueue(objectRequest, "recommend");
-		StoreApplication.getInstance().getRequestQueue().start();
+		requestTool.initParam();
+		requestTool.setParam("size", String.valueOf(resultList.size() + 20));
+		requestTool.startHomeRecommendRequest(this, this, false);
 		
 		refreshShow = true;
 	}
@@ -415,9 +451,6 @@ public class RecommendFragment extends Fragment implements OnPageChangeListener,
 
 			for (GameInfo gameInfo : resultList) {
 				gameInfo.setAdapterType(1);
-				if (gameInfo.getUrl().endsWith(".zip")) {
-					Log.i("TAG", gameInfo.getName() + "/" + gameInfo.getApp_size() + "/" + gameInfo.getUrl());
-				}
 			}
 			
 			for(int i = resultList.size() - 20;i<resultList.size();i++){

@@ -30,8 +30,7 @@
                     android:id="@+id/gameIcon"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="center_vertical"
-                    android:background="@color/red" />
+                    android:layout_gravity="center_vertical"/>
 
                 <RelativeLayout
                     android:id="@+id/titleLine"
@@ -45,7 +44,6 @@
                         android:layout_height="wrap_content"
                         fontPath="fonts/lantinghei.ttf"
                         android:singleLine="true"
-                        android:text="复苏步伐维护"
                         android:textColor="@color/white" />
 
                     <TextView
@@ -55,7 +53,6 @@
                         android:layout_alignLeft="@id/gameName"
                         android:layout_below="@id/gameName"
                         fontPath="fonts/lantinghei.ttf"
-                        android:text="123456人下载"
                         android:textColor="@color/itemDesColor" />
 
                     <TextView
@@ -65,7 +62,6 @@
                         android:layout_alignTop="@id/downloadCount"
                         android:layout_toRightOf="@id/downloadCount"
                         fontPath="fonts/lantinghei.ttf"
-                        android:text="版本:1.0.0"
                         android:textColor="@color/itemDesColor" />
 
                     <TextView
@@ -75,7 +71,6 @@
                         android:layout_alignLeft="@id/downloadCount"
                         android:layout_below="@id/downloadCount"
                         fontPath="fonts/lantinghei.ttf"
-                        android:text="动作模拟"
                         android:textColor="@color/itemDesColor" />
 
                     <TextView
@@ -180,7 +175,7 @@
                     android:layout_height="wrap_content"
                     android:layout_centerVertical="true"
                     android:layout_toRightOf="@id/vertigo" 
-                    android:background="@drawable/jindu3"/>
+                    android:background="@drawable/jindu2"/>
 
                 <TextView
                     android:id="@+id/low"

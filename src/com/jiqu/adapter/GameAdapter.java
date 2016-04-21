@@ -222,8 +222,6 @@ public class GameAdapter extends BaseAdapter implements DownloadObserver{
 			
 			gameScore.setResID(resIds);
 			
-			gameDes.setText("哈佛哈减肥哈弗哈佛哈佛哈克繁华过后");
-			
 			informationLin = (RelativeLayout) view.findViewById(R.id.informationLin);
 			subscriptLin = (LinearLayout) view.findViewById(R.id.subscriptLin);
 			
@@ -338,7 +336,7 @@ public class GameAdapter extends BaseAdapter implements DownloadObserver{
 		
 		private void refreshView(){
 			gameName.setText(mData.getAppName());
-//			gameDes.setText(mData.getDesinfo());
+			gameDes.setText(mData.getDes());
 			gameScore.setRating((float) 4.5);
 			gameSize.setText(FileUtil.getSize(Long.parseLong(mData.getAppSize())));
 			ImageListener listener = ImageLoader.getImageListener(icon,R.drawable.ic_launcher, R.drawable.ic_launcher);

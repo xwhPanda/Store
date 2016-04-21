@@ -30,7 +30,7 @@
                 android:id="@+id/screenSenseRel"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_centerHorizontal="true" >
+                android:layout_centerHorizontal="true">
 
                 <TextView
                     android:id="@+id/screenSense"
@@ -47,7 +47,6 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_centerVertical="true"
-                    android:layout_marginRight="3dp"
                     android:layout_toRightOf="@id/screenSense" />
             </RelativeLayout>
 
@@ -73,7 +72,6 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_centerVertical="true"
-                    android:layout_marginRight="3dp"
                     android:layout_toRightOf="@id/immersion" />
             </RelativeLayout>
 
@@ -99,7 +97,6 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_centerVertical="true"
-                    android:layout_marginRight="3dp"
                     android:layout_toRightOf="@id/gameplay" />
             </RelativeLayout>
 
@@ -125,7 +122,6 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_centerVertical="true"
-                    android:layout_marginRight="3dp"
                     android:layout_toRightOf="@id/difficultyNumber" />
             </RelativeLayout>
         </RelativeLayout>
@@ -160,7 +156,6 @@
                 android:layout_below="@id/comprehensiveEvaluation"
                 android:layout_centerHorizontal="true"
                 fontPath="fonts/lantinghei.ttf"
-                android:text="9.8"
                 android:textColor="@color/blue"
                 android:textStyle="bold|italic" />
 
