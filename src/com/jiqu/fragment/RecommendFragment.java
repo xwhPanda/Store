@@ -34,6 +34,7 @@ import com.jiqu.download.DownloadManager;
 import com.jiqu.download.UnZipManager;
 import com.jiqu.object.GameInfo;
 import com.jiqu.object.GameInformation;
+import com.jiqu.object.InstalledApp;
 import com.jiqu.object.RecommendAppsInfo;
 import com.jiqu.object.TopRecommendtInfo;
 import com.jiqu.store.R;
@@ -136,7 +137,7 @@ public class RecommendFragment extends Fragment implements OnPageChangeListener,
 		requestTool = RequestTool.getInstance();
 		requestTool.initParam();
 		requestTool.setParam("start_position", "0");
-		requestTool.setParam("zise", "20");
+		requestTool.setParam("size", "20");
 		requestTool.startHomeRecommendRequest(this, this,true);
 		
 		loadTopData();
@@ -432,6 +433,10 @@ public class RecommendFragment extends Fragment implements OnPageChangeListener,
 	public void onErrorResponse(VolleyError arg0) {
 		// TODO Auto-generated method stub
 		Log.i("TAG", "onErrorResponse");
+		if (refreshShow) {
+			refreshShow = false;
+			pullToRefreshLayout.refreshFinish(PullToRefreshLayout.SUCCEED);
+		}
 	}
 
 	@Override
@@ -452,9 +457,12 @@ public class RecommendFragment extends Fragment implements OnPageChangeListener,
 			for (GameInfo gameInfo : resultList) {
 				gameInfo.setAdapterType(1);
 			}
-			
+			List<InstalledApp> apps = InstalledAppTool.getPersonalApp(getActivity());
 			for(int i = resultList.size() - 20;i<resultList.size();i++){
-				int state = InstalledAppTool.contain(resultList.get(i).getPackagename(), Integer.parseInt(resultList.get(i).getVersion_code()));
+				int state = InstalledAppTool.contain(apps,resultList.get(i).getPackagename(), Integer.parseInt(resultList.get(i).getVersion_code()));
+				if (resultList.get(i).getUrl().endsWith(".zip")) {
+					Log.i("TAG", resultList.get(i).getName() + " / " + resultList.get(i).getUrl());
+				}
 				if (state != -1) {
 					resultList.get(i).setState(state);
 				}
@@ -530,5 +538,6 @@ public class RecommendFragment extends Fragment implements OnPageChangeListener,
 	public void onDestroyView() {
 		super.onDestroyView();
 		getActivity().unregisterReceiver(appInstallReceiver);
+		getActivity().unregisterReceiver(deleteReceiver);
 	};
 }

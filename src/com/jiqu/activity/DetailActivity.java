@@ -5,7 +5,10 @@ import java.util.List;
 
 import org.json.JSONObject;
 
+import android.R.integer;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.support.v4.view.ViewPager;
 import android.support.v4.view.ViewPager.OnPageChangeListener;
 import android.text.TextUtils;
@@ -31,9 +34,14 @@ import com.jiqu.application.StoreApplication;
 import com.jiqu.database.DownloadAppinfo;
 import com.jiqu.database.DownloadAppinfoDao.Properties;
 import com.jiqu.download.DownloadManager;
+import com.jiqu.download.DownloadManager.DownloadObserver;
+import com.jiqu.download.UnZipManager;
 import com.jiqu.object.GameDetailInfo;
+import com.jiqu.object.InstalledApp;
 import com.jiqu.store.BaseActivity;
 import com.jiqu.store.R;
+import com.jiqu.tools.Constant;
+import com.jiqu.tools.InstalledAppTool;
 import com.jiqu.tools.RequestTool;
 import com.jiqu.tools.UIUtil;
 import com.jiqu.view.RatingBarView;
@@ -41,7 +49,7 @@ import com.jiqu.view.TitleView;
 
 import de.greenrobot.dao.query.QueryBuilder;
 
-public class DetailActivity extends BaseActivity implements Listener<JSONObject> , ErrorListener,OnPageChangeListener,OnClickListener{
+public class DetailActivity extends BaseActivity implements Listener<JSONObject> , ErrorListener,OnPageChangeListener,OnClickListener,DownloadObserver{
 	private TitleView titleView;
 	private LinearLayout gameIconLin;
 	private ImageView gameIcon;
@@ -85,6 +93,9 @@ public class DetailActivity extends BaseActivity implements Listener<JSONObject>
 	private String p_id;
 	private ImageView[] imgs;
 	private ImageView[] radioImgs;
+	
+	private int state = -1;
+	private DownloadAppinfo downloadAppinfo;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -263,6 +274,7 @@ public class DetailActivity extends BaseActivity implements Listener<JSONObject>
 	}
 	
 	private void setData(GameDetailInfo info){
+		DownloadManager.getInstance().registerObserver(this);
 		ImageListener listener = ImageLoader.getImageListener(gameIcon, R.drawable.ic_launcher, R.drawable.ic_launcher);
 		StoreApplication.getInstance().getImageLoader().get(info.getLdpi_icon_url(), listener);
 		titleView.tip.setText(info.getName());
@@ -345,9 +357,21 @@ public class DetailActivity extends BaseActivity implements Listener<JSONObject>
 		comprehensiveBar.setRating(rat);
 		
 		QueryBuilder<DownloadAppinfo> qb = StoreApplication.daoSession.getDownloadAppinfoDao().queryBuilder();
-		DownloadAppinfo downloadAppinfo = qb.where(Properties.Id.eq(Long.parseLong(p_id))).unique();
+		downloadAppinfo = qb.where(Properties.Id.eq(Long.parseLong(p_id))).unique();
 		if (downloadAppinfo != null) {
+			state = downloadAppinfo.getDownloadState();
+		}else {
+			downloadAppinfo = GameDetailInfo.toDownloadAppinfo(info);
+			state = downloadAppinfo.getDownloadState();
+			List<InstalledApp> apps = InstalledAppTool.getPersonalApp(this);
+			int stateNum = InstalledAppTool.contain(apps, downloadAppinfo.getPackageName(), Integer.parseInt(downloadAppinfo.getVersionCode()));
+			if (stateNum != -1) {
+				state = stateNum;
+				downloadAppinfo.setDownloadState(state);
+				DownloadManager.DBManager.getDownloadAppinfoDao().insertOrReplace(downloadAppinfo);
+			}
 		}
+		refreshState(state);
 	}
 
 	@Override
@@ -377,5 +401,124 @@ public class DetailActivity extends BaseActivity implements Listener<JSONObject>
 	@Override
 	public void onClick(View v) {
 		// TODO Auto-generated method stub
+		if (downloadAppinfo != null) {
+			if (state == DownloadManager.STATE_DOWNLOADING) {
+				DownloadManager.getInstance().pause(downloadAppinfo);
+			}else if (state == DownloadManager.STATE_UNZIP_FAILED) {
+				if (downloadAppinfo != null) {
+					UnZipManager.getInstance().unzip(downloadAppinfo, Constant.PASSWORD);
+				}
+			}else if (state == DownloadManager.STATE_UNZIPING) {
+				download.setEnabled(false);
+			}else if (state == DownloadManager.STATE_WAITING) {
+				DownloadManager.getInstance().cancel(downloadAppinfo);
+			}else if (state == DownloadManager.STATE_INSTALLED) {
+				DownloadManager.getInstance().open(downloadAppinfo.getPackageName());
+			}else if (state == DownloadManager.STATE_PAUSED) {
+				DownloadManager.getInstance().download(downloadAppinfo);
+			}else if (state == DownloadManager.STATE_ERROR
+					|| state == DownloadManager.STATE_NONE
+					|| state == DownloadManager.STATE_NEED_UPDATE) {
+				DownloadManager.getInstance().download(downloadAppinfo);
+			}else {
+				if (downloadAppinfo.getIsZip()) {
+					if (state == DownloadManager.STATE_UNZIPED) {
+						DownloadManager.getInstance().install(downloadAppinfo);
+					}
+				}else {
+					if (state == DownloadManager.STATE_INSTALLED) {
+						DownloadManager.getInstance().install(downloadAppinfo);
+					}
+				}
+			}
+		}
 	}
+	
+	private void refreshState(int state){
+		this.state = state;
+		if (state == DownloadManager.STATE_DOWNLOADING) {
+			download.setEnabled(true);
+			download.setText("暂停");
+		}else if (state == DownloadManager.STATE_UNZIP_FAILED) {
+			download.setEnabled(true);
+			download.setText("解压失败");
+		}else if (state == DownloadManager.STATE_UNZIPING) {
+			download.setEnabled(false);
+			download.setText("正在解压");
+		}else if (state == DownloadManager.STATE_WAITING) {
+			download.setEnabled(true);
+			download.setText("等待下载");
+		}else if (state == DownloadManager.STATE_INSTALLED) {
+			download.setEnabled(true);
+			download.setText("打开");
+		}else if (state == DownloadManager.STATE_PAUSED) {
+			download.setEnabled(true);
+			download.setText("继续下载");
+		}else if (state == DownloadManager.STATE_NONE) {
+			download.setEnabled(true);
+			download.setText("下载");
+		}else if (state == DownloadManager.STATE_NEED_UPDATE) {
+			download.setEnabled(true);
+			download.setText("升级");
+		}else if (state == DownloadManager.STATE_ERROR) {
+			download.setEnabled(true);
+			download.setText("下载失败");
+		}else {
+			download.setEnabled(true);
+			if (downloadAppinfo.getIsZip()) {
+				if (state == DownloadManager.STATE_UNZIPED) {
+					download.setText("安装");
+				}
+			}else {
+				if (state == DownloadManager.STATE_INSTALLED) {
+					download.setText("安装");
+				}
+			}
+		}
+	}
+
+	@Override
+	public void onDownloadStateChanged(DownloadAppinfo info) {
+		// TODO Auto-generated method stub
+		downloadAppinfo = info;
+		refreshState(info.getDownloadState());
+	}
+
+	@Override
+	public void onDownloadProgressed(DownloadAppinfo info) {
+		// TODO Auto-generated method stub
+		if (downloadAppinfo != null && downloadAppinfo.getPackageName().equals(info.getPackageName())) {
+			Log.i("TAG", "progress :" + info.getProgress());
+			Message msg = handler.obtainMessage();
+			msg.obj = info.getProgress() * 100+ "";
+			msg.what = 1;
+			handler.sendMessage(msg);
+		}
+	}
+	
+	@Override
+	protected void onDestroy() {
+		// TODO Auto-generated method stub
+		super.onDestroy();
+		DownloadManager.getInstance().unRegisterObserver(this);
+	}
+	
+	@Override
+	protected void installEvent(String installPackageName) {
+		// TODO Auto-generated method stub
+		if (downloadAppinfo != null && installPackageName.equals(downloadAppinfo.getPackageName())) {
+			state = DownloadManager.STATE_INSTALLED;
+			downloadAppinfo.setDownloadState(state);
+			DownloadManager.getInstance().DBManager.getDownloadAppinfoDao().insertOrReplace(downloadAppinfo);
+			refreshState(state);
+		}
+	}
+	
+	Handler handler = new Handler(){
+		public void handleMessage(android.os.Message msg) {
+			if (msg.what == 1) {
+				download.setText((String)(msg.obj));
+			}
+		};
+	};
 }

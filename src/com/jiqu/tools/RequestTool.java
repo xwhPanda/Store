@@ -56,7 +56,7 @@ public class RequestTool {
 		JSONObject object = new JSONObject(paramMap);
 		JsonObjectRequest objectRequest = new JsonObjectRequest(Method.POST, url, object, listener, errorListener);
 		if (retry) {
-			objectRequest.setRetryPolicy(new DefaultRetryPolicy(5 * 1000, 2, 2));
+			objectRequest.setRetryPolicy(new DefaultRetryPolicy(10 * 1000, 2, 2));
 		}
 		StoreApplication.getInstance().addToRequestQueue(objectRequest, "homeRecommend");
 		StoreApplication.getInstance().getRequestQueue().start();

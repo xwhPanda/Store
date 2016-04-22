@@ -1,5 +1,12 @@
 package com.jiqu.object;
 
+import java.io.File;
+
+import com.jiqu.database.DownloadAppinfo;
+import com.jiqu.download.AppUtil;
+import com.jiqu.download.DownloadManager;
+import com.jiqu.download.FileUtil;
+
 public class GameDetailInfo {
 	private String p_id;
 	private String sub_categoryl;
@@ -38,6 +45,8 @@ public class GameDetailInfo {
 	private String long_description;
 	private String comments_count;
 	private String tags;
+	
+	private int state = -1;
 	
 	public synchronized String getP_id() {
 		return p_id;
@@ -260,6 +269,43 @@ public class GameDetailInfo {
 	}
 	public synchronized void setTags(String tags) {
 		this.tags = tags;
+	}
+	
+	public static DownloadAppinfo toDownloadAppinfo(GameDetailInfo info){
+		DownloadAppinfo downloadAppinfo = new DownloadAppinfo();
+		downloadAppinfo.setUrl(info.url);
+		downloadAppinfo.setPackageName(info.getPackagename());
+		downloadAppinfo.setId(Long.parseLong(info.getP_id()));
+		downloadAppinfo.setAppName(info.getName());
+		downloadAppinfo.setAppSize(info.getApp_size());
+		downloadAppinfo.setCurrentSize(0l);
+		if (info.state != -1) {
+			downloadAppinfo.setDownloadState(info.state);
+		}else {
+			downloadAppinfo.setDownloadState(DownloadManager.STATE_NONE);
+		}
+		downloadAppinfo.setIconUrl(info.ldpi_icon_url);
+		downloadAppinfo.setDes(info.short_description);
+		downloadAppinfo.setVersionCode(info.getVersion_code());
+		downloadAppinfo.setVersionName(info.getVersion_name());
+		downloadAppinfo.setApkPath(FileUtil.getApkDownloadDir(AppUtil.getContext()) + File.separator + info.name + ".apk");
+		downloadAppinfo.setZipPath(FileUtil.getZipDownloadDir(AppUtil.getContext()) + File.separator + info.name + ".zip");
+		downloadAppinfo.setUnzipPath(FileUtil.getZipDownloadDir(AppUtil.getContext()) + File.separator + info.name);
+		downloadAppinfo.setThread1(0l);
+		downloadAppinfo.setThread2(0l);
+		downloadAppinfo.setThread3(0l);
+		downloadAppinfo.setThread4(0l);
+		downloadAppinfo.setThread5(0l);
+		downloadAppinfo.setProgress(0.0f);
+		downloadAppinfo.setHasFinished(false);
+		downloadAppinfo.setScore(2);
+		if (!info.url.endsWith(".apk")) {
+			downloadAppinfo.setIsZip(true);
+		}else {
+			downloadAppinfo.setIsZip(false);
+		}
+		
+		return downloadAppinfo;
 	}
 	
 	@Override

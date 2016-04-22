@@ -1,7 +1,6 @@
 package com.jiqu.download;
 
 import java.util.List;
-
 import com.jiqu.application.StoreApplication;
 import com.jiqu.store.MainActivity;
 import com.jiqu.store.R;
@@ -23,22 +22,17 @@ import android.os.Parcelable;
 import android.view.LayoutInflater;
 import android.view.View;
 
-/**
- * @author zhaoyuliang
- * @date 2012 ÉÏÎç10:48:18
- */
 public class AppUtil {
 
 	/**
-	 * »ñÈ¡µ±Ç°Ó¦ÓÃ°æ±¾Ãû
+	 * è·å–å½“å‰åº”ç”¨ç‰ˆæœ¬å
 	 * 
 	 * @param context
 	 * @return
 	 */
 	public static String getVersionName(Context context) {
-		// »ñÈ¡packagemanagerµÄÊµÀı
 		PackageManager packageManager = context.getPackageManager();
-		// getPackageName()ÊÇÄãµ±Ç°ÀàµÄ°üÃû£¬0´ú±íÊÇ»ñÈ¡°æ±¾ĞÅÏ¢
+		
 		String version = "";
 		try {
 			PackageInfo packInfo = packageManager.getPackageInfo(context.getPackageName(), 0);
@@ -51,15 +45,13 @@ public class AppUtil {
 	}
 
 	/**
-	 * »ñÈ¡µ±Ç°Ó¦ÓÃ°æ±¾ºÅ
+	 * è·å–å½“å‰åº”ç”¨ç‰ˆæœ¬å·
 	 * 
 	 * @param context
 	 * @return
 	 */
 	public static int getVersionCode(Context context) {
-		// »ñÈ¡packagemanagerµÄÊµÀı
 		PackageManager packageManager = context.getPackageManager();
-		// getPackageName()ÊÇÄãµ±Ç°ÀàµÄ°üÃû£¬0´ú±íÊÇ»ñÈ¡°æ±¾ĞÅÏ¢
 		int versionCode = 0;
 		try {
 			PackageInfo packInfo = packageManager.getPackageInfo(context.getPackageName(), 0);
@@ -73,29 +65,7 @@ public class AppUtil {
 	}
 
 	/**
-	 * »ñÈ¡UmengÇşµÀºÅ
-	 * 
-	 * @param context
-	 * @return ÇşµÀºÅ
-	 */
-	public static String getChannel(Context context) {
-		String channel = "bbliveBYD";
-		try {
-			ApplicationInfo info = context.getPackageManager().getApplicationInfo(context.getPackageName(), PackageManager.GET_META_DATA);
-			if (info != null && info.metaData != null) {
-				String metaData = info.metaData.getString("UMENG_CHANNEL");
-				if (!StringUtil.isBlank(metaData)) {
-					channel = metaData;
-				}
-			}
-		} catch (NameNotFoundException e) {
-			e.printStackTrace();
-		}
-		return channel;
-	}
-
-	/**
-	 * ÊÇ·ñÒÑ´æÔÚ×ÀÃæ¿ì½İ·½Ê½
+	 * æ˜¯å¦å·²å­˜åœ¨æ¡Œé¢å¿«æ·æ–¹å¼
 	 * 
 	 * @param context
 	 * @return
@@ -107,7 +77,7 @@ public class AppUtil {
 		int versionLevel = android.os.Build.VERSION.SDK_INT;
 		String AUTHORITY = "com.android.launcher2.settings";
 
-		// 2.2ÒÔÉÏµÄÏµÍ³µÄÎÄ¼şÎÄ¼şÃû×ÖÊÇ²»Ò»ÑùµÄ
+		// 2.2ä»¥ä¸Šçš„ç³»ç»Ÿçš„æ–‡ä»¶æ–‡ä»¶åå­—æ˜¯ä¸ä¸€æ ·çš„
 		if (versionLevel >= 8) {
 			AUTHORITY = "com.android.launcher2.settings";
 		} else {
@@ -125,7 +95,7 @@ public class AppUtil {
 	}
 
 	/**
-	 * Ìí¼Ó×ÀÃæ¿ì½İ·½Ê½
+	 * æ·»åŠ æ¡Œé¢å¿«æ·æ–¹å¼
 	 * 
 	 * @param context
 	 */
@@ -134,40 +104,40 @@ public class AppUtil {
 			return;
 		}
 		Intent shortcut = new Intent("com.android.launcher.action.INSTALL_SHORTCUT");
-		// ÉèÖÃÊôĞÔ
+		// è®¾ç½®å±æ€§
 		shortcut.putExtra(Intent.EXTRA_SHORTCUT_NAME, context.getResources().getString(R.string.app_name));
 		// ShortcutIconResource iconRes =
 		// Intent.ShortcutIconResource.fromContext(context.getApplicationContext(),
 		// R.drawable.logo_ooupai);
 		// shortcut.putExtra(Intent.EXTRA_SHORTCUT_ICON,iconRes);
 
-		// ÊÇ·ñÔÊĞíÖØ¸´´´½¨
+		// æ˜¯å¦å…è®¸é‡å¤åˆ›å»º
 		shortcut.putExtra("duplicate", false);
 
-		// ÉèÖÃ×ÀÃæ¿ì½İ·½Ê½µÄÍ¼±ê
+		// è®¾ç½®æ¡Œé¢å¿«æ·æ–¹å¼çš„å›¾æ ‡
 		Parcelable icon = Intent.ShortcutIconResource.fromContext(context, R.drawable.ic_launcher);
 		shortcut.putExtra(Intent.EXTRA_SHORTCUT_ICON_RESOURCE, icon);
 
-		// µã»÷¿ì½İ·½Ê½µÄ²Ù×÷
+		// ç‚¹å‡»å¿«æ·æ–¹å¼çš„æ“ä½œ
 		Intent intent = new Intent(Intent.ACTION_MAIN);
 		intent.setFlags(Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED);
 		intent.addFlags(Intent.FLAG_ACTIVITY_LAUNCHED_FROM_HISTORY);
 		intent.addCategory(Intent.CATEGORY_LAUNCHER);
 		intent.setClass(context, MainActivity.class);
 
-		// ÉèÖÃÆô¶¯³ÌĞò
+		// è®¾ç½®å¯åŠ¨ç¨‹åº
 		shortcut.putExtra(Intent.EXTRA_SHORTCUT_INTENT, intent);
 
-		// ¹ã²¥Í¨Öª×ÀÃæÈ¥´´½¨
+		// å¹¿æ’­é€šçŸ¥æ¡Œé¢å»åˆ›å»º
 		context.sendBroadcast(shortcut);
 	}
 
 	/**
-	 * ÅĞ¶Ï·şÎñÊÇ·ñÒÑ¾­¿ªÆô
+	 * åˆ¤æ–­æœåŠ¡æ˜¯å¦å·²ç»å¼€å¯
 	 * 
 	 * @param context
-	 * @param serviceName ·şÎñÃû³Æ
-	 * @return true£º¿ªÆô£¬false£ºÎ´¿ªÆô
+	 * @param serviceName æœåŠ¡åç§°
+	 * @return trueï¼šå¼€å¯ï¼Œfalseï¼šæœªå¼€å¯
 	 */
 	public static boolean isStartedService(Context context, String serviceName) {
 		ActivityManager activityManager = (ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE);
@@ -186,16 +156,16 @@ public class AppUtil {
 		return StoreApplication.getInstance();
 	}
 
-	/** »ñÈ¡Ö÷Ïß³ÌµÄhandler */
+	/** è·å–ä¸»çº¿ç¨‹çš„handler */
 	public static Handler getHandler() {
-		// »ñµÃÖ÷Ïß³ÌµÄlooper
+		// è·å¾—ä¸»çº¿ç¨‹çš„looper
 		Looper mainLooper = StoreApplication.getMainThreadLooper();
-		// »ñÈ¡Ö÷Ïß³ÌµÄhandler
+		// è·å–ä¸»çº¿ç¨‹çš„handler
 		Handler handler = new Handler(mainLooper);
 		return handler;
 	}
 
-	/** ÔÚÖ÷Ïß³ÌÖ´ĞĞrunnable */
+	/** åœ¨ä¸»çº¿ç¨‹æ‰§è¡Œrunnable */
 	public static boolean post(Runnable runnable) {
 		return getHandler().post(runnable);
 	}

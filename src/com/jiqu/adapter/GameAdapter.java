@@ -324,6 +324,8 @@ public class GameAdapter extends BaseAdapter implements DownloadObserver{
 				if (downloadInfo != null) {
 					downloadInfo.setDownloadState(data.getDownloadState());
 					mDownloadManager.DBManager.getDownloadAppinfoDao().insertOrReplace(downloadInfo);
+				}else {
+					mDownloadManager.DBManager.getDownloadAppinfoDao().insertOrReplace(data);
 				}
 			}
 			this.mData = data;
@@ -390,7 +392,6 @@ public class GameAdapter extends BaseAdapter implements DownloadObserver{
 				break;
 			case DownloadManager.STATE_INSTALLED:
 				downloadBtn.setBackgroundResource(R.drawable.runing_selector);
-				Toast.makeText(context, "应用已安装", Toast.LENGTH_SHORT).show();
 				break;
 			case DownloadManager.STATE_NEED_UPDATE:
 				

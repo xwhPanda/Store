@@ -499,7 +499,6 @@ public class DownloadManager {
 				}
 			}
 			
-			
 			new Thread(){
 				public void run() {
 					while (info.getDownloadState() == STATE_DOWNLOADING) {
@@ -514,7 +513,9 @@ public class DownloadManager {
 //									notifyDownloadProgressed(info);
 									notifyDownloadStateChanged(info);
 									mTaskMap.remove(info.getId());
-									install(info);
+									if (!info.getIsZip()) {
+										install(info);
+									}
 									return;
 								}
 								info.setCurrentSize(info.getThread1() + info.getThread2() + info.getThread3() + info.getThread4() + info.getThread5());

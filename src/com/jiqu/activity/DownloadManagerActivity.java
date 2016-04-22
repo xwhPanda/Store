@@ -158,15 +158,16 @@ public class DownloadManagerActivity extends BaseActivity implements OnClickList
 		
 		QueryBuilder<DownloadAppinfo> qb1 = StoreApplication.daoSession.getDownloadAppinfoDao().queryBuilder();
 		List<DownloadAppinfo> infos2 = qb1.where(Properties.HasFinished.eq(true)).list();
+		List<InstalledApp> apps = InstalledAppTool.getPersonalApp(this);
 		for (DownloadAppinfo info : infos2) {
 				if (info.getDownloadState() != DownloadManager.STATE_INSTALLED) {
-					int state = InstalledAppTool.contain(info.getPackageName(), Integer.parseInt(info.getVersionCode()));
+					int state = InstalledAppTool.contain(apps,info.getPackageName(), Integer.parseInt(info.getVersionCode()));
 					if (state == DownloadManager.STATE_INSTALLED) {
 						info.setDownloadState(state);
 						DownloadManager.DBManager.insertOrReplace(info);
 					}
 				}else if (info.getDownloadState() == DownloadManager.STATE_INSTALLED) {
-					int state = InstalledAppTool.contain(info.getPackageName(), Integer.parseInt(info.getVersionCode()));
+					int state = InstalledAppTool.contain(apps,info.getPackageName(), Integer.parseInt(info.getVersionCode()));
 					if (state != DownloadManager.STATE_INSTALLED) {
 						if (info.getIsZip()) {
 							info.setDownloadState(DownloadManager.STATE_UNZIPED);
@@ -191,6 +192,7 @@ public class DownloadManagerActivity extends BaseActivity implements OnClickList
 	private Handler handler = new Handler(){
 		public void handleMessage(android.os.Message msg) {
 			if (msg.what == 1) {//有应用下载完成
+				List<InstalledApp> installedApps = InstalledAppTool.getPersonalApp(DownloadManagerActivity.this);
 				QueryBuilder<DownloadAppinfo> qb = StoreApplication.daoSession.getDownloadAppinfoDao().queryBuilder();
 				List<DownloadAppinfo> apps = qb.where(Properties.HasFinished.eq(false)).list();
 				for(DownloadAppinfo info : apps){
@@ -211,13 +213,13 @@ public class DownloadManagerActivity extends BaseActivity implements OnClickList
 						.queryBuilder().where(Properties.HasFinished.eq(true)).list();
 				for (DownloadAppinfo info : apps2) {
 					if (info.getDownloadState() != DownloadManager.STATE_INSTALLED) {
-						int state = InstalledAppTool.contain(info.getPackageName(), Integer.parseInt(info.getVersionCode()));
+						int state = InstalledAppTool.contain(installedApps,info.getPackageName(), Integer.parseInt(info.getVersionCode()));
 						if (state == DownloadManager.STATE_INSTALLED) {
 							info.setDownloadState(state);
 							DownloadManager.DBManager.insertOrReplace(info);
 						}
 					}else if (info.getDownloadState() == DownloadManager.STATE_INSTALLED) {
-						int state = InstalledAppTool.contain(info.getPackageName(), Integer.parseInt(info.getVersionCode()));
+						int state = InstalledAppTool.contain(installedApps,info.getPackageName(), Integer.parseInt(info.getVersionCode()));
 						if (state != DownloadManager.STATE_INSTALLED) {
 							if (info.getIsZip()) {
 								info.setDownloadState(DownloadManager.STATE_UNZIPED);

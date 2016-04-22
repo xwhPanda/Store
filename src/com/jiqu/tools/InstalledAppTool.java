@@ -118,12 +118,10 @@ public class InstalledAppTool {
 		return app;
 	}
 	
-	public static int contain(String pkg,int versionCode){
+	public static int contain(List<InstalledApp> personalApps ,String pkg,int versionCode){
 		int state = -1;
-		List<InstalledApp> apps = getPersonalApp(StoreApplication.context);
-		for (InstalledApp app : apps) {
+		for (InstalledApp app : personalApps) {
 			if (pkg.equals(app.packageName)) {
-				Log.i("TAG", pkg);
 				if (app.versionCode < versionCode) {
 					state = DownloadManager.STATE_NEED_UPDATE;
 				}

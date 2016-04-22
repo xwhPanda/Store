@@ -6,10 +6,10 @@ import java.util.regex.Pattern;
 public class StringUtil {
 
 	/**
-	 * ÅĞ¶Ï×Ö·û´®ÊÇ·ñÎª¿Õ
+	 * åˆ¤æ–­å­—ç¬¦ä¸²æ˜¯å¦ä¸ºç©º
 	 * 
 	 * @param str
-	 * @return true ¿Õ£¬false·Ç¿Õ
+	 * @return true ç©ºï¼Œfalseéç©º
 	 */
 	public static boolean isBlank(String str) {
 		boolean b = false;
@@ -23,7 +23,7 @@ public class StringUtil {
 	}
 
 	/**
-	 * ÑéÖ¤ÊÇ·ñÊÇÓÊÏä
+	 * éªŒè¯æ˜¯å¦æ˜¯é‚®ç®±
 	 * 
 	 * @param email
 	 * @return
@@ -35,11 +35,8 @@ public class StringUtil {
 		return m.matches();
 	}
 
-
-
-
 	/**
-	 * ½ØÈ¡ÓòÖĞµÄÇ°10Îª£¬Îª¸½½ü
+	 * æˆªå–åŸŸä¸­çš„å‰10ä¸ºï¼Œä¸ºé™„è¿‘
 	 * 
 	 * @param str
 	 * @return
@@ -54,12 +51,13 @@ public class StringUtil {
 		return re;
 
 	}
+	
 	/**
-	 * Ìæ»»×Ö·û
+	 * æ›¿æ¢å­—ç¬¦
 	 * 
 	 * @param text
 	 * @param value
-	 *            ÒªÌæ»»³ÉµÄ×Ö·û
+	 *            è¦æ›¿æ¢æˆçš„å­—ç¬¦
 	 * @return
 	 */
 	public static String replace(String text, String value) {
@@ -88,7 +86,7 @@ public class StringUtil {
 	}
 
 	/**
-	 * ´¦Àí¿Õ×Ö·û´®
+	 * å¤„ç†ç©ºå­—ç¬¦ä¸²
 	 * 
 	 * @param str
 	 * @return String
@@ -98,7 +96,7 @@ public class StringUtil {
 	}
 
 	/**
-	 * ´¦Àí¿Õ×Ö·û´®
+	 * å¤„ç†ç©ºå­—ç¬¦ä¸²
 	 * 
 	 * @param str
 	 * @param defaultValue
@@ -106,7 +104,7 @@ public class StringUtil {
 	 */
 	public static String doEmpty(String str, String defaultValue) {
 		if (str == null || str.equalsIgnoreCase("null")
-				|| str.trim().equals("") || str.trim().equals("£­ÇëÑ¡Ôñ£­")) {
+				|| str.trim().equals("") || str.trim().equals("ï¿½ï¿½ï¿½ï¿½Ñ¡ï¿½ï¿½")) {
 			str = defaultValue;
 		} else if (str.startsWith("null")) {
 			str = str.substring(4, str.length());
