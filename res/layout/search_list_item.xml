@@ -35,7 +35,7 @@
                 android:layout_alignParentRight="true"
                 android:layout_marginRight="5dp"
                 android:background="@drawable/sousuoicon"
-            fontPath="fonts/lantinghei.ttf"/>
+            	fontPath="fonts/lantinghei.ttf"/>
             
             <EditText
                 android:id="@+id/searchEdit"
@@ -49,7 +49,7 @@
                 android:singleLine="true"
                 android:textColorHint="@color/itemDesColor"
                 android:hint="@string/welcomeUseVR"
-            fontPath="fonts/lantinghei.ttf"/>
+            	fontPath="fonts/lantinghei.ttf"/>
             
         </RelativeLayout>
     </RelativeLayout>
@@ -61,7 +61,17 @@
         android:layout_centerHorizontal="true"
         android:layout_below="@id/searchLayout"
         android:orientation="vertical">
-        
     </LinearLayout>
+    
+    <ListView 
+        android:id="@+id/searchListView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_below="@id/searchLayout"
+        android:dividerHeight="1dp" 
+        android:divider="@drawable/divider"
+        android:listSelector="@null"
+        android:scrollbars="none"/>
 
 </RelativeLayout>

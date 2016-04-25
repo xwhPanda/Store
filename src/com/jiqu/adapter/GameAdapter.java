@@ -244,7 +244,7 @@ public class GameAdapter extends BaseAdapter implements DownloadObserver{
 					}else if (mState == DownloadManager.STATE_INSTALLED) {
 						mDownloadManager.open(mData.getPackageName());
 					}else if (mState == DownloadManager.STATE_UNZIP_FAILED) {
-						UnZipManager.getInstance().unzip(mData, Constant.PASSWORD);
+						UnZipManager.getInstance().unzip(mData, Constant.PASSWORD,null);
 						mData.setDownloadState(DownloadManager.STATE_UNZIPING);
 						DownloadAppinfo info = mDownloadManager.getDownloadInfo(mData.getId());
 						info.setDownloadState(DownloadManager.STATE_UNZIPING);
@@ -310,7 +310,6 @@ public class GameAdapter extends BaseAdapter implements DownloadObserver{
 								mState = downloadInfo.getDownloadState();
 							}
 						}
-						Log.i("TAG", data.getAppName() + " mstate : " + mState);
 						downloadInfo.setDownloadState(mState);
 						mDownloadManager.DBManager.getDownloadAppinfoDao().insertOrReplace(downloadInfo);
 					}else {
@@ -322,9 +321,11 @@ public class GameAdapter extends BaseAdapter implements DownloadObserver{
 				}
 			}else {
 				if (downloadInfo != null) {
+					downloadInfo.setHasFinished(true);
 					downloadInfo.setDownloadState(data.getDownloadState());
 					mDownloadManager.DBManager.getDownloadAppinfoDao().insertOrReplace(downloadInfo);
 				}else {
+					data.setHasFinished(true);
 					mDownloadManager.DBManager.getDownloadAppinfoDao().insertOrReplace(data);
 				}
 			}
@@ -375,12 +376,12 @@ public class GameAdapter extends BaseAdapter implements DownloadObserver{
 				if (!isFirst && !installDialogShowed) {
 					installDialogShowed = true;
 					if (mData.getIsZip()) {
-						UnZipManager.getInstance().unzip(mData, Constant.PASSWORD);
-						mData.setDownloadState(DownloadManager.STATE_UNZIPING);
-						DownloadAppinfo info = mDownloadManager.getDownloadInfo(mData.getId());
-						info.setDownloadState(DownloadManager.STATE_UNZIPING);
-						mDownloadManager.DBManager.getDownloadAppinfoDao().insertOrReplace(info);
-						refreshState(state, isFirst);
+//						UnZipManager.getInstance().unzip(mData, Constant.PASSWORD);
+//						mData.setDownloadState(DownloadManager.STATE_UNZIPING);
+//						DownloadAppinfo info = mDownloadManager.getDownloadInfo(mData.getId());
+//						info.setDownloadState(DownloadManager.STATE_UNZIPING);
+//						mDownloadManager.DBManager.getDownloadAppinfoDao().insertOrReplace(info);
+//						refreshState(state, isFirst);
 					}
 				}
 				break;

@@ -9,7 +9,7 @@ import com.jiqu.download.FileUtil;
 
 public class GameDetailInfo {
 	private String p_id;
-	private String sub_categoryl;
+	private String sub_category;
 	private String version_code;
 	private String app_size;
 	private String short_description;
@@ -54,11 +54,11 @@ public class GameDetailInfo {
 	public synchronized void setP_id(String p_id) {
 		this.p_id = p_id;
 	}
-	public synchronized String getSub_categoryl() {
-		return sub_categoryl;
+	public synchronized String getSub_category() {
+		return sub_category;
 	}
-	public synchronized void setSub_categoryl(String sub_categoryl) {
-		this.sub_categoryl = sub_categoryl;
+	public synchronized void setSub_category(String sub_category) {
+		this.sub_category = sub_category;
 	}
 	public synchronized String getVersion_code() {
 		return version_code;
@@ -310,7 +310,7 @@ public class GameDetailInfo {
 	
 	@Override
 	public String toString() {
-		return "GameDetailInfo [p_id=" + p_id + ", sub_categoryl=" + sub_categoryl + ", version_code=" + version_code + ", app_size=" + app_size + ", short_description=" + short_description + ", pay_category=" + pay_category + ", category_id=" + category_id + ", en_name=" + en_name + ", product_type=" + product_type + ", url=" + url + ", filemd5=" + filemd5 + ", version_name=" + version_name + ", ldpi_icon_url=" + ldpi_icon_url + ", is_star=" + is_star + ", grade_difficulty=" + grade_difficulty + ", update_time=" + update_time + ", packagename=" + packagename + ", download_count=" + download_count + ", grade_vertigo=" + grade_vertigo + ", grade_immersive=" + grade_immersive + ", source_type=" + source_type + ", grade_frames=" + grade_frames + ", name=" + name + ", ratings_count="
+		return "GameDetailInfo [p_id=" + p_id + ", sub_category=" + sub_category + ", version_code=" + version_code + ", app_size=" + app_size + ", short_description=" + short_description + ", pay_category=" + pay_category + ", category_id=" + category_id + ", en_name=" + en_name + ", product_type=" + product_type + ", url=" + url + ", filemd5=" + filemd5 + ", version_name=" + version_name + ", ldpi_icon_url=" + ldpi_icon_url + ", is_star=" + is_star + ", grade_difficulty=" + grade_difficulty + ", update_time=" + update_time + ", packagename=" + packagename + ", download_count=" + download_count + ", grade_vertigo=" + grade_vertigo + ", grade_immersive=" + grade_immersive + ", source_type=" + source_type + ", grade_frames=" + grade_frames + ", name=" + name + ", ratings_count="
 				+ ratings_count + ", grade_gameplay=" + grade_gameplay + ", icon_url=" + icon_url + ", rating=" + rating + ", screenshot_1=" + screenshot_1 + ", screenshot_2=" + screenshot_2 + ", screenshot_3=" + screenshot_3 + ", screenshot_4=" + screenshot_4 + ", screenshot_5=" + screenshot_5 + ", up_time=" + up_time + ", up_reason=" + up_reason + ", long_description=" + long_description + ", comments_count=" + comments_count + ", tags=" + tags + "]";
 	}
 	

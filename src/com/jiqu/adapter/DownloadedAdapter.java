@@ -243,9 +243,10 @@ public class DownloadedAdapter extends BaseAdapter {
 							if (info.getHasFinished()) {
 								if (info.getDownloadState() == DownloadManager.STATE_UNZIP_FAILED
 										|| info.getDownloadState() == DownloadManager.STATE_DOWNLOADED) {
-									UnZipManager.getInstance().unzip(info, Constant.PASSWORD);
+									UnZipManager.getInstance().unzip(info, Constant.PASSWORD,null);
 								}else if (info.getDownloadState() == DownloadManager.STATE_UNZIPED) {
 									DownloadManager.getInstance().install(info);
+//									UnZipManager.getInstance().unzip(info, Constant.PASSWORD,null);
 								}else if (info.getDownloadState() == DownloadManager.STATE_INSTALLED) {
 									DownloadManager.getInstance().open(info.getPackageName());
 								}
@@ -297,7 +298,7 @@ public class DownloadedAdapter extends BaseAdapter {
 			StoreApplication.getInstance().getImageLoader().get(info.getIconUrl(), listener);
 			checkBox.setChecked(isChecked);
 			appName.setText(info.getAppName());
-			appDes.setText("换个哦it回家哈哈佛入伍辐射范围荣夫妇警方随即离开家里居然叫我加快老旧家具ioui哦");
+			appDes.setText(info.getDes());
 			appScore.setRating(2.5);
 			appSize.setText(FileUtil.getSize(Long.parseLong(info.getAppSize())));
 			

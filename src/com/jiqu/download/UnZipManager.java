@@ -7,7 +7,6 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import net.lingala.zip4j.core.ZipFile;
 import net.lingala.zip4j.exception.ZipException;
-import net.lingala.zip4j.model.FileHeader;
 import net.lingala.zip4j.progress.ProgressMonitor;
 
 import android.os.Handler;
@@ -21,8 +20,8 @@ public class UnZipManager {
 	public static final int UNZIP_FAILE = 1;
 
 	private static UnZipManager instance;
-	private Handler handler;
 	int percent = 0;
+	private Handler handler;
 	
 	private Map<String, UnZipRunnable> map = new ConcurrentHashMap<String, UnZipManager.UnZipRunnable>();
 	
@@ -34,7 +33,8 @@ public class UnZipManager {
 		return instance;
 	}
 	
-	public void unzip(DownloadAppinfo downloadAppinfo ,String password){
+	public void unzip(DownloadAppinfo downloadAppinfo ,String password,Handler handler){
+		this.handler = handler;
 		UnZipRunnable runnable = map.get(downloadAppinfo.getPackageName());
 		if (runnable == null) {
 			runnable = new UnZipRunnable(downloadAppinfo, password);
@@ -62,11 +62,26 @@ public class UnZipManager {
 		public void run() {
 			// TODO Auto-generated method stub
 			try {
+				File file = new File(downloadAppinfo.getZipPath());
+				if (file.exists()) {
+					String path = file.getParent() + File.separator + downloadAppinfo.getAppName();
+					File folder = new File(path);
+					if (file.exists()) {
+						try {
+							deleteFolder(folder);
+						} catch (Exception e) {
+							e.printStackTrace();
+						}
+					}
+				}
 				ZipFile zFile = new ZipFile(downloadAppinfo.getZipPath());
 				zFile.setFileNameCharset("GBK");
 				  
 		        if (!zFile.isValidZipFile()){
-		        	handler.sendEmptyMessage(UNZIP_FAILE);
+		        	if (handler != null) {
+		        		downloadAppinfo.setDownloadState(DownloadManager.STATE_UNZIP_FAILED);
+						handler.sendEmptyMessage(1);
+					}
 		            return;
 		        }  
 		        File destDir = new File(downloadAppinfo.getUnzipPath());
@@ -88,12 +103,12 @@ public class UnZipManager {
 						        	if (percent >= 100) {
 						        		unziping = false;
 						        		map.remove(downloadAppinfo.getPackageName());
-						        		reName(downloadAppinfo.getUnzipPath() + "/.apk/" 
-						        		+ downloadAppinfo.getPackageName() + ".txt",  
+						        		reName(downloadAppinfo.getUnzipPath() + "/.apk/",  
 						        		downloadAppinfo.getPackageName() + ".apk");
 						        		DownloadManager.getInstance().install(downloadAppinfo);
 						        		downloadAppinfo.setDownloadState(DownloadManager.STATE_UNZIPED);
 						        		DownloadManager.DBManager.insertOrReplace(downloadAppinfo);
+						        		handler.sendEmptyMessage(1);
 						        		break;
 						        	}
 								}
@@ -106,31 +121,55 @@ public class UnZipManager {
 		        zFile.setRunInThread(false); //true 在子线程中进行解压 , false主线程中解压  
 		        zFile.extractAll(downloadAppinfo.getUnzipPath());
 		        
-//		        List fileHeaderList = zFile.getFileHeaders();
-//		        for(int i = 0 ; i<fileHeaderList.size() ; i++){
-//		        	Log.i("TAG", ((FileHeader)fileHeaderList.get(i)).getFileName());
-//		        	String name = ((FileHeader)fileHeaderList.get(i)).getFileName();
-//		        	if (name.endsWith(".txt") || name.endsWith(".obb")) {
-//						zFile.extractFile(name, downloadAppinfo.getUnzipPath());
-//					}
-//		        }
 			} catch (ZipException e) {
 				map.remove(downloadAppinfo.getPackageName());
 				unziping = false;
 				downloadAppinfo.setDownloadState(DownloadManager.STATE_UNZIP_FAILED);
         		DownloadManager.DBManager.insertOrReplace(downloadAppinfo);
+        		handler.sendEmptyMessage(1);
 				e.printStackTrace();
 			}
 		}
-		
 	}
 	
 	private void reName(String path,String newName){
 		File file = new File(path);
-		if (file.exists()) {
-			file.renameTo(new File(file.getParent() + File.separator + newName));
+		if (file.exists() && file.isDirectory()) {
+			File[] files = file.listFiles();
+			if (file != null) {
+				for(int i = 0; i<files.length;i++){
+					Log.i("TAG", files[i].getAbsolutePath());
+				}
+				if (files.length == 1) {
+					files[0].renameTo(new File(files[0].getParent() + File.separator + newName));
+				}else {
+					try {
+						throw new Exception("file number is not one !");
+					} catch (Exception e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+				}
+			}
 		}else {
-			Log.i("UnZipManager", "file not exists !");
+			try {
+				throw new Exception("file not exists or file is not directory !");
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+	}
+	
+	
+	private void deleteFolder(File file) throws Exception{
+		java.io.File[] fileList = file.listFiles();
+		for (int i = 0; i < fileList.length; i++) {
+			if (fileList[i].isDirectory()) {
+				deleteFolder(fileList[i]);
+			} else {
+				fileList[i].delete();
+			}
 		}
 	}
 }

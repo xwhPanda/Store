@@ -406,7 +406,7 @@ public class DetailActivity extends BaseActivity implements Listener<JSONObject>
 				DownloadManager.getInstance().pause(downloadAppinfo);
 			}else if (state == DownloadManager.STATE_UNZIP_FAILED) {
 				if (downloadAppinfo != null) {
-					UnZipManager.getInstance().unzip(downloadAppinfo, Constant.PASSWORD);
+					UnZipManager.getInstance().unzip(downloadAppinfo, Constant.PASSWORD,null);
 				}
 			}else if (state == DownloadManager.STATE_UNZIPING) {
 				download.setEnabled(false);
@@ -481,7 +481,7 @@ public class DetailActivity extends BaseActivity implements Listener<JSONObject>
 	public void onDownloadStateChanged(DownloadAppinfo info) {
 		// TODO Auto-generated method stub
 		downloadAppinfo = info;
-		refreshState(info.getDownloadState());
+		handler.sendEmptyMessage(2);
 	}
 
 	@Override
@@ -501,6 +501,7 @@ public class DetailActivity extends BaseActivity implements Listener<JSONObject>
 		// TODO Auto-generated method stub
 		super.onDestroy();
 		DownloadManager.getInstance().unRegisterObserver(this);
+		requestTool.stopGameDetailRequest();
 	}
 	
 	@Override
@@ -518,6 +519,8 @@ public class DetailActivity extends BaseActivity implements Listener<JSONObject>
 		public void handleMessage(android.os.Message msg) {
 			if (msg.what == 1) {
 				download.setText((String)(msg.obj));
+			}else if (msg.what == 2) {
+				refreshState(downloadAppinfo.getDownloadState());
 			}
 		};
 	};

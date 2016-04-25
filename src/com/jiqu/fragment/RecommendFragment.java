@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.TreeMap;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -29,6 +30,7 @@ import com.jiqu.adapter.GameAdapter;
 import com.jiqu.adapter.ViewPagerAdapter;
 import com.jiqu.application.StoreApplication;
 import com.jiqu.database.DownloadAppinfo;
+import com.jiqu.database.DownloadAppinfoDao.Properties;
 import com.jiqu.download.AppInfo;
 import com.jiqu.download.DownloadManager;
 import com.jiqu.download.UnZipManager;
@@ -36,6 +38,7 @@ import com.jiqu.object.GameInfo;
 import com.jiqu.object.GameInformation;
 import com.jiqu.object.InstalledApp;
 import com.jiqu.object.RecommendAppsInfo;
+import com.jiqu.object.TopRecommendItem;
 import com.jiqu.object.TopRecommendtInfo;
 import com.jiqu.store.R;
 import com.jiqu.tools.InstalledAppTool;
@@ -46,6 +49,8 @@ import com.jiqu.view.PullToRefreshLayout;
 import com.jiqu.view.PullToRefreshLayout.OnRefreshListener;
 import com.jiqu.view.PullableListView;
 import com.jiqu.view.RecommedGameView;
+
+import de.greenrobot.dao.query.QueryBuilder;
 
 import android.R.integer;
 import android.content.BroadcastReceiver;
@@ -200,8 +205,17 @@ public class RecommendFragment extends Fragment implements OnPageChangeListener,
 		if (info != null && info.getItem().length > 0) {
 			int count = info.getItem().length;
 			for (int i = 0; i < count; i++) {
-				GameInfo gameInfo = info.getItem()[i];
+				final GameInfo gameInfo = info.getItem()[i];
 				RecommedGameView gameView = new RecommedGameView(getActivity());
+				gameView.setClickable(true);
+				gameView.setOnClickListener(new OnClickListener() {
+					
+					@Override
+					public void onClick(View v) {
+						// TODO Auto-generated method stub
+						startActivity(new Intent(getActivity(), DetailActivity.class).putExtra("p_id", String.valueOf(gameInfo.getP_id())));
+					}
+				});
 				gameView.gameName.setText(gameInfo.getName());
 				gameView.getDesView().setText(gameInfo.getShort_description());
 				ImageListener listener = ImageLoader.getImageListener(gameView.gameIcon,R.drawable.ic_launcher, R.drawable.ic_launcher);
@@ -221,6 +235,7 @@ public class RecommendFragment extends Fragment implements OnPageChangeListener,
 		radioImgs = new ImageView[count];
 		contentImgs = new ImageView[count];
 		for (int i = 0; i < count; i++) {
+			final TopRecommendItem item = topRecommendtInfo.getItem()[i];
 			ImageView view = new ImageView(getActivity());
 			LayoutParams lp = new LayoutParams((int)(20 * Rx), (int) (20 * Rx));
 			if (i != 0) {
@@ -236,6 +251,15 @@ public class RecommendFragment extends Fragment implements OnPageChangeListener,
 			imgList.addView(view);
 			
 			ImageView contentImg = new ImageView(getActivity());
+			contentImg.setClickable(true);
+			contentImg.setOnClickListener(new OnClickListener() {
+				
+				@Override
+				public void onClick(View v) {
+					// TODO Auto-generated method stub
+					startActivity(new Intent(getActivity(), DetailActivity.class).putExtra("p_id", String.valueOf(item.getP_id())));
+				}
+			});
 			LayoutParams params = new LayoutParams(android.support.v4.view.ViewPager.LayoutParams.MATCH_PARENT,
 					android.support.v4.view.ViewPager.LayoutParams.MATCH_PARENT);
 			contentImg.setLayoutParams(params);
@@ -528,6 +552,11 @@ public class RecommendFragment extends Fragment implements OnPageChangeListener,
 				for(GameInfo info : resultList){
 					if (info.getPackagename().equals(removePkg)) {
 						info.setState(DownloadManager.STATE_NONE);
+						QueryBuilder<DownloadAppinfo> qb = StoreApplication.daoSession.getDownloadAppinfoDao().queryBuilder();
+						DownloadAppinfo downloadAppinfo = qb.where(Properties.Id.eq(info.getP_id())).unique();
+						if (downloadAppinfo != null) {
+							DownloadManager.DBManager.getDownloadAppinfoDao().delete(downloadAppinfo);
+						}
 					}
 				}
 				adapter.notifyDataSetChanged();

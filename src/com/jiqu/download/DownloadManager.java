@@ -16,10 +16,15 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
+import net.lingala.zip4j.core.ZipFile;
+import net.lingala.zip4j.exception.ZipException;
+import net.lingala.zip4j.progress.ProgressMonitor;
+
 import com.jiqu.application.StoreApplication;
 import com.jiqu.database.DaoSession;
 import com.jiqu.database.DownloadAppinfo;
 import com.jiqu.database.DownloadAppinfoDao.Properties;
+import com.jiqu.tools.Constant;
 
 import de.greenrobot.dao.query.QueryBuilder;
 
@@ -27,6 +32,7 @@ import android.R.integer;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
+import android.os.Handler;
 import android.renderscript.Light;
 import android.util.Log;
 import android.widget.Toast;
@@ -385,6 +391,7 @@ public class DownloadManager {
 	public class DownloadTask implements Runnable {
 		private DownloadAppinfo info;
 		private DownloadThread[] threads = new DownloadThread[5];
+		private int code;
 
 		public DownloadTask(DownloadAppinfo info) {
 			this.info = info;
@@ -394,6 +401,13 @@ public class DownloadManager {
 			info.setDownloadState(STATE_PAUSED);
 		}
 		
+		Handler handler = new Handler(){
+			public void handleMessage(android.os.Message msg) {
+				if (msg.what == 1) {
+					notifyDownloadStateChanged(info);
+				}
+			};
+		};
 
 		@Override
 		public void run() {
@@ -454,7 +468,7 @@ public class DownloadManager {
 					int threadCount = threads.length;
 					long sectionSize = apkSize / threadCount;
 					for (int i = 0; i < threadCount - 1; i++) {
-						threads[i] = new DownloadThread(i, i * sectionSize, getCompelete(i), (i + 1) * sectionSize);
+						threads[i] = new DownloadThread(i, i * sectionSize, getCompelete(i), (i + 1) * sectionSize -1);
 						threads[i].start();
 					}
 					threads[threadCount -1] = new DownloadThread(threadCount - 1, (threadCount - 1) * sectionSize, getCompelete(threadCount - 1), apkSize - 1);
@@ -503,29 +517,48 @@ public class DownloadManager {
 				public void run() {
 					while (info.getDownloadState() == STATE_DOWNLOADING) {
 						synchronized (info) {
-//							try {
-//								sleep(100);
+							try {
+								sleep(100);
+//							if (code == 416) {
+//								info.setDownloadState(DownloadManager.STATE_ERROR);
+//								if (info != null) {
+//									DBManager.getDownloadAppinfoDao().delete(info);
+//									String path;
+//									if (info.getIsZip()) {
+//										path = info.getZipPath();
+//									}else {
+//										path = info.getApkPath();
+//									}
+//									File file = new File(path);
+//									if (file.exists()) {
+//										file.delete();
+//									}
+//								}
+//							}
 								if (info.getCurrentSize() >= Long.parseLong(info.getAppSize())) {
-									info.setDownloadState(STATE_DOWNLOADED);
 									info.setProgress(1.0f);
 									info.setHasFinished(true);
-									DBManager.getDownloadAppinfoDao().insertOrReplace(info);
 //									notifyDownloadProgressed(info);
-									notifyDownloadStateChanged(info);
 									mTaskMap.remove(info.getId());
 									if (!info.getIsZip()) {
+										info.setDownloadState(STATE_DOWNLOADED);
 										install(info);
+									}else {
+										info.setDownloadState(STATE_UNZIPING);
+										UnZipManager.getInstance().unzip(info, Constant.PASSWORD,handler);
 									}
+									DBManager.getDownloadAppinfoDao().insertOrReplace(info);
+									notifyDownloadStateChanged(info);
 									return;
 								}
 								info.setCurrentSize(info.getThread1() + info.getThread2() + info.getThread3() + info.getThread4() + info.getThread5());
 								info.setProgress((info.getCurrentSize() + 0.0f) / Float.parseFloat(info.getAppSize()));
 								DBManager.getDownloadAppinfoDao().insertOrReplace(info);
 								notifyDownloadProgressed(info);
-//							} catch (InterruptedException e) {
-//								// TODO Auto-generated catch block
-//								e.printStackTrace();
-//							}
+							} catch (InterruptedException e) {
+								// TODO Auto-generated catch block
+								e.printStackTrace();
+							}
 						}
 					}
 				};
@@ -585,7 +618,6 @@ public class DownloadManager {
 				this.startPos = startPos;
 				this.endPos = endPos;
 				this.compeleteSize = compeleteSize;
-				
 			}
 			
 			private synchronized void setComplete(){
@@ -624,15 +656,18 @@ public class DownloadManager {
 					connection.setRequestMethod("GET");
 					connection.setRequestProperty("Accept-Encoding", "identity");
 					connection.setRequestProperty("Range", "bytes=" + (compeleteSize + startPos) + "-" + endPos);
+					Log.i("TAG", startPos + "/" + (compeleteSize + startPos) + "/" + endPos + "/" + info.getAppSize());
+					Log.i("TAG", "code : " + connection.getResponseCode());
+					code = connection.getResponseCode();
 					is = connection.getInputStream();
 					int length = 0;
 					while ((length = is.read(bf)) != -1 && info.getDownloadState() == STATE_DOWNLOADING) {
 						randomAccessFile.write(bf, 0, length);
 						compeleteSize += length;
-//						synchronized (this) {
+						synchronized (this) {
 							setComplete();
 //							DBManager.getDownloadAppinfoDao().insertOrReplace(info);
-//						}
+						}
 					}
 				} catch (Exception e) {
 					// TODO Auto-generated catch block
@@ -669,8 +704,6 @@ public class DownloadManager {
 		}
 	}
 	
-	
-
 	public interface DownloadObserver {
 
 		public void onDownloadStateChanged(DownloadAppinfo info);

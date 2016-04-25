@@ -18,6 +18,7 @@ public class RequestTool {
 	private static final String topUrl = "http://xu8api.91xuxu.com/api/1.0/getTopRecommend";
 	private static final String recommedAppsUrl = "http://xu8api.91xuxu.com/api/1.0/recommendApps";
 	private static final String detaileUrl = "http://xu8api.91xuxu.com/api/1.0/getProductDetail";
+	private static final String searchUrl = "http://xu8api.91xuxu.com/api/1.0/getSearchList";
 	
 	private Map<String, String> paramMap = new HashMap<String, String>();
 
@@ -28,6 +29,7 @@ public class RequestTool {
 		return instance;
 	}
 
+	
 	public void initParam(){
 		paramMap.clear();
 		paramMap.put("android_id", "a9f7234301030848");
@@ -96,5 +98,39 @@ public class RequestTool {
 		JsonObjectRequest objectRequest = new JsonObjectRequest(Method.POST, detaileUrl, object, listener, errorListener);
 		StoreApplication.getInstance().addToRequestQueue(objectRequest, "gameDetail");
 		StoreApplication.getInstance().getRequestQueue().start();
+	}
+	
+	/**
+	 * 取消详情页请求
+	 */
+	public void stopGameDetailRequest(){
+		cancleRequest("gameDetail");
+	}
+	
+	/**
+	 * 搜索请求
+	 * @param listener
+	 * @param errorListener
+	 */
+	public void startSearchRequest(Listener<JSONObject> listener,ErrorListener errorListener){
+		JSONObject object = new JSONObject(paramMap);
+		JsonObjectRequest objectRequest = new JsonObjectRequest(Method.POST, searchUrl, object, listener, errorListener);
+		StoreApplication.getInstance().addToRequestQueue(objectRequest, "search");
+		StoreApplication.getInstance().getRequestQueue().start();
+	}
+	
+	/**
+	 * 取消搜索请求
+	 */
+	public void stopSearchRequest(){
+		cancleRequest("search");
+	}
+	
+	/**
+	 * 根据tag取消请求
+	 * @param tag
+	 */
+	public void cancleRequest(String tag){
+		StoreApplication.getInstance().getRequestQueue().cancelAll(tag);
 	}
 }
