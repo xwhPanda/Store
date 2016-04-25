@@ -62,8 +62,6 @@ public class DownloadManager {
 	/** 解压失败 */
 	public static final int STATE_UNZIP_FAILED = 11;
 
-	// public static final int STATE_READ = 6;
-
 	private static DownloadManager instance;
 
 	public static DaoSession DBManager;
