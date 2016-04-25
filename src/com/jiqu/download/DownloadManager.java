@@ -606,7 +606,6 @@ public class DownloadManager {
 			return size;
 		}
 		
-		
 		private class DownloadThread extends Thread{
 			private int threadId;
 			private long startPos;
