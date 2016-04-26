@@ -26,4 +26,17 @@ public class Constant {
 	public static String GAME_TAG = "game";
 	public static String EVALUATION_TAG = "evaluation";
 	public static String TOOL_TAG = "tool";
+	
+	/** mac地址 **/
+	public static String MAC;
+	/** 应用包名 **/
+	public static String PACKAGENAME;
+	/** 应用版本名 **/
+	public static String VERSION_NAME;
+	/** 应用版本号 **/
+	public static int VERSION_CODE;
+	/** device_id **/
+	public static String DEVICE_ID;
+	/** 序列号 **/
+	public static String SERIAL_NUMBER;
 }

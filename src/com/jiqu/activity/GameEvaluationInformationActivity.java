@@ -116,13 +116,8 @@ public class GameEvaluationInformationActivity extends BaseActivity implements O
 		gameplayBar.setResID(IDs);
 		difficultyBar.setResID(IDs);
 		
-		screenSenseBar.setRating(2.5);
-		immersionBar.setRating(2.5);
-		gameplayBar.setRating(2.5);
-		difficultyBar.setRating(2.5);
 		
 		comprehensiveBar.setResID(blueIDs);
-		comprehensiveBar.setRating(2.5);
 		
 		titleView.setActivity(this);
 		titleView.tip.setText(R.string.gameEvaluation);

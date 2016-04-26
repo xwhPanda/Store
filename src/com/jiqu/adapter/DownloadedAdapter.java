@@ -215,6 +215,7 @@ public class DownloadedAdapter extends BaseAdapter {
 			resIDs[1] = R.drawable.rating_sencond_progress;
 			resIDs[2] = R.drawable.rating_progress;
 			appScore.setResID(resIDs);
+			appScore.setStep(1.0f);
 			
 			checkBox.setOnCheckedChangeListener(new OnCheckedChangeListener() {
 				
@@ -299,7 +300,7 @@ public class DownloadedAdapter extends BaseAdapter {
 			checkBox.setChecked(isChecked);
 			appName.setText(info.getAppName());
 			appDes.setText(info.getDes());
-			appScore.setRating(2.5);
+			appScore.setRating(info.getScore());
 			appSize.setText(FileUtil.getSize(Long.parseLong(info.getAppSize())));
 			
 		}

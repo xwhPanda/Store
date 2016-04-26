@@ -237,7 +237,11 @@ public class GameInfo {
 		downloadInfo.setThread5(0l);
 		downloadInfo.setProgress(0.0f);
 		downloadInfo.setHasFinished(false);
-		downloadInfo.setScore(2);
+		downloadInfo.setScore(Float.parseFloat(info.grade_difficulty)
+				+ Float.parseFloat(info.grade_frames)
+				+ Float.parseFloat(info.grade_gameplay)
+				+ Float.parseFloat(info.grade_immersive)
+				+ Float.parseFloat(info.grade_vertigo));
 		if (!info.url.endsWith(".apk")) {
 			downloadInfo.setIsZip(true);
 		}else {

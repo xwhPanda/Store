@@ -674,9 +674,6 @@ public class PullToRefreshLayout extends RelativeLayout
 
 	/**
 	 * 刷新加载回调接口
-	 * 
-	 * @author chenjing
-	 * 
 	 */
 	public interface OnRefreshListener
 	{

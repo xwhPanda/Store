@@ -67,7 +67,7 @@ public class EvaluationBottomView extends RelativeLayout implements OnClickListe
 		downloadTx = (TextView) view.findViewById(R.id.downloadTx);
 		
 		gameScoreBar.setResID(blueIDs);
-		gameScoreBar.setRating(3.5);
+		gameScoreBar.setRating(3.5f);
 		
 		
 		initViewSize();

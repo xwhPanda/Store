@@ -119,7 +119,7 @@ public class SearchActivity extends BaseActivity implements OnClickListener,List
 		
 		initViewSize();
 		
-		adapter = new GameAdapter(this, gameInfos);
+		adapter = new GameAdapter(this, gameInfos,false,false);
 		searchListView.setAdapter(adapter);
 		
 		searchListView.setOnItemClickListener(new OnItemClickListener() {
@@ -168,6 +168,7 @@ public class SearchActivity extends BaseActivity implements OnClickListener,List
 		if (adapter != null) {
 			adapter.stopObserver();
 		}
+		requestTool.stopSearchRequest();
 	}
 
 	@Override
@@ -213,4 +214,6 @@ public class SearchActivity extends BaseActivity implements OnClickListener,List
 			adapter.notifyDataSetChanged();
 		}
 	}
+	
+	
 }

@@ -38,7 +38,7 @@ public class DownloadAppinfoDao extends AbstractDao<DownloadAppinfo, Long> {
         public final static Property UnzipPath = new Property(12, String.class, "unzipPath", false, "UNZIP_PATH");
         public final static Property HasFinished = new Property(13, Boolean.class, "hasFinished", false, "HAS_FINISHED");
         public final static Property Des = new Property(14, String.class, "des", false, "DES");
-        public final static Property Score = new Property(15, Integer.class, "score", false, "SCORE");
+        public final static Property Score = new Property(15, Float.class, "score", false, "SCORE");
         public final static Property Progress = new Property(16, Float.class, "progress", false, "PROGRESS");
         public final static Property IconByte = new Property(17, byte[].class, "iconByte", false, "ICON_BYTE");
         public final static Property IsZip = new Property(18, Boolean.class, "isZip", false, "IS_ZIP");
@@ -77,7 +77,7 @@ public class DownloadAppinfoDao extends AbstractDao<DownloadAppinfo, Long> {
                 "\"UNZIP_PATH\" TEXT," + // 12: unzipPath
                 "\"HAS_FINISHED\" INTEGER," + // 13: hasFinished
                 "\"DES\" TEXT," + // 14: des
-                "\"SCORE\" INTEGER," + // 15: score
+                "\"SCORE\" REAL," + // 15: score
                 "\"PROGRESS\" REAL," + // 16: progress
                 "\"ICON_BYTE\" BLOB," + // 17: iconByte
                 "\"IS_ZIP\" INTEGER," + // 18: isZip
@@ -154,9 +154,9 @@ public class DownloadAppinfoDao extends AbstractDao<DownloadAppinfo, Long> {
             stmt.bindString(15, des);
         }
  
-        Integer score = entity.getScore();
+        Float score = entity.getScore();
         if (score != null) {
-            stmt.bindLong(16, score);
+            stmt.bindDouble(16, score);
         }
  
         Float progress = entity.getProgress();
@@ -225,7 +225,7 @@ public class DownloadAppinfoDao extends AbstractDao<DownloadAppinfo, Long> {
             cursor.isNull(offset + 12) ? null : cursor.getString(offset + 12), // unzipPath
             cursor.isNull(offset + 13) ? null : cursor.getShort(offset + 13) != 0, // hasFinished
             cursor.isNull(offset + 14) ? null : cursor.getString(offset + 14), // des
-            cursor.isNull(offset + 15) ? null : cursor.getInt(offset + 15), // score
+            cursor.isNull(offset + 15) ? null : cursor.getFloat(offset + 15), // score
             cursor.isNull(offset + 16) ? null : cursor.getFloat(offset + 16), // progress
             cursor.isNull(offset + 17) ? null : cursor.getBlob(offset + 17), // iconByte
             cursor.isNull(offset + 18) ? null : cursor.getShort(offset + 18) != 0, // isZip
@@ -256,7 +256,7 @@ public class DownloadAppinfoDao extends AbstractDao<DownloadAppinfo, Long> {
         entity.setUnzipPath(cursor.isNull(offset + 12) ? null : cursor.getString(offset + 12));
         entity.setHasFinished(cursor.isNull(offset + 13) ? null : cursor.getShort(offset + 13) != 0);
         entity.setDes(cursor.isNull(offset + 14) ? null : cursor.getString(offset + 14));
-        entity.setScore(cursor.isNull(offset + 15) ? null : cursor.getInt(offset + 15));
+        entity.setScore(cursor.isNull(offset + 15) ? null : cursor.getFloat(offset + 15));
         entity.setProgress(cursor.isNull(offset + 16) ? null : cursor.getFloat(offset + 16));
         entity.setIconByte(cursor.isNull(offset + 17) ? null : cursor.getBlob(offset + 17));
         entity.setIsZip(cursor.isNull(offset + 18) ? null : cursor.getShort(offset + 18) != 0);

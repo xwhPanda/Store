@@ -19,8 +19,12 @@ public class RequestTool {
 	private static final String recommedAppsUrl = "http://xu8api.91xuxu.com/api/1.0/recommendApps";
 	private static final String detaileUrl = "http://xu8api.91xuxu.com/api/1.0/getProductDetail";
 	private static final String searchUrl = "http://xu8api.91xuxu.com/api/1.0/getSearchList";
+	private static final String rankUrl = "http://xu8api.91xuxu.com/api/1.0/getProducts";
+	private static final String categoryUrl = "http://xu8api.91xuxu.com/api/1.0/getCategoryList";
+	private static final String categoryAppsUrl = "http://xu8api.91xuxu.com/api/1.0/getCategoryApps";
+	private static final String specialsUrl = "http://xu8api.91xuxu.com/api/1.0/getSpecials ";
 	
-	private Map<String, String> paramMap = new HashMap<String, String>();
+	private Map<String, Object> paramMap = new HashMap<String, Object>();
 
 	public static RequestTool getInstance(){
 		if (instance == null) {
@@ -44,7 +48,11 @@ public class RequestTool {
 		paramMap.put(key, value);
 	}
 	
-	public Map<String, String> getMap(){
+	public void setParam(String key,int value){
+		paramMap.put(key, value);
+	}
+	
+	public Map<String, Object> getMap(){
 		return paramMap;
 	}
 	
@@ -124,6 +132,82 @@ public class RequestTool {
 	 */
 	public void stopSearchRequest(){
 		cancleRequest("search");
+	}
+	
+	/**
+	 * 排行请求
+	 * @param listener
+	 * @param errorListener
+	 */
+	public void startRankRequest(Listener<JSONObject> listener,ErrorListener errorListener){
+		JSONObject object = new JSONObject(paramMap);
+		JsonObjectRequest objectRequest = new JsonObjectRequest(Method.POST, rankUrl, object,listener, errorListener);
+		StoreApplication.getInstance().addToRequestQueue(objectRequest,"rank");
+		StoreApplication.getInstance().getRequestQueue().start();
+	}
+
+	/**
+	 * 取消排行请求
+	 */
+	public void stopRankRequest(){
+		cancleRequest("rank");
+	}
+	
+	/**
+	 * 分类请求
+	 * @param listener
+	 * @param errorListener
+	 */
+	public void startCategoryRequest(Listener<JSONObject> listener,ErrorListener errorListener){
+		JSONObject object = new JSONObject(paramMap);
+		JsonObjectRequest objectRequest = new JsonObjectRequest(Method.POST, categoryUrl, object,listener, errorListener);
+		StoreApplication.getInstance().addToRequestQueue(objectRequest,"category");
+		StoreApplication.getInstance().getRequestQueue().start();
+	}
+	
+	/**
+	 * 取消分类请求
+	 */
+	public void stopCategoryRequest(){
+		cancleRequest("category");
+	}
+	
+	/**
+	 * 请求指定分类
+	 * @param listener
+	 * @param errorListener
+	 */
+	public void startCategoryAppsRequest(Listener<JSONObject> listener,ErrorListener errorListener){
+		JSONObject object = new JSONObject(paramMap);
+		JsonObjectRequest objectRequest = new JsonObjectRequest(Method.POST, categoryAppsUrl, object, listener, errorListener);
+		StoreApplication.getInstance().addToRequestQueue(objectRequest,"categoryApps");
+		StoreApplication.getInstance().getRequestQueue().start();
+	}
+	
+	/**
+	 * 取消分类内容请求
+	 */
+	public void stopCategoryAppsRequest(){
+		cancleRequest("categoryApps");
+	}
+	
+	/**
+	 * 请求专题
+	 * @param listener
+	 * @param errorListener
+	 */
+	public void startSpecialsRequest(Listener<JSONObject> listener,ErrorListener errorListener){
+		JSONObject object = new JSONObject(paramMap);
+		JsonObjectRequest objectRequest = new JsonObjectRequest(Method.POST, specialsUrl, object, listener, errorListener);
+		StoreApplication.getInstance().addToRequestQueue(objectRequest,"specials");
+		StoreApplication.getInstance().getRequestQueue().start();
+	}
+	
+	/**
+	 * 取消专题请求
+	 */
+	public void stopSpecialsRequest(){
+		cancleRequest("specials");
 	}
 	
 	/**

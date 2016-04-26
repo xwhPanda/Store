@@ -33,7 +33,9 @@ import com.jiqu.database.DownloadAppinfo;
 import com.jiqu.database.DownloadAppinfoDao.Properties;
 import com.jiqu.download.AppInfo;
 import com.jiqu.download.DownloadManager;
+import com.jiqu.download.FileUtil;
 import com.jiqu.download.UnZipManager;
+import com.jiqu.download.Upgrade;
 import com.jiqu.object.GameInfo;
 import com.jiqu.object.GameInformation;
 import com.jiqu.object.InstalledApp;
@@ -138,6 +140,10 @@ public class RecommendFragment extends Fragment implements OnPageChangeListener,
 		initView();
 
 		initAdapter();
+		
+		if (adapter != null) {
+			adapter.startObserver();
+		}
 
 		requestTool = RequestTool.getInstance();
 		requestTool.initParam();
@@ -147,7 +153,7 @@ public class RecommendFragment extends Fragment implements OnPageChangeListener,
 		
 		loadTopData();
 		loadRecommendApps();
-
+		
 		return view;
 	}
 	
@@ -293,23 +299,11 @@ public class RecommendFragment extends Fragment implements OnPageChangeListener,
 	public void onResume() {
 		// TODO Auto-generated method stub
 		super.onResume();
-		if (adapter != null) {
-			adapter.startObserver();
-		}
-	}
-
-	@Override
-	public void onDestroy() {
-		// TODO Auto-generated method stub
-		super.onDestroy();
-		if (adapter != null) {
-			adapter.stopObserver();
-		}
 	}
 
 	private void initAdapter() {
 		if (adapter == null) {
-			adapter = new GameAdapter(getActivity(), resultList);
+			adapter = new GameAdapter(getActivity(), resultList,false,false);
 		}
 		recommendListView.setAdapter(adapter);
 	}
@@ -483,12 +477,19 @@ public class RecommendFragment extends Fragment implements OnPageChangeListener,
 			}
 			List<InstalledApp> apps = InstalledAppTool.getPersonalApp(getActivity());
 			for(int i = resultList.size() - 20;i<resultList.size();i++){
+				DownloadAppinfo info = DownloadManager.getInstance().getDownloadInfo(Long.parseLong(resultList.get(i).getP_id()));
 				int state = InstalledAppTool.contain(apps,resultList.get(i).getPackagename(), Integer.parseInt(resultList.get(i).getVersion_code()));
 				if (resultList.get(i).getUrl().endsWith(".zip")) {
 					Log.i("TAG", resultList.get(i).getName() + " / " + resultList.get(i).getUrl());
 				}
 				if (state != -1) {
 					resultList.get(i).setState(state);
+				}else {
+					if (info != null 
+							&& (info.getDownloadState() == DownloadManager.STATE_INSTALLED
+							|| info.getDownloadState() == DownloadManager.STATE_NEED_UPDATE)) {
+						DownloadManager.DBManager.delete(info);
+					}
 				}
 			}
 			adapter.notifyDataSetChanged();
@@ -547,6 +548,17 @@ public class RecommendFragment extends Fragment implements OnPageChangeListener,
 			String action = intent.getAction();
 			if (Intent.ACTION_PACKAGE_ADDED.equals(action)) {
 				String addPkg = intent.getDataString().split(":")[1];
+				for(GameInfo info : resultList){
+					if (info.getPackagename().equals(addPkg)) {
+						info.setState(DownloadManager.STATE_INSTALLED);
+						QueryBuilder<DownloadAppinfo> qb = StoreApplication.daoSession.getDownloadAppinfoDao().queryBuilder();
+						DownloadAppinfo downloadAppinfo = qb.where(Properties.Id.eq(info.getP_id())).unique();
+						if (downloadAppinfo != null) {
+							downloadAppinfo.setDownloadState(DownloadManager.STATE_INSTALLED);
+							DownloadManager.DBManager.getDownloadAppinfoDao().insertOrReplace(downloadAppinfo);
+						}
+					}
+				}
 			}else if (Intent.ACTION_PACKAGE_REMOVED.equals(action)) {
 				String removePkg = intent.getDataString().split(":")[1];
 				for(GameInfo info : resultList){
@@ -559,13 +571,16 @@ public class RecommendFragment extends Fragment implements OnPageChangeListener,
 						}
 					}
 				}
-				adapter.notifyDataSetChanged();
 			}
+			adapter.notifyDataSetChanged();
 		}
 	};
 	
 	public void onDestroyView() {
 		super.onDestroyView();
+		if (adapter != null) {
+			adapter.stopObserver();
+		}
 		getActivity().unregisterReceiver(appInstallReceiver);
 		getActivity().unregisterReceiver(deleteReceiver);
 	};

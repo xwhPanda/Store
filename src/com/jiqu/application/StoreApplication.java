@@ -1,5 +1,13 @@
 package com.jiqu.application;
 
+import java.net.InetAddress;
+import java.net.NetworkInterface;
+import java.net.SocketException;
+import java.util.Collections;
+import java.util.List;
+
+import org.apache.http.conn.util.InetAddressUtils;
+
 import uk.co.chrisjenx.calligraphy.CalligraphyConfig;
 
 import com.android.volley.Request;
@@ -10,15 +18,21 @@ import com.jiqu.database.DaoMaster;
 import com.jiqu.database.DaoMaster.DevOpenHelper;
 import com.jiqu.database.DaoSession;
 import com.jiqu.store.R;
+import com.jiqu.tools.Constant;
 import com.jiqu.tools.LruBitmapCache;
 import com.jiqu.tools.MetricsTool;
+import com.jiqu.tools.NetReceiver;
 
 import android.app.Application;
 import android.content.Context;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
+import android.content.pm.PackageManager.NameNotFoundException;
 import android.database.sqlite.SQLiteDatabase;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Looper;
+import android.provider.Settings.Secure;
 import android.text.TextUtils;
 import android.util.Log;
 
@@ -47,6 +61,24 @@ public class StoreApplication extends Application {
 		DATA_CACHE_PATH = getCacheDir().getAbsolutePath();
 		
 		context = this;
+		
+		initConstant();
+	}
+	
+	private void initConstant(){
+		PackageManager pm = getPackageManager();
+		Constant.MAC = getLocalMacAddressFromIp(context);
+		Constant.PACKAGENAME = getPackageName();
+		try {
+			PackageInfo pi = pm.getPackageInfo(Constant.PACKAGENAME, 0);
+			Constant.VERSION_NAME = pi.versionName;
+			Constant.VERSION_CODE = pi.versionCode;
+			Constant.DEVICE_ID = Secure.getString(getContentResolver(), Secure.ANDROID_ID);
+			Constant.SERIAL_NUMBER = android.os.Build.SERIAL; 
+		} catch (NameNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 	
 	public static synchronized StoreApplication getInstance(){
@@ -109,4 +141,55 @@ public class StoreApplication extends Application {
 			Log.i("TAG", "netInfo : " + info.getType());
 		}
     }
+    
+    public String getLocalIpAddress() {  
+        try {  
+            String ipv4;  
+            List<NetworkInterface>  nilist = Collections.list(NetworkInterface.getNetworkInterfaces());  
+            for (NetworkInterface ni: nilist)   
+            {  
+                List<InetAddress>  ialist = Collections.list(ni.getInetAddresses());  
+                for (InetAddress address: ialist){  
+                    if (!address.isLoopbackAddress() 
+                    		&& InetAddressUtils.isIPv4Address(ipv4=address.getHostAddress()))   
+                    {   
+                        return ipv4;  
+                    }  
+                }  
+   
+            }  
+   
+        } catch (SocketException ex) {  
+            Log.e("TAG", ex.toString());  
+        }  
+        return null;  
+    }
+    
+    public  String getLocalMacAddressFromIp(Context context) {
+        String mac_s= "";
+       try {
+            byte[] mac;
+            NetworkInterface ne=NetworkInterface.getByInetAddress(InetAddress.getByName(getLocalIpAddress()));
+            mac = ne.getHardwareAddress();
+            mac_s = byte2hex(mac);
+       } catch (Exception e) {
+           e.printStackTrace();
+       }
+        return mac_s;
+    }
+    
+    public static  String byte2hex(byte[] b) {
+         StringBuffer hs = new StringBuffer(b.length);
+         String stmp = "";
+         int len = b.length;
+         for (int n = 0; n < len; n++) {
+          stmp = Integer.toHexString(b[n] & 0xFF);
+          if (stmp.length() == 1)
+           hs = hs.append("0").append(stmp);
+          else {
+           hs = hs.append(stmp);
+          }
+         }
+         return String.valueOf(hs);
+        }
 }

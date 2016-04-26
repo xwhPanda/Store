@@ -1,112 +1,74 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:background="@color/itemBgColor"
-    tools:ignore="MissingPrefix" 
-    android:descendantFocusability="blocksDescendants">
+	xmlns:tools="http://schemas.android.com/tools" 
+	android:layout_width="match_parent"
+	android:layout_height="wrap_content" 
+	tools:ignore="MissingPrefix" 
+	android:descendantFocusability="blocksDescendants">
 
-    <ImageView
-        android:id="@+id/icon"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerVertical="true" />
+	<RelativeLayout 
+		android:id="@+id/parentView"
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content" 
+		android:background="@color/itemBgColor">
 
-    <RelativeLayout
-        android:id="@+id/informationLin"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerVertical="true"
-        android:layout_toRightOf="@id/icon" >
 
-        <RelativeLayout
-            android:id="@+id/gameNameRel"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" >
+		<ImageView android:id="@+id/icon" android:layout_width="wrap_content"
+			android:layout_height="wrap_content" android:layout_centerVertical="true" />
 
-            <ImageView
-                android:id="@+id/hotIcon"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
+		<RelativeLayout android:id="@+id/informationLin"
+			android:layout_width="wrap_content" android:layout_height="wrap_content"
+			android:layout_centerVertical="true" android:layout_toRightOf="@id/icon">
 
-            <TextView
-                android:id="@+id/gameName"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_toRightOf="@id/hotIcon"
-                fontPath="fonts/lantinghei.ttf"
-                android:ellipsize="end"
-                android:maxEms="10"
-                android:singleLine="true"
-                android:textColor="@color/white"
-                android:textSize="14sp" />
-        </RelativeLayout>
+			<RelativeLayout android:id="@+id/gameNameRel"
+				android:layout_width="wrap_content" android:layout_height="wrap_content">
 
-        <TextView
-            android:id="@+id/gameDes"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/gameNameRel"
-            fontPath="fonts/lantinghei.ttf"
-            android:ellipsize="end"
-            android:maxEms="20"
-            android:singleLine="true"
-            android:textColor="@color/itemDesColor" />
+				<ImageView android:id="@+id/hotIcon" android:layout_width="wrap_content"
+					android:layout_height="wrap_content" android:layout_centerVertical="true"
+					android:background="@drawable/hot_icon" />
 
-        <RelativeLayout
-            android:id="@+id/gameInforRel"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/gameDes" >
+				<TextView android:id="@+id/gameName" android:layout_width="wrap_content"
+					android:layout_height="wrap_content" android:layout_toRightOf="@id/hotIcon"
+					fontPath="fonts/lantinghei.ttf" android:ellipsize="end"
+					android:maxEms="10" android:singleLine="true" android:textColor="@color/white"
+					android:textSize="14sp" />
+			</RelativeLayout>
 
-            <com.jiqu.view.RatingBarView
-                android:id="@+id/gameScore"
-                style="@style/RatingStyle"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerVertical="true" />
+			<TextView android:id="@+id/gameDes" android:layout_width="wrap_content"
+				android:layout_height="wrap_content" android:layout_below="@id/gameNameRel"
+				fontPath="fonts/lantinghei.ttf" android:ellipsize="end"
+				android:maxEms="20" android:singleLine="true" android:textColor="@color/itemDesColor" />
 
-            <TextView
-                android:id="@+id/gameSize"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerVertical="true"
-                android:layout_marginLeft="10dp"
-                android:layout_toRightOf="@+id/gameScore"
-                fontPath="fonts/lantinghei.ttf"
-                android:singleLine="true"
-                android:textColor="@color/itemColor"
-                android:textSize="12sp" />
-        </RelativeLayout>
-    </RelativeLayout>
+			<RelativeLayout android:id="@+id/gameInforRel"
+				android:layout_width="wrap_content" android:layout_height="wrap_content"
+				android:layout_below="@id/gameDes">
 
-    <Button
-        android:id="@+id/downloadBtn"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentRight="true"
-        android:layout_centerVertical="true"
-        fontPath="fonts/lantinghei.ttf"
-        android:background="@drawable/download_selector" />
+				<com.jiqu.view.RatingBarView android:id="@+id/gameScore"
+					style="@style/RatingStyle" android:layout_width="wrap_content"
+					android:layout_height="wrap_content" android:layout_centerVertical="true" />
 
-    <LinearLayout
-        android:id="@+id/subscriptLin"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentTop="true"
-        android:background="@drawable/subscript_red"
-        android:paddingLeft="3dp" >
+				<TextView android:id="@+id/gameSize" android:layout_width="wrap_content"
+					android:layout_height="wrap_content" android:layout_centerVertical="true"
+					android:layout_marginLeft="10dp" android:layout_toRightOf="@+id/gameScore"
+					fontPath="fonts/lantinghei.ttf" android:singleLine="true"
+					android:textColor="@color/itemColor" android:textSize="12sp" />
+			</RelativeLayout>
+		</RelativeLayout>
 
-        <TextView
-            android:id="@+id/subscriptTx"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            fontPath="fonts/lantinghei.ttf"
-            android:text="1"
-            android:textColor="@color/black"
-            android:textSize="16sp" />
-    </LinearLayout>
+		<Button android:id="@+id/downloadBtn" android:layout_width="wrap_content"
+			android:layout_height="wrap_content" android:layout_alignParentRight="true"
+			android:layout_centerVertical="true" fontPath="fonts/lantinghei.ttf"
+			android:background="@drawable/download_selector" />
 
+		<LinearLayout android:id="@+id/subscriptLin"
+			android:layout_width="wrap_content" android:layout_height="wrap_content"
+			android:layout_alignParentLeft="true" android:layout_alignParentTop="true"
+			android:background="@drawable/subscript_red" android:paddingLeft="3dp">
+
+			<TextView android:id="@+id/subscriptTx"
+				android:layout_width="wrap_content" android:layout_height="wrap_content"
+				fontPath="fonts/lantinghei.ttf" android:text="1" android:textColor="@color/black"
+				android:textSize="16sp" />
+		</LinearLayout>
+	</RelativeLayout>
 </RelativeLayout>

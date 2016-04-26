@@ -388,7 +388,6 @@ public class MainActivity extends FragmentActivity implements OnClickListener,On
 		// TODO Auto-generated method stub
 	       if (keyCode == KeyEvent.KEYCODE_BACK) {
                if ((System.currentTimeMillis() - mExitTime) > 2000) {
-                       Object mHelperUtils;
                        Toast.makeText(this, "再按一次退出程序", Toast.LENGTH_SHORT).show();
                        mExitTime = System.currentTimeMillis();
                        
@@ -404,7 +403,6 @@ public class MainActivity extends FragmentActivity implements OnClickListener,On
 	@Override
 	public void onNetChange(int netType) {
 		// TODO Auto-generated method stub
-		Toast.makeText(this, "网络类型 ：" + netType, Toast.LENGTH_SHORT).show();
 		if ((netType == NetReceiver.NET_NOBILE || netType == NetReceiver.NET_NONE)
 				&& !firstIn) {
 			firstIn = false;

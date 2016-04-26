@@ -136,7 +136,6 @@ public class RecommendGameAdapter extends BaseAdapter {
 			gameName.setText("德玛西亚");
 			gameDes.setText("谁复活我如何尽快恢复快回复");
 			gameSize.setText("40M");
-			gameScoreBar.setRating(4.5);
 			downloadBtn.setBackgroundColor(context.getResources().getColor(R.color.blue));
 			hotIcon.setBackgroundResource(R.drawable.hot_icon);
 			hotIcon.setVisibility(View.VISIBLE);

@@ -20,19 +20,17 @@ import android.text.TextUtils;
 import android.util.Log;
 
 /**
- * �ļ�������
- * 
- * 
+ * 文件工具类
  */
 public class FileUtil {
 	private static String TAG = "FileUtil";
 
 	/**
-	 * ��ȡĿ¼����
-	 * 
+	 * 获取目录名称
 	 * @param url
 	 * @return FileName
 	 */
+
 	public static String getFileName(String url) {
 		int lastIndexStart = url.lastIndexOf("/");
 		if (lastIndexStart != -1) {
@@ -43,7 +41,7 @@ public class FileUtil {
 	}
 
 	/**
-	 * �ж�SD���Ƿ����
+	 * 判断SD卡是否存在
 	 * 
 	 * @return boolean
 	 */
@@ -56,19 +54,6 @@ public class FileUtil {
 		}
 	}
 
-	public static String getDbPath(Context context) {
-		String path = getPhoneMemoryPath(context) + File.separator
-				+ "bblive" + File.separator + "database";
-		return path;
-	}
-
-	public static String getMediaCachePath(Context context) {
-		String path = getPhoneMemoryPath(context) + File.separator
-				+ "bblive" + File.separator + "cache";
-		createNewDir(path);
-		return path;
-	}
-
 	public static String getApkDownloadDir(Context context) {
 		String path = getPhoneMemoryPath(context) + File.separator
 				+ "mdownload" + File.separator + "apkDownload";
@@ -79,6 +64,13 @@ public class FileUtil {
 	public static String getZipDownloadDir(Context context) {
 		String path = getPhoneMemoryPath(context) + File.separator
 				+ "mdownload" + File.separator + "zipDownload";
+		createNewDir(path);
+		return path;
+	}
+	
+	public static String getUpgradeDownloadDir(Context context){
+		String path = getPhoneMemoryPath(context) + File.separator
+				+ "mdownload" + File.separator + "upgradeDownload";
 		createNewDir(path);
 		return path;
 	}
@@ -116,8 +108,7 @@ public class FileUtil {
 	}
 
 	/**
-	 * ��ȡ�ֻ����õĴ洢·��
-	 * 
+	 * 获取手机可用的存储路径
 	 */
 	public static String getPhoneMemoryPath(Context c) {
 		String sdStatus = Environment.getExternalStorageState();
@@ -136,7 +127,7 @@ public class FileUtil {
 			try {
 				sdcardSpace = getSDcardAvailableSpace();
 			} catch (Exception e) {
-				Log.d(TAG, "error1:" + e.getMessage());
+				e.printStackTrace();
 			}
 			if (sdcardSpace >= 5) {
 				return getSDCardPath(c);
@@ -146,19 +137,15 @@ public class FileUtil {
 			if (phoneSpace >= 5) {
 				return c.getFilesDir().getAbsolutePath();
 			}
-			Log.d(TAG, String.format(
-					"get storage space, phone: %d, sdcard: %d",
-					(int) (phoneSpace / 1024 / 1024),
-					(int) (sdcardSpace / 1024 / 1024)));
 		} catch (Exception e) {
-			Log.d(TAG, "error3:" + e.getMessage());
+			e.printStackTrace();
 		}
 
 		return c.getFilesDir().getAbsolutePath();
 	}
 
 	/**
-	 * ��ȡ�ֻ��ڲ����ÿռ��С
+	 * 获取data可用空间大小
 	 * 
 	 * @return
 	 */
@@ -171,7 +158,7 @@ public class FileUtil {
 	}
 
 	/**
-	 * ��ȡ�ֻ�����SD�����ÿռ��С
+	 * 获取手机内置SD卡可用空间大小
 	 * 
 	 */
 	public static long getSDcardAvailableSpace() {
@@ -191,7 +178,7 @@ public class FileUtil {
 	}
 
 	/**
-	 * ��ȡ�ֻ�����SD��·��
+	 * 获取手机内置SD卡路径
 	 * 
 	 */
 	public static String getSDCardPath(Context c) {
@@ -208,13 +195,13 @@ public class FileUtil {
 	}
 
 	/**
-	 * ��ȡ�ļ��Ĵ�С
+	 * 获取文件的大小
 	 * 
 	 * @param fileSize
-	 *            �ļ��Ĵ�С
+	 *            文件的大小
 	 * @return
 	 */
-	public static String FormetFileSize(long fileSize) {// ת���ļ���С
+	public static String FormetFileSize(long fileSize) {
 		DecimalFormat df = new DecimalFormat("#.00");
 		String fileSizeString = "";
 		if (fileSize < 1024) {
@@ -267,55 +254,6 @@ public class FileUtil {
 		}
 	}
 	
-	public static int getFileDuration(String filepath){
-		int duration = 0;
-		MediaPlayer mediaPlayer = new MediaPlayer();
-		try {
-			mediaPlayer.reset();// ������״̬������
-			mediaPlayer.setDataSource(filepath);// ���ò�������Դ
-			mediaPlayer.prepare();// һЩӲ����׼��
-			duration = mediaPlayer.getDuration() / 1000 ;
-		} catch (IllegalArgumentException e) {
-			e.printStackTrace();
-		} catch (SecurityException e) {
-			e.printStackTrace();
-		} catch (IllegalStateException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
-		} finally {
-			mediaPlayer.release();
-		}
-		return duration;
-	}
-
-	
-	public static boolean getPhoto(Bitmap bitmap, String mDstPath) {
-		if (bitmap == null) {
-			return false;
-		}
-		
-		File file = new File(mDstPath);
-		FileOutputStream b = null;
-		try {
-			file.createNewFile();
-			b = new FileOutputStream(file);
-			bitmap.compress(Bitmap.CompressFormat.JPEG, 100, b);// ������д���ļ�
-			return true;
-		} catch (Exception e) {
-			return false;
-		} finally {
-			try {
-				if (b != null) {
-					b.flush();
-					b.close();
-				}
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-		}
-		
-	}
 	
 	public static void copy(String src, String dest) {
 		if (TextUtils.isEmpty(src) || TextUtils.isEmpty(dest)) {
@@ -441,8 +379,6 @@ public class FileUtil {
 				}
 			}
 		}
-		
 		return str;
 	}
-
 }

@@ -14,6 +14,7 @@ import com.jiqu.download.DownloadManager.DownloadObserver;
 import com.jiqu.download.FileUtil;
 import com.jiqu.store.R;
 import com.jiqu.tools.MetricsTool;
+import com.jiqu.tools.NetReceiver;
 import com.jiqu.tools.UIUtil;
 
 import de.greenrobot.dao.query.QueryBuilder;
@@ -32,6 +33,7 @@ import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
+import android.widget.Toast;
 import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
@@ -151,8 +153,23 @@ public class DownloadingAdapter extends BaseAdapter implements DownloadObserver{
 						}else if (state == DownloadManager.STATE_ERROR 
 								|| state == DownloadManager.STATE_NONE
 								|| state == DownloadManager.STATE_PAUSED) {
-							DownloadManager.getInstance().download(info);
-							pause.setBackgroundResource(R.drawable.jixu);
+							if (NetReceiver.NET_TYPE == NetReceiver.NET_WIFI) {
+								if (FileUtil.checkSDCard()) {
+									if (Long.parseLong(downloadAppinfo.getAppSize()) * 3 >= FileUtil.getSDcardAvailableSpace()) {
+										Toast.makeText(context, "可用空间不足", Toast.LENGTH_SHORT).show();
+										return;
+									}
+								}else {
+									if (Long.parseLong(downloadAppinfo.getAppSize()) * 3 >= FileUtil.getDataStorageAvailableSpace()) {
+										Toast.makeText(context, "可用空间不足", Toast.LENGTH_SHORT).show();
+										return;
+									}
+								}
+								DownloadManager.getInstance().download(info);
+								pause.setBackgroundResource(R.drawable.jixu);
+							}else {
+								Toast.makeText(context, "没有连接wifi", Toast.LENGTH_SHORT).show();
+							}
 						}
 					}
 				}

@@ -16,6 +16,7 @@ import com.jiqu.object.GameInfo;
 import com.jiqu.store.R;
 import com.jiqu.tools.Constant;
 import com.jiqu.tools.MetricsTool;
+import com.jiqu.tools.NetReceiver;
 import com.jiqu.tools.UIUtil;
 import com.jiqu.view.RatingBarView;
 
@@ -48,13 +49,24 @@ public class GameAdapter extends BaseAdapter implements DownloadObserver{
 	
 	private boolean firstIn = false;
 	
-	public GameAdapter(Context context,List<GameInfo> informations){
+	private boolean hotIconVisible;
+	private boolean subscriptVisible;
+	
+	private int colorId = R.color.itemBgColor;
+	
+	public GameAdapter(Context context,List<GameInfo> informations,boolean hotIconVisible,boolean subscriptVisible){
 		this.informations = informations;
 		inflater = LayoutInflater.from(context);
 		mDisplayedHolders = new ArrayList<GameAdapter.Holder2>();
 		this.context = context;
+		this.hotIconVisible = hotIconVisible;
+		this.subscriptVisible = subscriptVisible;
 		
 		initIds();
+	}
+	
+	public void setItemBackgroundColor(int colorId){
+		this.colorId = colorId;
 	}
 	
 	private void initIds(){
@@ -131,12 +143,12 @@ public class GameAdapter extends BaseAdapter implements DownloadObserver{
 
 		case 1:
 			if (convertView == null) {
-				holder2 = new Holder2(context);
+				holder2 = new Holder2(context,hotIconVisible,subscriptVisible);
 				convertView = holder2.getRootView();
 			}else {
 				holder2 = (Holder2) convertView.getTag();
 			}
-			
+			holder2.setBackground(colorId);
 			holder2.setData(GameInfo.toDownloadAppInfo(informations.get(position)));
 			mDisplayedHolders.add(holder2);
 			break;
@@ -176,6 +188,7 @@ public class GameAdapter extends BaseAdapter implements DownloadObserver{
 	}
 	
 	private class Holder2{
+		private RelativeLayout parentView;
 		private ImageView icon;
 		private TextView gameName;
 		private TextView gameDes;
@@ -197,9 +210,14 @@ public class GameAdapter extends BaseAdapter implements DownloadObserver{
 		private DownloadManager mDownloadManager;
 		private boolean hasAttached;
 		
+		private boolean hotIConVisible;
+		private boolean subscriptVisible;
+		
 		private Context context;
 		
-		public Holder2(Context context){
+		public Holder2(Context context,boolean hotIConVisible,boolean subscriptVisible){
+			this.hotIConVisible = hotIConVisible;
+			this.subscriptVisible = subscriptVisible;
 			rootView = initView();
 			rootView.setTag(this);
 			this.context = context;
@@ -209,8 +227,13 @@ public class GameAdapter extends BaseAdapter implements DownloadObserver{
 			return rootView;
 		}
 		
+		public void setBackground(int colorId){
+			parentView.setBackgroundColor(colorId);
+		}
+		
 		private View initView(){
 			View view = AppUtil.inflate(R.layout.recommend_game_item);
+			parentView = (RelativeLayout) view.findViewById(R.id.parentView);
 			icon = (ImageView) view.findViewById(R.id.icon);
 			gameName = (TextView) view.findViewById(R.id.gameName);
 			gameDes = (TextView) view.findViewById(R.id.gameDes);
@@ -221,6 +244,7 @@ public class GameAdapter extends BaseAdapter implements DownloadObserver{
 			hotIcon = (ImageView) view.findViewById(R.id.hotIcon);
 			
 			gameScore.setResID(resIds);
+			gameScore.setStep(1.0f);
 			
 			informationLin = (RelativeLayout) view.findViewById(R.id.informationLin);
 			subscriptLin = (LinearLayout) view.findViewById(R.id.subscriptLin);
@@ -234,7 +258,22 @@ public class GameAdapter extends BaseAdapter implements DownloadObserver{
 							|| mState == DownloadManager.STATE_PAUSED
 							|| mState == DownloadManager.STATE_ERROR
 							|| mState == DownloadManager.STATE_NEED_UPDATE) {
-						mDownloadManager.download(mData);
+						if (NetReceiver.NET_TYPE == NetReceiver.NET_WIFI) {
+							if (FileUtil.checkSDCard()) {
+								if (Long.parseLong(mData.getAppSize()) * 3 >= FileUtil.getSDcardAvailableSpace()) {
+									Toast.makeText(context, "可用空间不足", Toast.LENGTH_SHORT).show();
+									return;
+								}
+							}else {
+								if (Long.parseLong(mData.getAppSize()) * 3 >= FileUtil.getDataStorageAvailableSpace()) {
+									Toast.makeText(context, "可用空间不足", Toast.LENGTH_SHORT).show();
+									return;
+								}
+							}
+							mDownloadManager.download(mData);
+						}else {
+							Toast.makeText(context, "没有连接wifi", Toast.LENGTH_SHORT).show();
+						}
 					}else if (mState == DownloadManager.STATE_DOWNLOADING
 							|| mState == DownloadManager.STATE_WAITING) {
 						mDownloadManager.pause(mData);
@@ -254,6 +293,18 @@ public class GameAdapter extends BaseAdapter implements DownloadObserver{
 				}
 			});
 			
+			if (hotIConVisible) {
+				hotIcon.setVisibility(View.VISIBLE);
+			}else {
+				hotIcon.setVisibility(View.GONE);
+			}
+			
+			if (subscriptVisible) {
+				subscriptLin.setVisibility(View.VISIBLE);
+			}else {
+				subscriptLin.setVisibility(View.GONE);
+			}
+			
 			initViewSize();
 			
 			return view;
@@ -261,8 +312,9 @@ public class GameAdapter extends BaseAdapter implements DownloadObserver{
 		
 		private void initViewSize(){
 			UIUtil.setViewSize(icon, 170 * MetricsTool.Rx, 170 * MetricsTool.Rx);
-			UIUtil.setViewSize(downloadBtn, 75 * MetricsTool.Rx, 75 * MetricsTool.Rx);
+//			UIUtil.setViewSize(downloadBtn, 75 * MetricsTool.Rx, 75 * MetricsTool.Rx);
 			UIUtil.setViewSize(subscriptLin, 85 * MetricsTool.Rx, 85 * MetricsTool.Rx);
+			UIUtil.setViewSize(hotIcon, 55 * MetricsTool.Rx, 35 * MetricsTool.Rx);
 			
 			UIUtil.setTextSize(gameName, 35);
 			UIUtil.setTextSize(gameDes, 25);
@@ -297,14 +349,16 @@ public class GameAdapter extends BaseAdapter implements DownloadObserver{
 				if (downloadInfo != null) {
 					if (hasAttached) {
 						if(!downloadInfo.getHasFinished()){
-								//上次异常退出
-								if (downloadInfo.getDownloadState() == DownloadManager.STATE_DOWNLOADING) {
+								if ((downloadInfo.getDownloadState() == DownloadManager.STATE_DOWNLOADING
+										|| downloadInfo.getDownloadState() == DownloadManager.STATE_WAITING) 
+										&& !mDownloadManager.isDownloading(downloadInfo.getId())) {
 									mState = DownloadManager.STATE_PAUSED;
 								}else {
 									mState = downloadInfo.getDownloadState();
 								}
 						}else {
-							if (downloadInfo.getDownloadState() == DownloadManager.STATE_UNZIPING) {
+							if (downloadInfo.getDownloadState() == DownloadManager.STATE_UNZIPING
+									&& !mDownloadManager.isDownloading(downloadInfo.getId())) {
 								mState = DownloadManager.STATE_UNZIP_FAILED;
 							}else {
 								mState = downloadInfo.getDownloadState();
@@ -313,8 +367,12 @@ public class GameAdapter extends BaseAdapter implements DownloadObserver{
 						downloadInfo.setDownloadState(mState);
 						mDownloadManager.DBManager.getDownloadAppinfoDao().insertOrReplace(downloadInfo);
 					}else {
-						mState = DownloadManager.STATE_NONE;
-						mDownloadManager.DBManager.delete(data);
+						if (downloadInfo.getDownloadState() == DownloadManager.STATE_WAITING) {
+							mState = downloadInfo.getDownloadState();
+						}else {
+							mState = DownloadManager.STATE_NONE;
+							mDownloadManager.DBManager.delete(data);
+						}
 					}
 				}else {
 					mState = DownloadManager.STATE_NONE;
@@ -340,7 +398,7 @@ public class GameAdapter extends BaseAdapter implements DownloadObserver{
 		private void refreshView(){
 			gameName.setText(mData.getAppName());
 			gameDes.setText(mData.getDes());
-			gameScore.setRating((float) 4.5);
+			gameScore.setRating(mData.getScore());
 			gameSize.setText(FileUtil.getSize(Long.parseLong(mData.getAppSize())));
 			ImageListener listener = ImageLoader.getImageListener(icon,R.drawable.ic_launcher, R.drawable.ic_launcher);
 			StoreApplication.getInstance().getImageLoader().get(mData.getIconUrl(), listener);
@@ -354,48 +412,57 @@ public class GameAdapter extends BaseAdapter implements DownloadObserver{
 			switch (mState) {
 			case DownloadManager.STATE_NONE:
 				downloadBtn.setBackgroundResource(R.drawable.download_selector);
+				downloadBtn.setText("下载");
 				break;
 
 			case DownloadManager.STATE_PAUSED:
 				downloadBtn.setBackgroundResource(R.drawable.zanting);
+				downloadBtn.setText("继续");
 				break;
 			case DownloadManager.STATE_ERROR:
 				downloadBtn.setBackgroundResource(R.drawable.download_selector);
+				downloadBtn.setText("下载失败");
 				break;
 			case DownloadManager.STATE_WAITING:
 				downloadBtn.setBackgroundResource(R.drawable.dengdai);
 				Animation animation = AnimationUtils.loadAnimation(context, R.anim.wating_rorating); 
 				downloadBtn.setAnimation(animation);
 				downloadBtn.startAnimation(animation);
+				downloadBtn.setText("等待下载");
 				break;
 			case DownloadManager.STATE_DOWNLOADING:
 				downloadBtn.setBackgroundResource(R.drawable.jixu);
+				downloadBtn.setText("暂停");
 				break;
 			case DownloadManager.STATE_DOWNLOADED:
 				downloadBtn.setBackgroundResource(R.drawable.runing_selector);
-				if (!isFirst && !installDialogShowed) {
-					installDialogShowed = true;
+//				if (!isFirst && !installDialogShowed) {
+//					installDialogShowed = true;
 					if (mData.getIsZip()) {
+						downloadBtn.setText("解压");
 //						UnZipManager.getInstance().unzip(mData, Constant.PASSWORD);
 //						mData.setDownloadState(DownloadManager.STATE_UNZIPING);
 //						DownloadAppinfo info = mDownloadManager.getDownloadInfo(mData.getId());
 //						info.setDownloadState(DownloadManager.STATE_UNZIPING);
 //						mDownloadManager.DBManager.getDownloadAppinfoDao().insertOrReplace(info);
 //						refreshState(state, isFirst);
+					}else {
+						downloadBtn.setText("安装");
 					}
-				}
+//				}
 				break;
 			case DownloadManager.STATE_UNZIPING:
-				Toast.makeText(context, "正在解压", Toast.LENGTH_SHORT).show();
+				downloadBtn.setText("正在解压");
 				break;
 			case DownloadManager.STATE_UNZIPED:
-				Toast.makeText(context, "解压完成", Toast.LENGTH_SHORT).show();
+				downloadBtn.setText("安装");
 				break;
 			case DownloadManager.STATE_INSTALLED:
 				downloadBtn.setBackgroundResource(R.drawable.runing_selector);
+				downloadBtn.setText("打开");
 				break;
 			case DownloadManager.STATE_NEED_UPDATE:
-				
+				downloadBtn.setText("升级");
 				break;
 			default:
 				break;

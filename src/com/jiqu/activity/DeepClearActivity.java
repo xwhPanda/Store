@@ -252,11 +252,13 @@ public class DeepClearActivity extends BaseActivity implements OnClickListener {
 	public long getFolderSize(java.io.File file) throws Exception {
 		long size = 0;
 		java.io.File[] fileList = file.listFiles();
-		for (int i = 0; i < fileList.length; i++) {
-			if (fileList[i].isDirectory()) {
-				size = size + getFolderSize(fileList[i]);
-			} else {
-				size = size + fileList[i].length();
+		if (fileList != null && fileList.length > 0) {
+			for (int i = 0; i < fileList.length; i++) {
+				if (fileList[i].isDirectory()) {
+					size = size + getFolderSize(fileList[i]);
+				} else {
+					size = size + fileList[i].length();
+				}
 			}
 		}
 		return size;

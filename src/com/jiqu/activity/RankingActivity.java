@@ -1,41 +1,165 @@
 package com.jiqu.activity;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
+import org.json.JSONObject;
+
+import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
 import android.widget.Button;
 import android.widget.LinearLayout;
 
+import com.alibaba.fastjson.JSON;
+import com.android.volley.Response.ErrorListener;
+import com.android.volley.Response.Listener;
+import com.android.volley.VolleyError;
+import com.jiqu.adapter.GameAdapter;
 import com.jiqu.adapter.RecommendGameAdapter;
+import com.jiqu.object.GameInfo;
 import com.jiqu.object.GameInformation;
+import com.jiqu.object.InstalledApp;
+import com.jiqu.object.RankInfo;
 import com.jiqu.store.BaseActivity;
 import com.jiqu.store.R;
+import com.jiqu.tools.InstalledAppTool;
+import com.jiqu.tools.RequestTool;
 import com.jiqu.tools.UIUtil;
 import com.jiqu.view.PullToRefreshLayout;
 import com.jiqu.view.PullableListView;
 import com.jiqu.view.TitleView;
+import com.jiqu.view.PullToRefreshLayout.OnRefreshListener;
 
-public class RankingActivity extends BaseActivity implements OnClickListener{
+public class RankingActivity extends BaseActivity implements OnClickListener,OnRefreshListener{
+	private static final int DEFAULT_PAGE_SIZE = 20;
 	private TitleView titleView;
 	private LinearLayout rankLin;
 	private Button favorableComment,hot;
 	private PullToRefreshLayout favorableRefreshView,hotRefreshView;
 	private PullableListView favorableListView,hotListView;
 	
-	private RecommendGameAdapter favorableAdapter;
-	private RecommendGameAdapter hotAdapter;
-	private List<GameInformation> favorableGameInformations = new ArrayList<GameInformation>();
-	private List<GameInformation> hotGameInformations = new ArrayList<GameInformation>();
+	private GameAdapter favorableAdapter;
+	private GameAdapter hotAdapter;
+	private List<GameInfo> favorableGameInformations = new ArrayList<GameInfo>();
+	private List<GameInfo> hotGameInformations = new ArrayList<GameInfo>();
+	
+	private RequestTool requestTool;
+	
+	private boolean favorableRefreshViewShowing = false;
+	private boolean hotRefreshViewShowing = false;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
 		super.onCreate(savedInstanceState);
-		
+		requestTool = RequestTool.getInstance();
 		initView();
+		
+		favorableRequest(0,DEFAULT_PAGE_SIZE);
+		hotRequest(0,DEFAULT_PAGE_SIZE);
+	}
+	
+	private void favorableRequest(int start,int end){
+		requestTool.initParam();
+		requestTool.setParam("start_position", start);
+		requestTool.setParam("size", end);
+		requestTool.setParam("orderby", "3");
+		requestTool.startRankRequest(new Listener<JSONObject>() {
+
+			@Override
+			public void onResponse(JSONObject arg0) {
+				// TODO Auto-generated method stub
+				Log.i("TAG", "onResponse : " + arg0.toString());
+				RankInfo rankInfo = JSON.parseObject(arg0.toString(), RankInfo.class);
+				if (rankInfo != null) {
+					Collections.addAll(favorableGameInformations, rankInfo.getItem());
+					int count = DEFAULT_PAGE_SIZE;
+					if (favorableGameInformations.size() < DEFAULT_PAGE_SIZE) {
+						count = favorableGameInformations.size();
+					}
+					List<InstalledApp> apps = InstalledAppTool.getPersonalApp(RankingActivity.this);
+					for(int i = favorableGameInformations.size() - count;i<favorableGameInformations.size();i++){
+						GameInfo gameInfo = favorableGameInformations.get(i);
+						gameInfo.setAdapterType(1);
+						int state = InstalledAppTool.contain(apps,gameInfo.getPackagename(), Integer.parseInt(gameInfo.getVersion_code()));
+						if (state != -1) {
+							favorableGameInformations.get(i).setState(state);
+						}
+					}
+					if (favorableRefreshViewShowing) {
+						favorableRefreshView.refreshFinish(PullToRefreshLayout.SUCCEED);
+						favorableRefreshViewShowing = false;
+					}
+					favorableAdapter.notifyDataSetChanged();
+				}
+			}
+		}, new ErrorListener() {
+
+			@Override
+			public void onErrorResponse(VolleyError arg0) {
+				// TODO Auto-generated method stub
+				Log.i("TAG", "onErrorResponse");
+				favorableRefreshView.refreshFinish(PullToRefreshLayout.FAIL);
+				if (favorableRefreshViewShowing) {
+					favorableRefreshView.refreshFinish(PullToRefreshLayout.FAIL);
+					favorableRefreshViewShowing = false;
+				}
+			}
+		});
+	}
+	
+	private void hotRequest(int start , int end){
+		requestTool.initParam();
+		requestTool.setParam("start_position", start);
+		requestTool.setParam("size", end);
+		requestTool.setParam("orderby", "4");
+		requestTool.startRankRequest(new Listener<JSONObject>() {
+
+			@Override
+			public void onResponse(JSONObject arg0) {
+				// TODO Auto-generated method stub
+				Log.i("TAG", "onResponse : " + arg0.toString());
+				RankInfo rankInfo = JSON.parseObject(arg0.toString(), RankInfo.class);
+				if (rankInfo != null) {
+					Collections.addAll(hotGameInformations, rankInfo.getItem());
+					int count = DEFAULT_PAGE_SIZE;
+					if (hotGameInformations.size() < DEFAULT_PAGE_SIZE) {
+						count = hotGameInformations.size();
+					}
+					List<InstalledApp> apps = InstalledAppTool.getPersonalApp(RankingActivity.this);
+					for(int i = favorableGameInformations.size() - count;i<hotGameInformations.size();i++){
+						GameInfo gameInfo = hotGameInformations.get(i);
+						gameInfo.setAdapterType(1);
+						int state = InstalledAppTool.contain(apps,gameInfo.getPackagename(), Integer.parseInt(gameInfo.getVersion_code()));
+						if (state != -1) {
+							hotGameInformations.get(i).setState(state);
+						}
+					}
+					if (hotRefreshViewShowing) {
+						hotRefreshView.refreshFinish(PullToRefreshLayout.SUCCEED);
+						hotRefreshViewShowing = false;
+					}
+					hotAdapter.notifyDataSetChanged();
+				}
+			}
+		}, new ErrorListener() {
+
+			@Override
+			public void onErrorResponse(VolleyError arg0) {
+				// TODO Auto-generated method stub
+				Log.i("TAG", "onErrorResponse");
+				if (hotRefreshViewShowing) {
+					hotRefreshView.refreshFinish(PullToRefreshLayout.FAIL);
+					hotRefreshViewShowing = false;
+				}
+			}
+		});
 	}
 
 	@Override
@@ -54,6 +178,9 @@ public class RankingActivity extends BaseActivity implements OnClickListener{
 		favorableListView = (PullableListView) findViewById(R.id.favorableListView);
 		hotListView = (PullableListView) findViewById(R.id.hotListView);
 		
+		favorableRefreshView.setOnRefreshListener(this);
+		hotRefreshView.setOnRefreshListener(this);
+		
 		titleView.setActivity(this);
 		titleView.tip.setText(getResources().getString(R.string.rank));
 		titleView.back.setBackgroundResource(R.drawable.fanhui);
@@ -66,22 +193,37 @@ public class RankingActivity extends BaseActivity implements OnClickListener{
 		
 		initViewSize();
 		
+		favorableListView.setOnItemClickListener(new OnItemClickListener() {
+
+			@Override
+			public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+				// TODO Auto-generated method stub
+				startActivity(new Intent(RankingActivity.this, DetailActivity.class).putExtra("p_id", favorableGameInformations.get(position).getP_id()));
+			}
+		});
 		
+		hotListView.setOnItemClickListener(new OnItemClickListener() {
+
+			@Override
+			public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+				// TODO Auto-generated method stub
+				startActivity(new Intent(RankingActivity.this, DetailActivity.class).putExtra("p_id", hotGameInformations.get(position).getP_id()));
+			}
+		});
 		
-		for(int i = 0; i< 20; i++){
-			GameInformation information = new GameInformation();
-			favorableGameInformations.add(information);
-		}
-		favorableAdapter = new RecommendGameAdapter(favorableGameInformations, this);
+		favorableAdapter = new GameAdapter(this,favorableGameInformations,false,false);
 		favorableListView.setAdapter(favorableAdapter);
+		favorableAdapter.setItemBackgroundColor(getResources().getColor(R.color.bottomBgColor));
 		
-		for(int i = 0; i< 10; i++){
-			GameInformation information = new GameInformation();
-			hotGameInformations.add(information);
-		}
-		hotAdapter = new RecommendGameAdapter(hotGameInformations, this);
+		hotAdapter = new GameAdapter(this,hotGameInformations,true,false);
 		hotListView.setAdapter(hotAdapter);
+		hotAdapter.setItemBackgroundColor(getResources().getColor(R.color.bottomBgColor));
+		
+		favorableAdapter.startObserver();
+		hotAdapter.startObserver();
 	}
+	
+	
 	
 	private void initViewSize(){
 		UIUtil.setTextSize(favorableComment, 40);
@@ -116,5 +258,32 @@ public class RankingActivity extends BaseActivity implements OnClickListener{
 			favorableComment.setBackgroundColor(getResources().getColor(R.color.itemDesColor));
 			hot.setBackgroundColor(getResources().getColor(R.color.blue));
 		}
+	}
+
+	@Override
+	public void onRefresh(PullToRefreshLayout pullToRefreshLayout) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void onLoadMore(PullToRefreshLayout pullToRefreshLayout) {
+		// TODO Auto-generated method stub
+		if (pullToRefreshLayout.getId() == R.id.favorableRefreshView) {
+			favorableRefreshViewShowing = true;
+			favorableRequest(favorableGameInformations.size(), DEFAULT_PAGE_SIZE);
+		}else if (pullToRefreshLayout.getId() == R.id.hotRefreshView) {
+			hotRefreshViewShowing = true;
+			hotRequest(hotGameInformations.size(), DEFAULT_PAGE_SIZE);
+		}
+	}
+	
+	@Override
+	protected void onDestroy() {
+		// TODO Auto-generated method stub
+		super.onDestroy();
+		requestTool.stopRankRequest();
+		favorableAdapter.stopObserver();
+		hotAdapter.stopObserver();
 	}
 }

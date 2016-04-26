@@ -3,6 +3,8 @@ package com.jiqu.activity;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.json.JSONObject;
+
 import android.os.Bundle;
 import android.support.v4.view.ViewPager;
 import android.view.LayoutInflater;
@@ -15,6 +17,9 @@ import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.android.volley.Response.ErrorListener;
+import com.android.volley.Response.Listener;
+import com.android.volley.VolleyError;
 import com.jiqu.adapter.ThematicAdapter;
 import com.jiqu.adapter.ThematicItemAdapter;
 import com.jiqu.object.ThematicInfo;
@@ -22,6 +27,7 @@ import com.jiqu.object.ThematicItemInfo;
 import com.jiqu.store.BaseActivity;
 import com.jiqu.store.R;
 import com.jiqu.tools.MetricsTool;
+import com.jiqu.tools.RequestTool;
 import com.jiqu.tools.UIUtil;
 import com.jiqu.view.HeaderGridView;
 import com.jiqu.view.PullToRefreshLayout;
@@ -29,7 +35,7 @@ import com.jiqu.view.PullableGridView;
 import com.jiqu.view.PullableListView;
 import com.jiqu.view.TitleView;
 
-public class ThematicActivity extends BaseActivity {
+public class ThematicActivity extends BaseActivity implements Listener<JSONObject> ,ErrorListener{
 	private TitleView titleView;
 	private PullToRefreshLayout refreshView;
 	private ListView thematicListView;
@@ -44,13 +50,18 @@ public class ThematicActivity extends BaseActivity {
 	private ThematicAdapter adapter;
 	
 	private ImageView[] imageViews;
+	private RequestTool requestTool;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
 		super.onCreate(savedInstanceState);
 		
+		requestTool = RequestTool.getInstance();
 		initView();
+		
+		requestTool.initParam();
+		requestTool.startSpecialsRequest(this, this);
 	}
 
 	@Override
@@ -133,5 +144,17 @@ public class ThematicActivity extends BaseActivity {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+	}
+
+	@Override
+	public void onErrorResponse(VolleyError arg0) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void onResponse(JSONObject arg0) {
+		// TODO Auto-generated method stub
+		
 	}
 }

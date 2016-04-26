@@ -24,6 +24,7 @@ import com.jiqu.application.StoreApplication;
 import com.jiqu.database.DaoSession;
 import com.jiqu.database.DownloadAppinfo;
 import com.jiqu.database.DownloadAppinfoDao.Properties;
+import com.jiqu.download.Downloader.ChangeObserver;
 import com.jiqu.tools.Constant;
 
 import de.greenrobot.dao.query.QueryBuilder;
@@ -37,7 +38,7 @@ import android.renderscript.Light;
 import android.util.Log;
 import android.widget.Toast;
 
-public class DownloadManager {
+public class DownloadManager implements ChangeObserver{
 	public static final int STATE_NONE = 0;
 	/** 等待中 */
 	public static final int STATE_WAITING = 1;
@@ -81,6 +82,7 @@ public class DownloadManager {
 	private List<DownloadObserver> mObservers = new ArrayList<DownloadObserver>();
 	/** 用于记录所有下载的任务，方便在取消下载时，通过id能找到该任务进行删除 */
 	private Map<Long, DownloadTask> mTaskMap = new ConcurrentHashMap<Long, DownloadTask>();
+	private Map<Long, Downloader> map = new ConcurrentHashMap<Long, Downloader>();
 
 	public static synchronized DownloadManager getInstance() {
 		if (instance == null) {
@@ -90,7 +92,8 @@ public class DownloadManager {
 	}
 
 	public boolean isDownloading(Long id){
-		return mTaskMap.get(id) == null?false:true;
+//		return mTaskMap.get(id) == null?false:true;
+		return map.get(id) == null?false:true;
 	}
 	
 	/** 注册观察者 */
@@ -132,7 +135,6 @@ public class DownloadManager {
 	/** 下载，需要传入一个appInfo对象 */
 	public synchronized void download(DownloadAppinfo appInfo) {
 		// 先判断是否有这个app的下载信息
-		Log.i("TAG", appInfo.getUrl());
 		// DownloadInfo info = mDownloadMap.get(appInfo.getId());
 		DownloadAppinfo info = DBManager.getDownloadAppinfoDao().queryBuilder().where(Properties.Id.eq(appInfo.getId())).unique();
 		if (info == null) {// 如果没有，则根据appInfo创建一个新的下载信息
@@ -183,12 +185,19 @@ public class DownloadManager {
 			// 下载之前，把状态设置为STATE_WAITING，因为此时并没有产开始下载，只是把任务放入了线程池中，当任务真正开始执行时，才会改为STATE_DOWNLOADING
 			info.setDownloadState(STATE_WAITING);
 			notifyDownloadStateChanged(info);// 每次状态发生改变，都需要回调该方法通知所有观察者
-			DownloadTask task = new DownloadTask(info);// 创建一个下载任务，放入线程池
-			mTaskMap.put(info.getId(), task);
-			ThreadManager.getDownloadPool().execute(task);
+//			DownloadTask task = new DownloadTask(info);// 创建一个下载任务，放入线程池
+//			mTaskMap.put(info.getId(), task);
+//			ThreadManager.getDownloadPool().execute(task);
+			
+			Downloader downloader = new Downloader(info);
+			downloader.registerObserver(this);
+			map.put(info.getId(), downloader);
+			DBManager.insertOrReplace(info);
+			ThreadManager.getDownloadPool().execute(downloader);
+			
 		}
 	}
-
+	
 	/** 暂停下载 */
 	public synchronized void pause(DownloadAppinfo appInfo) {
 		stopDownload(appInfo);
@@ -355,16 +364,26 @@ public class DownloadManager {
 
 	/** 如果该下载任务还处于线程池中，且没有执行，先从线程池中移除 */
 	private void stopDownload(DownloadAppinfo appInfo) {
-		DownloadTask task = mTaskMap.remove(appInfo.getId());// 先从集合中找出下载任务
-		if (task != null) {
-			task.setPause();
-			ThreadManager.getDownloadPool().cancel(task);// 然后从线程池中移除
+//		DownloadTask task = mTaskMap.remove(appInfo.getId());// 先从集合中找出下载任务
+//		if (task != null) {
+//			task.setPause();
+//			ThreadManager.getDownloadPool().cancel(task);// 然后从线程池中移除
+//		}
+		Downloader downloader = map.remove(appInfo.getId());
+		if (downloader != null) {
+			downloader.setPause();
+			ThreadManager.getDownloadPool().cancel(downloader);
 		}
 	}
 	
 	/** 如果该下载任务还处于线程池中，且没有执行，先从线程池中移除 */
 	private void pauseDownload(DownloadAppinfo appInfo) {
-		DownloadTask task = mTaskMap.get(appInfo.getId());// 先从集合中找出下载任务
+//		DownloadTask task = mTaskMap.get(appInfo.getId());// 先从集合中找出下载任务
+//		if (task != null) {
+//			task.setPause();
+//			ThreadManager.getDownloadPool().cancel(task);// 然后从线程池中移除
+//		}
+		Downloader task = map.get(appInfo.getId());// 先从集合中找出下载任务
 		if (task != null) {
 			task.setPause();
 			ThreadManager.getDownloadPool().cancel(task);// 然后从线程池中移除
@@ -633,6 +652,9 @@ public class DownloadManager {
 			
 			@Override
 			public void run() {
+				if ((compeleteSize + startPos) < endPos) {
+					
+				
 				// TODO Auto-generated method stub
 				String path = "";
 				if (info.getIsZip()) {
@@ -653,8 +675,8 @@ public class DownloadManager {
 					connection.setRequestMethod("GET");
 					connection.setRequestProperty("Accept-Encoding", "identity");
 					connection.setRequestProperty("Range", "bytes=" + (compeleteSize + startPos) + "-" + endPos);
-					Log.i("TAG", startPos + "/" + (compeleteSize + startPos) + "/" + endPos + "/" + info.getAppSize());
-					Log.i("TAG", "code : " + connection.getResponseCode());
+//					Log.i("TAG", "threadId = " + threadId + " start = " + startPos + " complete + startPso =" + (compeleteSize + startPos) + " endPos = " + endPos + " size = " + info.getAppSize());
+					Log.i("TAG", threadId +"　code : " + connection.getResponseCode());
 					code = connection.getResponseCode();
 					is = connection.getInputStream();
 					int length = 0;
@@ -696,6 +718,7 @@ public class DownloadManager {
 						DBManager.getDownloadAppinfoDao().insertOrReplace(info);
 					}
 				}
+				}
 				
 			}
 		}
@@ -736,5 +759,24 @@ public class DownloadManager {
 			remaining -= nr;
 		}
 		return n - remaining;
+	}
+
+	@Override
+	public void onStateChanged(DownloadAppinfo info) {
+		// TODO Auto-generated method stub
+		notifyDownloadStateChanged(info);
+		Log.i("TAG", info.getAppName() + " : " + info.getDownloadState());
+	}
+
+	@Override
+	public void onProgressChanged(DownloadAppinfo info) {
+		// TODO Auto-generated method stub
+		notifyDownloadProgressed(info);
+	}
+
+	@Override
+	public void onRemoveFromTask(DownloadAppinfo info) {
+		// TODO Auto-generated method stub
+		map.remove(info.getId());
 	}
 }

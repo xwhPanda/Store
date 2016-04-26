@@ -12,6 +12,7 @@ public class NetReceiver extends BroadcastReceiver {
 	public static final int NET_WIFI = 1;
 	public static final int NET_NOBILE = 0;
 	public static final int NET_NONE = -1;
+	public static int NET_TYPE = -1;
 	private ConnectivityManager cm;
 	private NetworkInfo ni;
 	private OnNetChangeListener onNetChangeListener;
@@ -38,12 +39,14 @@ public class NetReceiver extends BroadcastReceiver {
 				int type = ni.getType();
 				if (type == 1 && currentType != type) {
 					currentType = type;
+					NET_TYPE = currentType;
 					if (onNetChangeListener != null) {
 						onNetChangeListener.onNetChange(NET_WIFI);
 					}
 					
 				}else if (type == 0 && currentType != type) {
 					currentType = type;
+					NET_TYPE = currentType;
 					if (onNetChangeListener != null) {
 						onNetChangeListener.onNetChange(NET_NOBILE);
 					}
@@ -51,6 +54,7 @@ public class NetReceiver extends BroadcastReceiver {
 			}else {
 				if (currentType != NET_NONE) {
 					currentType = NET_NONE;
+					NET_TYPE = currentType;
 					if (onNetChangeListener != null) {
 						onNetChangeListener.onNetChange(NET_NONE);
 					}

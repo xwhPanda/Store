@@ -17,6 +17,7 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.Toast;
 import android.widget.ImageView.ScaleType;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
@@ -34,6 +35,7 @@ import com.jiqu.application.StoreApplication;
 import com.jiqu.database.DownloadAppinfo;
 import com.jiqu.database.DownloadAppinfoDao.Properties;
 import com.jiqu.download.DownloadManager;
+import com.jiqu.download.FileUtil;
 import com.jiqu.download.DownloadManager.DownloadObserver;
 import com.jiqu.download.UnZipManager;
 import com.jiqu.object.GameDetailInfo;
@@ -42,6 +44,7 @@ import com.jiqu.store.BaseActivity;
 import com.jiqu.store.R;
 import com.jiqu.tools.Constant;
 import com.jiqu.tools.InstalledAppTool;
+import com.jiqu.tools.NetReceiver;
 import com.jiqu.tools.RequestTool;
 import com.jiqu.tools.UIUtil;
 import com.jiqu.view.RatingBarView;
@@ -415,11 +418,39 @@ public class DetailActivity extends BaseActivity implements Listener<JSONObject>
 			}else if (state == DownloadManager.STATE_INSTALLED) {
 				DownloadManager.getInstance().open(downloadAppinfo.getPackageName());
 			}else if (state == DownloadManager.STATE_PAUSED) {
-				DownloadManager.getInstance().download(downloadAppinfo);
+				if (NetReceiver.NET_WIFI == NetReceiver.NET_TYPE) {
+					if (FileUtil.checkSDCard()) {
+						if (Long.parseLong(downloadAppinfo.getAppSize()) * 3 >= FileUtil.getSDcardAvailableSpace()) {
+							Toast.makeText(this, "可用空间不足", Toast.LENGTH_SHORT).show();
+							return;
+						}
+					}else {
+						if (Long.parseLong(downloadAppinfo.getAppSize()) * 3 >= FileUtil.getDataStorageAvailableSpace()) {
+							Toast.makeText(this, "可用空间不足", Toast.LENGTH_SHORT).show();
+							return;
+						}
+					}
+					DownloadManager.getInstance().download(downloadAppinfo);
+				}
 			}else if (state == DownloadManager.STATE_ERROR
 					|| state == DownloadManager.STATE_NONE
 					|| state == DownloadManager.STATE_NEED_UPDATE) {
-				DownloadManager.getInstance().download(downloadAppinfo);
+				if (NetReceiver.NET_WIFI == NetReceiver.NET_TYPE) {
+					if (FileUtil.checkSDCard()) {
+						if (Long.parseLong(downloadAppinfo.getAppSize()) * 3 >= FileUtil.getSDcardAvailableSpace()) {
+							Toast.makeText(this, "可用空间不足", Toast.LENGTH_SHORT).show();
+							return;
+						}
+					}else {
+						if (Long.parseLong(downloadAppinfo.getAppSize()) * 3 >= FileUtil.getDataStorageAvailableSpace()) {
+							Toast.makeText(this, "可用空间不足", Toast.LENGTH_SHORT).show();
+							return;
+						}
+					}
+					DownloadManager.getInstance().download(downloadAppinfo);
+				}else {
+					Toast.makeText(this, "没有连接wifi", Toast.LENGTH_SHORT).show();
+				}
 			}else {
 				if (downloadAppinfo.getIsZip()) {
 					if (state == DownloadManager.STATE_UNZIPED) {

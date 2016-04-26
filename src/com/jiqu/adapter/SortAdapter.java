@@ -8,6 +8,7 @@ import com.jiqu.tools.MetricsTool;
 import com.jiqu.tools.UIUtil;
 
 import android.content.Context;
+import android.provider.ContactsContract.Contacts.Data;
 import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -78,10 +79,46 @@ public class SortAdapter extends BaseAdapter {
 		}
 		
 		public void setData(SortItem data){
-			sortTitle.setBackgroundColor(context.getResources().getColor(R.color.red));
-			sortTitle.setText(data.getTitle());
-			sortImg.setBackgroundColor(context.getResources().getColor(R.color.red));
-			sortGamesInfo.setText(Html.fromHtml("<font color=\"white\">" +data.getTotal() + "</font>" + "<font color=\"white\">" + "fsjfhsfh hl" + "</font>" + "<font color=\"green\">" + data.getNewAddCount() + "</font>"));
+//			sortTitle.setBackgroundColor(context.getResources().getColor(R.color.red));
+			sortTitle.setText(data.getCategory_name());
+//			sortImg.setBackgroundColor(context.getResources().getColor(R.color.red));
+//			sortGamesInfo.setText(Html.fromHtml("<font color=\"white\">" +data.getTotal() + "</font>" + "<font color=\"white\">" + "fsjfhsfh hl" + "</font>" + "<font color=\"green\">" + data.getNewAddCount() + "</font>"));
+			
+			setCategoryImg(data.getCategory_id());
+		}
+		
+		private void setCategoryImg(int categoryId){
+			switch (categoryId) {
+			case 2:
+				sortImg.setBackgroundResource(R.drawable.sheji_icon);
+				sortTitle.setBackgroundColor(0xffe43366);
+				break;
+
+			case 3:
+				sortImg.setBackgroundResource(R.drawable.dongzuo_icon);
+				sortTitle.setBackgroundColor(0xffff3333);
+				break;
+				
+			case 4:
+				sortImg.setBackgroundResource(R.drawable.celue_icon);
+				sortTitle.setBackgroundColor(0xfffbb03b);
+				break;
+				
+			case 5:
+				sortImg.setBackgroundResource(R.drawable.yizhi_icon);
+				sortTitle.setBackgroundColor(0xff4aae4a);
+				break;
+				
+			case 6:
+				sortImg.setBackgroundResource(R.drawable.tiyu_icon);
+				sortTitle.setBackgroundColor(0xff32c4f5);
+				break;
+				
+			case 8:
+				sortImg.setBackgroundResource(R.drawable.jiaose_icon);
+				sortTitle.setBackgroundColor(0xff8b65ff);
+				break;
+			}
 		}
 		
 		private View initView(){

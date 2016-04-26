@@ -66,7 +66,7 @@ public class UnZipManager {
 				if (file.exists()) {
 					String path = file.getParent() + File.separator + downloadAppinfo.getAppName();
 					File folder = new File(path);
-					if (file.exists()) {
+					if (folder.exists()) {
 						try {
 							deleteFolder(folder);
 						} catch (Exception e) {

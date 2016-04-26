@@ -72,7 +72,7 @@ public class RatingBarView extends RelativeLayout {
 		UIUtil.setViewSize(start5, width * MetricsTool.Rx, height * MetricsTool.Rx);
 	}
 	
-	public void setRating(double rating){
+	public void setRating(float rating){
 		if (rating < step) {
 			start1.setBackgroundResource(resID[0]);
 			start2.setBackgroundResource(resID[0]);
