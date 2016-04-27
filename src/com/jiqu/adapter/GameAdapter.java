@@ -367,7 +367,8 @@ public class GameAdapter extends BaseAdapter implements DownloadObserver{
 						downloadInfo.setDownloadState(mState);
 						mDownloadManager.DBManager.getDownloadAppinfoDao().insertOrReplace(downloadInfo);
 					}else {
-						if (downloadInfo.getDownloadState() == DownloadManager.STATE_WAITING) {
+						if (downloadInfo.getDownloadState() == DownloadManager.STATE_WAITING
+								&& mDownloadManager.isDownloading(downloadInfo.getId())) {
 							mState = downloadInfo.getDownloadState();
 						}else {
 							mState = DownloadManager.STATE_NONE;

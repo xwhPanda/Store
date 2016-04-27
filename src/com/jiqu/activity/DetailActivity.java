@@ -185,6 +185,7 @@ public class DetailActivity extends BaseActivity implements Listener<JSONObject>
 		evaluationScore = (TextView) findViewById(R.id.evaluationScore);
 		comprehensiveBar = (RatingBarView) findViewById(R.id.comprehensiveBar);
 		
+		titleView.setActivity(this);
 		titleView.back.setBackgroundResource(R.drawable.fanhui);
 		titleView.tip.setText("");
 		titleView.tip.setTextColor(getResources().getColor(R.color.blue));

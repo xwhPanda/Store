@@ -12,13 +12,16 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 public class TitleView extends RelativeLayout implements OnClickListener{
 	private View view;
 	public RelativeLayout parentView;
-	public ImageButton back;
+	private LinearLayout backLin;
+	public ImageView back;
 	public Button editBtn;
 	public TextView tip;
 	private Activity activity;
@@ -44,12 +47,13 @@ public class TitleView extends RelativeLayout implements OnClickListener{
 	private void init(Context context){
 		LayoutInflater inflater = LayoutInflater.from(context);
 		view = inflater.inflate(R.layout.account_title, this);
-		back = (ImageButton) view.findViewById(R.id.backBtn);
+		back = (ImageView) view.findViewById(R.id.backBtn);
+		backLin = (LinearLayout) view.findViewById(R.id.backLin);
 		tip = (TextView) view.findViewById(R.id.tip);
 		editBtn = (Button) view.findViewById(R.id.editBtn);
 		parentView = (RelativeLayout) view.findViewById(R.id.parentView);
 		
-		back.setOnClickListener(this);
+		backLin.setOnClickListener(this);
 		
 		setSize();
 	}
@@ -60,6 +64,7 @@ public class TitleView extends RelativeLayout implements OnClickListener{
 	
 	public void setSize(){
 		UIUtil.setViewSize(back, 40 * MetricsTool.Rx, 40 * MetricsTool.Rx);
+		UIUtil.setViewSize(backLin, 70 * MetricsTool.Rx, 70 * MetricsTool.Rx);
 		UIUtil.setViewSize(editBtn, 64 * MetricsTool.Rx, 64 * MetricsTool.Rx);
 		UIUtil.setTextSize(tip, 45);
 		UIUtil.setViewSize(parentView, MetricsTool.width, 165 * MetricsTool.Ry);
@@ -71,7 +76,7 @@ public class TitleView extends RelativeLayout implements OnClickListener{
 	@Override
 	public void onClick(View v) {
 		// TODO Auto-generated method stub
-		if (v.getId() == R.id.backBtn) {
+		if (v.getId() == R.id.backLin) {
 			if (activity != null) {
 				activity.finish();
 			}

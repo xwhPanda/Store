@@ -53,11 +53,6 @@ public class ToolItemView extends LinearLayout {
 		view.setBackgroundResource(res);
 	}
 	
-	@SuppressWarnings("deprecation")
-	public void setImgBgDrawable(Drawable drawable){
-		img.setBackgroundDrawable(drawable);
-	}
-	
 	public void setTitleText(String text){
 		title.setText(text);
 	}

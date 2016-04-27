@@ -97,7 +97,7 @@ public class ToolFragment extends Fragment implements OnClickListener{
 	}
 	
 	private void initViewSize(){
-		UIUtil.setViewSize(accountIcon, 230 * Rx, 230 * Ry);
+		UIUtil.setViewSize(accountIcon, 230 * Rx, 230 * Rx);
 		UIUtil.setViewSize(messageImg, 60 * Rx, 40	 * Ry);
 		UIUtil.setViewSize(level, 155 * Rx, 50 * Ry);
 		

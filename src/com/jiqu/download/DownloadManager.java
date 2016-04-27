@@ -204,6 +204,7 @@ public class DownloadManager implements ChangeObserver{
 		DownloadAppinfo info = DBManager.getDownloadAppinfoDao().queryBuilder().where(Properties.Id.eq(appInfo.getId())).unique();
 		if (info != null) {// 修改下载状态
 			info.setDownloadState(STATE_PAUSED);
+			DBManager.getDownloadAppinfoDao().insertOrReplace(info);
 			notifyDownloadStateChanged(info);
 		}
 	}

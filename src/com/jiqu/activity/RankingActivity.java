@@ -22,6 +22,8 @@ import com.android.volley.Response.Listener;
 import com.android.volley.VolleyError;
 import com.jiqu.adapter.GameAdapter;
 import com.jiqu.adapter.RecommendGameAdapter;
+import com.jiqu.database.DownloadAppinfo;
+import com.jiqu.download.DownloadManager;
 import com.jiqu.object.GameInfo;
 import com.jiqu.object.GameInformation;
 import com.jiqu.object.InstalledApp;
@@ -86,10 +88,17 @@ public class RankingActivity extends BaseActivity implements OnClickListener,OnR
 					List<InstalledApp> apps = InstalledAppTool.getPersonalApp(RankingActivity.this);
 					for(int i = favorableGameInformations.size() - count;i<favorableGameInformations.size();i++){
 						GameInfo gameInfo = favorableGameInformations.get(i);
+						DownloadAppinfo info = DownloadManager.getInstance().getDownloadInfo(Long.parseLong(gameInfo.getP_id()));
 						gameInfo.setAdapterType(1);
 						int state = InstalledAppTool.contain(apps,gameInfo.getPackagename(), Integer.parseInt(gameInfo.getVersion_code()));
 						if (state != -1) {
 							favorableGameInformations.get(i).setState(state);
+						}else {
+							if (info != null 
+									&& (info.getDownloadState() == DownloadManager.STATE_INSTALLED
+									|| info.getDownloadState() == DownloadManager.STATE_NEED_UPDATE)) {
+								DownloadManager.DBManager.delete(info);
+							}
 						}
 					}
 					if (favorableRefreshViewShowing) {
@@ -135,10 +144,17 @@ public class RankingActivity extends BaseActivity implements OnClickListener,OnR
 					List<InstalledApp> apps = InstalledAppTool.getPersonalApp(RankingActivity.this);
 					for(int i = favorableGameInformations.size() - count;i<hotGameInformations.size();i++){
 						GameInfo gameInfo = hotGameInformations.get(i);
+						DownloadAppinfo info = DownloadManager.getInstance().getDownloadInfo(Long.parseLong(gameInfo.getP_id()));
 						gameInfo.setAdapterType(1);
 						int state = InstalledAppTool.contain(apps,gameInfo.getPackagename(), Integer.parseInt(gameInfo.getVersion_code()));
 						if (state != -1) {
 							hotGameInformations.get(i).setState(state);
+						}else {
+							if (info != null 
+									&& (info.getDownloadState() == DownloadManager.STATE_INSTALLED
+									|| info.getDownloadState() == DownloadManager.STATE_NEED_UPDATE)) {
+								DownloadManager.DBManager.delete(info);
+							}
 						}
 					}
 					if (hotRefreshViewShowing) {

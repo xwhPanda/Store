@@ -29,7 +29,7 @@ public class ThreadManager {
 	public static ThreadPoolProxy getDownloadPool() {
 		synchronized (mDownloadLock) {
 			if (mDownloadPool == null) {
-				mDownloadPool = new ThreadPoolProxy(3, Constant.DEFAULT_DOWANLOAD_THREAD_COUNTS, 5L);
+				mDownloadPool = new ThreadPoolProxy(1, Constant.DEFAULT_DOWANLOAD_THREAD_COUNTS, 5L);
 			}
 			return mDownloadPool;
 		}

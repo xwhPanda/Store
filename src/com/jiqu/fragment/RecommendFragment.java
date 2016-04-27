@@ -59,6 +59,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.os.Handler;
@@ -83,6 +84,7 @@ import android.widget.ListView;
 import android.widget.RelativeLayout;
 
 public class RecommendFragment extends Fragment implements OnPageChangeListener, OnRefreshListener, ErrorListener, OnClickListener, Listener<JSONObject> {
+	private static final int DEFAULT_PAGE_SIZE = 20;
 	private float Rx, Ry;
 	private View view;
 	private View headView;
@@ -475,8 +477,17 @@ public class RecommendFragment extends Fragment implements OnPageChangeListener,
 			for (GameInfo gameInfo : resultList) {
 				gameInfo.setAdapterType(1);
 			}
+			
+			new LoadDataTask().execute("");
+			
 			List<InstalledApp> apps = InstalledAppTool.getPersonalApp(getActivity());
-			for(int i = resultList.size() - 20;i<resultList.size();i++){
+			
+			int count = DEFAULT_PAGE_SIZE;
+			if (resultList.size() < DEFAULT_PAGE_SIZE) {
+				count = resultList.size();
+			}
+			
+			for(int i = resultList.size() - count;i<resultList.size();i++){
 				DownloadAppinfo info = DownloadManager.getInstance().getDownloadInfo(Long.parseLong(resultList.get(i).getP_id()));
 				int state = InstalledAppTool.contain(apps,resultList.get(i).getPackagename(), Integer.parseInt(resultList.get(i).getVersion_code()));
 				if (resultList.get(i).getUrl().endsWith(".zip")) {
@@ -584,4 +595,14 @@ public class RecommendFragment extends Fragment implements OnPageChangeListener,
 		getActivity().unregisterReceiver(appInstallReceiver);
 		getActivity().unregisterReceiver(deleteReceiver);
 	};
+	
+	class LoadDataTask extends AsyncTask<String, String, String>{
+
+		@Override
+		protected String doInBackground(String... params) {
+			// TODO Auto-generated method stub
+			return null;
+		}
+		
+	}
 }

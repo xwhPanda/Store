@@ -9,6 +9,7 @@ import java.net.URL;
 
 import android.os.Handler;
 import android.os.Message;
+import android.util.Log;
 
 import com.jiqu.database.DownloadAppinfo;
 import com.jiqu.tools.Constant;
@@ -19,6 +20,7 @@ public class Downloader implements Runnable {
 	private DownloadAppinfo info;
 	private DownloadThread[] threads = new DownloadThread[5];
 	private ChangeObserver observer;
+	private boolean downloading = true;
 
 	public Downloader(DownloadAppinfo info) {
 		this.info = info;
@@ -58,6 +60,7 @@ public class Downloader implements Runnable {
 				file.createNewFile();
 			} catch (IOException e) {
 				e.printStackTrace();
+				downloading = false;
 			}
 		}
 
@@ -84,6 +87,7 @@ public class Downloader implements Runnable {
 					/** 下载失败 **/
 					info.setDownloadState(DownloadManager.STATE_ERROR);
 					observer.onStateChanged(info);
+					downloading = false;
 					return;
 				}
 			} else {
@@ -100,6 +104,7 @@ public class Downloader implements Runnable {
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+			downloading = false;
 		} finally {
 			if (in != null) {
 				try {
@@ -112,32 +117,47 @@ public class Downloader implements Runnable {
 				connection.disconnect();
 			}
 		}
-		while (info.getDownloadState() == DownloadManager.STATE_DOWNLOADING) {
-			synchronized (info) {
-				if (info.getCurrentSize() >= Long.parseLong(info.getAppSize())) {
-					info.setProgress(1.0f);
-					info.setHasFinished(true);
-					if (!info.getIsZip()) {
-						info.setDownloadState(DownloadManager.STATE_DOWNLOADED);
-						observer.onRemoveFromTask(info);
-						DownloadManager.getInstance().install(info);
-					} else {
-						info.setDownloadState(DownloadManager.STATE_UNZIPING);
-						UnZipManager.getInstance().unzip(info, Constant.PASSWORD, unzipHandler);
+		
+		new Thread(){
+			public void run() {
+				while (info.getDownloadState() == DownloadManager.STATE_DOWNLOADING) {
+					try {
+						sleep(100);
+					} catch (InterruptedException e) {
+						e.printStackTrace();
 					}
+				synchronized (info) {
+					if (info.getCurrentSize() >= Long.parseLong(info.getAppSize())) {
+						info.setProgress(1.0f);
+						info.setHasFinished(true);
+						if (!info.getIsZip()) {
+							info.setDownloadState(DownloadManager.STATE_DOWNLOADED);
+							observer.onRemoveFromTask(info);
+							downloading = false;
+							DownloadManager.getInstance().install(info);
+						} else {
+							info.setDownloadState(DownloadManager.STATE_UNZIPING);
+							UnZipManager.getInstance().unzip(info, Constant.PASSWORD, unzipHandler);
+						}
+						DownloadManager.DBManager.getDownloadAppinfoDao().insertOrReplace(info);
+						observer.onStateChanged(info);
+						return;
+					}
+					info.setCurrentSize(info.getThread1() + info.getThread2() + info.getThread3() + info.getThread4() + info.getThread5());
+					info.setProgress((info.getCurrentSize() + 0.0f) / Float.parseFloat(info.getAppSize()));
 					DownloadManager.DBManager.getDownloadAppinfoDao().insertOrReplace(info);
-					observer.onStateChanged(info);
-					return;
+					observer.onProgressChanged(info);
 				}
-				info.setCurrentSize(info.getThread1() + info.getThread2() + info.getThread3() + info.getThread4() + info.getThread5());
-				info.setProgress((info.getCurrentSize() + 0.0f) / Float.parseFloat(info.getAppSize()));
-				DownloadManager.DBManager.getDownloadAppinfoDao().insertOrReplace(info);
-				observer.onProgressChanged(info);
 			}
+				downloading = false;
+			};
+		}.start();
+		
+		while (downloading) {
+			
 		}
-
 	}
-
+	
 	private long getCompelete(int i) {
 		long size = 0;
 		switch (i) {
@@ -165,7 +185,9 @@ public class Downloader implements Runnable {
 		@Override
 		public void handleMessage(Message msg) {
 			if (msg.what == 1) {
+				observer.onRemoveFromTask(info);
 				observer.onStateChanged(info);
+				downloading = false;
 			}
 		}
 	};
@@ -221,7 +243,8 @@ public class Downloader implements Runnable {
 					connection.setRequestProperty("Range", "bytes=" + (compeleteSize + startPos) + "-" + endPos);
 					is = connection.getInputStream();
 					int length = 0;
-					while ((length = is.read(buffer)) != -1 && info.getDownloadState() == DownloadManager.STATE_DOWNLOADING) {
+					while ((length = is.read(buffer)) != -1 
+							&& info.getDownloadState() == DownloadManager.STATE_DOWNLOADING) {
 						randomAccessFile.write(buffer, 0, length);
 						compeleteSize += length;
 						setComplete();
@@ -229,8 +252,6 @@ public class Downloader implements Runnable {
 				} catch (Exception e) {
 					e.printStackTrace();
 					info.setDownloadState(DownloadManager.STATE_ERROR);
-					observer.onStateChanged(info);
-					observer.onRemoveFromTask(info);
 				} finally {
 					if (is != null) {
 						try {
@@ -251,6 +272,8 @@ public class Downloader implements Runnable {
 					}
 					synchronized (this) {
 						setComplete();
+//						observer.onStateChanged(info);
+						observer.onRemoveFromTask(info);
 						DownloadManager.DBManager.getDownloadAppinfoDao().insertOrReplace(info);
 					}
 				}

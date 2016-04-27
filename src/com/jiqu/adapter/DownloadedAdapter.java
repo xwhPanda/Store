@@ -3,6 +3,8 @@ package com.jiqu.adapter;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 import com.android.volley.toolbox.ImageLoader;
 import com.android.volley.toolbox.ImageLoader.ImageListener;
@@ -42,13 +44,19 @@ import android.widget.AbsListView.LayoutParams;
 public class DownloadedAdapter extends BaseAdapter {
 	private Context context;
 	private List<DownloadAppinfo> downloadAppinfos;
-	private List<Holder> mDisplayHolders;
 
-	public DownloadedAdapter(Context context,List<DownloadAppinfo> downloadAppinfos) {
+	private Map<Long, Boolean> checkMap = new ConcurrentHashMap<Long, Boolean>();
+
+	public DownloadedAdapter(Context context, List<DownloadAppinfo> downloadAppinfos) {
 		// TODO Auto-generated constructor stub
 		this.context = context;
 		this.downloadAppinfos = downloadAppinfos;
-		mDisplayHolders = new ArrayList<DownloadedAdapter.Holder>();
+	}
+
+	public void putAllMap(boolean isChecked) {
+		for (DownloadAppinfo downloadAppinfo : downloadAppinfos) {
+			checkMap.put(downloadAppinfo.getId(), isChecked);
+		}
 	}
 
 	@Override
@@ -75,57 +83,29 @@ public class DownloadedAdapter extends BaseAdapter {
 		Holder holder = null;
 		if (convertView == null) {
 			holder = new Holder(context);
-		}else {
+		} else {
 			holder = (Holder) convertView.getTag();
 		}
 		holder.setData(downloadAppinfos.get(position));
-		mDisplayHolders.add(holder);
 		return holder.getRootView();
 	}
-	
-	public void clearHolders(){
-		mDisplayHolders.clear();
-	}
-	
-	public void refreshHolderForChecked(final boolean isChecked){
-		for(final Holder holder : mDisplayHolders){
-			AppUtil.post(new Runnable() {
-				
-				@Override
-				public void run() {
-					// TODO Auto-generated method stub
-					holder.isChecked = isChecked;
-					notifyDataSetChanged();
-				}
-			});
-		}
-	}
-	
-	private List<Holder> getDisplayHolders(){
-		synchronized (mDisplayHolders) {
-			return new ArrayList<DownloadedAdapter.Holder>(mDisplayHolders);
-		}
-	}
-	
-	public void deleteAll(){
-		List<Holder> holders = getDisplayHolders();
-		for(final Holder holder : holders){
-			if (holder.isChecked) {
+
+	public void deleteAll() {
+		for (final DownloadAppinfo downloadAppinfo : downloadAppinfos) {
+			if (checkMap.get(downloadAppinfo.getId())) {
 				AppUtil.post(new Runnable() {
-					
+
 					@Override
 					public void run() {
 						// TODO Auto-generated method stub
 						QueryBuilder qb = DownloadManager.DBManager.getDownloadAppinfoDao().queryBuilder();
-						DownloadAppinfo appinfo = holder.getData();
 						Intent intent = new Intent();
 						intent.setAction("deleted_downloaded_files_action");
-						intent.putExtra("pkg", appinfo.getPackageName());
+						intent.putExtra("pkg", downloadAppinfo.getPackageName());
 						context.sendBroadcast(intent);
-						if (appinfo != null) {
-							DownloadAppinfo info = (DownloadAppinfo) qb.where(Properties.Id.eq(appinfo.getId())).unique();
+						if (downloadAppinfo != null) {
+							DownloadAppinfo info = (DownloadAppinfo) qb.where(Properties.Id.eq(downloadAppinfo.getId())).unique();
 							if (info != null) {
-								DownloadManager.DBManager.getDownloadAppinfoDao().delete(info);
 								if (info.getIsZip()) {
 									File file1 = new File(info.getZipPath());
 									if (file1.exists()) {
@@ -135,25 +115,25 @@ public class DownloadedAdapter extends BaseAdapter {
 									if (file2.exists()) {
 										file2.delete();
 									}
-								}else {
+								} else {
 									File file = new File(info.getApkPath());
 									if (file.exists()) {
 										file.delete();
 									}
 								}
 								DownloadManager.DBManager.getDownloadAppinfoDao().delete(info);
-							}else {
-								if (appinfo.getIsZip()) {
-									File file1 = new File(appinfo.getZipPath());
+							} else {
+								if (downloadAppinfo.getIsZip()) {
+									File file1 = new File(downloadAppinfo.getZipPath());
 									if (file1.exists()) {
 										file1.delete();
 									}
-									File file2 = new File(appinfo.getUnzipPath());
+									File file2 = new File(downloadAppinfo.getUnzipPath());
 									if (file2.exists()) {
 										file2.delete();
 									}
-								}else {
-									File file = new File(appinfo.getApkPath());
+								} else {
+									File file = new File(downloadAppinfo.getApkPath());
 									if (file.exists()) {
 										file.delete();
 									}
@@ -161,11 +141,7 @@ public class DownloadedAdapter extends BaseAdapter {
 							}
 						}
 						synchronized (downloadAppinfos) {
-							downloadAppinfos.remove(holder.getData());
-						}
-						synchronized (mDisplayHolders) {
-							holder.isChecked = false;
-							mDisplayHolders.remove(holder);
+							downloadAppinfos.remove(downloadAppinfo);
 						}
 						notifyDataSetChanged();
 					}
@@ -173,11 +149,11 @@ public class DownloadedAdapter extends BaseAdapter {
 			}
 		}
 	}
-	
-	private class Holder{
+
+	private class Holder {
 		private Context context;
 		private View rootView;
-		
+
 		private CheckBox checkBox;
 		private ImageView appIcon;
 		private TextView appName;
@@ -185,22 +161,21 @@ public class DownloadedAdapter extends BaseAdapter {
 		private RatingBarView appScore;
 		private TextView appSize;
 		private Button open;
-		
+
 		private DownloadAppinfo info;
 		private int[] resIDs = new int[3];
-		public boolean isChecked;
-		
-		public Holder(Context context){
+
+		public Holder(Context context) {
 			this.context = context;
 			rootView = initView();
 			rootView.setTag(this);
 		}
-		
-		public DownloadAppinfo getData(){
+
+		public DownloadAppinfo getData() {
 			return info;
 		}
-		
-		private View initView(){
+
+		private View initView() {
 			LayoutInflater inflater = LayoutInflater.from(context);
 			View view = inflater.inflate(R.layout.downloaded_item_layout, null);
 			checkBox = (CheckBox) view.findViewById(R.id.checkBox);
@@ -210,24 +185,24 @@ public class DownloadedAdapter extends BaseAdapter {
 			appScore = (RatingBarView) view.findViewById(R.id.appScore);
 			appSize = (TextView) view.findViewById(R.id.appSize);
 			open = (Button) view.findViewById(R.id.open);
-			
+
 			resIDs[0] = R.drawable.ratingbg;
 			resIDs[1] = R.drawable.rating_sencond_progress;
 			resIDs[2] = R.drawable.rating_progress;
 			appScore.setResID(resIDs);
 			appScore.setStep(1.0f);
-			
+
 			checkBox.setOnCheckedChangeListener(new OnCheckedChangeListener() {
-				
+
 				@Override
 				public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
 					// TODO Auto-generated method stub
-					 setCheckedValue(isChecked);
+					checkMap.put(info.getId(), isChecked);
 				}
 			});
-			
+
 			open.setOnClickListener(new OnClickListener() {
-				
+
 				@Override
 				public void onClick(View v) {
 					// TODO Auto-generated method stub
@@ -236,19 +211,19 @@ public class DownloadedAdapter extends BaseAdapter {
 							if (info.getHasFinished()) {
 								if (info.getDownloadState() == DownloadManager.STATE_INSTALLED) {
 									DownloadManager.getInstance().open(info.getPackageName());
-								}else if (info.getDownloadState() == DownloadManager.STATE_DOWNLOADED) {
+								} else if (info.getDownloadState() == DownloadManager.STATE_DOWNLOADED) {
 									DownloadManager.getInstance().install(info);
 								}
 							}
-						}else {
+						} else {
 							if (info.getHasFinished()) {
-								if (info.getDownloadState() == DownloadManager.STATE_UNZIP_FAILED
-										|| info.getDownloadState() == DownloadManager.STATE_DOWNLOADED) {
-									UnZipManager.getInstance().unzip(info, Constant.PASSWORD,null);
-								}else if (info.getDownloadState() == DownloadManager.STATE_UNZIPED) {
+								if (info.getDownloadState() == DownloadManager.STATE_UNZIP_FAILED || info.getDownloadState() == DownloadManager.STATE_DOWNLOADED) {
+									UnZipManager.getInstance().unzip(info, Constant.PASSWORD, null);
+								} else if (info.getDownloadState() == DownloadManager.STATE_UNZIPED) {
 									DownloadManager.getInstance().install(info);
-//									UnZipManager.getInstance().unzip(info, Constant.PASSWORD,null);
-								}else if (info.getDownloadState() == DownloadManager.STATE_INSTALLED) {
+									// UnZipManager.getInstance().unzip(info,
+									// Constant.PASSWORD,null);
+								} else if (info.getDownloadState() == DownloadManager.STATE_INSTALLED) {
 									DownloadManager.getInstance().open(info.getPackageName());
 								}
 							}
@@ -256,27 +231,23 @@ public class DownloadedAdapter extends BaseAdapter {
 					}
 				}
 			});
-			
+
 			initViewSize(view);
 			return view;
 		}
-		
-		private void setCheckedValue(boolean isChecked){
-			this.isChecked = isChecked;
-		}
-		
-		private void initViewSize(View view){
+
+		private void initViewSize(View view) {
 			UIUtil.setViewSize(checkBox, 56 * MetricsTool.Rx, 56 * MetricsTool.Ry);
 			UIUtil.setViewSize(appIcon, 160 * MetricsTool.Rx, 160 * MetricsTool.Ry);
 			UIUtil.setViewSize(open, 60 * MetricsTool.Rx, 60 * MetricsTool.Rx);
-			
+
 			UIUtil.setTextSize(appName, 40);
 			UIUtil.setTextSize(appDes, 30);
 			UIUtil.setTextSize(appSize, 30);
-			
+
 			AbsListView.LayoutParams lp = new LayoutParams(LayoutParams.MATCH_PARENT, (int) (255 * MetricsTool.Ry));
 			view.setLayoutParams(lp);
-			
+
 			try {
 				UIUtil.setViewSizeMargin(checkBox, 20 * MetricsTool.Rx, 0, 20 * MetricsTool.Rx, 0);
 				UIUtil.setViewSizeMargin(appName, 20 * MetricsTool.Rx, 60 * MetricsTool.Ry, 0, 0);
@@ -288,21 +259,23 @@ public class DownloadedAdapter extends BaseAdapter {
 				e.printStackTrace();
 			}
 		}
-		
-		private View getRootView(){
+
+		private View getRootView() {
 			return rootView;
 		}
-		
-		public void setData(DownloadAppinfo info){
+
+		public void setData(DownloadAppinfo info) {
 			this.info = info;
-			ImageListener listener = ImageLoader.getImageListener(appIcon,R.drawable.ic_launcher, R.drawable.ic_launcher);
+			ImageListener listener = ImageLoader.getImageListener(appIcon, R.drawable.ic_launcher, R.drawable.ic_launcher);
 			StoreApplication.getInstance().getImageLoader().get(info.getIconUrl(), listener);
-			checkBox.setChecked(isChecked);
+			if (checkMap.containsKey(info.getId())) {
+				checkBox.setChecked(checkMap.get(info.getId()));
+			}
 			appName.setText(info.getAppName());
 			appDes.setText(info.getDes());
 			appScore.setRating(info.getScore());
 			appSize.setText(FileUtil.getSize(Long.parseLong(info.getAppSize())));
-			
+
 		}
 	}
 

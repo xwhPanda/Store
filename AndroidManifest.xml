@@ -11,6 +11,7 @@
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
     <uses-permission android:name="android.permission.RESTART_PACKAGES"/>  
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>
+    <uses-permission android:name="android.permission.MOUNT_UNMOUNT_FILESYSTEMS"/>
     <!-- 获取app大大小，包括 数据，代码，缓存等 -->
     <uses-permission android:name="android.permission.GET_PACKAGE_SIZE"/>
     <!-- 清理应用缓存 -->

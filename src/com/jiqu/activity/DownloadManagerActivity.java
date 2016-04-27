@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
@@ -54,14 +55,26 @@ public class DownloadManagerActivity extends BaseActivity implements OnClickList
 		super.onCreate(savedInstanceState);
 		
 		initView();
-		downloadingAdapter.startObserver();
+		downloadingAdapter = new DownloadingAdapter(this, downloadingApps,handler);
+		downloadingList.setAdapter(downloadingAdapter);
+		downloadedAdapter = new DownloadedAdapter(this, downloadedApps);
+		downloadedList.setAdapter(downloadedAdapter);
+	}
+	
+	@Override
+	protected void onStart() {
+		// TODO Auto-generated method stub
+		super.onStart();
+		new DataTask().execute("");
 	}
 	
 	@Override
 	protected void onDestroy() {
 		// TODO Auto-generated method stub
 		super.onDestroy();
-		downloadingAdapter.stopObserver();
+		if (downloadingAdapter != null) {
+			downloadingAdapter.stopObserver();
+		}
 	}
 	
 	@Override
@@ -96,7 +109,6 @@ public class DownloadManagerActivity extends BaseActivity implements OnClickList
 		allStartCB.setOnCheckedChangeListener(this);
 		
 		initViewSize();
-		initData();
 	}
 	
 	private void initViewSize(){
@@ -139,6 +151,24 @@ public class DownloadManagerActivity extends BaseActivity implements OnClickList
 		}
 	}
 	
+	class DataTask extends AsyncTask<String, String, String>{
+
+		@Override
+		protected String doInBackground(String... params) {
+			// TODO Auto-generated method stub
+			initData();
+			return null;
+		}
+		
+		@Override
+		protected void onPostExecute(String result) {
+			// TODO Auto-generated method stub
+			
+			downloadingAdapter.startObserver();
+		}
+		
+	}
+	
 	private void initData(){
 		QueryBuilder<DownloadAppinfo> qb = StoreApplication.daoSession.getDownloadAppinfoDao().queryBuilder();
 		List<DownloadAppinfo> infos1 = qb.where(Properties.HasFinished.eq(false)).list();
@@ -153,8 +183,8 @@ public class DownloadManagerActivity extends BaseActivity implements OnClickList
 		}
 		downloadingApps.clear();
 		downloadingApps.addAll(infos1);
-		downloadingAdapter = new DownloadingAdapter(this, downloadingApps,handler);
-		downloadingList.setAdapter(downloadingAdapter);
+		downloadingAdapter.putAllMap(false);
+		handler.sendEmptyMessage(2);
 		
 		QueryBuilder<DownloadAppinfo> qb1 = StoreApplication.daoSession.getDownloadAppinfoDao().queryBuilder();
 		List<DownloadAppinfo> infos2 = qb1.where(Properties.HasFinished.eq(true)).list();
@@ -185,8 +215,8 @@ public class DownloadManagerActivity extends BaseActivity implements OnClickList
 		}
 		downloadedApps.clear();
 		downloadedApps.addAll(infos2);
-		downloadedAdapter = new DownloadedAdapter(this, downloadedApps);
-		downloadedList.setAdapter(downloadedAdapter);
+		downloadedAdapter.putAllMap(false);
+		handler.sendEmptyMessage(3);
 	}
 	
 	private Handler handler = new Handler(){
@@ -236,8 +266,11 @@ public class DownloadManagerActivity extends BaseActivity implements OnClickList
 					}
 				}
 				downloadedApps.clear();
-				downloadedAdapter.clearHolders();
 				downloadedApps.addAll(apps2);
+				downloadedAdapter.notifyDataSetChanged();
+			}else if (msg.what == 2) {
+				downloadingAdapter.notifyDataSetChanged();
+			}else if (msg.what == 3) {
 				downloadedAdapter.notifyDataSetChanged();
 			}
 		};
@@ -247,9 +280,11 @@ public class DownloadManagerActivity extends BaseActivity implements OnClickList
 	public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
 		// TODO Auto-generated method stub
 		if (buttonView == allStartCB) {
-			downloadingAdapter.refreshHolderForCheck(isChecked);
+			downloadingAdapter.putAllMap(isChecked);
+			downloadingAdapter.notifyDataSetChanged();
 		}else if (buttonView == allDeleteCB) {
-			downloadedAdapter.refreshHolderForChecked(isChecked);
+			downloadedAdapter.putAllMap(isChecked);
+			downloadedAdapter.notifyDataSetChanged();
 		}
 	}
 
@@ -274,11 +309,15 @@ public class DownloadManagerActivity extends BaseActivity implements OnClickList
 			break;
 			
 		case R.id.allStartBtn:
-			downloadingAdapter.startDownloadAll();
+			if (downloadedAdapter != null) {
+				downloadingAdapter.startDownloadAll();
+			}
 			break;
 			
 		case R.id.allDeleteBtn:
-			downloadedAdapter.deleteAll();
+			if (downloadedAdapter != null) {
+				downloadedAdapter.deleteAll();
+			}
 			break;
 		}
 	}

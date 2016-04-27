@@ -7,6 +7,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import com.jiqu.activity.DownloadManagerActivity;
 import com.jiqu.activity.SearchActivity;
 import com.jiqu.activity.ShowAccountInformatiomActivity;
 import com.jiqu.application.StoreApplication;
@@ -190,14 +191,14 @@ public class MainActivity extends FragmentActivity implements OnClickListener,On
 		
 		FragmentTransaction mFragmentTransaction = mFragmentManager.beginTransaction();
 		mFragmentTransaction.add(R.id.homeFrameLayout, recommendFragment);
-//		mFragmentTransaction.add(R.id.homeFrameLayout, informationFragment);
-//		mFragmentTransaction.hide(informationFragment);
-//		mFragmentTransaction.add(R.id.homeFrameLayout, gameFragment);
-//		mFragmentTransaction.hide(gameFragment);
-//		mFragmentTransaction.add(R.id.homeFrameLayout, evaluationFragment);
-//		mFragmentTransaction.hide(evaluationFragment);
-//		mFragmentTransaction.add(R.id.homeFrameLayout, toolFragment);
-//		mFragmentTransaction.hide(toolFragment);
+		mFragmentTransaction.add(R.id.homeFrameLayout, informationFragment);
+		mFragmentTransaction.hide(informationFragment);
+		mFragmentTransaction.add(R.id.homeFrameLayout, gameFragment);
+		mFragmentTransaction.hide(gameFragment);
+		mFragmentTransaction.add(R.id.homeFrameLayout, evaluationFragment);
+		mFragmentTransaction.hide(evaluationFragment);
+		mFragmentTransaction.add(R.id.homeFrameLayout, toolFragment);
+		mFragmentTransaction.hide(toolFragment);
 		
 		mFragmentTransaction.commit();
 		currentIndex = 0;
@@ -239,6 +240,7 @@ public class MainActivity extends FragmentActivity implements OnClickListener,On
 		
 		searchEd.setOnClickListener(this);
 		accountImg.setOnClickListener(this);
+		download.setOnClickListener(this);
 	}
 	
 	@SuppressWarnings("deprecation")
@@ -361,7 +363,7 @@ public class MainActivity extends FragmentActivity implements OnClickListener,On
 		case R.id.toolLin:
 			if (currentIndex != 4) {
 				toolTop.setVisibility(View.VISIBLE);
-				top.setVisibility(View.GONE);
+				top.setVisibility(View.INVISIBLE);
 				changeFocusState(currentIndex, false);
 				if (!toolFragment.isAdded()) {
 					mFragmentTransaction.add(R.id.homeFrameLayout, toolFragment);
@@ -379,6 +381,9 @@ public class MainActivity extends FragmentActivity implements OnClickListener,On
 		case R.id.accountImg:
 			startActivity(new Intent(this, ShowAccountInformatiomActivity.class));
 			break;
+			
+		case R.id.download:
+			startActivity(new Intent(this, DownloadManagerActivity.class));
 		}
 		mFragmentTransaction.commit();
 	}

@@ -2,6 +2,8 @@ package com.jiqu.adapter;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 import com.android.volley.toolbox.ImageLoader;
 import com.android.volley.toolbox.ImageLoader.ImageListener;
@@ -22,6 +24,8 @@ import de.greenrobot.dao.query.QueryBuilder;
 import android.content.Context;
 import android.graphics.BitmapFactory;
 import android.os.Handler;
+import android.os.Message;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -40,18 +44,26 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.AbsListView.LayoutParams;
 
-public class DownloadingAdapter extends BaseAdapter implements DownloadObserver{
+public class DownloadingAdapter extends BaseAdapter implements DownloadObserver {
 	private Context context;
 	private List<DownloadAppinfo> downloadAppinfos;
 	private List<Holder> mDisplayedHolders;
 	private Handler handler;
 
-	public DownloadingAdapter(Context context,List<DownloadAppinfo> downloadAppinfos,Handler handler) {
+	private Map<Long, Boolean> checkMap = new ConcurrentHashMap<Long, Boolean>();
+
+	public DownloadingAdapter(Context context, List<DownloadAppinfo> downloadAppinfos, Handler handler) {
 		// TODO Auto-generated constructor stub
 		this.context = context;
 		this.handler = handler;
 		mDisplayedHolders = new ArrayList<DownloadingAdapter.Holder>();
 		this.downloadAppinfos = downloadAppinfos;
+	}
+
+	public void putAllMap(boolean isChecked) {
+		for (DownloadAppinfo downloadAppinfo : downloadAppinfos) {
+			checkMap.put(downloadAppinfo.getId(), isChecked);
+		}
 	}
 
 	@Override
@@ -71,7 +83,7 @@ public class DownloadingAdapter extends BaseAdapter implements DownloadObserver{
 		// TODO Auto-generated method stub
 		return position;
 	}
-	
+
 	public void startObserver() {
 		DownloadManager.getInstance().registerObserver(this);
 	}
@@ -87,50 +99,49 @@ public class DownloadingAdapter extends BaseAdapter implements DownloadObserver{
 		DownloadAppinfo appinfo = downloadAppinfos.get(position);
 		if (convertView == null) {
 			holder = new Holder(context);
-		}else {
+		} else {
 			holder = (Holder) convertView.getTag();
 		}
 		holder.setData(appinfo);
 		mDisplayedHolders.add(holder);
-		
+
 		return holder.getRootView();
 	}
-	
-	public void clearHolders(){
+
+	public void clearHolders() {
 		mDisplayedHolders.clear();
 	}
-	
-	private class Holder{
+
+	private class Holder {
 		private CheckBox checkBox;
 		private ImageView appIcon;
 		private TextView appName;
 		private ProgressBar downloadPrg;
 		private TextView progressTx;
 		private Button pause;
-		
+
 		private Context context;
 		private View rootView;
 		private DownloadAppinfo info;
-		private boolean isChecked;
-		
-		public Holder(Context context){
+
+		public Holder(Context context) {
 			this.context = context;
 			rootView = initView();
 			rootView.setTag(this);
 		}
-		
-		public View getRootView(){
+
+		public View getRootView() {
 			return rootView;
 		}
-		
-		public DownloadAppinfo getData(){
+
+		public DownloadAppinfo getData() {
 			return info;
 		}
-		
-		private View initView(){
+
+		private View initView() {
 			LayoutInflater inflater = LayoutInflater.from(context);
 			View view = inflater.inflate(R.layout.downloading_item_layout, null);
-			
+
 			checkBox = (CheckBox) view.findViewById(R.id.checkBox);
 			appIcon = (ImageView) view.findViewById(R.id.appIcon);
 			appName = (TextView) view.findViewById(R.id.appName);
@@ -138,71 +149,62 @@ public class DownloadingAdapter extends BaseAdapter implements DownloadObserver{
 			progressTx = (TextView) view.findViewById(R.id.progressTx);
 			pause = (Button) view.findViewById(R.id.pause);
 			pause.setOnClickListener(new OnClickListener() {
-				
+
 				@Override
 				public void onClick(View v) {
 					// TODO Auto-generated method stub
-					QueryBuilder qb = DownloadManager.DBManager.getDownloadAppinfoDao().queryBuilder();
-					DownloadAppinfo downloadAppinfo = (DownloadAppinfo) qb.where(Properties.Id.eq(info.getId())).unique();
-					if (downloadAppinfo != null) {
-						int state = info.getDownloadState();
-						if (state == DownloadManager.STATE_DOWNLOADING
-								|| state == DownloadManager.STATE_WAITING) {
-							DownloadManager.getInstance().pause(info);
-							pause.setBackgroundResource(R.drawable.zanting);
-						}else if (state == DownloadManager.STATE_ERROR 
-								|| state == DownloadManager.STATE_NONE
-								|| state == DownloadManager.STATE_PAUSED) {
-							if (NetReceiver.NET_TYPE == NetReceiver.NET_WIFI) {
-								if (FileUtil.checkSDCard()) {
-									if (Long.parseLong(downloadAppinfo.getAppSize()) * 3 >= FileUtil.getSDcardAvailableSpace()) {
-										Toast.makeText(context, "可用空间不足", Toast.LENGTH_SHORT).show();
-										return;
-									}
-								}else {
-									if (Long.parseLong(downloadAppinfo.getAppSize()) * 3 >= FileUtil.getDataStorageAvailableSpace()) {
-										Toast.makeText(context, "可用空间不足", Toast.LENGTH_SHORT).show();
-										return;
-									}
+					int state = info.getDownloadState();
+					if (state == DownloadManager.STATE_DOWNLOADING || state == DownloadManager.STATE_WAITING) {
+						DownloadManager.getInstance().pause(info);
+						pause.setBackgroundResource(R.drawable.zanting);
+					} else if (state == DownloadManager.STATE_ERROR || state == DownloadManager.STATE_NONE || state == DownloadManager.STATE_PAUSED) {
+						if (NetReceiver.NET_TYPE == NetReceiver.NET_WIFI) {
+							if (FileUtil.checkSDCard()) {
+								if (Long.parseLong(info.getAppSize()) * 3 >= FileUtil.getSDcardAvailableSpace()) {
+									Toast.makeText(context, "可用空间不足", Toast.LENGTH_SHORT).show();
+									return;
 								}
-								DownloadManager.getInstance().download(info);
-								pause.setBackgroundResource(R.drawable.jixu);
-							}else {
-								Toast.makeText(context, "没有连接wifi", Toast.LENGTH_SHORT).show();
+							} else {
+								if (Long.parseLong(info.getAppSize()) * 3 >= FileUtil.getDataStorageAvailableSpace()) {
+									Toast.makeText(context, "可用空间不足", Toast.LENGTH_SHORT).show();
+									return;
+								}
 							}
+							DownloadManager.getInstance().download(info);
+							pause.setBackgroundResource(R.drawable.jixu);
+						} else {
+							Toast.makeText(context, "没有连接wifi", Toast.LENGTH_SHORT).show();
 						}
 					}
 				}
 			});
-			
+
 			checkBox.setOnCheckedChangeListener(new OnCheckedChangeListener() {
-				
+
 				@Override
 				public void onCheckedChanged(CompoundButton buttonView, boolean isCheck) {
 					// TODO Auto-generated method stub
-					isChecked = isCheck;
+					checkMap.put(info.getId(), isCheck);
 				}
 			});
-			
+
 			initViewSize(view);
-			
-			
-			
+
 			return view;
 		}
-		
-		private void initViewSize(View view){
+
+		private void initViewSize(View view) {
 			UIUtil.setViewSize(checkBox, 56 * MetricsTool.Rx, 56 * MetricsTool.Ry);
 			UIUtil.setViewSize(appIcon, 160 * MetricsTool.Rx, 160 * MetricsTool.Ry);
 			UIUtil.setViewSize(pause, 60 * MetricsTool.Rx, 60 * MetricsTool.Rx);
 			UIUtil.setViewSize(downloadPrg, 545 * MetricsTool.Rx, 20 * MetricsTool.Rx);
-			
+
 			UIUtil.setTextSize(appName, 40);
 			UIUtil.setTextSize(progressTx, 30);
-			
+
 			AbsListView.LayoutParams lp = new LayoutParams(LayoutParams.MATCH_PARENT, (int) (255 * MetricsTool.Ry));
 			view.setLayoutParams(lp);
-			
+
 			try {
 				UIUtil.setViewSizeMargin(checkBox, 20 * MetricsTool.Rx, 0, 20 * MetricsTool.Rx, 0);
 				UIUtil.setViewSizeMargin(appName, 20 * MetricsTool.Rx, 60 * MetricsTool.Ry, 0, 0);
@@ -213,21 +215,21 @@ public class DownloadingAdapter extends BaseAdapter implements DownloadObserver{
 				e.printStackTrace();
 			}
 		}
-		
-		private void setData(DownloadAppinfo appinfo){
+
+		private void setData(DownloadAppinfo appinfo) {
 			this.info = appinfo;
-			ImageListener listener = ImageLoader.getImageListener(appIcon,R.drawable.ic_launcher, R.drawable.ic_launcher);
+			ImageListener listener = ImageLoader.getImageListener(appIcon, R.drawable.ic_launcher, R.drawable.ic_launcher);
 			StoreApplication.getInstance().getImageLoader().get(info.getIconUrl(), listener);
 			appName.setText(appinfo.getAppName());
-			
-			checkBox.setChecked(isChecked);
-			
+
+			// checkBox.setChecked(isChecked);
+			checkBox.setChecked(checkMap.get(info.getId()));
 			refreshView(appinfo);
 		}
-		
-		public void refreshView(DownloadAppinfo appinfo){
+
+		public void refreshView(DownloadAppinfo appinfo) {
 			pause.clearAnimation();
-			downloadPrg.setProgress((int)(appinfo.getProgress() * 100));
+			downloadPrg.setProgress((int) (appinfo.getProgress() * 100));
 			progressTx.setText(FileUtil.getFileSize(appinfo.getCurrentSize()) + "/" + FileUtil.getFileSize(Long.parseLong(appinfo.getAppSize())));
 			switch (appinfo.getDownloadState()) {
 			case DownloadManager.STATE_NONE:
@@ -242,7 +244,7 @@ public class DownloadingAdapter extends BaseAdapter implements DownloadObserver{
 				break;
 			case DownloadManager.STATE_WAITING:
 				pause.setBackgroundResource(R.drawable.dengdai);
-				Animation animation = AnimationUtils.loadAnimation(context, R.anim.wating_rorating); 
+				Animation animation = AnimationUtils.loadAnimation(context, R.anim.wating_rorating);
 				pause.setAnimation(animation);
 				pause.startAnimation(animation);
 				break;
@@ -264,22 +266,22 @@ public class DownloadingAdapter extends BaseAdapter implements DownloadObserver{
 			}
 		}
 	}
-	
+
 	public List<Holder> getDisplayedHolders() {
 		synchronized (mDisplayedHolders) {
 			return new ArrayList<Holder>(mDisplayedHolders);
 		}
 	}
 
-	private void refreshHolder(DownloadAppinfo info){
+	private void refreshHolder(DownloadAppinfo info) {
 		List<Holder> displayedHolder2s = getDisplayedHolders();
-		for(int i = 0; i < displayedHolder2s.size(); i++){
+		for (int i = 0; i < displayedHolder2s.size(); i++) {
 			final Holder holder = displayedHolder2s.get(i);
 			if (holder != null) {
 				final DownloadAppinfo appInfo = holder.getData();
 				if (appInfo.getId().longValue() == info.getId().longValue()) {
 					AppUtil.post(new Runnable() {
-						
+
 						@Override
 						public void run() {
 							// TODO Auto-generated method stub
@@ -290,29 +292,28 @@ public class DownloadingAdapter extends BaseAdapter implements DownloadObserver{
 			}
 		}
 	}
-	
-	public void refreshHolderForCheck(final boolean isChecked){
-		for(final Holder holder : mDisplayedHolders){
-			AppUtil.post(new Runnable() {
-				
-				@Override
-				public void run() {
-					// TODO Auto-generated method stub
-					holder.isChecked = isChecked;
-					notifyDataSetChanged();
-				}
-			});
-		}
-	}
-	
-	public void startDownloadAll(){
-		for(Holder holder : mDisplayedHolders){
-			if (holder.isChecked) {
-				DownloadManager.getInstance().download(holder.getData());
+
+	public void startDownloadAll() {
+		int time = 0;
+		for (DownloadAppinfo downloadAppinfo : downloadAppinfos) {
+			if (checkMap.get(downloadAppinfo.getId())) {
+				Message msg = handler2.obtainMessage();
+				msg.what = 1;
+				msg.obj = downloadAppinfo;
+				handler2.sendMessageDelayed(msg, time);
+				time += 50;
 			}
 		}
 	}
-	
+
+	Handler handler2 = new Handler() {
+		public void handleMessage(android.os.Message msg) {
+			if (msg.what == 1) {
+				DownloadManager.getInstance().download((DownloadAppinfo) msg.obj);
+			}
+		};
+	};
+
 	@Override
 	public void onDownloadStateChanged(DownloadAppinfo info) {
 		// TODO Auto-generated method stub
@@ -323,6 +324,6 @@ public class DownloadingAdapter extends BaseAdapter implements DownloadObserver{
 	public void onDownloadProgressed(DownloadAppinfo info) {
 		// TODO Auto-generated method stub
 		refreshHolder(info);
-	}	
+	}
 
 }

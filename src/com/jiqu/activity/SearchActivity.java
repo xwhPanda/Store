@@ -29,6 +29,8 @@ import com.android.volley.Response.ErrorListener;
 import com.android.volley.Response.Listener;
 import com.android.volley.VolleyError;
 import com.jiqu.adapter.GameAdapter;
+import com.jiqu.database.DownloadAppinfo;
+import com.jiqu.download.DownloadManager;
 import com.jiqu.download.StringUtil;
 import com.jiqu.object.GameDetailInfo;
 import com.jiqu.object.GameInfo;
@@ -205,15 +207,20 @@ public class SearchActivity extends BaseActivity implements OnClickListener,List
 			Collections.addAll(gameInfos, searchInfo.getItem());
 			List<InstalledApp> apps = InstalledAppTool.getPersonalApp(this);
 			for (GameInfo gameInfo : gameInfos) {
+				DownloadAppinfo info = DownloadManager.getInstance().getDownloadInfo(Long.parseLong(gameInfo.getP_id()));
 				gameInfo.setAdapterType(1);
 				int state = InstalledAppTool.contain(apps,gameInfo.getPackagename(), Integer.parseInt(gameInfo.getVersion_code()));
 				if (state != -1) {
 					gameInfo.setState(state);
+				}else {
+					if (info != null 
+							&& (info.getDownloadState() == DownloadManager.STATE_INSTALLED
+							|| info.getDownloadState() == DownloadManager.STATE_NEED_UPDATE)) {
+						DownloadManager.DBManager.delete(info);
+					}
 				}
 			}
 			adapter.notifyDataSetChanged();
 		}
 	}
-	
-	
 }

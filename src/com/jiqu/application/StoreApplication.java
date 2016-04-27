@@ -17,6 +17,7 @@ import com.android.volley.toolbox.Volley;
 import com.jiqu.database.DaoMaster;
 import com.jiqu.database.DaoMaster.DevOpenHelper;
 import com.jiqu.database.DaoSession;
+import com.jiqu.download.FileUtil;
 import com.jiqu.store.R;
 import com.jiqu.tools.Constant;
 import com.jiqu.tools.LruBitmapCache;
@@ -62,6 +63,7 @@ public class StoreApplication extends Application {
 		
 		context = this;
 		
+		initFiles();
 		initConstant();
 	}
 	
@@ -79,6 +81,12 @@ public class StoreApplication extends Application {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+	}
+	
+	private void initFiles(){
+		FileUtil.getZipDownloadDir(context);
+		FileUtil.getApkDownloadDir(context);
+		FileUtil.getUpgradeDownloadDir(context);
 	}
 	
 	public static synchronized StoreApplication getInstance(){
@@ -132,14 +140,6 @@ public class StoreApplication extends Application {
         if (requestQueue != null) {
             requestQueue.cancelAll(tag);
         }
-    }
-    
-    public void getNetType(){
-    	ConnectivityManager cm = (ConnectivityManager) context.getSystemService(CONNECTIVITY_SERVICE);
-    	NetworkInfo info = cm.getActiveNetworkInfo();
-    	if (info != null) {
-			Log.i("TAG", "netInfo : " + info.getType());
-		}
     }
     
     public String getLocalIpAddress() {  

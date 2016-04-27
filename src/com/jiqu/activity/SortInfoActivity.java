@@ -23,6 +23,8 @@ import com.android.volley.Response.ErrorListener;
 import com.android.volley.Response.Listener;
 import com.android.volley.VolleyError;
 import com.jiqu.adapter.GameAdapter;
+import com.jiqu.database.DownloadAppinfo;
+import com.jiqu.download.DownloadManager;
 import com.jiqu.object.CategoryAppsInfo;
 import com.jiqu.object.GameInfo;
 import com.jiqu.object.InstalledApp;
@@ -170,12 +172,20 @@ public class SortInfoActivity extends BaseActivity implements OnRefreshListener,
 			if (gameInformations.size() < DEFAULT_PAGE_SIZE) {
 				count = gameInformations.size();
 			}
+			
 			for(int i = gameInformations.size() - count;i<gameInformations.size();i++){
 				GameInfo gameInfo = gameInformations.get(i);
+				DownloadAppinfo info = DownloadManager.getInstance().getDownloadInfo(Long.parseLong(gameInfo.getP_id()));
 				gameInfo.setAdapterType(1);
 				int state = InstalledAppTool.contain(apps,gameInfo.getPackagename(), Integer.parseInt(gameInfo.getVersion_code()));
 				if (state != -1) {
 					gameInfo.setState(state);
+				}else {
+					if (info != null 
+							&& (info.getDownloadState() == DownloadManager.STATE_INSTALLED
+							|| info.getDownloadState() == DownloadManager.STATE_NEED_UPDATE)) {
+						DownloadManager.DBManager.delete(info);
+					}
 				}
 			}
 			if (refreshViewShowing) {
