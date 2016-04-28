@@ -3,6 +3,7 @@ package com.jiqu.fragment;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.jiqu.activity.HeadlineActivity;
 import com.jiqu.adapter.InformationAdapter;
 import com.jiqu.object.GameInformation;
 import com.jiqu.store.R;
@@ -11,6 +12,7 @@ import com.jiqu.tools.UIUtil;
 import com.jiqu.view.MyImageView;
 import com.jiqu.view.PullToRefreshLayout;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.PagerAdapter;
@@ -19,6 +21,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -97,6 +101,15 @@ public class InformationFragment extends Fragment implements OnClickListener{
 		informationListView.setAdapter(adapter);
 		
 		initViewSize();
+		
+		informationListView.setOnItemClickListener(new OnItemClickListener() {
+
+			@Override
+			public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+				// TODO Auto-generated method stub
+				startActivity(new Intent(getActivity(), HeadlineActivity.class));
+			}
+		});
 	}
 	
 	private void initHeadView(){

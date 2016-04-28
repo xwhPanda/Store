@@ -7,6 +7,7 @@ import org.json.JSONObject;
 
 import android.os.Bundle;
 import android.support.v4.view.ViewPager;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.GridView;
@@ -155,6 +156,6 @@ public class ThematicActivity extends BaseActivity implements Listener<JSONObjec
 	@Override
 	public void onResponse(JSONObject arg0) {
 		// TODO Auto-generated method stub
-		
+		Log.i("TAG", arg0.toString());
 	}
 }

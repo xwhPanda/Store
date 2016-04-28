@@ -47,6 +47,10 @@ public class PasswordView extends RelativeLayout implements OnClickListener,Text
 		init(context);
 	}
 	
+	public String getText(){
+		return editText.getText().toString();
+	}
+	
 	private void init(Context context){
 		LayoutInflater inflater = LayoutInflater.from(context);
 		view = inflater.inflate(R.layout.password_view, this);

@@ -1,7 +1,11 @@
 package com.jiqu.activity;
 
 
+import com.jiqu.application.StoreApplication;
+import com.jiqu.database.Account;
+import com.jiqu.database.AccountDao.Properties;
 import com.jiqu.interfaces.DialogDismissObserver;
+import com.jiqu.object.AccountInformation;
 import com.jiqu.store.BaseActivity;
 import com.jiqu.store.R;
 import com.jiqu.tools.MetricsTool;
@@ -10,8 +14,11 @@ import com.jiqu.view.InformationBrithDialog;
 import com.jiqu.view.InformationGenderDialog;
 import com.jiqu.view.TitleView;
 
+import de.greenrobot.dao.query.QueryBuilder;
+
 import android.app.Dialog;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.Window;
@@ -32,9 +39,12 @@ public class ShowAccountInformatiomActivity extends BaseActivity implements OnCl
 	private RelativeLayout genderRel,birthRel,phoneRel,qqRel;
 	private TextView gender,birth,phone,qq;
 	private Button genderBtn;
+	private TextView genderTx;
 	private Button birthBtn;
 	private InformationGenderDialog dialog;
 	private InformationBrithDialog brithDialog;
+	
+	private Account info;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -42,6 +52,7 @@ public class ShowAccountInformatiomActivity extends BaseActivity implements OnCl
 		super.onCreate(savedInstanceState);
 		
 		initView();
+		initData();
 	}
 
 	@Override
@@ -67,6 +78,7 @@ public class ShowAccountInformatiomActivity extends BaseActivity implements OnCl
 		qqRel = (RelativeLayout) findViewById(R.id.qqRel);
 		genderBtn = (Button) findViewById(R.id.genderBtn);
 		birthBtn = (Button) findViewById(R.id.birthBtn);
+		genderTx = (TextView) findViewById(R.id.genderTx);
 		
 		modiftBtn.setOnClickListener(this);
 		genderBtn.setOnClickListener(this);
@@ -82,6 +94,26 @@ public class ShowAccountInformatiomActivity extends BaseActivity implements OnCl
 		titleView.tip.setText(R.string.memberInformation);
 		
 		initViewSize();
+	}
+	
+	private void initData(){
+		QueryBuilder qb = StoreApplication.daoSession.getAccountDao().queryBuilder();
+		info = (Account) qb.unique();
+		if (info != null) {
+			nickName.setText(info.getUsername());
+			if (info.getGender() == 1) {
+				genderTx.setText(getResources().getString(R.string.man));
+				genderBtn.setBackgroundResource(0);
+			}else if (info.getGender() == 2) {
+				genderTx.setText(getResources().getString(R.string.female));
+				genderBtn.setBackgroundResource(0);
+			}
+//			phone.setText(info.getPhone());
+//			qq.setText(info.getQq());
+			birthBtn.setText(info.getBirthday());
+			birthBtn.setBackgroundResource(0);
+			level.setText("LV " + info.getLevel());
+		}
 	}
 	
 	private void initViewSize(){
@@ -100,18 +132,19 @@ public class ShowAccountInformatiomActivity extends BaseActivity implements OnCl
 		UIUtil.setTextSize(birth, 40);
 		UIUtil.setTextSize(phone, 40);
 		UIUtil.setTextSize(qq, 40);
-		UIUtil.setTextSize(genderBtn, 40);
+		UIUtil.setTextSize(genderTx, 40);
 		UIUtil.setTextSize(birthBtn, 40);
 		UIUtil.setTextSize(level, 25);
 		UIUtil.setTextSize(modiftBtn, 50);
 		UIUtil.setTextSize(loginOut,50);
-		level.setText("LV5");
 		
 		try {
 			UIUtil.setViewSizeMargin(accountImg, 0, 240 * Ry, 0, 0);
 			UIUtil.setViewSizeMargin(level, 0, 40 * Ry, 0, 0);
 			UIUtil.setViewSizeMargin(modiftBtn, 0, 60 * Ry, 0, 0);
 			UIUtil.setViewSizeMargin(loginOut, 0, 25 * Ry, 0, 0);
+			UIUtil.setViewSizeMargin(nickName, 0, 45 * Ry, 0, 0);
+			UIUtil.setViewSizeMargin(genderRel, 0, 60 * Ry, 0, 0);
 			UIUtil.setViewSizeMargin(birthRel, 0, 35 * Ry, 0, 0);
 			UIUtil.setViewSizeMargin(phoneRel, 0, 35 * Ry, 0, 0);
 			UIUtil.setViewSizeMargin(qqRel, 0, 35 * Ry, 0, 0);
@@ -119,6 +152,7 @@ public class ShowAccountInformatiomActivity extends BaseActivity implements OnCl
 			UIUtil.setViewSizeMargin(birth, 35 * Rx, 0, 0, 0);
 			UIUtil.setViewSizeMargin(phone, 35 * Rx, 0, 0, 0);
 			UIUtil.setViewSizeMargin(qq, 35 * Rx, 0, 0, 0);
+			UIUtil.setViewSizeMargin(genderTx, 0, 0, 35 * Rx, 0);
 			UIUtil.setViewSizeMargin(genderBtn, 0, 0, 35 * Rx, 0);
 			UIUtil.setViewSizeMargin(birthBtn, 0, 0, 35 * Rx, 0);
 		} catch (Exception e) {
@@ -172,7 +206,7 @@ public class ShowAccountInformatiomActivity extends BaseActivity implements OnCl
 	public void onDialogSave(int type , String value) {
 		// TODO Auto-generated method stub
 		if (type == 0) {//性别选择
-			if (value.length() > 0 && !"".equals(value)) {
+			if (value != null && value.length() > 0 && !"".equals(value)) {
 				genderBtn.setText(value);
 				genderBtn.setBackgroundDrawable(null);
 				UIUtil.setViewSize(genderBtn, LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);

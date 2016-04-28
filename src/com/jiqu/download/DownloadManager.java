@@ -14,6 +14,7 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.concurrent.ConcurrentHashMap;
 
 import net.lingala.zip4j.core.ZipFile;
@@ -223,7 +224,7 @@ public class DownloadManager implements ChangeObserver{
 	
 	/** 网络变化时调用 */
 	public synchronized void pauseAllExit() {
-		for (Map.Entry<Long, DownloadTask> entry : mTaskMap.entrySet()) {
+		for (Entry<Long, Downloader> entry : map.entrySet()) {
 			DownloadAppinfo info = DBManager.getDownloadAppinfoDao().queryBuilder().where(Properties.Id.eq(entry.getKey())).unique();
 			if (info != null) {
 				pauseDownload(info);
@@ -236,8 +237,8 @@ public class DownloadManager implements ChangeObserver{
 	
 	/** 网络变化时调用 */
 	public void startAll(){
-		for (Map.Entry<Long, DownloadTask> entry : mTaskMap.entrySet()) {
-			DownloadTask task = mTaskMap.get(entry.getKey());
+		for (Map.Entry<Long, Downloader> entry : map.entrySet()) {
+			Downloader task = map.get(entry.getKey());
 			if (task != null) {
 				DownloadAppinfo info = DBManager.getDownloadAppinfoDao().queryBuilder().where(Properties.Id.eq(entry.getKey())).unique();
 				if (info != null) {

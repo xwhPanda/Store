@@ -64,6 +64,22 @@
     <string name="privateLetter">私信</string>
     <string name="messageCenter">消息中心</string>
     <string name="gameEvaluation">游戏测评</string>
+    <string name="accountIsNull">帐号不能为空</string>
+    <string name="accountIsTooLong">帐号过长</string>
+    <string name="accountExist">用户名已经存在</string>
+    <string name="accountNotExist">用户不存在</string>
+    <string name="emailIsNull">邮箱不能为空</string>
+    <string name="emailError">错误的邮箱格式</string>
+    <string name="emailExist">邮箱已注册</string>
+    <string name="passwordIsNull">密码不能为空</string>
+    <string name="passwordWrong">密码错误</string>
+    <string name="confirmPasswordIsNull">两次密码不一致</string>
+    <string name="registerFailed">注册失败</string>
+    <string name="registering">正在注册</string>
+    <string name="registerSuccess">注册成功</string>
+    <string name="loginFailed">登录失败</string>
+    <string name="longinSuccess">登陆成功</string>
+    <string name="loging">正在登录</string>
     
     <string name="screenSense">画面感  : </string>
     <string name="immersion">沉浸感  : </string>

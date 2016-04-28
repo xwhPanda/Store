@@ -5,11 +5,14 @@ import java.util.Map;
 
 import org.json.JSONObject;
 
+import com.android.volley.AuthFailureError;
 import com.android.volley.DefaultRetryPolicy;
+import com.android.volley.Request;
 import com.android.volley.Request.Method;
 import com.android.volley.Response.ErrorListener;
 import com.android.volley.Response.Listener;
 import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.StringRequest;
 import com.jiqu.application.StoreApplication;
 
 public class RequestTool {
@@ -22,7 +25,10 @@ public class RequestTool {
 	private static final String rankUrl = "http://xu8api.91xuxu.com/api/1.0/getProducts";
 	private static final String categoryUrl = "http://xu8api.91xuxu.com/api/1.0/getCategoryList";
 	private static final String categoryAppsUrl = "http://xu8api.91xuxu.com/api/1.0/getCategoryApps";
-	private static final String specialsUrl = "http://xu8api.91xuxu.com/api/1.0/getSpecials ";
+	private static final String specialsUrl = "http://mobile.app.shouyou.com/sy/v1/classify/newtypes";
+	
+	public static final String REGISTER_URL = "http://ht.163zs.com/index.php/Api/User/register";
+	public static final String LOGIN_URL = "http://ht.163zs.com/index.php/Api/User/login";
 	
 	private Map<String, Object> paramMap = new HashMap<String, Object>();
 
@@ -197,8 +203,7 @@ public class RequestTool {
 	 * @param errorListener
 	 */
 	public void startSpecialsRequest(Listener<JSONObject> listener,ErrorListener errorListener){
-		JSONObject object = new JSONObject(paramMap);
-		JsonObjectRequest objectRequest = new JsonObjectRequest(Method.POST, specialsUrl, object, listener, errorListener);
+		JsonObjectRequest objectRequest = new JsonObjectRequest(Method.GET, specialsUrl, listener, errorListener);
 		StoreApplication.getInstance().addToRequestQueue(objectRequest,"specials");
 		StoreApplication.getInstance().getRequestQueue().start();
 	}
@@ -211,10 +216,45 @@ public class RequestTool {
 	}
 	
 	/**
+	 * 开始请求
+	 * @param listener
+	 * @param url
+	 * @param errorListener
+	 * @param map
+	 * @param tag
+	 */
+	public void startStringRequest(Listener<String> listener,String url,ErrorListener errorListener,final Map<String, Object> map,String tag){
+        stringRequest(listener, url,errorListener, map, tag);
+    }
+	
+	/**
+	 * 取消请求
+	 * @param tag
+	 */
+	public void stopRequest(String tag){
+		cancleRequest(tag);
+	}
+	
+	private void stringRequest(Listener<String> listener,String url ,ErrorListener errorListener,final Map<String, Object> map,String tag){
+		StringRequest stringRequest = new StringRequest(Method.POST, url, listener, errorListener){
+     	   @Override  
+            protected Map<String, String> getParams() throws AuthFailureError {  
+     		   Map<String, String> paramMap = new HashMap<String, String>();
+     		   for (String entry : map.keySet()) {
+					paramMap.put(entry, (String)map.get(entry));
+				}
+                return paramMap;  
+            }  
+     };
+     StoreApplication.getInstance().addToRequestQueue(stringRequest, tag);
+     StoreApplication.getInstance().getRequestQueue().start();
+	}
+	
+	/**
 	 * 根据tag取消请求
 	 * @param tag
 	 */
-	public void cancleRequest(String tag){
+	private void cancleRequest(String tag){
 		StoreApplication.getInstance().getRequestQueue().cancelAll(tag);
 	}
 }

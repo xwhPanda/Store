@@ -54,6 +54,15 @@
             android:text="@string/gender"
             android:textColor="@color/white" />
 
+        <TextView 
+            android:id="@+id/genderTx"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            fontPath="fonts/lantinghei.ttf"
+            android:textColor="@color/white" />
+        
         <Button
             android:id="@+id/genderBtn"
             android:layout_width="wrap_content"
@@ -62,8 +71,8 @@
             android:layout_centerVertical="true"
             fontPath="fonts/lantinghei.ttf"
             android:background="@drawable/information_set"
-            android:padding="0dp"
-            android:textColor="@color/white" />
+            android:padding="0dp"/>
+        
     </RelativeLayout>
 
     <RelativeLayout
@@ -115,6 +124,7 @@
             fontPath="fonts/lantinghei.ttf"
             android:text="@string/phone"
             android:textColor="@color/white" />
+        
     </RelativeLayout>
 
     <RelativeLayout

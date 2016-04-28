@@ -8,6 +8,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import com.jiqu.activity.DownloadManagerActivity;
+import com.jiqu.activity.MemberLoginActivity;
 import com.jiqu.activity.SearchActivity;
 import com.jiqu.activity.ShowAccountInformatiomActivity;
 import com.jiqu.application.StoreApplication;
@@ -81,7 +82,6 @@ public class MainActivity extends FragmentActivity implements OnClickListener,On
 	private CustomDialog dialog;
 	
 	private boolean firstIn = true;
-	
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -379,7 +379,11 @@ public class MainActivity extends FragmentActivity implements OnClickListener,On
 			break;
 		
 		case R.id.accountImg:
-			startActivity(new Intent(this, ShowAccountInformatiomActivity.class));
+//			if (true) {
+				startActivity(new Intent(this, ShowAccountInformatiomActivity.class));
+//			}else {
+//				startActivity(new Intent(this, MemberLoginActivity.class));
+//			}
 			break;
 			
 		case R.id.download:

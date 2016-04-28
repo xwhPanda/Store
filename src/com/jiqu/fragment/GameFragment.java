@@ -5,6 +5,8 @@ import java.util.List;
 
 import com.jiqu.adapter.GameAdapter;
 import com.jiqu.adapter.InformationAdapter;
+import com.jiqu.database.DownloadAppinfo;
+import com.jiqu.object.GameInfo;
 import com.jiqu.object.GameInformation;
 import com.jiqu.store.R;
 import com.jiqu.view.PullToRefreshLayout;
@@ -48,20 +50,30 @@ public class GameFragment extends Fragment {
 		
 		gameListView.addHeaderView(headView);
 		
-		List<GameInformation> gameInformations = new ArrayList<GameInformation>();
+		List<GameInfo> gameInformations = new ArrayList<GameInfo>();
 		
 		for (int i = 0; i < 30; i++)
 		{
-			GameInformation game = new GameInformation();
+			GameInfo game = new GameInfo();
+			game.setP_id("0");
+			game.setGrade_difficulty("1");
+			game.setGrade_frames("1");
+			game.setGrade_gameplay("1");
+			game.setGrade_immersive("1");
+			game.setGrade_vertigo("1");
+			game.setUrl("sdfsfs.apk");
+			game.setApp_size("10");
+			game.setLdpi_icon_url("fsfsfsfs");
+			
 			if (i % 4 == 1) {
-				game.adapterType = 0;
+				game.setAdapterType(0);
 			}else {
-				game.adapterType = 1;
+				game.setAdapterType(1);
 			}
 			gameInformations.add(game);
 		}
-//		GameAdapter adapter = new GameAdapter(getActivity(), gameInformations);
+		GameAdapter adapter = new GameAdapter(getActivity(), gameInformations,false,false);
 		ptrl = ((PullToRefreshLayout) view.findViewById(R.id.refresh_view));
-//		gameListView.setAdapter(adapter);
+		gameListView.setAdapter(adapter);
 	}
 }

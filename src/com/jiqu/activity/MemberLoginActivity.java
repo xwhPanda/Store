@@ -1,23 +1,39 @@
 package com.jiqu.activity;
 
 
+import com.alibaba.fastjson.JSON;
+import com.android.volley.Response.ErrorListener;
+import com.android.volley.Response.Listener;
+import com.android.volley.VolleyError;
+import com.jiqu.application.StoreApplication;
+import com.jiqu.object.AccountInformation;
+import com.jiqu.object.AccountResponeInfo;
 import com.jiqu.store.BaseActivity;
 import com.jiqu.store.R;
+import com.jiqu.tools.Constant;
+import com.jiqu.tools.MD5;
+import com.jiqu.tools.RequestTool;
+import com.jiqu.tools.SharePreferenceTool;
 import com.jiqu.tools.UIUtil;
 import com.jiqu.view.PasswordView;
 import com.jiqu.view.QuickLoginView;
 import com.jiqu.view.TitleView;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.text.InputType;
+import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.Toast;
 
 public class MemberLoginActivity extends BaseActivity implements OnClickListener{
+	private static final String LOGIN_TAG = "login";
 	private TitleView titleView;
 	private ImageView accountIcon;
 	private Button forgetPassword,register;
@@ -26,10 +42,14 @@ public class MemberLoginActivity extends BaseActivity implements OnClickListener
 	private LinearLayout forgetPdLin;
 	private QuickLoginView quickLoginView;
 	
+	private RequestTool requestTool;
+	private boolean loging = false;
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
 		super.onCreate(savedInstanceState);
+		requestTool = RequestTool.getInstance();
 		
 		init();
 		setListener();
@@ -83,7 +103,7 @@ public class MemberLoginActivity extends BaseActivity implements OnClickListener
 	private void setListener(){
 		forgetPassword.setOnClickListener(this);
 		register.setOnClickListener(this);
-		
+		login.setOnClickListener(this);
 	}
 	
 	@Override
@@ -96,6 +116,19 @@ public class MemberLoginActivity extends BaseActivity implements OnClickListener
 	public void onClick(View v) {
 		// TODO Auto-generated method stub
 		switch (v.getId()) {
+		case R.id.login:
+			if (!loging) {
+				String account = accountInputView.getText();
+				String password = passwordInputView.getText();
+				if (checkValue(account,password)) {
+					loging = true;
+					login(account,password);
+				}
+			}else {
+				Toast.makeText(this, R.string.loging, Toast.LENGTH_SHORT).show();
+			}
+			break;
+			
 		case R.id.forgetPassword:
 			startActivity(new Intent(this, ForgetPasswordActivity.class));
 			break;
@@ -104,5 +137,66 @@ public class MemberLoginActivity extends BaseActivity implements OnClickListener
 			startActivity(new Intent(this, RegisterActivity.class));
 			break;
 		}
+	}
+	
+	private boolean checkValue(String account,String password){
+		
+		if (TextUtils.isEmpty(account)) {
+			Toast.makeText(this, R.string.accountIsNull,Toast.LENGTH_SHORT).show();
+			return false;
+		}else if (TextUtils.isEmpty(password)) {
+			Toast.makeText(this, R.string.passwordIsNull,Toast.LENGTH_SHORT).show();
+			return false;
+		}else {
+			return true;
+		}
+	}
+	
+	private void login(String account,String password){
+		requestTool.getMap().clear();
+		requestTool.setParam("auth", account);
+		requestTool.setParam("password", MD5.GetMD5Code(password));
+		
+		requestTool.startStringRequest(new Listener<String>() {
+
+			@Override
+			public void onResponse(String arg0) {
+				// TODO Auto-generated method stub
+				loging = false;
+				AccountResponeInfo accountResponeInfo = JSON.parseObject(arg0, AccountResponeInfo.class);
+				if (accountResponeInfo.getStatus() == 0) {
+					/**用户不存在**/
+					Toast.makeText(MemberLoginActivity.this, R.string.accountNotExist, Toast.LENGTH_SHORT).show();
+				}else if (accountResponeInfo.getStatus() == 1) {
+					Toast.makeText(MemberLoginActivity.this, R.string.longinSuccess, Toast.LENGTH_SHORT).show();
+					StoreApplication.daoSession.getAccountDao().deleteAll();
+					StoreApplication.daoSession.getAccountDao().insertOrReplace(AccountInformation.toAccount(accountResponeInfo.getData()));
+					MemberLoginActivity.this.finish();
+					/**登录成功**/
+				}else if (accountResponeInfo.getStatus() == -1) {
+					/**登录失败**/
+					Toast.makeText(MemberLoginActivity.this, R.string.loginFailed, Toast.LENGTH_SHORT).show();
+				}else if (accountResponeInfo.getStatus() == -2) {
+					/**密码错误**/
+					Toast.makeText(MemberLoginActivity.this, R.string.passwordWrong, Toast.LENGTH_SHORT).show();
+				}
+			}
+		}, RequestTool.LOGIN_URL,new ErrorListener(){
+
+			@Override
+			public void onErrorResponse(VolleyError arg0) {
+				// TODO Auto-generated method stub
+				loging = false;
+				Toast.makeText(MemberLoginActivity.this, R.string.loginFailed, Toast.LENGTH_SHORT).show();
+			}
+			
+		}, requestTool.getMap(),LOGIN_TAG);
+	}
+	
+	@Override
+	protected void onDestroy() {
+		// TODO Auto-generated method stub
+		super.onDestroy();
+		requestTool.stopRequest(LOGIN_TAG);
 	}
 }

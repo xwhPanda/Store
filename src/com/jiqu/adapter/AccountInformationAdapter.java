@@ -102,8 +102,8 @@ public class AccountInformationAdapter extends BaseAdapter {
 		}
 		
 		public void initData(AccountInformation information){
-			title.setText(information.getTitle());
-			value.setText(information.getValue());
+			title.setText(information.getNickname());
+			value.setText(information.getLevel());
 		}
 	}
 	

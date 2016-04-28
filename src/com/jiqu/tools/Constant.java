@@ -14,12 +14,19 @@ public class Constant {
 	public static final String DOWNLOAD_THREAD_COUNTS = "downloadThreadCounts";
 	/**	电量管理prefrences **/
 	public static final String BATTERY_SHARE_PREFERENCE_NAME = "battery";
+	
+	/**	用户信息 **/
+	public static final String ACCOUNT_INFO_PREFERENCE_NAME = "accountInfo";
+	
 	/** 显示百分比 **/
 	public static final String DISPLAY_BATTERY_PERCENT = "displayBattery";
 	/** 省电模式 **/
 	public static final String POWER_SAVING_MODE = "powerSaving";
 	/** 解压密码 **/
 	public static final String PASSWORD = "JiLe20150413";
+	
+	/** 帐号长度限制 **/
+	public static final int ACCOUNT_MAX_LENGTH = 10;
 	
 	public static String RECOMMEND_TAG = "recommend";
 	public static String INFORMATION_TAG = "information";
