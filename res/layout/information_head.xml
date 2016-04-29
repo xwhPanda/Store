@@ -9,7 +9,8 @@
     <RelativeLayout
         android:id="@+id/informationImgRel"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/recommendViewPagerHeight" >
+        android:layout_height="wrap_content" 
+        android:background="@color/red">
 
         <android.support.v4.view.ViewPager
             android:id="@+id/informationImgViewPager"
@@ -23,7 +24,6 @@
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"
             android:layout_centerHorizontal="true"
-            android:layout_marginBottom="40dp"
             android:orientation="horizontal" >
         </LinearLayout>
     </RelativeLayout>
@@ -54,7 +54,6 @@
                 android:id="@+id/explosiveHeadlinesTx"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="@dimen/HeadlinesTxMargingL"
                 fontPath="fonts/lantinghei.ttf"
                 android:text="@string/explosiveHeadlines"
                 android:textColor="@color/white" />
@@ -80,7 +79,6 @@
                 android:id="@+id/allHeadlinesTx"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="@dimen/HeadlinesTxMargingL"
                 fontPath="fonts/lantinghei.ttf"
                 android:text="@string/allHeadlines"
                 android:textColor="@color/white" />

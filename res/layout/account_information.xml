@@ -94,6 +94,15 @@
             android:text="@string/birthday"
             android:textColor="@color/white" />
 
+        <TextView 
+            android:id="@+id/birthTx"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            fontPath="fonts/lantinghei.ttf"
+            android:textColor="@color/white"/>
+        
         <Button
             android:id="@+id/birthBtn"
             android:layout_width="wrap_content"
@@ -125,6 +134,18 @@
             android:text="@string/phone"
             android:textColor="@color/white" />
         
+        <EditText 
+            android:id="@+id/phoneEdit"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            fontPath="fonts/lantinghei.ttf"
+            android:background="@color/transparent"
+            android:textColor="@color/white"
+            android:gravity="right"
+            android:inputType="phone"
+            android:text="1315464"/>
     </RelativeLayout>
 
     <RelativeLayout
@@ -145,6 +166,19 @@
             fontPath="fonts/lantinghei.ttf"
             android:text="@string/qq"
             android:textColor="@color/white" />
+        
+        <EditText 
+            android:id="@+id/qqEdit"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            fontPath="fonts/lantinghei.ttf"
+            android:background="@color/transparent"
+            android:textColor="@color/white"
+            android:gravity="right"
+            android:inputType="number"
+            android:text="874654894"/>
     </RelativeLayout>
 
     <Button
@@ -156,9 +190,9 @@
         android:layout_below="@id/qqRel"
         android:layout_centerHorizontal="true"
         fontPath="fonts/lantinghei.ttf"
-        android:background="@drawable/xiugai"
+        android:background="@drawable/modify_btn_selector"
         android:text="@string/modify"
-        android:textColor="@color/white" />
+        android:textColor="@color/itemDesColor"/>
 
     <Button
         android:id="@+id/loginOut"
@@ -168,7 +202,7 @@
         android:layout_alignRight="@id/modifyBtn"
         android:layout_below="@id/modifyBtn"
         fontPath="fonts/lantinghei.ttf"
-        android:background="@drawable/tuichuzhanghao"
+        android:background="@drawable/modify_btn_selector"
         android:text="@string/loginOut"
         android:textColor="@color/itemDesColor" />
 

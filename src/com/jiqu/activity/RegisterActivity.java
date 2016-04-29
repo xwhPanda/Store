@@ -12,6 +12,7 @@ import android.widget.Button;
 import android.widget.Toast;
 
 import com.alibaba.fastjson.JSON;
+import com.android.volley.Request.Method;
 import com.android.volley.Response.ErrorListener;
 import com.android.volley.Response.Listener;
 import com.android.volley.VolleyError;
@@ -128,10 +129,10 @@ public class RegisterActivity extends BaseActivity implements OnClickListener{
 	}
 
 	private void checkValue(){
-		String account = nickNameView.getText();
-		String email = emailView.getText();
-		String password = passwordView.getText();
-		String rePassword = confirmPasswordView.getText();
+		String account = nickNameView.getText().trim();
+		String email = emailView.getText().trim();
+		String password = passwordView.getText().trim();
+		String rePassword = confirmPasswordView.getText().trim();
 		
 		if (TextUtils.isEmpty(account)) {
 			Toast.makeText(this, R.string.accountIsNull,Toast.LENGTH_SHORT).show();
@@ -160,7 +161,7 @@ public class RegisterActivity extends BaseActivity implements OnClickListener{
 		requestTool.setParam("gender", gender + "");
 		requestTool.setParam("password", password);
 		requestTool.setParam("rePasswd", rePassword);
-		requestTool.startStringRequest(new Listener<String>() {
+		requestTool.startStringRequest(Method.POST,new Listener<String>() {
 
 			@Override
 			public void onResponse(String arg0) {

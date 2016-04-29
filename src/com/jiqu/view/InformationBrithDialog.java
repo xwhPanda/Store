@@ -446,7 +446,7 @@ public class InformationBrithDialog extends Dialog implements OnClickListener{
 
 		case R.id.save:
 			dismiss();
-			observer.onDialogSave(1,selectYear + "." + selectMonth + "." + selectDay);
+			observer.onDialogSave(1,selectYear + "-" + selectMonth + "-" + selectDay);
 			break;
 		}
 	}

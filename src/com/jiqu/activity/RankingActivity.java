@@ -133,7 +133,6 @@ public class RankingActivity extends BaseActivity implements OnClickListener,OnR
 			@Override
 			public void onResponse(JSONObject arg0) {
 				// TODO Auto-generated method stub
-				Log.i("TAG", "onResponse : " + arg0.toString());
 				RankInfo rankInfo = JSON.parseObject(arg0.toString(), RankInfo.class);
 				if (rankInfo != null) {
 					Collections.addAll(hotGameInformations, rankInfo.getItem());
@@ -169,7 +168,6 @@ public class RankingActivity extends BaseActivity implements OnClickListener,OnR
 			@Override
 			public void onErrorResponse(VolleyError arg0) {
 				// TODO Auto-generated method stub
-				Log.i("TAG", "onErrorResponse");
 				if (hotRefreshViewShowing) {
 					hotRefreshView.refreshFinish(PullToRefreshLayout.FAIL);
 					hotRefreshViewShowing = false;

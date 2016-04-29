@@ -62,9 +62,13 @@ public class InformationFragment extends Fragment implements OnClickListener{
 		// TODO Auto-generated method stub
 		switch (v.getId()) {
 		case R.id.explosiveHeadlinesLin:
+			explosiveHeadlinesLin.setBackgroundColor(getResources().getColor(R.color.blue));
+			allHeadlinesLin.setBackgroundColor(getResources().getColor(R.color.itemDesColor));
 			break;
 
 		case R.id.allHeadlinesLin:
+			explosiveHeadlinesLin.setBackgroundColor(getResources().getColor(R.color.itemDesColor));
+			allHeadlinesLin.setBackgroundColor(getResources().getColor(R.color.blue));
 			break;
 		}
 	}
@@ -122,6 +126,8 @@ public class InformationFragment extends Fragment implements OnClickListener{
 		allHeadlinesImg = (ImageView) headView.findViewById(R.id.allHeadlinesImg);
 		explosiveHeadlinesTx = (TextView) headView.findViewById(R.id.explosiveHeadlinesTx);
 		allHeadlinesTx = (TextView) headView.findViewById(R.id.allHeadlinesTx);
+		
+		explosiveHeadlinesLin.setBackgroundColor(getResources().getColor(R.color.blue));
 	}
 	
 	private void initViewSize(){
@@ -134,7 +140,7 @@ public class InformationFragment extends Fragment implements OnClickListener{
 		UIUtil.setTextSize(allHeadlinesTx, 40);
 		
 		try {
-			UIUtil.setViewSizeMargin(headlineLin, 0, 40 * Ry, 0, 0);
+			UIUtil.setViewSizeMargin(headlineLin, 0, 20 * Ry, 0, 0);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

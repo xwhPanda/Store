@@ -5,6 +5,9 @@ import java.util.Map;
 
 import org.json.JSONObject;
 
+import android.R.integer;
+import android.util.Log;
+
 import com.android.volley.AuthFailureError;
 import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.Request;
@@ -26,21 +29,24 @@ public class RequestTool {
 	private static final String categoryUrl = "http://xu8api.91xuxu.com/api/1.0/getCategoryList";
 	private static final String categoryAppsUrl = "http://xu8api.91xuxu.com/api/1.0/getCategoryApps";
 	private static final String specialsUrl = "http://mobile.app.shouyou.com/sy/v1/classify/newtypes";
-	
+
+	public static final String PRIKEY = "*7&SKJuas";
 	public static final String REGISTER_URL = "http://ht.163zs.com/index.php/Api/User/register";
 	public static final String LOGIN_URL = "http://ht.163zs.com/index.php/Api/User/login";
-	
+	public static final String MODIFY_URL = "http://ht.163zs.com/index.php/Api/User/modifyInfo";
+	public static final String GET_RESET_CODE_URL = "http://ht.163zs.com/index.php/Api/User/getResetCode";
+	public static final String RESETPASSWORD_URL = "http://ht.163zs.com/index.php/Api/User/resetPasswd";
+
 	private Map<String, Object> paramMap = new HashMap<String, Object>();
 
-	public static RequestTool getInstance(){
+	public static RequestTool getInstance() {
 		if (instance == null) {
 			instance = new RequestTool();
 		}
 		return instance;
 	}
 
-	
-	public void initParam(){
+	public void initParam() {
 		paramMap.clear();
 		paramMap.put("android_id", "a9f7234301030848");
 		paramMap.put("imei", "000000000000000");
@@ -49,26 +55,28 @@ public class RequestTool {
 		paramMap.put("device_id", "000000000000000");
 		paramMap.put("mac", "08:00:27:d3:53:ef");
 	}
-	
-	public void setParam(String key,String value){
+
+	public void setParam(String key, String value) {
 		paramMap.put(key, value);
 	}
-	
-	public void setParam(String key,int value){
+
+	public void setParam(String key, int value) {
 		paramMap.put(key, value);
 	}
-	
-	public Map<String, Object> getMap(){
+
+	public Map<String, Object> getMap() {
 		return paramMap;
 	}
-	
+
 	/**
 	 * 推荐页游戏列表
+	 * 
 	 * @param listener
 	 * @param errorListener
-	 * @param retry 是否重试
+	 * @param retry
+	 *            是否重试
 	 */
-	public void startHomeRecommendRequest(Listener<JSONObject> listener, ErrorListener errorListener,boolean retry){
+	public void startHomeRecommendRequest(Listener<JSONObject> listener, ErrorListener errorListener, boolean retry) {
 		JSONObject object = new JSONObject(paramMap);
 		JsonObjectRequest objectRequest = new JsonObjectRequest(Method.POST, url, object, listener, errorListener);
 		if (retry) {
@@ -77,184 +85,226 @@ public class RequestTool {
 		StoreApplication.getInstance().addToRequestQueue(objectRequest, "homeRecommend");
 		StoreApplication.getInstance().getRequestQueue().start();
 	}
-	
+
 	/**
 	 * 推荐页顶部轮换图片
+	 * 
 	 * @param listener
 	 * @param errorListener
 	 */
-	public void startTopRecommendRequest(Listener<JSONObject> listener,ErrorListener errorListener){
+	public void startTopRecommendRequest(Listener<JSONObject> listener, ErrorListener errorListener) {
 		JSONObject object = new JSONObject(paramMap);
 		JsonObjectRequest objectRequest = new JsonObjectRequest(Method.POST, topUrl, object, listener, errorListener);
 		StoreApplication.getInstance().addToRequestQueue(objectRequest, "topRecommend");
 		StoreApplication.getInstance().getRequestQueue().start();
 	}
-	
+
 	/**
 	 * 推荐页推荐游戏
+	 * 
 	 * @param listener
 	 * @param errorListener
 	 */
-	public void startRecommendAppsRequest(Listener<JSONObject> listener,ErrorListener errorListener){
+	public void startRecommendAppsRequest(Listener<JSONObject> listener, ErrorListener errorListener) {
 		JSONObject object = new JSONObject(paramMap);
 		JsonObjectRequest objectRequest = new JsonObjectRequest(Method.POST, recommedAppsUrl, object, listener, errorListener);
 		StoreApplication.getInstance().addToRequestQueue(objectRequest, "recommendApps");
 		StoreApplication.getInstance().getRequestQueue().start();
 	}
-	
+
 	/**
 	 * 游戏详情
+	 * 
 	 * @param listener
 	 * @param errorListener
 	 */
-	public void startGameDetailRequest(Listener<JSONObject> listener,ErrorListener errorListener){
+	public void startGameDetailRequest(Listener<JSONObject> listener, ErrorListener errorListener) {
 		JSONObject object = new JSONObject(paramMap);
 		JsonObjectRequest objectRequest = new JsonObjectRequest(Method.POST, detaileUrl, object, listener, errorListener);
 		StoreApplication.getInstance().addToRequestQueue(objectRequest, "gameDetail");
 		StoreApplication.getInstance().getRequestQueue().start();
 	}
-	
+
 	/**
 	 * 取消详情页请求
 	 */
-	public void stopGameDetailRequest(){
+	public void stopGameDetailRequest() {
 		cancleRequest("gameDetail");
 	}
-	
+
 	/**
 	 * 搜索请求
+	 * 
 	 * @param listener
 	 * @param errorListener
 	 */
-	public void startSearchRequest(Listener<JSONObject> listener,ErrorListener errorListener){
+	public void startSearchRequest(Listener<JSONObject> listener, ErrorListener errorListener) {
 		JSONObject object = new JSONObject(paramMap);
 		JsonObjectRequest objectRequest = new JsonObjectRequest(Method.POST, searchUrl, object, listener, errorListener);
 		StoreApplication.getInstance().addToRequestQueue(objectRequest, "search");
 		StoreApplication.getInstance().getRequestQueue().start();
 	}
-	
+
 	/**
 	 * 取消搜索请求
 	 */
-	public void stopSearchRequest(){
+	public void stopSearchRequest() {
 		cancleRequest("search");
 	}
-	
+
 	/**
 	 * 排行请求
+	 * 
 	 * @param listener
 	 * @param errorListener
 	 */
-	public void startRankRequest(Listener<JSONObject> listener,ErrorListener errorListener){
+	public void startRankRequest(Listener<JSONObject> listener, ErrorListener errorListener) {
 		JSONObject object = new JSONObject(paramMap);
-		JsonObjectRequest objectRequest = new JsonObjectRequest(Method.POST, rankUrl, object,listener, errorListener);
-		StoreApplication.getInstance().addToRequestQueue(objectRequest,"rank");
+		JsonObjectRequest objectRequest = new JsonObjectRequest(Method.POST, rankUrl, object, listener, errorListener);
+		StoreApplication.getInstance().addToRequestQueue(objectRequest, "rank");
 		StoreApplication.getInstance().getRequestQueue().start();
 	}
 
 	/**
 	 * 取消排行请求
 	 */
-	public void stopRankRequest(){
+	public void stopRankRequest() {
 		cancleRequest("rank");
 	}
-	
+
 	/**
 	 * 分类请求
+	 * 
 	 * @param listener
 	 * @param errorListener
 	 */
-	public void startCategoryRequest(Listener<JSONObject> listener,ErrorListener errorListener){
+	public void startCategoryRequest(Listener<JSONObject> listener, ErrorListener errorListener) {
 		JSONObject object = new JSONObject(paramMap);
-		JsonObjectRequest objectRequest = new JsonObjectRequest(Method.POST, categoryUrl, object,listener, errorListener);
-		StoreApplication.getInstance().addToRequestQueue(objectRequest,"category");
+		JsonObjectRequest objectRequest = new JsonObjectRequest(Method.POST, categoryUrl, object, listener, errorListener);
+		StoreApplication.getInstance().addToRequestQueue(objectRequest, "category");
 		StoreApplication.getInstance().getRequestQueue().start();
 	}
-	
+
 	/**
 	 * 取消分类请求
 	 */
-	public void stopCategoryRequest(){
+	public void stopCategoryRequest() {
 		cancleRequest("category");
 	}
-	
+
 	/**
 	 * 请求指定分类
+	 * 
 	 * @param listener
 	 * @param errorListener
 	 */
-	public void startCategoryAppsRequest(Listener<JSONObject> listener,ErrorListener errorListener){
+	public void startCategoryAppsRequest(Listener<JSONObject> listener, ErrorListener errorListener) {
 		JSONObject object = new JSONObject(paramMap);
 		JsonObjectRequest objectRequest = new JsonObjectRequest(Method.POST, categoryAppsUrl, object, listener, errorListener);
-		StoreApplication.getInstance().addToRequestQueue(objectRequest,"categoryApps");
+		StoreApplication.getInstance().addToRequestQueue(objectRequest, "categoryApps");
 		StoreApplication.getInstance().getRequestQueue().start();
 	}
-	
+
 	/**
 	 * 取消分类内容请求
 	 */
-	public void stopCategoryAppsRequest(){
+	public void stopCategoryAppsRequest() {
 		cancleRequest("categoryApps");
 	}
-	
+
 	/**
 	 * 请求专题
+	 * 
 	 * @param listener
 	 * @param errorListener
 	 */
-	public void startSpecialsRequest(Listener<JSONObject> listener,ErrorListener errorListener){
+	public void startSpecialsRequest(Listener<JSONObject> listener, ErrorListener errorListener) {
 		JsonObjectRequest objectRequest = new JsonObjectRequest(Method.GET, specialsUrl, listener, errorListener);
-		StoreApplication.getInstance().addToRequestQueue(objectRequest,"specials");
+		StoreApplication.getInstance().addToRequestQueue(objectRequest, "specials");
 		StoreApplication.getInstance().getRequestQueue().start();
 	}
-	
+
 	/**
 	 * 取消专题请求
 	 */
-	public void stopSpecialsRequest(){
+	public void stopSpecialsRequest() {
 		cancleRequest("specials");
 	}
-	
+
 	/**
 	 * 开始请求
+	 * 
 	 * @param listener
 	 * @param url
 	 * @param errorListener
 	 * @param map
 	 * @param tag
 	 */
-	public void startStringRequest(Listener<String> listener,String url,ErrorListener errorListener,final Map<String, Object> map,String tag){
-        stringRequest(listener, url,errorListener, map, tag);
-    }
-	
+	public void startStringRequest(int method, Listener<String> listener, String url, ErrorListener errorListener, final Map<String, Object> map, String tag) {
+		if (method == Method.POST) {
+			stringPostRequest(method, listener, url, errorListener, map, tag);
+		} else if (method == Method.GET) {
+			stringGetRequest(method, listener, url, errorListener, map, tag);
+		}
+	}
+
 	/**
 	 * 取消请求
+	 * 
 	 * @param tag
 	 */
-	public void stopRequest(String tag){
+	public void stopRequest(String tag) {
 		cancleRequest(tag);
 	}
-	
-	private void stringRequest(Listener<String> listener,String url ,ErrorListener errorListener,final Map<String, Object> map,String tag){
-		StringRequest stringRequest = new StringRequest(Method.POST, url, listener, errorListener){
-     	   @Override  
-            protected Map<String, String> getParams() throws AuthFailureError {  
-     		   Map<String, String> paramMap = new HashMap<String, String>();
-     		   for (String entry : map.keySet()) {
-					paramMap.put(entry, (String)map.get(entry));
-				}
-                return paramMap;  
-            }  
-     };
-     StoreApplication.getInstance().addToRequestQueue(stringRequest, tag);
-     StoreApplication.getInstance().getRequestQueue().start();
-	}
-	
+
 	/**
-	 * 根据tag取消请求
+	 * StringRequest post请求
+	 * 
+	 * @param method
+	 * @param listener
+	 * @param url
+	 * @param errorListener
+	 * @param map
 	 * @param tag
 	 */
-	private void cancleRequest(String tag){
+	private void stringPostRequest(int method, Listener<String> listener, String url, ErrorListener errorListener, final Map<String, Object> map, String tag) {
+		StringRequest stringRequest = new StringRequest(method, url, listener, errorListener) {
+			@Override
+			protected Map<String, String> getParams() throws AuthFailureError {
+				Map<String, String> paramMap = new HashMap<String, String>();
+				for (String entry : map.keySet()) {
+					paramMap.put(entry, (String) map.get(entry));
+				}
+				return paramMap;
+			}
+		};
+		StoreApplication.getInstance().addToRequestQueue(stringRequest, tag);
+		StoreApplication.getInstance().getRequestQueue().start();
+	}
+
+	/**
+	 * StringRequest get请求
+	 * 
+	 * @param method
+	 * @param listener
+	 * @param url
+	 * @param errorListener
+	 * @param map
+	 * @param tag
+	 */
+	private void stringGetRequest(int method, Listener<String> listener, String url, ErrorListener errorListener, final Map<String, Object> map, String tag) {
+		StringRequest stringRequest = new StringRequest(method, url, listener, errorListener) {
+		};
+		StoreApplication.getInstance().addToRequestQueue(stringRequest, tag);
+		StoreApplication.getInstance().getRequestQueue().start();
+	}
+
+	/**
+	 * 根据tag取消请求
+	 * 
+	 * @param tag
+	 */
+	private void cancleRequest(String tag) {
 		StoreApplication.getInstance().getRequestQueue().cancelAll(tag);
 	}
 }

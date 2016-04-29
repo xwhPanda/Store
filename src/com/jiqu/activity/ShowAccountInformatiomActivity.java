@@ -1,6 +1,13 @@
 package com.jiqu.activity;
 
 
+import org.json.JSONObject;
+
+import com.alibaba.fastjson.JSON;
+import com.android.volley.Request.Method;
+import com.android.volley.Response.ErrorListener;
+import com.android.volley.Response.Listener;
+import com.android.volley.VolleyError;
 import com.jiqu.application.StoreApplication;
 import com.jiqu.database.Account;
 import com.jiqu.database.AccountDao.Properties;
@@ -8,7 +15,9 @@ import com.jiqu.interfaces.DialogDismissObserver;
 import com.jiqu.object.AccountInformation;
 import com.jiqu.store.BaseActivity;
 import com.jiqu.store.R;
+import com.jiqu.tools.MD5;
 import com.jiqu.tools.MetricsTool;
+import com.jiqu.tools.RequestTool;
 import com.jiqu.tools.UIUtil;
 import com.jiqu.view.InformationBrithDialog;
 import com.jiqu.view.InformationGenderDialog;
@@ -18,18 +27,22 @@ import de.greenrobot.dao.query.QueryBuilder;
 
 import android.app.Dialog;
 import android.os.Bundle;
+import android.provider.Contacts.Intents.UI;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.RelativeLayout.LayoutParams;
 import android.widget.TextView;
 
 public class ShowAccountInformatiomActivity extends BaseActivity implements OnClickListener,DialogDismissObserver{
+	private static final String REQUEST_TAG = "modify";
 	private TitleView titleView;
 	private ImageView accountImg;
 	private TextView nickName;
@@ -40,17 +53,31 @@ public class ShowAccountInformatiomActivity extends BaseActivity implements OnCl
 	private TextView gender,birth,phone,qq;
 	private Button genderBtn;
 	private TextView genderTx;
+	private TextView birthTx;
+	private EditText phoneEdit;
+	private EditText qqEdit;
 	private Button birthBtn;
 	private InformationGenderDialog dialog;
 	private InformationBrithDialog brithDialog;
 	
+	private String genderStr = "",birthStr = "";
+	private String phoneStr,qqStr;
 	private Account info;
+	private BTN_STATE state = BTN_STATE.MODIFY;
+	private boolean modifing = false;
+	
+	private RequestTool requestTool;
+	
+	private static enum BTN_STATE{
+		MODIFY,
+		COMMIT;
+	}
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
 		super.onCreate(savedInstanceState);
-		
+		requestTool = RequestTool.getInstance();
 		initView();
 		initData();
 	}
@@ -79,8 +106,14 @@ public class ShowAccountInformatiomActivity extends BaseActivity implements OnCl
 		genderBtn = (Button) findViewById(R.id.genderBtn);
 		birthBtn = (Button) findViewById(R.id.birthBtn);
 		genderTx = (TextView) findViewById(R.id.genderTx);
+		birthTx = (TextView) findViewById(R.id.birthTx);
+		phoneEdit = (EditText) findViewById(R.id.phoneEdit);
+		qqEdit = (EditText) findViewById(R.id.qqEdit);
+		
+		changeState(false);
 		
 		modiftBtn.setOnClickListener(this);
+		loginOut.setOnClickListener(this);
 		genderBtn.setOnClickListener(this);
 		birthBtn.setOnClickListener(this);
 		
@@ -101,6 +134,7 @@ public class ShowAccountInformatiomActivity extends BaseActivity implements OnCl
 		info = (Account) qb.unique();
 		if (info != null) {
 			nickName.setText(info.getUsername());
+			genderStr = String.valueOf(info.getGender());
 			if (info.getGender() == 1) {
 				genderTx.setText(getResources().getString(R.string.man));
 				genderBtn.setBackgroundResource(0);
@@ -108,10 +142,14 @@ public class ShowAccountInformatiomActivity extends BaseActivity implements OnCl
 				genderTx.setText(getResources().getString(R.string.female));
 				genderBtn.setBackgroundResource(0);
 			}
-//			phone.setText(info.getPhone());
-//			qq.setText(info.getQq());
-			birthBtn.setText(info.getBirthday());
-			birthBtn.setBackgroundResource(0);
+			
+			phoneEdit.setText(info.getPhone());
+			qqEdit.setText(info.getQq());
+			if (info.getBirthday() != null && 
+					!TextUtils.isEmpty(info.getBirthday())) {
+				birthTx.setText(info.getBirthday());
+				birthBtn.setBackgroundResource(0);
+			}
 			level.setText("LV " + info.getLevel());
 		}
 	}
@@ -128,12 +166,17 @@ public class ShowAccountInformatiomActivity extends BaseActivity implements OnCl
 		UIUtil.setViewHeight(phoneRel, 175 * Ry);
 		UIUtil.setViewHeight(qqRel, 175 * Ry);
 		
+		UIUtil.setViewWidth(phoneEdit, 300 * Rx);
+		UIUtil.setViewWidth(qqEdit, 400 * Rx);
+		
 		UIUtil.setTextSize(gender, 40);
 		UIUtil.setTextSize(birth, 40);
 		UIUtil.setTextSize(phone, 40);
 		UIUtil.setTextSize(qq, 40);
 		UIUtil.setTextSize(genderTx, 40);
-		UIUtil.setTextSize(birthBtn, 40);
+		UIUtil.setTextSize(birthTx, 40);
+		UIUtil.setTextSize(phoneEdit, 40);
+		UIUtil.setTextSize(qqEdit, 40);
 		UIUtil.setTextSize(level, 25);
 		UIUtil.setTextSize(modiftBtn, 50);
 		UIUtil.setTextSize(loginOut,50);
@@ -154,7 +197,10 @@ public class ShowAccountInformatiomActivity extends BaseActivity implements OnCl
 			UIUtil.setViewSizeMargin(qq, 35 * Rx, 0, 0, 0);
 			UIUtil.setViewSizeMargin(genderTx, 0, 0, 35 * Rx, 0);
 			UIUtil.setViewSizeMargin(genderBtn, 0, 0, 35 * Rx, 0);
+			UIUtil.setViewSizeMargin(birthTx, 0, 0, 35 * Rx, 0);
 			UIUtil.setViewSizeMargin(birthBtn, 0, 0, 35 * Rx, 0);
+			UIUtil.setViewSizeMargin(phoneEdit, 0, 0, 35 * Rx, 0);
+			UIUtil.setViewSizeMargin(qqEdit, 0, 0, 35 * Rx, 0);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -173,6 +219,109 @@ public class ShowAccountInformatiomActivity extends BaseActivity implements OnCl
 			showDialog(brithDialog);
 			setBottomBtnVisible(View.GONE);
 			break;
+		
+		case R.id.modifyBtn:
+			if (state == BTN_STATE.MODIFY) {
+				state = BTN_STATE.COMMIT;
+				changeState(true);
+			}else if (state == BTN_STATE.COMMIT) {
+				if (modifing) {
+					UIUtil.showToast(R.string.modifing);
+				}else {
+					modiftBtn.setText(R.string.modifyCommiting);
+					phoneStr = phoneEdit.getText().toString().trim();
+					qqStr = qqEdit.getText().toString().trim();
+					modifing = true;
+					modifyRequest();
+				}
+			}
+			break;
+		
+		case R.id.loginOut:
+			if (StoreApplication.loginOutObserver != null) {
+				StoreApplication.loginOutObserver.onLoginOut();
+			}
+			StoreApplication.daoSession.getAccountDao().deleteAll();
+			finish();
+			break;
+		}
+	}
+	
+	private void modifyRequest(){
+		if (info == null) {
+			modifing = true;
+			return;
+		}
+		requestTool.getMap().clear();
+		requestTool.setParam("uid", String.valueOf(info.getUid()));
+		requestTool.setParam("gender", genderStr);
+		if (info.getNickname() == null) {
+			requestTool.setParam("nickname", "");
+		}else {
+			requestTool.setParam("nickname", info.getNickname());
+		}
+		requestTool.setParam("phone", phoneStr);
+		requestTool.setParam("birthday", birthStr);
+		requestTool.setParam("qq", qqStr);
+		String token = info.getUid() + genderStr + info.getNickname() + phoneStr + birthStr + qqStr +RequestTool.PRIKEY;
+		requestTool.setParam("token", MD5.GetMD5Code(token));
+		requestTool.startStringRequest(Method.POST,new Listener<String>() {
+
+			@Override
+			public void onResponse(String arg0) {
+				// TODO Auto-generated method stub
+				Log.i("TAG", arg0.toString());
+				modifing = false;
+				modiftBtn.setText(R.string.modify);
+				if (arg0.contains("status")) {
+					int status = JSON.parseObject(arg0).getInteger("status");
+					if (status == 1) {
+						/** 修改成功 **/
+						UIUtil.showToast(R.string.modifySuccess);
+						info.setBirthday(birthStr);
+						info.setGender(Integer.parseInt(genderStr));
+						info.setPhone(phoneStr);
+						info.setQq(qqStr);
+						StoreApplication.daoSession.getAccountDao().deleteAll();
+						StoreApplication.daoSession.getAccountDao().insertOrReplace(info);
+						if (StoreApplication.loginOutObserver != null) {
+							StoreApplication.loginOutObserver.onRefresh(info);
+						}
+						changeState(false);
+					}else if (status == 0) {
+						/** 修改失败 **/
+						UIUtil.showToast(R.string.modifyFailed);
+					}else if (status == -1 || status == -9) {
+						/** 修改失败 **/
+						UIUtil.showToast(R.string.modifyFailed);
+					}else if (status == -2) {
+						/** 用户不存在 **/
+						UIUtil.showToast(R.string.modifyAccountNotExist);
+					}
+				}
+			}
+		}, RequestTool.MODIFY_URL, new ErrorListener(){
+
+			@Override
+			public void onErrorResponse(VolleyError arg0) {
+				// TODO Auto-generated method stub
+				Log.i("TAG", arg0.toString());
+				modiftBtn.setText(R.string.modify);
+				modifing = false;
+				UIUtil.showToast(R.string.modifyFailed);
+			}
+		}, requestTool.getMap(), REQUEST_TAG);
+	}
+	
+	private void changeState(boolean enabled){
+		genderBtn.setEnabled(enabled);
+		birthBtn.setEnabled(enabled);
+		phoneEdit.setEnabled(enabled);
+		qqEdit.setEnabled(enabled);
+		if (enabled) {
+			modiftBtn.setText(getResources().getString(R.string.commit));
+		}else {
+			modiftBtn.setText(getResources().getString(R.string.modify));
 		}
 	}
 	
@@ -207,15 +356,26 @@ public class ShowAccountInformatiomActivity extends BaseActivity implements OnCl
 		// TODO Auto-generated method stub
 		if (type == 0) {//性别选择
 			if (value != null && value.length() > 0 && !"".equals(value)) {
-				genderBtn.setText(value);
+				genderStr = value;
+				genderTx.setText(value);
 				genderBtn.setBackgroundDrawable(null);
 				UIUtil.setViewSize(genderBtn, LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
+				if (getResources().getString(R.string.man).equals(value)) {
+					genderStr = "1";
+				}else if (getResources().getString(R.string.female).equals(value)) {
+					genderStr = "2";
+				}
+			}else {
+				genderStr = "";
 			}
 		}else if (type == 1) {//生日选择
 			if (value.length() > 0 && !"".equals(value)) {
-				birthBtn.setText(value);
+				birthStr = value;
+				birthTx.setText(value);
 				birthBtn.setBackgroundDrawable(null);
 				UIUtil.setViewSize(birthBtn, LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
+			}else {
+				birthStr = "";
 			}
 		}
 		setBottomBtnVisible(View.VISIBLE);

@@ -2,10 +2,12 @@ package com.jiqu.activity;
 
 
 import com.alibaba.fastjson.JSON;
+import com.android.volley.Request.Method;
 import com.android.volley.Response.ErrorListener;
 import com.android.volley.Response.Listener;
 import com.android.volley.VolleyError;
 import com.jiqu.application.StoreApplication;
+import com.jiqu.database.Account;
 import com.jiqu.object.AccountInformation;
 import com.jiqu.object.AccountResponeInfo;
 import com.jiqu.store.BaseActivity;
@@ -118,8 +120,8 @@ public class MemberLoginActivity extends BaseActivity implements OnClickListener
 		switch (v.getId()) {
 		case R.id.login:
 			if (!loging) {
-				String account = accountInputView.getText();
-				String password = passwordInputView.getText();
+				String account = accountInputView.getText().trim();
+				String password = passwordInputView.getText().trim();
 				if (checkValue(account,password)) {
 					loging = true;
 					login(account,password);
@@ -157,7 +159,7 @@ public class MemberLoginActivity extends BaseActivity implements OnClickListener
 		requestTool.setParam("auth", account);
 		requestTool.setParam("password", MD5.GetMD5Code(password));
 		
-		requestTool.startStringRequest(new Listener<String>() {
+		requestTool.startStringRequest(Method.POST,new Listener<String>() {
 
 			@Override
 			public void onResponse(String arg0) {
@@ -168,11 +170,15 @@ public class MemberLoginActivity extends BaseActivity implements OnClickListener
 					/**用户不存在**/
 					Toast.makeText(MemberLoginActivity.this, R.string.accountNotExist, Toast.LENGTH_SHORT).show();
 				}else if (accountResponeInfo.getStatus() == 1) {
+					/**登录成功**/
 					Toast.makeText(MemberLoginActivity.this, R.string.longinSuccess, Toast.LENGTH_SHORT).show();
 					StoreApplication.daoSession.getAccountDao().deleteAll();
-					StoreApplication.daoSession.getAccountDao().insertOrReplace(AccountInformation.toAccount(accountResponeInfo.getData()));
+					Account account = AccountInformation.toAccount(accountResponeInfo.getData());
+					StoreApplication.daoSession.getAccountDao().insertOrReplace(account);
+					if (StoreApplication.loginOutObserver != null) {
+						StoreApplication.loginOutObserver.onRefresh(account);
+					}
 					MemberLoginActivity.this.finish();
-					/**登录成功**/
 				}else if (accountResponeInfo.getStatus() == -1) {
 					/**登录失败**/
 					Toast.makeText(MemberLoginActivity.this, R.string.loginFailed, Toast.LENGTH_SHORT).show();

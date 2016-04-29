@@ -12,6 +12,7 @@ import com.jiqu.activity.MemberLoginActivity;
 import com.jiqu.activity.SearchActivity;
 import com.jiqu.activity.ShowAccountInformatiomActivity;
 import com.jiqu.application.StoreApplication;
+import com.jiqu.database.Account;
 import com.jiqu.download.AppInfo;
 import com.jiqu.download.DownloadManager;
 import com.jiqu.fragment.EvaluationFragment;
@@ -24,6 +25,8 @@ import com.jiqu.tools.NetReceiver;
 import com.jiqu.tools.NetReceiver.OnNetChangeListener;
 import com.jiqu.tools.UIUtil;
 import com.jiqu.view.CustomDialog;
+
+import de.greenrobot.dao.query.QueryBuilder;
 
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -191,12 +194,12 @@ public class MainActivity extends FragmentActivity implements OnClickListener,On
 		
 		FragmentTransaction mFragmentTransaction = mFragmentManager.beginTransaction();
 		mFragmentTransaction.add(R.id.homeFrameLayout, recommendFragment);
-		mFragmentTransaction.add(R.id.homeFrameLayout, informationFragment);
-		mFragmentTransaction.hide(informationFragment);
-		mFragmentTransaction.add(R.id.homeFrameLayout, gameFragment);
-		mFragmentTransaction.hide(gameFragment);
-		mFragmentTransaction.add(R.id.homeFrameLayout, evaluationFragment);
-		mFragmentTransaction.hide(evaluationFragment);
+//		mFragmentTransaction.add(R.id.homeFrameLayout, informationFragment);
+//		mFragmentTransaction.hide(informationFragment);
+//		mFragmentTransaction.add(R.id.homeFrameLayout, gameFragment);
+//		mFragmentTransaction.hide(gameFragment);
+//		mFragmentTransaction.add(R.id.homeFrameLayout, evaluationFragment);
+//		mFragmentTransaction.hide(evaluationFragment);
 		mFragmentTransaction.add(R.id.homeFrameLayout, toolFragment);
 		mFragmentTransaction.hide(toolFragment);
 		
@@ -379,11 +382,13 @@ public class MainActivity extends FragmentActivity implements OnClickListener,On
 			break;
 		
 		case R.id.accountImg:
-//			if (true) {
+			QueryBuilder qb = StoreApplication.daoSession.getAccountDao().queryBuilder();
+			Account account = (Account) qb.unique();
+			if (account != null) {
 				startActivity(new Intent(this, ShowAccountInformatiomActivity.class));
-//			}else {
-//				startActivity(new Intent(this, MemberLoginActivity.class));
-//			}
+			}else {
+				startActivity(new Intent(this, MemberLoginActivity.class));
+			}
 			break;
 			
 		case R.id.download:

@@ -65,6 +65,10 @@ public class GameAdapter extends BaseAdapter implements DownloadObserver{
 		initIds();
 	}
 	
+	public void setList(List<GameInfo> list){
+		informations = list;
+	}
+	
 	public void setItemBackgroundColor(int colorId){
 		this.colorId = colorId;
 	}

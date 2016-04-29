@@ -5,6 +5,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import com.jiqu.application.StoreApplication;
+
 import android.content.Context;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
@@ -16,6 +18,7 @@ import android.view.ViewGroup;
 import android.view.ViewGroup.LayoutParams;
 import android.view.ViewGroup.MarginLayoutParams;
 import android.widget.TextView;
+import android.widget.Toast;
 
 public class UIUtil {
 	
@@ -101,5 +104,9 @@ public class UIUtil {
 		}else {
 			return 0 + "KB";
 		}
+	}
+	
+	public static void showToast(int stringId){
+		Toast.makeText(StoreApplication.context, StoreApplication.context.getResources().getString(stringId), Toast.LENGTH_SHORT).show();
 	}
 }

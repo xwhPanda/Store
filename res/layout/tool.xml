@@ -25,7 +25,6 @@
             android:id="@+id/accountName"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="sdfsfdafdfa"
             android:textColor="@color/informationListGameColor"
             android:textSize="14sp" 
         	fontPath="fonts/lantinghei.ttf"/>
@@ -46,7 +45,6 @@
         android:layout_centerHorizontal="true"
         android:background="@drawable/dengji"
         android:gravity="center"
-        android:text="LV5"
         android:textColor="@color/informationListGameColor"
         android:textSize="14sp" 
         fontPath="fonts/lantinghei.ttf"/>

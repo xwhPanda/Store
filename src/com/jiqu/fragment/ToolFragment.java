@@ -9,26 +9,29 @@ import com.jiqu.activity.DownloadManagerActivity;
 import com.jiqu.activity.PowerManagerActivity;
 import com.jiqu.activity.ResourceManagementActivity;
 import com.jiqu.activity.ShareActivity;
+import com.jiqu.application.StoreApplication;
+import com.jiqu.database.Account;
+import com.jiqu.interfaces.LoginOutObserver;
 import com.jiqu.store.R;
 import com.jiqu.tools.MetricsTool;
 import com.jiqu.tools.UIUtil;
 import com.jiqu.view.ToolItemView;
 
+import de.greenrobot.dao.query.QueryBuilder;
+
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
-import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-public class ToolFragment extends Fragment implements OnClickListener{
+public class ToolFragment extends Fragment implements OnClickListener,LoginOutObserver{
 	private float Rx,Ry;
 	private View view;
 	private ImageView accountIcon;
@@ -41,13 +44,20 @@ public class ToolFragment extends Fragment implements OnClickListener{
 	private ToolItemView downloadItem,resourcesItem,uninstallItem;
 	private ToolItemView clearCacheItem,clearUpItem,powerItem;
 	private ToolItemView commomProblemItem,shareItem,aboutUsItem;
+	
+	private Account account;
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
 		view = inflater.inflate(R.layout.tool, null, false);
+		StoreApplication.setLoginOutObserver(this);
 		
 		init();
+		
+		QueryBuilder qb = StoreApplication.daoSession.getAccountDao().queryBuilder();
+		account = (Account) qb.unique();
+		setData(account);
 		return view;
 	}
 	
@@ -178,5 +188,27 @@ public class ToolFragment extends Fragment implements OnClickListener{
 			startActivity(new Intent(getActivity(), AboutUsActivity.class));
 			break;
 		}
+	}
+	
+	private void setData(Account account){
+		if (account != null) {
+			accountName.setText(account.getUsername());
+			level.setText("LV " + account.getLevel());
+		}else {
+			accountName.setText("");
+			level.setText("LV " + "");
+		}
+	}
+	@Override
+	public void onLoginOut() {
+		// TODO Auto-generated method stub
+		account = null;
+	}
+
+	@Override
+	public void onRefresh(Account account) {
+		// TODO Auto-generated method stub
+		this.account = account;
+		setData(account);
 	}
 }

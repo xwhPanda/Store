@@ -1,6 +1,7 @@
 package com.jiqu.activity;
 
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -9,14 +10,24 @@ import android.widget.EditText;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.alibaba.fastjson.JSON;
+import com.android.volley.Request.Method;
+import com.android.volley.Response.ErrorListener;
+import com.android.volley.Response.Listener;
+import com.android.volley.VolleyError;
+import com.jiqu.download.StringUtil;
 import com.jiqu.store.BaseActivity;
 import com.jiqu.store.R;
+import com.jiqu.tools.MD5;
 import com.jiqu.tools.MetricsTool;
+import com.jiqu.tools.RequestTool;
 import com.jiqu.tools.UIUtil;
 import com.jiqu.view.PasswordView;
 import com.jiqu.view.TitleView;
 
 public class ForgetPasswordActivity extends BaseActivity implements OnClickListener{
+	private static final String GETCODE_TAG = "getcode";
+	private static final String RESET_TAG = "resetPassword";
 	private EditText accountEd;
 	private EditText codesEd;
 	private Button getCodes;
@@ -26,11 +37,17 @@ public class ForgetPasswordActivity extends BaseActivity implements OnClickListe
 	private Button commit;
 	private TitleView title;
 	
+	private RequestTool requestTool; 
+	
+	private boolean getCoding = false;
+	private boolean resetingPassword = false;
+	
 	@Override
 		protected void onCreate(Bundle savedInstanceState) {
 			// TODO Auto-generated method stub
 			super.onCreate(savedInstanceState);
 			
+			requestTool = RequestTool.getInstance();
 			init();
 		}
 
@@ -58,9 +75,8 @@ public class ForgetPasswordActivity extends BaseActivity implements OnClickListe
 		inputPassword.addTextChanedListener();
 		confirmPassword.addTextChanedListener();
 		
-		
-		
 		commit.setOnClickListener(this);
+		getCodes.setOnClickListener(this);
 		
 		initViewSize();
 		title.tip.setText(R.string.setPasswordAgain);
@@ -110,7 +126,139 @@ public class ForgetPasswordActivity extends BaseActivity implements OnClickListe
 	public void onClick(View v) {
 		// TODO Auto-generated method stub
 		if (v.getId() == commit.getId()) {
+			if (getCoding) {
+				UIUtil.showToast(R.string.getCoding);
+			}else {
+				if (resetingPassword) {
+					UIUtil.showToast(R.string.resetingPassword);
+				}else {
+					String account = accountEd.getText().toString().trim();
+					String code = codesEd.getText().toString().trim();
+					String password = inputPassword.getText().toString().trim();
+					String rePassword = confirmPassword.getText().toString().trim();
+					if (checkValue(account, code, password, rePassword)) {
+						resetingPassword = true;
+						resetPassword(account, code, password, rePassword);
+					}
+				}
+			}
 			
+		}else if (v.getId() == getCodes.getId()) {
+			if (getCoding) {
+				UIUtil.showToast(R.string.getCoding);
+			}else {
+				String account = accountEd.getText().toString().trim();
+				if (TextUtils.isEmpty(account)) {
+					UIUtil.showToast(R.string.accountIsNull);
+				}else if (!StringUtil.isEmail(account)) {
+					UIUtil.showToast(R.string.emailError);
+				}else {
+					getCoding = true;
+					getCode(account);
+				}
+			}
 		}
+	}
+	
+	private boolean checkValue(String account,String code,String password,String rePassword){
+		if (TextUtils.isEmpty(account)) {
+			UIUtil.showToast(R.string.accountNotExist);
+			return false;
+		}else if (TextUtils.isEmpty(code)) {
+			UIUtil.showToast(R.string.codeIsNull);
+			return false;
+		}else if (TextUtils.isEmpty(password)) {
+			UIUtil.showToast(R.string.passwordIsNull);
+			return false;
+		}else if (TextUtils.isEmpty(rePassword) || !password.equals(rePassword)) {
+			UIUtil.showToast(R.string.confirmPasswordIsNull);
+			return false;
+		}else {
+			return true;
+		}
+	}
+	
+	private void getCode(String account){
+		String url = RequestTool.GET_RESET_CODE_URL + "?auth=" + account + "&token=" + MD5.GetMD5Code(account + RequestTool.PRIKEY);
+		requestTool.startStringRequest(Method.GET, new Listener<String>() {
+
+			@Override
+			public void onResponse(String arg0) {
+				// TODO Auto-generated method stub
+				Log.i("TAG", arg0);
+				getCoding = false;
+				if (arg0.contains("status")) {
+					int status = JSON.parseObject(arg0).getIntValue("status");
+					if (status == 0 || status == -1 || status == -9) {
+						/** 获取失败**/
+						UIUtil.showToast(R.string.getCodeFaile);
+					}else if (status == 1) {
+						/** 获取成功 **/
+					}else if (status == -2) {
+						/** 用户不存在 **/
+						UIUtil.showToast(R.string.accountNotExist);
+					}
+				}else {
+					UIUtil.showToast(R.string.getCodeFaile);
+				}
+			}
+		}, url, new ErrorListener() {
+
+			@Override
+			public void onErrorResponse(VolleyError arg0) {
+				// TODO Auto-generated method stub
+				getCoding = false;
+				Log.i("TAG", arg0.toString());
+			}
+		}, requestTool.getMap(), GETCODE_TAG);
+	}
+	
+	private void resetPassword(String account,String code,String password,String rePassword){
+		requestTool.getMap().clear();
+		requestTool.setParam("auth", account);
+		requestTool.setParam("vercode", code);
+		requestTool.setParam("password", MD5.GetMD5Code(password));
+		requestTool.setParam("repasswd", MD5.GetMD5Code(rePassword));
+		requestTool.setParam("token", MD5.GetMD5Code(account + code + MD5.GetMD5Code(password) + MD5.GetMD5Code(rePassword) + RequestTool.PRIKEY));
+		
+		requestTool.startStringRequest(Method.POST, new Listener<String>() {
+
+			@Override
+			public void onResponse(String arg0) {
+				// TODO Auto-generated method stub
+				resetingPassword = false;
+				if (arg0.contains("status")) {
+					int status = JSON.parseObject(arg0).getIntValue("status");
+					if (status == 0 || status == -1 || status == -5 || status == -9) {
+						/** 重置失败 **/
+						UIUtil.showToast(R.string.resetFailed);
+					}else if (status == 1) {
+						/** 成功 **/
+						UIUtil.showToast(R.string.resetSuccess);
+						ForgetPasswordActivity.this.finish();
+					}else if (status == -2) {
+						/** 用户名不存在 **/
+						UIUtil.showToast(R.string.accountNotExist);
+					}else if (status == -3) {
+						/** 验证码不正确 **/
+						UIUtil.showToast(R.string.codeWrong);
+					}else if (status == -4) {
+						/** 两次密码不一致 **/
+						UIUtil.showToast(R.string.confirmPasswordIsNull);
+					}else if (status == -6) {
+						/** 验证码超时 **/
+						UIUtil.showToast(R.string.codeTimeOut);
+					}
+				}
+			}
+		}, RequestTool.RESETPASSWORD_URL, new ErrorListener() {
+
+			@Override
+			public void onErrorResponse(VolleyError arg0) {
+				// TODO Auto-generated method stub
+				resetingPassword = false;
+				UIUtil.showToast(R.string.resetFailed);
+			}
+		}, requestTool.getMap(), RESET_TAG);
 	}
 }

@@ -18,6 +18,7 @@ import com.jiqu.database.DaoMaster;
 import com.jiqu.database.DaoMaster.DevOpenHelper;
 import com.jiqu.database.DaoSession;
 import com.jiqu.download.FileUtil;
+import com.jiqu.interfaces.LoginOutObserver;
 import com.jiqu.store.R;
 import com.jiqu.tools.Constant;
 import com.jiqu.tools.LruBitmapCache;
@@ -48,6 +49,7 @@ public class StoreApplication extends Application {
 	public static String PACKAGE_NAME;
 	public static String DATA_CACHE_PATH;
 	public static Context context;
+	public static LoginOutObserver loginOutObserver;
 	
 	@Override
 	public void onCreate() {
@@ -65,6 +67,10 @@ public class StoreApplication extends Application {
 		
 		initFiles();
 		initConstant();
+	}
+	
+	public static void setLoginOutObserver(LoginOutObserver observer){
+		loginOutObserver = observer;
 	}
 	
 	private void initConstant(){
