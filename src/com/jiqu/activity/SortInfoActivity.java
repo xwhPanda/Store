@@ -19,6 +19,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.alibaba.fastjson.JSON;
+import com.android.volley.Request.Method;
 import com.android.volley.Response.ErrorListener;
 import com.android.volley.Response.Listener;
 import com.android.volley.VolleyError;
@@ -28,6 +29,9 @@ import com.jiqu.download.DownloadManager;
 import com.jiqu.object.CategoryAppsInfo;
 import com.jiqu.object.GameInfo;
 import com.jiqu.object.InstalledApp;
+import com.jiqu.object.ThematicItem;
+import com.jiqu.object.ThematicSortInfo;
+import com.jiqu.object.ThematicSortInfoItem;
 import com.jiqu.store.BaseActivity;
 import com.jiqu.store.R;
 import com.jiqu.tools.InstalledAppTool;
@@ -51,6 +55,9 @@ public class SortInfoActivity extends BaseActivity implements OnRefreshListener,
 	private List<GameInfo> gameInformations = new ArrayList<GameInfo>();
 	//分类的类型
 	private int type = 0;
+	//0：从分类页跳转；1：从专题页跳转
+	private int fromWhere = 0;
+	private ThematicItem thematicItem;
 	
 	private String categoryTitle = "";
 	private int categoryId;
@@ -63,14 +70,51 @@ public class SortInfoActivity extends BaseActivity implements OnRefreshListener,
 			// TODO Auto-generated method stub
 			super.onCreate(savedInstanceState);
 			requestTool = RequestTool.getInstance();
+			fromWhere = getIntent().getIntExtra("fromWhere", 0);
 			initView();
-			categoryAppsRequest(0,DEFAULT_PAGE_SIZE);
+			
+			if (fromWhere == 0) {
+				categoryAppsRequest(0,DEFAULT_PAGE_SIZE);
+			}else if (fromWhere == 1) {
+				thematicItem = (ThematicItem) getIntent().getSerializableExtra("thematicItem");
+				if (thematicItem != null) {
+					thematicAppsRequest();
+				}
+			}
 		}
 
 	@Override
 	public int getContentView() {
 		// TODO Auto-generated method stub
 		return R.layout.sort_info_layout;
+	}
+	
+	private void thematicAppsRequest(){
+		titleView.tip.setText(thematicItem.getTitle());
+		requestTool.getMap().clear();
+		requestTool.startStringRequest(Method.GET, new Listener<String>() {
+
+			@Override
+			public void onResponse(String arg0) {
+				// TODO Auto-generated method stub
+				ThematicSortInfo thematicSortInfo = JSON.parseObject(arg0, ThematicSortInfo.class);
+				setThematicData(thematicSortInfo.getAlldata());
+			}
+		}, RequestTool.thematicUrl + thematicItem.getId(), new ErrorListener() {
+
+			@Override
+			public void onErrorResponse(VolleyError arg0) {
+				// TODO Auto-generated method stub
+			}
+		}, requestTool.getMap(), "thematic");
+	}
+	
+	private void setThematicData(ThematicSortInfoItem[] items){
+		int length = items.length;
+		for (int i = 0; i < length; i++) {
+			gameInformations.add(ThematicSortInfoItem.toGameInfo(items[i]));
+		}
+		adapter.notifyDataSetChanged();
 	}
 	
 	private void categoryAppsRequest(int start,int end){

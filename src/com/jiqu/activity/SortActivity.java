@@ -82,7 +82,10 @@ public class SortActivity extends BaseActivity implements Listener<JSONObject> ,
 			@Override
 			public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 				SortItem sortItem = sortItems.get(position);
-				startActivity(new Intent(SortActivity.this, SortInfoActivity.class).putExtra("categoryTitle", sortItem.getCategory_name()).putExtra("categoryId", sortItem.getCategory_id()));
+				startActivity(new Intent(SortActivity.this, SortInfoActivity.class)
+				.putExtra("fromWhere", 0)
+				.putExtra("categoryTitle", sortItem.getCategory_name())
+				.putExtra("categoryId", sortItem.getCategory_id()));
 			}
 		});
 	}

@@ -9,8 +9,8 @@
         android:id="@+id/thematicImg"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
-        android:background="@color/red"/>
+        android:scaleType="fitXY"
+        android:layout_centerHorizontal="true"/>
     
     <LinearLayout 
         android:id="@+id/titleLin"
@@ -34,8 +34,7 @@
             android:textColor="@color/white"
             fontPath="fonts/lantinghei.ttf"
             android:layout_gravity="center_vertical"
-            android:singleLine="true"
-            android:text="感觉噶空间"/>
+            android:singleLine="true"/>
         
         <TextView 
             android:id="@+id/leftBrackets"

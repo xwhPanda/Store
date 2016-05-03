@@ -40,6 +40,7 @@ import com.jiqu.download.DownloadManager.DownloadObserver;
 import com.jiqu.download.UnZipManager;
 import com.jiqu.object.GameDetailInfo;
 import com.jiqu.object.InstalledApp;
+import com.jiqu.object.SpecialResultsItem;
 import com.jiqu.store.BaseActivity;
 import com.jiqu.store.R;
 import com.jiqu.tools.Constant;
@@ -94,6 +95,8 @@ public class DetailActivity extends BaseActivity implements Listener<JSONObject>
 	private RequestTool requestTool;
 	//游戏ID
 	private String p_id;
+	//0：根据id请求数据；1：不需要请求数据，数据是传过来的
+	private int requestType = 0;
 	private ImageView[] imgs;
 	private ImageView[] radioImgs;
 	
@@ -106,10 +109,16 @@ public class DetailActivity extends BaseActivity implements Listener<JSONObject>
 		super.onCreate(savedInstanceState);
 		requestTool = RequestTool.getInstance();
 		p_id = getIntent().getStringExtra("p_id");
+		requestType = getIntent().getIntExtra("requestType", 0);
 		
 		initView();
 		
-		loadDetail();
+		if (requestType == 0) {
+			loadDetail();
+		}else if (requestType == 1) {
+			SpecialResultsItem item = (SpecialResultsItem) getIntent().getSerializableExtra("data");
+			setData(item);
+		}
 	}
 	
 	private void loadDetail(){
@@ -275,6 +284,95 @@ public class DetailActivity extends BaseActivity implements Listener<JSONObject>
 			GameDetailInfo info = JSON.parseObject(arg0.toString(), GameDetailInfo.class);
 			setData(info);
 		}
+	}
+	
+	private void setData(SpecialResultsItem info){
+		DownloadManager.getInstance().registerObserver(this);
+		ImageListener listener = ImageLoader.getImageListener(gameIcon, R.drawable.ic_launcher, R.drawable.ic_launcher);
+		StoreApplication.getInstance().getImageLoader().get(info.getPic_url(), listener);
+		titleView.tip.setText(info.getName());
+		gameName.setText(info.getName());
+		downloadCount.setText(info.getDownloads() + "人下载");
+		version.setText("版本:" + info.getVersion_name());
+		type.setText("未知类型");
+		size.setText(UIUtil.getDataSize(info.getFile_size()));
+		
+		List<String> screenshot = new ArrayList<String>();
+		for (int i = 0; i < info.getImages().length; i++) {
+			screenshot.add(info.getImages()[i].getPic_url());
+		}
+		int count = screenshot.size();
+		if (count > 0) {
+			imgs = new ImageView[count];
+			radioImgs = new ImageView[count];
+			for(int i = 0;i < count;i++){
+				ImageView view = new ImageView(this);
+				ImageListener imageListener = ImageLoader.getImageListener(view, R.drawable.ic_launcher, R.drawable.ic_launcher);
+				StoreApplication.getInstance().getImageLoader().get(screenshot.get(i), imageListener);
+				view.setScaleType(ScaleType.FIT_XY);
+				LayoutParams lp = new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT);
+				view.setLayoutParams(lp);
+				imgs[i] = view;
+				
+				ImageView radio = new ImageView(this);
+				if (i== 0) {
+					radio.setBackgroundResource(R.drawable.dian_blue);
+				}else {
+					radio.setBackgroundResource(R.drawable.dian_white);
+				}
+				android.widget.LinearLayout.LayoutParams params  = new android.widget.LinearLayout.LayoutParams((int)(20 * Rx), (int)(20 * Rx));
+				if (i != 0) {
+					params.leftMargin = (int) (10 * Rx);
+				}
+				radio.setLayoutParams(params);
+				radioImgs[i] = radio;
+				viewGroup.addView(radio);
+			}
+			
+			ViewPagerAdapter adapter = new ViewPagerAdapter(this, imgs);
+			viewPager.setAdapter(adapter);
+		}
+		
+		float vertigo = Float.parseFloat("1.2");
+		if (vertigo == 0) {
+			vertigoValue.setBackgroundResource(R.drawable.jindu1);
+		}else if (vertigo > 0 && vertigo < 1.2) {
+			vertigoValue.setBackgroundResource(R.drawable.jindu2);
+		}else if (vertigo >= 1.4 && vertigo <= 2.0) {
+			vertigoValue.setBackgroundResource(R.drawable.jindu3);
+		}else if (vertigo > 2.0) {
+			vertigoValue.setBackgroundResource(R.drawable.jindu4);
+		}
+		float frames = Float.parseFloat("1.2");
+		float immersive = Float.parseFloat("1.2");
+		float gameplay = Float.parseFloat("1.2");
+		float difficulty = Float.parseFloat("1.2");
+		
+		screenSenseBar.setRating(frames);
+		immersionBar.setRating(immersive);
+		gameplayBar.setRating(gameplay);
+		difficultyBar.setRating(difficulty);
+		
+		float rat = (frames + immersive + gameplay + difficulty + vertigo);
+		evaluationScore.setText(rat + "");
+		comprehensiveBar.setRating(rat);
+		
+		QueryBuilder<DownloadAppinfo> qb = StoreApplication.daoSession.getDownloadAppinfoDao().queryBuilder();
+		downloadAppinfo = qb.where(Properties.Id.eq(info.getId())).unique();
+		if (downloadAppinfo != null) {
+			state = downloadAppinfo.getDownloadState();
+		}else {
+			downloadAppinfo = GameDetailInfo.toDownloadAppinfo(SpecialResultsItem.toDetailInfo(info));
+			state = downloadAppinfo.getDownloadState();
+			List<InstalledApp> apps = InstalledAppTool.getPersonalApp(this);
+			int stateNum = InstalledAppTool.contain(apps, downloadAppinfo.getPackageName(), Integer.parseInt(downloadAppinfo.getVersionCode()));
+			if (stateNum != -1) {
+				state = stateNum;
+				downloadAppinfo.setDownloadState(state);
+				DownloadManager.DBManager.getDownloadAppinfoDao().insertOrReplace(downloadAppinfo);
+			}
+		}
+		refreshState(state);
 	}
 	
 	private void setData(GameDetailInfo info){

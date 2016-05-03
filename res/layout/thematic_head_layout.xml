@@ -23,7 +23,6 @@
             android:layout_height="wrap_content"
             android:textColor="@color/blue"
             android:layout_centerVertical="true"
-            android:text="加拉塞克街坊邻居阿胶"
             fontPath="fonts/lantinghei.ttf"/>
         
         <LinearLayout 

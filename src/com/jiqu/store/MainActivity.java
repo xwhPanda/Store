@@ -313,6 +313,7 @@ public class MainActivity extends FragmentActivity implements OnClickListener,On
 				}
 				mFragmentTransaction.hide(fragments.get(currentIndex));
 				mFragmentTransaction.show(recommendFragment);
+//				mFragmentTransaction.replace(R.id.homeFrameLayout, recommendFragment);
 				currentIndex = 0;
 				changeFocusState(currentIndex, true);
 			}
@@ -328,6 +329,7 @@ public class MainActivity extends FragmentActivity implements OnClickListener,On
 				}
 				mFragmentTransaction.hide(fragments.get(currentIndex));
 				mFragmentTransaction.show(informationFragment);
+//				mFragmentTransaction.replace(R.id.homeFrameLayout, informationFragment);
 				currentIndex = 1;
 				changeFocusState(currentIndex, true);
 			}

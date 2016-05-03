@@ -2,7 +2,11 @@ package com.jiqu.adapter;
 
 import java.util.List;
 
+import com.android.volley.toolbox.ImageLoader;
+import com.android.volley.toolbox.ImageLoader.ImageListener;
+import com.jiqu.application.StoreApplication;
 import com.jiqu.object.ThematicInfo;
+import com.jiqu.object.ThematicItem;
 import com.jiqu.store.R;
 import com.jiqu.tools.MetricsTool;
 import com.jiqu.tools.UIUtil;
@@ -19,24 +23,24 @@ import android.widget.TextView;
 
 public class ThematicItemAdapter extends BaseAdapter {
 	private Context context;
-	private List<ThematicInfo> thematicInfos;
+	private List<ThematicItem> thematicItems;
 
-	public ThematicItemAdapter(Context context, List<ThematicInfo> thematicInfos) {
+	public ThematicItemAdapter(Context context, List<ThematicItem> thematicItems) {
 		// TODO Auto-generated constructor stub
 		this.context = context;
-		this.thematicInfos = thematicInfos;
+		this.thematicItems = thematicItems;
 	}
 
 	@Override
 	public int getCount() {
 		// TODO Auto-generated method stub
-		return thematicInfos.size();
+		return thematicItems.size();
 	}
 
 	@Override
 	public Object getItem(int position) {
 		// TODO Auto-generated method stub
-		return thematicInfos.get(position);
+		return thematicItems.get(position);
 	}
 
 	@Override
@@ -55,6 +59,7 @@ public class ThematicItemAdapter extends BaseAdapter {
 		} else {
 			holder = (Holder) convertView.getTag();
 		}
+		holder.setData(thematicItems.get(position));
 		return convertView;
 	}
 	
@@ -69,6 +74,7 @@ public class ThematicItemAdapter extends BaseAdapter {
 		private TextView rightBrackets;
 
 		private View rootView;
+		private ThematicItem data;
 
 		public Holder() {
 			rootView = initView();
@@ -93,8 +99,22 @@ public class ThematicItemAdapter extends BaseAdapter {
 			count = (TextView) view.findViewById(R.id.count);
 			heart = (ImageView) view.findViewById(R.id.heart);
 			rightBrackets = (TextView) view.findViewById(R.id.rightBrackets);
+			
+			titleImg.setVisibility(View.GONE);
+			leftBrackets.setVisibility(View.GONE);
+			count.setVisibility(View.GONE);
+			heart.setVisibility(View.GONE);
+			rightBrackets.setVisibility(View.GONE);
 
 			return view;
+		}
+		
+		public void setData(ThematicItem item){
+			data = item;
+			ImageListener listener = ImageLoader.getImageListener(thematicImg, R.drawable.ic_launcher, R.drawable.ic_launcher);
+			StoreApplication.getInstance().getImageLoader().get(item.getFocus(), listener);
+			thematicTitle.setText(item.getTitle());
+			
 		}
 
 		private void initViewSize() {

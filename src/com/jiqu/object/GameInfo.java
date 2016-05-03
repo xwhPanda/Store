@@ -242,7 +242,9 @@ public class GameInfo {
 				+ Float.parseFloat(info.grade_gameplay)
 				+ Float.parseFloat(info.grade_immersive)
 				+ Float.parseFloat(info.grade_vertigo));
-		if (!info.url.endsWith(".apk")) {
+		if (info.getShort_description().contains("<p>")) {
+			downloadInfo.setIsZip(false);
+		}else if (!info.url.endsWith(".apk")) {
 			downloadInfo.setIsZip(true);
 		}else {
 			downloadInfo.setIsZip(false);

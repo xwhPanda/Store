@@ -28,7 +28,10 @@ public class RequestTool {
 	private static final String rankUrl = "http://xu8api.91xuxu.com/api/1.0/getProducts";
 	private static final String categoryUrl = "http://xu8api.91xuxu.com/api/1.0/getCategoryList";
 	private static final String categoryAppsUrl = "http://xu8api.91xuxu.com/api/1.0/getCategoryApps";
-	private static final String specialsUrl = "http://mobile.app.shouyou.com/sy/v1/classify/newtypes";
+	
+	public static final String specialsUrl = "http://115.28.169.193:81/api/market/apps/app-subject/?page=1&page_size=18&essence=1&ordering=-top%2C-updated&token=f78543cc344a027ffaa27963533510c8&nonce=1462238714277";
+	public static final String thematicListUrl = "http://xml.mumayi.com/v18/special/list.php?type=p&page=1";
+	public static final String thematicUrl = "http://xml.mumayi.com/v18/special/list.php?type=app&page=1&id=";
 
 	public static final String PRIKEY = "*7&SKJuas";
 	public static final String REGISTER_URL = "http://ht.163zs.com/index.php/Api/User/register";

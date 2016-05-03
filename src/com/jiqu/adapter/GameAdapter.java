@@ -22,6 +22,7 @@ import com.jiqu.view.RatingBarView;
 
 import android.content.Context;
 import android.os.Handler;
+import android.text.Html;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -46,8 +47,6 @@ public class GameAdapter extends BaseAdapter implements DownloadObserver{
 	private List<Holder2> mDisplayedHolders;
 	private Context context;
 	private int[] resIds = new int[3];
-	
-	private boolean firstIn = false;
 	
 	private boolean hotIconVisible;
 	private boolean subscriptVisible;
@@ -316,7 +315,7 @@ public class GameAdapter extends BaseAdapter implements DownloadObserver{
 		
 		private void initViewSize(){
 			UIUtil.setViewSize(icon, 170 * MetricsTool.Rx, 170 * MetricsTool.Rx);
-//			UIUtil.setViewSize(downloadBtn, 75 * MetricsTool.Rx, 75 * MetricsTool.Rx);
+			UIUtil.setViewSize(downloadBtn, 75 * MetricsTool.Rx, 75 * MetricsTool.Rx);
 			UIUtil.setViewSize(subscriptLin, 85 * MetricsTool.Rx, 85 * MetricsTool.Rx);
 			UIUtil.setViewSize(hotIcon, 55 * MetricsTool.Rx, 35 * MetricsTool.Rx);
 			
@@ -324,6 +323,8 @@ public class GameAdapter extends BaseAdapter implements DownloadObserver{
 			UIUtil.setTextSize(gameDes, 25);
 			UIUtil.setTextSize(gameSize, 25);
 			UIUtil.setTextSize(subscriptTx, 35);
+			
+			UIUtil.setTextSize(downloadBtn, 15);
 			
 			try {
 				UIUtil.setViewSizeMargin(icon, 35 * MetricsTool.Rx, 30 * MetricsTool.Ry, 35 * MetricsTool.Rx, 30 * MetricsTool.Ry);
@@ -402,9 +403,17 @@ public class GameAdapter extends BaseAdapter implements DownloadObserver{
 		
 		private void refreshView(){
 			gameName.setText(mData.getAppName());
-			gameDes.setText(mData.getDes());
+			if (mData.getDes().contains("<p>")) {
+				gameDes.setText(Html.fromHtml(mData.getDes()));
+			}else {
+				gameDes.setText(mData.getDes());
+			}
 			gameScore.setRating(mData.getScore());
-			gameSize.setText(FileUtil.getSize(Long.parseLong(mData.getAppSize())));
+			try {
+				gameSize.setText(FileUtil.getSize(Long.parseLong(mData.getAppSize())));
+			} catch (Exception e) {
+				gameSize.setText(mData.getAppSize() + "M");
+			}
 			ImageListener listener = ImageLoader.getImageListener(icon,R.drawable.ic_launcher, R.drawable.ic_launcher);
 			StoreApplication.getInstance().getImageLoader().get(mData.getIconUrl(), listener);
 			

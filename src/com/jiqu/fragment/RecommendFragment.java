@@ -43,6 +43,7 @@ import com.jiqu.object.RecommendAppsInfo;
 import com.jiqu.object.TopRecommendItem;
 import com.jiqu.object.TopRecommendtInfo;
 import com.jiqu.store.R;
+import com.jiqu.tools.CountDownTimer;
 import com.jiqu.tools.InstalledAppTool;
 import com.jiqu.tools.MetricsTool;
 import com.jiqu.tools.RequestTool;
@@ -61,7 +62,6 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.os.CountDownTimer;
 import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -121,6 +121,7 @@ public class RecommendFragment extends Fragment implements OnPageChangeListener,
 	
 	private boolean refreshShow = false;
 	private int currentIndex = 0;
+	private CountDownTimer timer;
 
 	@Override
 	@Nullable
@@ -239,7 +240,7 @@ public class RecommendFragment extends Fragment implements OnPageChangeListener,
 	}
 	
 	private void initTop(){
-		int count = topRecommendtInfo.getCount();
+		final int count = topRecommendtInfo.getCount();
 		radioImgs = new ImageView[count];
 		contentImgs = new ImageView[count];
 		for (int i = 0; i < count; i++) {
@@ -279,14 +280,15 @@ public class RecommendFragment extends Fragment implements OnPageChangeListener,
 		ViewPagerAdapter adapter = new ViewPagerAdapter(getActivity(), contentImgs);
 		recommendImgViewPager.setAdapter(adapter);
 		
-		new CountDownTimer(Integer.MAX_VALUE, 5000) {
+		timer = new CountDownTimer(Integer.MAX_VALUE, 5000) {
 			
 			@Override
 			public void onTick(long millisUntilFinished) {
 				// TODO Auto-generated method stub
-				
-				recommendImgViewPager.setCurrentItem(currentIndex % 3);
-				currentIndex++;
+				if (recommendImgViewPager != null && count != 0) {
+					recommendImgViewPager.setCurrentItem(currentIndex % count);
+					currentIndex++;
+				}
 			}
 			
 			@Override
@@ -294,7 +296,8 @@ public class RecommendFragment extends Fragment implements OnPageChangeListener,
 				// TODO Auto-generated method stub
 				
 			}
-		}.start();
+		};
+		timer.start();
 	}
 
 	@Override
@@ -478,8 +481,6 @@ public class RecommendFragment extends Fragment implements OnPageChangeListener,
 				gameInfo.setAdapterType(1);
 			}
 			
-			new LoadDataTask().execute("");
-			
 			List<InstalledApp> apps = InstalledAppTool.getPersonalApp(getActivity());
 			
 			int count = DEFAULT_PAGE_SIZE;
@@ -591,6 +592,9 @@ public class RecommendFragment extends Fragment implements OnPageChangeListener,
 		super.onDestroyView();
 		if (adapter != null) {
 			adapter.stopObserver();
+		}
+		if (timer != null) {
+			timer.cancel();
 		}
 		getActivity().unregisterReceiver(appInstallReceiver);
 		getActivity().unregisterReceiver(deleteReceiver);

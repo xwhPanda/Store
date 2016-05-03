@@ -1,18 +1,26 @@
 package com.jiqu.adapter;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
+import com.jiqu.activity.SortActivity;
+import com.jiqu.activity.SortInfoActivity;
 import com.jiqu.object.ThematicInfo;
-import com.jiqu.object.ThematicItemInfo;
+import com.jiqu.object.ThematicItem;
 import com.jiqu.store.R;
 import com.jiqu.tools.MetricsTool;
 import com.jiqu.tools.UIUtil;
 import com.jiqu.view.MaxGridView;
 
 import android.content.Context;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
 import android.widget.BaseAdapter;
 import android.widget.GridView;
 import android.widget.ImageView;
@@ -21,9 +29,9 @@ import android.widget.TextView;
 
 public class ThematicAdapter extends BaseAdapter {
 	private Context context;
-	private List<ThematicItemInfo> lists;
+	private List<ThematicInfo> lists;
 
-	public ThematicAdapter(Context context,List<ThematicItemInfo> lists) {
+	public ThematicAdapter(Context context,List<ThematicInfo> lists) {
 		// TODO Auto-generated constructor stub
 		this.context = context;
 		this.lists = lists;
@@ -70,6 +78,7 @@ public class ThematicAdapter extends BaseAdapter {
 		private MaxGridView thematicGridView;
 		
 		private View rootView;
+		private ThematicInfo data;
 		
 		public Holder(){
 			rootView = initView();
@@ -91,6 +100,17 @@ public class ThematicAdapter extends BaseAdapter {
 			horLine = (ImageView) view.findViewById(R.id.horLine);
 			thematicGridView = (MaxGridView) view.findViewById(R.id.thematicGridView);
 			
+			thematicGridView.setOnItemClickListener(new OnItemClickListener() {
+
+				@Override
+				public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+					// TODO Auto-generated method stub
+					context.startActivity(new Intent(context, SortInfoActivity.class)
+					.putExtra("thematicItem", data.getAlldata()[position + 3])
+					.putExtra("fromWhere", 1));
+				}
+			});
+			
 			return view;
 		}
 		
@@ -111,9 +131,15 @@ public class ThematicAdapter extends BaseAdapter {
 		}
 		
 		
-		public void initData(ThematicItemInfo infos){
-			thematicTitle.setText(infos.getTitle());
-			ThematicItemAdapter adapter = new ThematicItemAdapter(context, infos.getThematicInfos());
+		public void initData(ThematicInfo infos){
+			data = infos;
+			thematicTitleLin.setVisibility(View.GONE);
+			List<ThematicItem> items = new ArrayList<ThematicItem>();
+			int length = infos.getAlldata().length;
+			for(int i = 3;i < length;i++){
+				items.add(infos.getAlldata()[i]);
+			}
+			ThematicItemAdapter adapter = new ThematicItemAdapter(context, items);
 			thematicGridView.setAdapter(adapter);
 		}
 	}
