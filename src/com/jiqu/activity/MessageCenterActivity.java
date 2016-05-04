@@ -72,8 +72,8 @@ public class MessageCenterActivity extends BaseActivity implements OnClickListen
 			GameInformation game = new GameInformation();
 			gameInformations.add(game);
 		}
-		InformationAdapter adapter = new InformationAdapter(this, gameInformations,1);
-		contentView.setAdapter(adapter);
+//		InformationAdapter adapter = new InformationAdapter(this, gameInformations,1);
+//		contentView.setAdapter(adapter);
 		
 		List<PrivateMessage> messages = new ArrayList<PrivateMessage>();
 		

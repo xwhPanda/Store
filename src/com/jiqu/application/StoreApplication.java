@@ -35,6 +35,7 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Looper;
 import android.provider.Settings.Secure;
+import android.telephony.TelephonyManager;
 import android.text.TextUtils;
 import android.util.Log;
 
@@ -49,6 +50,7 @@ public class StoreApplication extends Application {
 	public static String PACKAGE_NAME;
 	public static String DATA_CACHE_PATH;
 	public static Context context;
+	public static String DEVICE_ID;
 	public static LoginOutObserver loginOutObserver;
 	
 	@Override
@@ -73,6 +75,7 @@ public class StoreApplication extends Application {
 		loginOutObserver = observer;
 	}
 	
+	
 	private void initConstant(){
 		PackageManager pm = getPackageManager();
 		Constant.MAC = getLocalMacAddressFromIp(context);
@@ -82,7 +85,8 @@ public class StoreApplication extends Application {
 			Constant.VERSION_NAME = pi.versionName;
 			Constant.VERSION_CODE = pi.versionCode;
 			Constant.DEVICE_ID = Secure.getString(getContentResolver(), Secure.ANDROID_ID);
-			Constant.SERIAL_NUMBER = android.os.Build.SERIAL; 
+			Constant.SERIAL_NUMBER = android.os.Build.SERIAL;
+			DEVICE_ID = ((TelephonyManager)context.getSystemService(TELEPHONY_SERVICE)).getDeviceId();
 		} catch (NameNotFoundException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

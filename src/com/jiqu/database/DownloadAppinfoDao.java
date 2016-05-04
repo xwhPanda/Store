@@ -14,7 +14,7 @@ import com.jiqu.database.DownloadAppinfo;
 /** 
  * DAO for table "DOWNLOAD_APPINFO".
 */
-public class DownloadAppinfoDao extends AbstractDao<DownloadAppinfo, Long> {
+public class DownloadAppinfoDao extends AbstractDao<DownloadAppinfo, String> {
 
     public static final String TABLENAME = "DOWNLOAD_APPINFO";
 
@@ -27,7 +27,7 @@ public class DownloadAppinfoDao extends AbstractDao<DownloadAppinfo, Long> {
         public final static Property AppName = new Property(1, String.class, "appName", false, "APP_NAME");
         public final static Property VersionCode = new Property(2, String.class, "versionCode", false, "VERSION_CODE");
         public final static Property VersionName = new Property(3, String.class, "versionName", false, "VERSION_NAME");
-        public final static Property Id = new Property(4, Long.class, "id", true, "ID");
+        public final static Property Id = new Property(4, String.class, "id", true, "ID");
         public final static Property CurrentSize = new Property(5, Long.class, "currentSize", false, "CURRENT_SIZE");
         public final static Property AppSize = new Property(6, String.class, "appSize", false, "APP_SIZE");
         public final static Property DownloadState = new Property(7, int.class, "downloadState", false, "DOWNLOAD_STATE");
@@ -38,7 +38,7 @@ public class DownloadAppinfoDao extends AbstractDao<DownloadAppinfo, Long> {
         public final static Property UnzipPath = new Property(12, String.class, "unzipPath", false, "UNZIP_PATH");
         public final static Property HasFinished = new Property(13, Boolean.class, "hasFinished", false, "HAS_FINISHED");
         public final static Property Des = new Property(14, String.class, "des", false, "DES");
-        public final static Property Score = new Property(15, Float.class, "score", false, "SCORE");
+        public final static Property Score = new Property(15, String.class, "score", false, "SCORE");
         public final static Property Progress = new Property(16, Float.class, "progress", false, "PROGRESS");
         public final static Property IconByte = new Property(17, byte[].class, "iconByte", false, "ICON_BYTE");
         public final static Property IsZip = new Property(18, Boolean.class, "isZip", false, "IS_ZIP");
@@ -66,7 +66,7 @@ public class DownloadAppinfoDao extends AbstractDao<DownloadAppinfo, Long> {
                 "\"APP_NAME\" TEXT NOT NULL ," + // 1: appName
                 "\"VERSION_CODE\" TEXT," + // 2: versionCode
                 "\"VERSION_NAME\" TEXT," + // 3: versionName
-                "\"ID\" INTEGER PRIMARY KEY ," + // 4: id
+                "\"ID\" TEXT PRIMARY KEY NOT NULL ," + // 4: id
                 "\"CURRENT_SIZE\" INTEGER," + // 5: currentSize
                 "\"APP_SIZE\" TEXT NOT NULL ," + // 6: appSize
                 "\"DOWNLOAD_STATE\" INTEGER NOT NULL ," + // 7: downloadState
@@ -77,7 +77,7 @@ public class DownloadAppinfoDao extends AbstractDao<DownloadAppinfo, Long> {
                 "\"UNZIP_PATH\" TEXT," + // 12: unzipPath
                 "\"HAS_FINISHED\" INTEGER," + // 13: hasFinished
                 "\"DES\" TEXT," + // 14: des
-                "\"SCORE\" REAL," + // 15: score
+                "\"SCORE\" TEXT," + // 15: score
                 "\"PROGRESS\" REAL," + // 16: progress
                 "\"ICON_BYTE\" BLOB," + // 17: iconByte
                 "\"IS_ZIP\" INTEGER," + // 18: isZip
@@ -111,9 +111,9 @@ public class DownloadAppinfoDao extends AbstractDao<DownloadAppinfo, Long> {
             stmt.bindString(4, versionName);
         }
  
-        Long id = entity.getId();
+        String id = entity.getId();
         if (id != null) {
-            stmt.bindLong(5, id);
+            stmt.bindString(5, id);
         }
  
         Long currentSize = entity.getCurrentSize();
@@ -154,9 +154,9 @@ public class DownloadAppinfoDao extends AbstractDao<DownloadAppinfo, Long> {
             stmt.bindString(15, des);
         }
  
-        Float score = entity.getScore();
+        String score = entity.getScore();
         if (score != null) {
-            stmt.bindDouble(16, score);
+            stmt.bindString(16, score);
         }
  
         Float progress = entity.getProgress();
@@ -202,8 +202,8 @@ public class DownloadAppinfoDao extends AbstractDao<DownloadAppinfo, Long> {
 
     /** @inheritdoc */
     @Override
-    public Long readKey(Cursor cursor, int offset) {
-        return cursor.isNull(offset + 4) ? null : cursor.getLong(offset + 4);
+    public String readKey(Cursor cursor, int offset) {
+        return cursor.isNull(offset + 4) ? null : cursor.getString(offset + 4);
     }    
 
     /** @inheritdoc */
@@ -214,7 +214,7 @@ public class DownloadAppinfoDao extends AbstractDao<DownloadAppinfo, Long> {
             cursor.getString(offset + 1), // appName
             cursor.isNull(offset + 2) ? null : cursor.getString(offset + 2), // versionCode
             cursor.isNull(offset + 3) ? null : cursor.getString(offset + 3), // versionName
-            cursor.isNull(offset + 4) ? null : cursor.getLong(offset + 4), // id
+            cursor.isNull(offset + 4) ? null : cursor.getString(offset + 4), // id
             cursor.isNull(offset + 5) ? null : cursor.getLong(offset + 5), // currentSize
             cursor.getString(offset + 6), // appSize
             cursor.getInt(offset + 7), // downloadState
@@ -225,7 +225,7 @@ public class DownloadAppinfoDao extends AbstractDao<DownloadAppinfo, Long> {
             cursor.isNull(offset + 12) ? null : cursor.getString(offset + 12), // unzipPath
             cursor.isNull(offset + 13) ? null : cursor.getShort(offset + 13) != 0, // hasFinished
             cursor.isNull(offset + 14) ? null : cursor.getString(offset + 14), // des
-            cursor.isNull(offset + 15) ? null : cursor.getFloat(offset + 15), // score
+            cursor.isNull(offset + 15) ? null : cursor.getString(offset + 15), // score
             cursor.isNull(offset + 16) ? null : cursor.getFloat(offset + 16), // progress
             cursor.isNull(offset + 17) ? null : cursor.getBlob(offset + 17), // iconByte
             cursor.isNull(offset + 18) ? null : cursor.getShort(offset + 18) != 0, // isZip
@@ -245,7 +245,7 @@ public class DownloadAppinfoDao extends AbstractDao<DownloadAppinfo, Long> {
         entity.setAppName(cursor.getString(offset + 1));
         entity.setVersionCode(cursor.isNull(offset + 2) ? null : cursor.getString(offset + 2));
         entity.setVersionName(cursor.isNull(offset + 3) ? null : cursor.getString(offset + 3));
-        entity.setId(cursor.isNull(offset + 4) ? null : cursor.getLong(offset + 4));
+        entity.setId(cursor.isNull(offset + 4) ? null : cursor.getString(offset + 4));
         entity.setCurrentSize(cursor.isNull(offset + 5) ? null : cursor.getLong(offset + 5));
         entity.setAppSize(cursor.getString(offset + 6));
         entity.setDownloadState(cursor.getInt(offset + 7));
@@ -256,7 +256,7 @@ public class DownloadAppinfoDao extends AbstractDao<DownloadAppinfo, Long> {
         entity.setUnzipPath(cursor.isNull(offset + 12) ? null : cursor.getString(offset + 12));
         entity.setHasFinished(cursor.isNull(offset + 13) ? null : cursor.getShort(offset + 13) != 0);
         entity.setDes(cursor.isNull(offset + 14) ? null : cursor.getString(offset + 14));
-        entity.setScore(cursor.isNull(offset + 15) ? null : cursor.getFloat(offset + 15));
+        entity.setScore(cursor.isNull(offset + 15) ? null : cursor.getString(offset + 15));
         entity.setProgress(cursor.isNull(offset + 16) ? null : cursor.getFloat(offset + 16));
         entity.setIconByte(cursor.isNull(offset + 17) ? null : cursor.getBlob(offset + 17));
         entity.setIsZip(cursor.isNull(offset + 18) ? null : cursor.getShort(offset + 18) != 0);
@@ -269,14 +269,13 @@ public class DownloadAppinfoDao extends AbstractDao<DownloadAppinfo, Long> {
     
     /** @inheritdoc */
     @Override
-    protected Long updateKeyAfterInsert(DownloadAppinfo entity, long rowId) {
-        entity.setId(rowId);
-        return rowId;
+    protected String updateKeyAfterInsert(DownloadAppinfo entity, long rowId) {
+        return entity.getId();
     }
     
     /** @inheritdoc */
     @Override
-    public Long getKey(DownloadAppinfo entity) {
+    public String getKey(DownloadAppinfo entity) {
         if(entity != null) {
             return entity.getId();
         } else {

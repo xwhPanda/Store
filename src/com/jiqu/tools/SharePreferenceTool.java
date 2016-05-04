@@ -14,6 +14,12 @@ public class SharePreferenceTool{
 		}else if (value instanceof Integer) {
 			editor.putInt(key, (Integer) value);
 			editor.commit();
+		}else if (value instanceof Long) {
+			editor.putLong(key, (Long) value);
+			editor.commit();
+		}else if (value instanceof String) {
+			editor.putString(key, (String)value);
+			editor.commit();
 		}
 	}
 	
@@ -23,5 +29,13 @@ public class SharePreferenceTool{
 	
 	public static int getIntFromPreferences(SharedPreferences preferences,String key,int defaultValue){
 		return preferences.getInt(key, defaultValue);
+	}
+	
+	public static long getLongFromPreferences(SharedPreferences preferences,String key,long defaultValue){
+		return preferences.getLong(key, defaultValue);
+	}
+	
+	public static String getStringFromPreferences(SharedPreferences preferences,String key,String defaultValue){
+		return preferences.getString(key, defaultValue);
 	}
 }

@@ -247,7 +247,7 @@ public class GameAdapter extends BaseAdapter implements DownloadObserver{
 			hotIcon = (ImageView) view.findViewById(R.id.hotIcon);
 			
 			gameScore.setResID(resIds);
-			gameScore.setStep(1.0f);
+			gameScore.setStep(0.5f);
 			
 			informationLin = (RelativeLayout) view.findViewById(R.id.informationLin);
 			subscriptLin = (LinearLayout) view.findViewById(R.id.subscriptLin);
@@ -346,7 +346,6 @@ public class GameAdapter extends BaseAdapter implements DownloadObserver{
 			}
 			
 			mState = data.getDownloadState();
-			Log.i("TAG", data.getAppName() + " mstate : " + mState);
 			DownloadAppinfo downloadInfo = mDownloadManager.getDownloadInfo(data.getId());
 			if (data.getDownloadState() != DownloadManager.STATE_INSTALLED
 					&& data.getDownloadState() != DownloadManager.STATE_NEED_UPDATE) {
@@ -408,7 +407,7 @@ public class GameAdapter extends BaseAdapter implements DownloadObserver{
 			}else {
 				gameDes.setText(mData.getDes());
 			}
-			gameScore.setRating(mData.getScore());
+			gameScore.setRating(Float.parseFloat(mData.getScore()));
 			try {
 				gameSize.setText(FileUtil.getSize(Long.parseLong(mData.getAppSize())));
 			} catch (Exception e) {
@@ -510,7 +509,7 @@ public class GameAdapter extends BaseAdapter implements DownloadObserver{
 		for(int i = 0; i < displayedHolder2s.size(); i++){
 			final Holder2 holder2 = displayedHolder2s.get(i);
 			DownloadAppinfo appInfo = holder2.getData();
-			if (appInfo.getId().longValue() == info.getId().longValue()) {
+			if (appInfo.getId().equals(info.getId())) {
 				AppUtil.post(new Runnable() {
 					
 					@Override

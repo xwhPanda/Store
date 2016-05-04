@@ -2,7 +2,11 @@ package com.jiqu.adapter;
 
 import java.util.List;
 
+import com.android.volley.toolbox.ImageLoader;
+import com.android.volley.toolbox.ImageLoader.ImageListener;
+import com.jiqu.application.StoreApplication;
 import com.jiqu.object.GameInformation;
+import com.jiqu.object.InformationGallaryItem;
 import com.jiqu.store.R;
 import com.jiqu.tools.MetricsTool;
 import com.jiqu.tools.UIUtil;
@@ -20,12 +24,12 @@ import android.widget.TextView;
 
 public class InformationAdapter extends BaseAdapter {
 	private Context context;
-	private List<GameInformation> informations;
+	private List<InformationGallaryItem> informations;
 	private LayoutInflater inflater;
 	/** 0  资讯页  1 消息中心 **/
 	private int type = 0;
 
-	public InformationAdapter(Context context, List<GameInformation> informations,int type) {
+	public InformationAdapter(Context context, List<InformationGallaryItem> informations,int type) {
 		this.context = context;
 		this.informations = informations;
 		inflater = LayoutInflater.from(context);
@@ -69,14 +73,14 @@ public class InformationAdapter extends BaseAdapter {
 			UIUtil.setViewSize(holder.img, 36 * MetricsTool.Rx, 36 * MetricsTool.Rx);
 			
 			UIUtil.setTextSize(holder.gameName, 35);
-			UIUtil.setTextSize(holder.gameName, 30);
+			UIUtil.setTextSize(holder.gameDes, 30);
 			UIUtil.setTextSize(holder.time, 30);
 			UIUtil.setTextSize(holder.zhuanti, 30);
 			UIUtil.setTextSize(holder.time, 25);
 			
 			try {
 				UIUtil.setViewSizeMargin(holder.gameIcon, 30 * MetricsTool.Rx, 15 * MetricsTool.Ry, 30 * MetricsTool.Rx, 15 * MetricsTool.Ry);
-				UIUtil.setViewSizeMargin(holder.timeRel, 0, 0, 30 * MetricsTool.Rx, 0);
+				UIUtil.setViewSizeMargin(holder.gameName, 0, 0, 30 * MetricsTool.Rx, 0);
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
@@ -89,13 +93,12 @@ public class InformationAdapter extends BaseAdapter {
 		} else {
 			holder = (Holder) convertView.getTag();
 		}
-
-//		holder.gameIcon.setBackgroundResource(R.drawable.ic_launcher);
-		holder.gameName.setText("穿越火线");
-		holder.gameDes.setText("biubiubiubiubiuaaaaaaaaaaaaaaa" + "biubiubiubiuahahahahahahahhaahhaahahah");
-		holder.img.setVisibility(View.VISIBLE);
+		InformationGallaryItem item = informations.get(position);
+		ImageListener listener = ImageLoader.getImageListener(holder.gameIcon, R.drawable.ic_launcher, R.drawable.ic_launcher);
+		StoreApplication.getInstance().getImageLoader().get(item.getImg(), listener);
+		holder.gameName.setText(item.getTitle());
+		holder.gameDes.setText(item.getDesc());
 		holder.time.setVisibility(View.INVISIBLE);
-		holder.time.setText("03-09");
 		return convertView;
 	}
 	

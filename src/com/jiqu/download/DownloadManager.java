@@ -83,7 +83,7 @@ public class DownloadManager implements ChangeObserver{
 	private List<DownloadObserver> mObservers = new ArrayList<DownloadObserver>();
 	/** 用于记录所有下载的任务，方便在取消下载时，通过id能找到该任务进行删除 */
 	private Map<Long, DownloadTask> mTaskMap = new ConcurrentHashMap<Long, DownloadTask>();
-	private Map<Long, Downloader> map = new ConcurrentHashMap<Long, Downloader>();
+	private Map<String, Downloader> map = new ConcurrentHashMap<String, Downloader>();
 
 	public static synchronized DownloadManager getInstance() {
 		if (instance == null) {
@@ -93,6 +93,11 @@ public class DownloadManager implements ChangeObserver{
 	}
 
 	public boolean isDownloading(Long id){
+//		return mTaskMap.get(id) == null?false:true;
+		return map.get(id) == null?false:true;
+	}
+	
+	public boolean isDownloading(String id){
 //		return mTaskMap.get(id) == null?false:true;
 		return map.get(id) == null?false:true;
 	}
@@ -224,7 +229,7 @@ public class DownloadManager implements ChangeObserver{
 	
 	/** 网络变化时调用 */
 	public synchronized void pauseAllExit() {
-		for (Entry<Long, Downloader> entry : map.entrySet()) {
+		for (Entry<String, Downloader> entry : map.entrySet()) {
 			DownloadAppinfo info = DBManager.getDownloadAppinfoDao().queryBuilder().where(Properties.Id.eq(entry.getKey())).unique();
 			if (info != null) {
 				pauseDownload(info);
@@ -237,7 +242,7 @@ public class DownloadManager implements ChangeObserver{
 	
 	/** 网络变化时调用 */
 	public void startAll(){
-		for (Map.Entry<Long, Downloader> entry : map.entrySet()) {
+		for (Map.Entry<String, Downloader> entry : map.entrySet()) {
 			Downloader task = map.get(entry.getKey());
 			if (task != null) {
 				DownloadAppinfo info = DBManager.getDownloadAppinfoDao().queryBuilder().where(Properties.Id.eq(entry.getKey())).unique();
@@ -400,8 +405,21 @@ public class DownloadManager implements ChangeObserver{
 		DownloadAppinfo appinfo = (DownloadAppinfo) qb.where(Properties.Id.eq(id)).unique();
 		return appinfo;
 	}
+	
+	/** 获取下载信息 */
+	public synchronized DownloadAppinfo getDownloadInfo(String id) {
+		// return mDownloadMap.get(id);
+		QueryBuilder qb = DBManager.getDownloadAppinfoDao().queryBuilder();
+		DownloadAppinfo appinfo = (DownloadAppinfo) qb.where(Properties.Id.eq(id)).unique();
+		return appinfo;
+	}
 
 	public synchronized void setDownloadInfo(long id, DownloadAppinfo info) {
+		// mDownloadMap.put(id, info);
+		DBManager.getDownloadAppinfoDao().insertOrReplace(info);
+	}
+	
+	public synchronized void setDownloadInfo(String id, DownloadAppinfo info) {
 		// mDownloadMap.put(id, info);
 		DBManager.getDownloadAppinfoDao().insertOrReplace(info);
 	}

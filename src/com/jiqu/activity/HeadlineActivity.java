@@ -1,15 +1,22 @@
 package com.jiqu.activity;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.LinearLayout.LayoutParams;
 
+import com.android.volley.Request.Method;
+import com.android.volley.Response.ErrorListener;
+import com.android.volley.Response.Listener;
+import com.android.volley.VolleyError;
+import com.jiqu.object.InformationGallaryItem;
 import com.jiqu.store.BaseActivity;
 import com.jiqu.store.R;
 import com.jiqu.tools.MetricsTool;
+import com.jiqu.tools.RequestTool;
 import com.jiqu.tools.UIUtil;
 import com.jiqu.view.EvaluationBottomView;
 import com.jiqu.view.EvaluationItemView;
@@ -27,19 +34,50 @@ public class HeadlineActivity extends BaseActivity {
 	private LinearLayout detailedEvaLin;
 	private EvaluationBottomView evaGameView;
 	private ImageView view;
+	
+	private RequestTool requestTool;
+	private InformationGallaryItem item;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
 		super.onCreate(savedInstanceState);
-		
+		requestTool = RequestTool.getInstance();
+		item = (InformationGallaryItem) getIntent().getSerializableExtra("data");
 		initView();
+		
+		if (item != null) {
+			loadData(RequestTool.informationDetailUrl 
+					+ "news-id-" + item.getNews_id()
+					+ "-gameId-" + item.getGid()
+					+ ".html");
+		}
 	}
 
 	@Override
 	public int getContentView() {
 		// TODO Auto-generated method stub
 		return R.layout.headline_layout;
+	}
+	
+	private void loadData(String url){
+		requestTool.getMap().clear();
+		requestTool.startStringRequest(Method.GET, new Listener<String>() {
+
+			@Override
+			public void onResponse(String arg0) {
+				// TODO Auto-generated method stub
+				Log.i("TAG", arg0);
+			}
+		}, url, new ErrorListener(){
+
+			@Override
+			public void onErrorResponse(VolleyError arg0) {
+				// TODO Auto-generated method stub
+				Log.i("TAG", arg0.toString());
+			}
+			
+		}, requestTool.getMap(), "informationDetail");
 	}
 
 	private void initView(){
@@ -61,20 +99,20 @@ public class HeadlineActivity extends BaseActivity {
 		titleView.editBtn.setBackgroundResource(R.drawable.fenxiang);
 		titleView.editBtn.setVisibility(View.VISIBLE);
 		
-		for(int i = 0 ; i < 5 ; i++){
-			EvaluationItemView itemView = new EvaluationItemView(this);
-			
-			ImageView view = new ImageView(this);
-			view.setBackgroundResource(R.drawable.xian);
-			LayoutParams lp = new LayoutParams(LayoutParams.MATCH_PARENT, (int)(2 * Ry));
-			lp.topMargin = (int) (25 * MetricsTool.Ry);
-			view.setLayoutParams(lp);
-			
-			detailedEvaLin.addView(itemView);
-			if (i < 4) {
-				detailedEvaLin.addView(view);
-			}
-		}
+//		for(int i = 0 ; i < 5 ; i++){
+//			EvaluationItemView itemView = new EvaluationItemView(this);
+//			
+//			ImageView view = new ImageView(this);
+//			view.setBackgroundResource(R.drawable.xian);
+//			LayoutParams lp = new LayoutParams(LayoutParams.MATCH_PARENT, (int)(2 * Ry));
+//			lp.topMargin = (int) (25 * MetricsTool.Ry);
+//			view.setLayoutParams(lp);
+//			
+//			detailedEvaLin.addView(itemView);
+//			if (i < 4) {
+//				detailedEvaLin.addView(view);
+//			}
+//		}
 		
 		initViewSize();
 	}

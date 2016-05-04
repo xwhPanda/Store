@@ -170,6 +170,9 @@
     <string name="rightBrackets">)</string>
     <string name="newHeadlines">最新头条</string>
     
+    <string name="latestGame">最新游戏</string>
+    <string name="newGame">最热游戏</string>
+    
     <string name="headControl">头控</string>
     <string name="handle">手柄</string>
     <string name="low">L</string>

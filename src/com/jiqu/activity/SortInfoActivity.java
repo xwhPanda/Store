@@ -167,7 +167,7 @@ public class SortInfoActivity extends BaseActivity implements OnRefreshListener,
 			@Override
 			public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 				// TODO Auto-generated method stub
-				startActivity(new Intent(SortInfoActivity.this, DetailActivity.class).putExtra("p_id", gameInformations.get(position).getP_id()));
+//				startActivity(new Intent(SortInfoActivity.this, DetailActivity.class).putExtra("p_id", gameInformations.get(position).getP_id()));
 			}
 		});
 		
@@ -217,21 +217,21 @@ public class SortInfoActivity extends BaseActivity implements OnRefreshListener,
 				count = gameInformations.size();
 			}
 			
-			for(int i = gameInformations.size() - count;i<gameInformations.size();i++){
-				GameInfo gameInfo = gameInformations.get(i);
-				DownloadAppinfo info = DownloadManager.getInstance().getDownloadInfo(Long.parseLong(gameInfo.getP_id()));
-				gameInfo.setAdapterType(1);
-				int state = InstalledAppTool.contain(apps,gameInfo.getPackagename(), Integer.parseInt(gameInfo.getVersion_code()));
-				if (state != -1) {
-					gameInfo.setState(state);
-				}else {
-					if (info != null 
-							&& (info.getDownloadState() == DownloadManager.STATE_INSTALLED
-							|| info.getDownloadState() == DownloadManager.STATE_NEED_UPDATE)) {
-						DownloadManager.DBManager.delete(info);
-					}
-				}
-			}
+//			for(int i = gameInformations.size() - count;i<gameInformations.size();i++){
+//				GameInfo gameInfo = gameInformations.get(i);
+//				DownloadAppinfo info = DownloadManager.getInstance().getDownloadInfo(Long.parseLong(gameInfo.getP_id()));
+//				gameInfo.setAdapterType(1);
+//				int state = InstalledAppTool.contain(apps,gameInfo.getPackagename(), Integer.parseInt(gameInfo.getVersion_code()));
+//				if (state != -1) {
+//					gameInfo.setState(state);
+//				}else {
+//					if (info != null 
+//							&& (info.getDownloadState() == DownloadManager.STATE_INSTALLED
+//							|| info.getDownloadState() == DownloadManager.STATE_NEED_UPDATE)) {
+//						DownloadManager.DBManager.delete(info);
+//					}
+//				}
+//			}
 			if (refreshViewShowing) {
 				refreshViewShowing = false;
 				refreshLayout.refreshFinish(PullToRefreshLayout.SUCCEED);
@@ -239,5 +239,4 @@ public class SortInfoActivity extends BaseActivity implements OnRefreshListener,
 			adapter.notifyDataSetChanged();
 		}
 	}
-
 }

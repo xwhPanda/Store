@@ -131,6 +131,16 @@ public class InstalledAppTool {
 		
 		return state;
 	}
+	
+	public static int contain(List<InstalledApp> personalApps ,String pkg){
+		int state = -1;
+		for (InstalledApp app : personalApps) {
+			if (pkg.equals(app.packageName)) {
+				state = DownloadManager.STATE_INSTALLED;
+			}
+		}
+		return state;
+	}
 
 	public static boolean RootCommand(String command) {
 		Process process = null;

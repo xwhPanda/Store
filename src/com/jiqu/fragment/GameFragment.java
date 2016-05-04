@@ -7,6 +7,7 @@ import java.util.List;
 import org.json.JSONObject;
 
 import com.alibaba.fastjson.JSON;
+import com.android.volley.Request.Method;
 import com.android.volley.Response.ErrorListener;
 import com.android.volley.Response.Listener;
 import com.android.volley.VolleyError;
@@ -25,14 +26,17 @@ import com.jiqu.tools.MetricsTool;
 import com.jiqu.tools.RequestTool;
 import com.jiqu.tools.UIUtil;
 import com.jiqu.view.PullToRefreshLayout;
+import com.jiqu.view.PullToRefreshLayout.OnRefreshListener;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.View.OnTouchListener;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -41,8 +45,10 @@ import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-public class GameFragment extends Fragment implements OnClickListener{
-	private static final int DEFAULT_PAGE_SIZE = 20;
+public class GameFragment extends Fragment implements OnClickListener,OnRefreshListener,OnTouchListener{
+	private static final int DEFAULT_PAGE_SIZE = 10;
+	private static final String LATEST_REQUEST_TAG = "latestRequestTag";
+	private static final String HOT_REQUEST_TAG = "hotRequestTag";
 	private ListView gameListView;
 	private View view,headView;
 	private ViewPager informationImgViewPager;
@@ -55,11 +61,16 @@ public class GameFragment extends Fragment implements OnClickListener{
 	private ImageView explosiveHeadlinesImg,allHeadlinesImg;
 	private TextView explosiveHeadlinesTx,allHeadlinesTx;
 	
+	private PullToRefreshLayout refresh_view;
+	
 	private List<GameInfo> newGameList = new ArrayList<GameInfo>();
 	private List<GameInfo> hotGameList = new ArrayList<GameInfo>();
 	private GameAdapter newGameAdapter;
 	
 	private RequestTool requestTool;
+	private int type = 1;
+	private int latestPageNum = 1;
+	private int hotPageNum = 1;
 	
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -69,25 +80,22 @@ public class GameFragment extends Fragment implements OnClickListener{
 		requestTool = RequestTool.getInstance();
 		initView();
 		
-		loadNew(0,DEFAULT_PAGE_SIZE);
-		loadHot(0,DEFAULT_PAGE_SIZE);
+		loadNew(RequestTool.LATEST_GAME_URL);
+		loadHot(RequestTool.HOT_GAME_URL);
 		return view;
 	}
 	
-	private void loadNew(int start,int end){
-		requestTool.initParam();
-		requestTool.setParam("start_position", start);
-		requestTool.setParam("size", end);
-		requestTool.setParam("orderby", "3");
-		requestTool.startRankRequest(new Listener<JSONObject>() {
+	private void loadNew(String url){
+		requestTool.getMap().clear();
+		requestTool.startStringRequest(Method.GET, new Listener<String>() {
 
 			@Override
-			public void onResponse(JSONObject arg0) {
-				Log.i("TAG", arg0.toString());
+			public void onResponse(String arg0) {
 				// TODO Auto-generated method stub
 				RankInfo rankInfo = JSON.parseObject(arg0.toString(), RankInfo.class);
 				if (rankInfo != null) {
-					Collections.addAll(newGameList, rankInfo.getItem());
+					latestPageNum++;
+					Collections.addAll(newGameList, rankInfo.getData());
 					int count = DEFAULT_PAGE_SIZE;
 					if (newGameList.size() < DEFAULT_PAGE_SIZE) {
 						count = newGameList.size();
@@ -95,77 +103,74 @@ public class GameFragment extends Fragment implements OnClickListener{
 					List<InstalledApp> apps = InstalledAppTool.getPersonalApp(getActivity());
 					for(int i = newGameList.size() - count;i<newGameList.size();i++){
 						GameInfo gameInfo = newGameList.get(i);
-						DownloadAppinfo info = DownloadManager.getInstance().getDownloadInfo(Long.parseLong(gameInfo.getP_id()));
+						DownloadAppinfo info = DownloadManager.getInstance().getDownloadInfo(Long.parseLong(gameInfo.getId()));
 						gameInfo.setAdapterType(1);
-						int state = InstalledAppTool.contain(apps,gameInfo.getPackagename(), Integer.parseInt(gameInfo.getVersion_code()));
+						int state = InstalledAppTool.contain(apps,gameInfo.getProduct_name());
 						if (state != -1) {
 							newGameList.get(i).setState(state);
 						}else {
 							if (info != null 
-									&& (info.getDownloadState() == DownloadManager.STATE_INSTALLED
-									|| info.getDownloadState() == DownloadManager.STATE_NEED_UPDATE)) {
+									&& (info.getDownloadState() == DownloadManager.STATE_INSTALLED)) {
 								DownloadManager.DBManager.delete(info);
 							}
 						}
 					}
-//					if (favorableRefreshViewShowing) {
-//						favorableRefreshView.refreshFinish(PullToRefreshLayout.SUCCEED);
-//						favorableRefreshViewShowing = false;
-//					}
+					refresh_view.refreshFinish(PullToRefreshLayout.SUCCEED);
 					newGameAdapter.notifyDataSetChanged();
 				}
 			}
-		}, new ErrorListener(){
+		}, url, new ErrorListener() {
 
 			@Override
 			public void onErrorResponse(VolleyError arg0) {
 				// TODO Auto-generated method stub
-				Log.i("TAG", arg0.toString());
-			}});
+				refresh_view.refreshFinish(PullToRefreshLayout.FAIL);
+			}
+		}, requestTool.getMap(), LATEST_REQUEST_TAG);
 	}
 	
-	private void loadHot(int start,int end){
-		requestTool.initParam();
-		requestTool.setParam("start_position", start);
-		requestTool.setParam("size", end);
-		requestTool.setParam("orderby", "4");
-		requestTool.startRankRequest(new Listener<JSONObject>() {
+	private void loadHot(String url){
+		requestTool.getMap().clear();
+		requestTool.startStringRequest(Method.GET, new Listener<String>() {
 
 			@Override
-			public void onResponse(JSONObject arg0) {
+			public void onResponse(String arg0) {
 				// TODO Auto-generated method stub
 				RankInfo rankInfo = JSON.parseObject(arg0.toString(), RankInfo.class);
 				if (rankInfo != null) {
-					Collections.addAll(hotGameList, rankInfo.getItem());
+					hotPageNum++;
+					Collections.addAll(hotGameList, rankInfo.getData());
 					int count = DEFAULT_PAGE_SIZE;
-					if (hotGameList.size() < DEFAULT_PAGE_SIZE) {
+					if (newGameList.size() < DEFAULT_PAGE_SIZE) {
 						count = hotGameList.size();
 					}
 					List<InstalledApp> apps = InstalledAppTool.getPersonalApp(getActivity());
 					for(int i = hotGameList.size() - count;i<hotGameList.size();i++){
 						GameInfo gameInfo = hotGameList.get(i);
-						DownloadAppinfo info = DownloadManager.getInstance().getDownloadInfo(Long.parseLong(gameInfo.getP_id()));
+						DownloadAppinfo info = DownloadManager.getInstance().getDownloadInfo(Long.parseLong(gameInfo.getId()));
 						gameInfo.setAdapterType(1);
-						int state = InstalledAppTool.contain(apps,gameInfo.getPackagename(), Integer.parseInt(gameInfo.getVersion_code()));
+						int state = InstalledAppTool.contain(apps,gameInfo.getProduct_name());
 						if (state != -1) {
 							hotGameList.get(i).setState(state);
 						}else {
 							if (info != null 
-									&& (info.getDownloadState() == DownloadManager.STATE_INSTALLED
-									|| info.getDownloadState() == DownloadManager.STATE_NEED_UPDATE)) {
+									&& (info.getDownloadState() == DownloadManager.STATE_INSTALLED)) {
 								DownloadManager.DBManager.delete(info);
 							}
 						}
 					}
+					refresh_view.refreshFinish(PullToRefreshLayout.SUCCEED);
+					newGameAdapter.notifyDataSetChanged();
 				}
 			}
-		}, new ErrorListener() {
+		}, url, new ErrorListener() {
 
 			@Override
 			public void onErrorResponse(VolleyError arg0) {
 				// TODO Auto-generated method stub
+				refresh_view.refreshFinish(PullToRefreshLayout.FAIL);
 			}
-		});
+		}, requestTool.getMap(), LATEST_REQUEST_TAG);
 	}
 	
 	private void initView(){
@@ -181,38 +186,23 @@ public class GameFragment extends Fragment implements OnClickListener{
 		explosiveHeadlinesTx = (TextView) headView.findViewById(R.id.explosiveHeadlinesTx);
 		allHeadlinesTx = (TextView) headView.findViewById(R.id.allHeadlinesTx);
 		
+		refresh_view = (PullToRefreshLayout) view.findViewById(R.id.refresh_view);
+		
+		refresh_view.setOnRefreshListener(this);
+		
 		allHeadlinesImg.setBackgroundResource(R.drawable.zuire);
 		explosiveHeadlinesImg.setBackgroundResource(R.drawable.zuibao);
 		
 		gameListView.addHeaderView(headView);
 		
+		explosiveHeadlinesTx.setText(R.string.latestGame);
+		allHeadlinesTx.setText(R.string.newGame);
 		
 		explosiveHeadlinesLin.setOnClickListener(this);
+		explosiveHeadlinesLin.setOnTouchListener(this);
 		allHeadlinesLin.setOnClickListener(this);
+		allHeadlinesLin.setOnTouchListener(this);
 		
-		List<GameInfo> gameInformations = new ArrayList<GameInfo>();
-		
-//		for (int i = 0; i < 30; i++)
-//		{
-//			GameInfo game = new GameInfo();
-//			game.setP_id("0");
-//			game.setGrade_difficulty("1");
-//			game.setGrade_frames("1");
-//			game.setGrade_gameplay("1");
-//			game.setGrade_immersive("1");
-//			game.setGrade_vertigo("1");
-//			game.setUrl("sdfsfs.apk");
-//			game.setApp_size("10");
-//			game.setLdpi_icon_url("fsfsfsfs");
-//			
-//			if (i % 4 == 1) {
-//				game.setAdapterType(0);
-//			}else {
-//				game.setAdapterType(1);
-//			}
-//			gameInformations.add(game);
-//		}
-//		GameAdapter adapter = new GameAdapter(getActivity(), gameInformations,false,false);
 		newGameAdapter = new GameAdapter(getActivity(), newGameList,false,false);
 		ptrl = ((PullToRefreshLayout) view.findViewById(R.id.refresh_view));
 		gameListView.setAdapter(newGameAdapter);
@@ -235,18 +225,43 @@ public class GameFragment extends Fragment implements OnClickListener{
 	@Override
 	public void onClick(View v) {
 		// TODO Auto-generated method stub
-		if (v.getId() == R.id.explosiveHeadlinesLin) {
-			Log.i("TAG", newGameList.size() + "");
-			explosiveHeadlinesLin.setBackgroundColor(getResources().getColor(R.color.sortTitleColor));
-			allHeadlinesLin.setBackgroundColor(getResources().getColor(R.color.itemDesColor));
-			newGameAdapter.setList(newGameList);
-			newGameAdapter.notifyDataSetChanged();
-		}else if (v.getId() == R.id.allHeadlinesLin) {
-			explosiveHeadlinesLin.setBackgroundColor(getResources().getColor(R.color.itemDesColor));
-			allHeadlinesLin.setBackgroundColor(getResources().getColor(R.color.sortTitleColor));
-			newGameAdapter.setList(hotGameList);
-			newGameAdapter.notifyDataSetChanged();
+		
+	}
+
+	@Override
+	public void onRefresh(PullToRefreshLayout pullToRefreshLayout) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void onLoadMore(PullToRefreshLayout pullToRefreshLayout) {
+		// TODO Auto-generated method stub
+		if (type == 1) {
+			loadNew(RequestTool.LATEST_GAME_URL + "?pageNum=" + latestPageNum);
+		}else if (type == 2) {
+			loadHot(RequestTool.HOT_GAME_URL + "?pageNum=" + hotPageNum);
 		}
 	}
-	
+
+	@Override
+	public boolean onTouch(View v, MotionEvent event) {
+		// TODO Auto-generated method stub
+		if (event.getAction() == MotionEvent.ACTION_UP) {
+			if (v.getId() == R.id.explosiveHeadlinesLin) {
+				type = 1;
+				explosiveHeadlinesLin.setBackgroundColor(getResources().getColor(R.color.sortTitleColor));
+				allHeadlinesLin.setBackgroundColor(getResources().getColor(R.color.itemDesColor));
+				newGameAdapter.setList(newGameList);
+				newGameAdapter.notifyDataSetChanged();
+			}else if (v.getId() == R.id.allHeadlinesLin) {
+				type = 2;
+				explosiveHeadlinesLin.setBackgroundColor(getResources().getColor(R.color.itemDesColor));
+				allHeadlinesLin.setBackgroundColor(getResources().getColor(R.color.sortTitleColor));
+				newGameAdapter.setList(hotGameList);
+				newGameAdapter.notifyDataSetChanged();
+			}
+		}
+		return false;
+	}
 }

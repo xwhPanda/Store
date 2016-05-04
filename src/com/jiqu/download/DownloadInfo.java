@@ -35,7 +35,7 @@ public class DownloadInfo {
 		downloadAppinfo.setCurrentSize(info.getCurrentSize());
 		downloadAppinfo.setDownloadState(info.getDownloadState());
 		downloadAppinfo.setIconUrl(info.getIconUrl());
-		downloadAppinfo.setId(info.getId());
+//		downloadAppinfo.setId(info.getId());
 		downloadAppinfo.setApkPath(info.getPath());
 		downloadAppinfo.setUrl(info.getUrl());
 		

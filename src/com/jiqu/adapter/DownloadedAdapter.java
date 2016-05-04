@@ -55,7 +55,7 @@ public class DownloadedAdapter extends BaseAdapter {
 
 	public void putAllMap(boolean isChecked) {
 		for (DownloadAppinfo downloadAppinfo : downloadAppinfos) {
-			checkMap.put(downloadAppinfo.getId(), isChecked);
+//			checkMap.put(downloadAppinfo.getId(), isChecked);
 		}
 	}
 
@@ -197,7 +197,7 @@ public class DownloadedAdapter extends BaseAdapter {
 				@Override
 				public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
 					// TODO Auto-generated method stub
-					checkMap.put(info.getId(), isChecked);
+//					checkMap.put(info.getId(), isChecked);
 				}
 			});
 
@@ -273,7 +273,7 @@ public class DownloadedAdapter extends BaseAdapter {
 			}
 			appName.setText(info.getAppName());
 			appDes.setText(info.getDes());
-			appScore.setRating(info.getScore());
+//			appScore.setRating(info.getScore());
 			appSize.setText(FileUtil.getSize(Long.parseLong(info.getAppSize())));
 
 		}

@@ -62,7 +62,7 @@ public class DownloadingAdapter extends BaseAdapter implements DownloadObserver 
 
 	public void putAllMap(boolean isChecked) {
 		for (DownloadAppinfo downloadAppinfo : downloadAppinfos) {
-			checkMap.put(downloadAppinfo.getId(), isChecked);
+//			checkMap.put(downloadAppinfo.getId(), isChecked);
 		}
 	}
 
@@ -184,7 +184,7 @@ public class DownloadingAdapter extends BaseAdapter implements DownloadObserver 
 				@Override
 				public void onCheckedChanged(CompoundButton buttonView, boolean isCheck) {
 					// TODO Auto-generated method stub
-					checkMap.put(info.getId(), isCheck);
+//					checkMap.put(info.getId(), isCheck);
 				}
 			});
 
@@ -279,16 +279,16 @@ public class DownloadingAdapter extends BaseAdapter implements DownloadObserver 
 			final Holder holder = displayedHolder2s.get(i);
 			if (holder != null) {
 				final DownloadAppinfo appInfo = holder.getData();
-				if (appInfo.getId().longValue() == info.getId().longValue()) {
-					AppUtil.post(new Runnable() {
-
-						@Override
-						public void run() {
-							// TODO Auto-generated method stub
-							holder.refreshView(appInfo);
-						}
-					});
-				}
+//				if (appInfo.getId().longValue() == info.getId().longValue()) {
+//					AppUtil.post(new Runnable() {
+//
+//						@Override
+//						public void run() {
+//							// TODO Auto-generated method stub
+//							holder.refreshView(appInfo);
+//						}
+//					});
+//				}
 			}
 		}
 	}

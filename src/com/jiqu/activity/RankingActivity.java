@@ -78,35 +78,35 @@ public class RankingActivity extends BaseActivity implements OnClickListener,OnR
 			public void onResponse(JSONObject arg0) {
 				// TODO Auto-generated method stub
 				Log.i("TAG", "onResponse : " + arg0.toString());
-				RankInfo rankInfo = JSON.parseObject(arg0.toString(), RankInfo.class);
-				if (rankInfo != null) {
-					Collections.addAll(favorableGameInformations, rankInfo.getItem());
-					int count = DEFAULT_PAGE_SIZE;
-					if (favorableGameInformations.size() < DEFAULT_PAGE_SIZE) {
-						count = favorableGameInformations.size();
-					}
-					List<InstalledApp> apps = InstalledAppTool.getPersonalApp(RankingActivity.this);
-					for(int i = favorableGameInformations.size() - count;i<favorableGameInformations.size();i++){
-						GameInfo gameInfo = favorableGameInformations.get(i);
-						DownloadAppinfo info = DownloadManager.getInstance().getDownloadInfo(Long.parseLong(gameInfo.getP_id()));
-						gameInfo.setAdapterType(1);
-						int state = InstalledAppTool.contain(apps,gameInfo.getPackagename(), Integer.parseInt(gameInfo.getVersion_code()));
-						if (state != -1) {
-							favorableGameInformations.get(i).setState(state);
-						}else {
-							if (info != null 
-									&& (info.getDownloadState() == DownloadManager.STATE_INSTALLED
-									|| info.getDownloadState() == DownloadManager.STATE_NEED_UPDATE)) {
-								DownloadManager.DBManager.delete(info);
-							}
-						}
-					}
-					if (favorableRefreshViewShowing) {
-						favorableRefreshView.refreshFinish(PullToRefreshLayout.SUCCEED);
-						favorableRefreshViewShowing = false;
-					}
-					favorableAdapter.notifyDataSetChanged();
-				}
+//				RankInfo rankInfo = JSON.parseObject(arg0.toString(), RankInfo.class);
+//				if (rankInfo != null) {
+//					Collections.addAll(favorableGameInformations, rankInfo.getItem());
+//					int count = DEFAULT_PAGE_SIZE;
+//					if (favorableGameInformations.size() < DEFAULT_PAGE_SIZE) {
+//						count = favorableGameInformations.size();
+//					}
+//					List<InstalledApp> apps = InstalledAppTool.getPersonalApp(RankingActivity.this);
+//					for(int i = favorableGameInformations.size() - count;i<favorableGameInformations.size();i++){
+//						GameInfo gameInfo = favorableGameInformations.get(i);
+//						DownloadAppinfo info = DownloadManager.getInstance().getDownloadInfo(Long.parseLong(gameInfo.getP_id()));
+//						gameInfo.setAdapterType(1);
+//						int state = InstalledAppTool.contain(apps,gameInfo.getPackagename(), Integer.parseInt(gameInfo.getVersion_code()));
+//						if (state != -1) {
+//							favorableGameInformations.get(i).setState(state);
+//						}else {
+//							if (info != null 
+//									&& (info.getDownloadState() == DownloadManager.STATE_INSTALLED
+//									|| info.getDownloadState() == DownloadManager.STATE_NEED_UPDATE)) {
+//								DownloadManager.DBManager.delete(info);
+//							}
+//						}
+//					}
+//					if (favorableRefreshViewShowing) {
+//						favorableRefreshView.refreshFinish(PullToRefreshLayout.SUCCEED);
+//						favorableRefreshViewShowing = false;
+//					}
+//					favorableAdapter.notifyDataSetChanged();
+//				}
 			}
 		}, new ErrorListener() {
 
@@ -133,35 +133,35 @@ public class RankingActivity extends BaseActivity implements OnClickListener,OnR
 			@Override
 			public void onResponse(JSONObject arg0) {
 				// TODO Auto-generated method stub
-				RankInfo rankInfo = JSON.parseObject(arg0.toString(), RankInfo.class);
-				if (rankInfo != null) {
-					Collections.addAll(hotGameInformations, rankInfo.getItem());
-					int count = DEFAULT_PAGE_SIZE;
-					if (hotGameInformations.size() < DEFAULT_PAGE_SIZE) {
-						count = hotGameInformations.size();
-					}
-					List<InstalledApp> apps = InstalledAppTool.getPersonalApp(RankingActivity.this);
-					for(int i = favorableGameInformations.size() - count;i<hotGameInformations.size();i++){
-						GameInfo gameInfo = hotGameInformations.get(i);
-						DownloadAppinfo info = DownloadManager.getInstance().getDownloadInfo(Long.parseLong(gameInfo.getP_id()));
-						gameInfo.setAdapterType(1);
-						int state = InstalledAppTool.contain(apps,gameInfo.getPackagename(), Integer.parseInt(gameInfo.getVersion_code()));
-						if (state != -1) {
-							hotGameInformations.get(i).setState(state);
-						}else {
-							if (info != null 
-									&& (info.getDownloadState() == DownloadManager.STATE_INSTALLED
-									|| info.getDownloadState() == DownloadManager.STATE_NEED_UPDATE)) {
-								DownloadManager.DBManager.delete(info);
-							}
-						}
-					}
-					if (hotRefreshViewShowing) {
-						hotRefreshView.refreshFinish(PullToRefreshLayout.SUCCEED);
-						hotRefreshViewShowing = false;
-					}
-					hotAdapter.notifyDataSetChanged();
-				}
+//				RankInfo rankInfo = JSON.parseObject(arg0.toString(), RankInfo.class);
+//				if (rankInfo != null) {
+//					Collections.addAll(hotGameInformations, rankInfo.getItem());
+//					int count = DEFAULT_PAGE_SIZE;
+//					if (hotGameInformations.size() < DEFAULT_PAGE_SIZE) {
+//						count = hotGameInformations.size();
+//					}
+//					List<InstalledApp> apps = InstalledAppTool.getPersonalApp(RankingActivity.this);
+//					for(int i = favorableGameInformations.size() - count;i<hotGameInformations.size();i++){
+//						GameInfo gameInfo = hotGameInformations.get(i);
+//						DownloadAppinfo info = DownloadManager.getInstance().getDownloadInfo(Long.parseLong(gameInfo.getP_id()));
+//						gameInfo.setAdapterType(1);
+//						int state = InstalledAppTool.contain(apps,gameInfo.getPackagename(), Integer.parseInt(gameInfo.getVersion_code()));
+//						if (state != -1) {
+//							hotGameInformations.get(i).setState(state);
+//						}else {
+//							if (info != null 
+//									&& (info.getDownloadState() == DownloadManager.STATE_INSTALLED
+//									|| info.getDownloadState() == DownloadManager.STATE_NEED_UPDATE)) {
+//								DownloadManager.DBManager.delete(info);
+//							}
+//						}
+//					}
+//					if (hotRefreshViewShowing) {
+//						hotRefreshView.refreshFinish(PullToRefreshLayout.SUCCEED);
+//						hotRefreshViewShowing = false;
+//					}
+//					hotAdapter.notifyDataSetChanged();
+//				}
 			}
 		}, new ErrorListener() {
 
@@ -212,7 +212,7 @@ public class RankingActivity extends BaseActivity implements OnClickListener,OnR
 			@Override
 			public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 				// TODO Auto-generated method stub
-				startActivity(new Intent(RankingActivity.this, DetailActivity.class).putExtra("p_id", favorableGameInformations.get(position).getP_id()));
+//				startActivity(new Intent(RankingActivity.this, DetailActivity.class).putExtra("p_id", favorableGameInformations.get(position).getP_id()));
 			}
 		});
 		
@@ -221,7 +221,7 @@ public class RankingActivity extends BaseActivity implements OnClickListener,OnR
 			@Override
 			public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 				// TODO Auto-generated method stub
-				startActivity(new Intent(RankingActivity.this, DetailActivity.class).putExtra("p_id", hotGameInformations.get(position).getP_id()));
+//				startActivity(new Intent(RankingActivity.this, DetailActivity.class).putExtra("p_id", hotGameInformations.get(position).getP_id()));
 			}
 		});
 		

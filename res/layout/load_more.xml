@@ -23,7 +23,6 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerVertical="true"
-                android:layout_marginLeft="60dp"
                 android:background="@drawable/ic_launcher" />
 
             <ImageView
@@ -43,7 +42,8 @@
                 fontPath="fonts/lantinghei.ttf"
                 android:text="666"
                 android:textColor="@color/black"
-                android:textSize="16sp" />
+                android:textSize="16sp" 
+                android:visibility="gone"/>
 
             <ImageView
                 android:id="@+id/loadstate_iv"

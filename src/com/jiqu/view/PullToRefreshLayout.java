@@ -100,7 +100,7 @@ public class PullToRefreshLayout extends RelativeLayout
 	// 加载结果图标
 	private View loadStateImageView;
 	// 加载结果：成功或失败
-	private TextView loadStateTextView;
+//	private TextView loadStateTextView;
 
 	// 实现了Pullable接口的View
 	private View pullableView;
@@ -278,14 +278,14 @@ public class PullToRefreshLayout extends RelativeLayout
 		case SUCCEED:
 			// 加载成功
 			loadStateImageView.setVisibility(View.VISIBLE);
-			loadStateTextView.setText(R.string.load_succeed);
+//			loadStateTextView.setText(R.string.load_succeed);
 //			loadStateImageView.setBackgroundResource(R.drawable.load_succeed);
 			break;
 		case FAIL:
 		default:
 			// 加载失败
 			loadStateImageView.setVisibility(View.VISIBLE);
-			loadStateTextView.setText(R.string.load_fail);
+//			loadStateTextView.setText(R.string.load_fail);
 //			loadStateImageView.setBackgroundResource(R.drawable.load_failed);
 			break;
 		}
@@ -321,7 +321,7 @@ public class PullToRefreshLayout extends RelativeLayout
 			pullView.setVisibility(View.VISIBLE);
 			// 上拉布局初始状态
 			loadStateImageView.setVisibility(View.GONE);
-			loadStateTextView.setText(R.string.pullup_to_load);
+//			loadStateTextView.setText(R.string.pullup_to_load);
 			pullUpView.clearAnimation();
 			pullUpView.setVisibility(View.VISIBLE);
 			break;
@@ -340,7 +340,7 @@ public class PullToRefreshLayout extends RelativeLayout
 			break;
 		case RELEASE_TO_LOAD:
 			// 释放加载状态
-			loadStateTextView.setText(R.string.release_to_load);
+//			loadStateTextView.setText(R.string.release_to_load);
 			pullUpView.startAnimation(rotateAnimation);
 			break;
 		case LOADING:
@@ -349,7 +349,7 @@ public class PullToRefreshLayout extends RelativeLayout
 			loadingView.setVisibility(View.VISIBLE);
 			pullUpView.setVisibility(View.INVISIBLE);
 			loadingView.startAnimation(refreshingAnimation);
-			loadStateTextView.setText(R.string.loading);
+//			loadStateTextView.setText(R.string.loading);
 			break;
 		case DONE:
 			// 刷新或加载完毕，啥都不做
@@ -581,8 +581,8 @@ public class PullToRefreshLayout extends RelativeLayout
 		refreshStateImageView = refreshView.findViewById(R.id.state_iv);
 		// 初始化上拉布局
 		pullUpView = loadmoreView.findViewById(R.id.pullup_icon);
-		loadStateTextView = (TextView) loadmoreView
-				.findViewById(R.id.loadstate_tv);
+//		loadStateTextView = (TextView) loadmoreView
+//				.findViewById(R.id.loadstate_tv);
 		loadingView = loadmoreView.findViewById(R.id.loading_icon);
 		loadStateImageView = loadmoreView.findViewById(R.id.loadstate_iv);
 	}

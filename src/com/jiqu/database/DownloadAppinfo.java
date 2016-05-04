@@ -12,7 +12,7 @@ public class DownloadAppinfo {
     private String appName;
     private String versionCode;
     private String versionName;
-    private Long id;
+    private String id;
     private Long currentSize;
     /** Not-null value. */
     private String appSize;
@@ -25,7 +25,7 @@ public class DownloadAppinfo {
     private String unzipPath;
     private Boolean hasFinished;
     private String des;
-    private Float score;
+    private String score;
     private Float progress;
     private byte[] iconByte;
     private Boolean isZip;
@@ -38,11 +38,11 @@ public class DownloadAppinfo {
     public DownloadAppinfo() {
     }
 
-    public DownloadAppinfo(Long id) {
+    public DownloadAppinfo(String id) {
         this.id = id;
     }
 
-    public DownloadAppinfo(String packageName, String appName, String versionCode, String versionName, Long id, Long currentSize, String appSize, int downloadState, String url, String iconUrl, String apkPath, String zipPath, String unzipPath, Boolean hasFinished, String des, Float score, Float progress, byte[] iconByte, Boolean isZip, Long thread1, Long thread2, Long thread3, Long thread4, Long thread5) {
+    public DownloadAppinfo(String packageName, String appName, String versionCode, String versionName, String id, Long currentSize, String appSize, int downloadState, String url, String iconUrl, String apkPath, String zipPath, String unzipPath, Boolean hasFinished, String des, String score, Float progress, byte[] iconByte, Boolean isZip, Long thread1, Long thread2, Long thread3, Long thread4, Long thread5) {
         this.packageName = packageName;
         this.appName = appName;
         this.versionCode = versionCode;
@@ -105,11 +105,11 @@ public class DownloadAppinfo {
         this.versionName = versionName;
     }
 
-    public Long getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(String id) {
         this.id = id;
     }
 
@@ -197,11 +197,11 @@ public class DownloadAppinfo {
         this.des = des;
     }
 
-    public Float getScore() {
+    public String getScore() {
         return score;
     }
 
-    public void setScore(Float score) {
+    public void setScore(String score) {
         this.score = score;
     }
 

@@ -98,7 +98,7 @@ public class AppInfo {
 	public static DownloadAppinfo toDownloadAppInfo(AppInfo info){
 		DownloadAppinfo downloadInfo = new DownloadAppinfo();
 		downloadInfo.setPackageName(info.apkid);
-		downloadInfo.setId(info.getId());
+//		downloadInfo.setId(info.getId());
 		downloadInfo.setAppName(info.getName());
 		downloadInfo.setAppSize(info.size);
 		downloadInfo.setCurrentSize((long) 0);

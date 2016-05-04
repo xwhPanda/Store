@@ -94,23 +94,23 @@ public class ThematicSortInfoItem implements Serializable {
 	
 	public static GameInfo toGameInfo(ThematicSortInfoItem item){
 		GameInfo gameInfo = new GameInfo();
-		gameInfo.setAdapterType(1);
-		Float size = Float.parseFloat(item.getSize());
-		long sizeLong = (long) (size * 1024 * 1024);
-		gameInfo.setApp_size(String.valueOf(sizeLong));
-		gameInfo.setGrade_difficulty("1.2");
-		gameInfo.setGrade_frames("1.2");
-		gameInfo.setGrade_gameplay("1.2");
-		gameInfo.setGrade_immersive("1.2");
-		gameInfo.setGrade_vertigo("1.2");
-		gameInfo.setLdpi_icon_url(item.logo);
-		gameInfo.setName(item.getTitle());
-		gameInfo.setP_id(String.valueOf(item.getId()));
-		gameInfo.setPackagename(item.getPackagename());
-		gameInfo.setShort_description(item.getIntrduce());
-		gameInfo.setUrl(item.getLink());
-		gameInfo.setVersion_code(item.getVersioncode());
-		gameInfo.setVersion_name(item.getVersionname());
+//		gameInfo.setAdapterType(1);
+//		Float size = Float.parseFloat(item.getSize());
+//		long sizeLong = (long) (size * 1024 * 1024);
+//		gameInfo.setApp_size(String.valueOf(sizeLong));
+//		gameInfo.setGrade_difficulty("1.2");
+//		gameInfo.setGrade_frames("1.2");
+//		gameInfo.setGrade_gameplay("1.2");
+//		gameInfo.setGrade_immersive("1.2");
+//		gameInfo.setGrade_vertigo("1.2");
+//		gameInfo.setLdpi_icon_url(item.logo);
+//		gameInfo.setName(item.getTitle());
+//		gameInfo.setP_id(String.valueOf(item.getId()));
+//		gameInfo.setPackagename(item.getPackagename());
+//		gameInfo.setShort_description(item.getIntrduce());
+//		gameInfo.setUrl(item.getLink());
+//		gameInfo.setVersion_code(item.getVersioncode());
+//		gameInfo.setVersion_name(item.getVersionname());
 		
 		return gameInfo;
 	}

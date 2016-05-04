@@ -129,7 +129,7 @@ public class SearchActivity extends BaseActivity implements OnClickListener,List
 			@Override
 			public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 				// TODO Auto-generated method stub
-				startActivity(new Intent(SearchActivity.this, DetailActivity.class).putExtra("p_id", gameInfos.get(position).getP_id()));
+//				startActivity(new Intent(SearchActivity.this, DetailActivity.class).putExtra("p_id", gameInfos.get(position).getP_id()));
 			}
 		});
 	}
@@ -206,20 +206,20 @@ public class SearchActivity extends BaseActivity implements OnClickListener,List
 			gameInfos.clear();
 			Collections.addAll(gameInfos, searchInfo.getItem());
 			List<InstalledApp> apps = InstalledAppTool.getPersonalApp(this);
-			for (GameInfo gameInfo : gameInfos) {
-				DownloadAppinfo info = DownloadManager.getInstance().getDownloadInfo(Long.parseLong(gameInfo.getP_id()));
-				gameInfo.setAdapterType(1);
-				int state = InstalledAppTool.contain(apps,gameInfo.getPackagename(), Integer.parseInt(gameInfo.getVersion_code()));
-				if (state != -1) {
-					gameInfo.setState(state);
-				}else {
-					if (info != null 
-							&& (info.getDownloadState() == DownloadManager.STATE_INSTALLED
-							|| info.getDownloadState() == DownloadManager.STATE_NEED_UPDATE)) {
-						DownloadManager.DBManager.delete(info);
-					}
-				}
-			}
+//			for (GameInfo gameInfo : gameInfos) {
+//				DownloadAppinfo info = DownloadManager.getInstance().getDownloadInfo(Long.parseLong(gameInfo.getP_id()));
+//				gameInfo.setAdapterType(1);
+//				int state = InstalledAppTool.contain(apps,gameInfo.getPackagename(), Integer.parseInt(gameInfo.getVersion_code()));
+//				if (state != -1) {
+//					gameInfo.setState(state);
+//				}else {
+//					if (info != null 
+//							&& (info.getDownloadState() == DownloadManager.STATE_INSTALLED
+//							|| info.getDownloadState() == DownloadManager.STATE_NEED_UPDATE)) {
+//						DownloadManager.DBManager.delete(info);
+//					}
+//				}
+//			}
 			adapter.notifyDataSetChanged();
 		}
 	}

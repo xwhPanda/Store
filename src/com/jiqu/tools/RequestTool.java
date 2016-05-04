@@ -32,13 +32,28 @@ public class RequestTool {
 	public static final String specialsUrl = "http://115.28.169.193:81/api/market/apps/app-subject/?page=1&page_size=18&essence=1&ordering=-top%2C-updated&token=f78543cc344a027ffaa27963533510c8&nonce=1462238714277";
 	public static final String thematicListUrl = "http://xml.mumayi.com/v18/special/list.php?type=p&page=1";
 	public static final String thematicUrl = "http://xml.mumayi.com/v18/special/list.php?type=app&page=1&id=";
-
+	public static final String informationUrl = "http://cdn.4399sj.com/app/android/v3.0/news-index-n-20-startKey-";
+	public static final String informationDetailUrl = "http://cdn.4399sj.com/service/android/v2.1/";
+	
 	public static final String PRIKEY = "*7&SKJuas";
+	/**活跃统计URL**/
+	public static final String ACTIVE_URL = "http://ht.163zs.com/index.php/Api/Channel/active";
+	/**注册URL**/
 	public static final String REGISTER_URL = "http://ht.163zs.com/index.php/Api/User/register";
+	/**登录URL**/
 	public static final String LOGIN_URL = "http://ht.163zs.com/index.php/Api/User/login";
+	/**修改用户信息URL**/
 	public static final String MODIFY_URL = "http://ht.163zs.com/index.php/Api/User/modifyInfo";
+	/**获取验证码URL**/
 	public static final String GET_RESET_CODE_URL = "http://ht.163zs.com/index.php/Api/User/getResetCode";
+	/**重置密码URL**/
 	public static final String RESETPASSWORD_URL = "http://ht.163zs.com/index.php/Api/User/resetPasswd";
+	/**最新游戏URL**/
+	public static final String LATEST_GAME_URL = "http://mb.123sjzs.com/index.php/Game/latestGame";
+	/**最热游戏URL**/
+	public static final String HOT_GAME_URL = "http://mb.123sjzs.com/index.php/Game/hotGame";
+	/**安装统计URL（第一次使用）**/
+	public static final String INSTALL_URL = "http://ht.163zs.com/index.php/Api/Channel/install";
 
 	private Map<String, Object> paramMap = new HashMap<String, Object>();
 
@@ -276,7 +291,7 @@ public class RequestTool {
 			protected Map<String, String> getParams() throws AuthFailureError {
 				Map<String, String> paramMap = new HashMap<String, String>();
 				for (String entry : map.keySet()) {
-					paramMap.put(entry, (String) map.get(entry));
+					paramMap.put(entry, String.valueOf(map.get(entry)) );
 				}
 				return paramMap;
 			}

@@ -134,7 +134,7 @@ public class RecommendFragment extends Fragment implements OnPageChangeListener,
 		filter.addAction(Intent.ACTION_PACKAGE_ADDED);
 		filter.addAction(Intent.ACTION_PACKAGE_REMOVED);
 		filter.addDataScheme("package");
-		getActivity().registerReceiver(appInstallReceiver, filter);
+//		getActivity().registerReceiver(appInstallReceiver, filter);
 		
 		IntentFilter filter2 = new IntentFilter();
 		filter2.addAction("deleted_downloaded_files_action");
@@ -148,14 +148,14 @@ public class RecommendFragment extends Fragment implements OnPageChangeListener,
 			adapter.startObserver();
 		}
 
-		requestTool = RequestTool.getInstance();
-		requestTool.initParam();
-		requestTool.setParam("start_position", "0");
-		requestTool.setParam("size", "20");
-		requestTool.startHomeRecommendRequest(this, this,true);
+//		requestTool = RequestTool.getInstance();
+//		requestTool.initParam();
+//		requestTool.setParam("start_position", "0");
+//		requestTool.setParam("size", "20");
+//		requestTool.startHomeRecommendRequest(this, this,true);
 		
-		loadTopData();
-		loadRecommendApps();
+//		loadTopData();
+//		loadRecommendApps();
 		
 		return view;
 	}
@@ -198,7 +198,7 @@ public class RecommendFragment extends Fragment implements OnPageChangeListener,
 			public void onResponse(JSONObject arg0) {
 				// TODO Auto-generated method stub
 				RecommendAppsInfo info = JSON.parseObject(arg0.toString(), RecommendAppsInfo.class);
-				initRecommendApps(info);
+//				initRecommendApps(info);
 			}
 		}, new ErrorListener() {
 
@@ -210,34 +210,34 @@ public class RecommendFragment extends Fragment implements OnPageChangeListener,
 		});
 	}
 	
-	private void initRecommendApps(RecommendAppsInfo info){
-		if (info != null && info.getItem().length > 0) {
-			int count = info.getItem().length;
-			for (int i = 0; i < count; i++) {
-				final GameInfo gameInfo = info.getItem()[i];
-				RecommedGameView gameView = new RecommedGameView(getActivity());
-				gameView.setClickable(true);
-				gameView.setOnClickListener(new OnClickListener() {
-					
-					@Override
-					public void onClick(View v) {
-						// TODO Auto-generated method stub
-						startActivity(new Intent(getActivity(), DetailActivity.class).putExtra("p_id", String.valueOf(gameInfo.getP_id())));
-					}
-				});
-				gameView.gameName.setText(gameInfo.getName());
-				gameView.getDesView().setText(gameInfo.getShort_description());
-				ImageListener listener = ImageLoader.getImageListener(gameView.gameIcon,R.drawable.ic_launcher, R.drawable.ic_launcher);
-				StoreApplication.getInstance().getImageLoader().get(gameInfo.getLdpi_icon_url(),listener);
-				recommendGameList.addView(gameView);
-				
-					TextView view = new TextView(getActivity());
-					LayoutParams lp = new LayoutParams((int) (30 * Rx), LayoutParams.MATCH_PARENT);
-					view.setLayoutParams(lp);
-					recommendGameList.addView(view);
-			}
-		}
-	}
+//	private void initRecommendApps(RecommendAppsInfo info){
+//		if (info != null && info.getItem().length > 0) {
+//			int count = info.getItem().length;
+//			for (int i = 0; i < count; i++) {
+//				final GameInfo gameInfo = info.getItem()[i];
+//				RecommedGameView gameView = new RecommedGameView(getActivity());
+//				gameView.setClickable(true);
+//				gameView.setOnClickListener(new OnClickListener() {
+//					
+//					@Override
+//					public void onClick(View v) {
+//						// TODO Auto-generated method stub
+//						startActivity(new Intent(getActivity(), DetailActivity.class).putExtra("p_id", String.valueOf(gameInfo.getP_id())));
+//					}
+//				});
+//				gameView.gameName.setText(gameInfo.getName());
+//				gameView.getDesView().setText(gameInfo.getShort_description());
+//				ImageListener listener = ImageLoader.getImageListener(gameView.gameIcon,R.drawable.ic_launcher, R.drawable.ic_launcher);
+//				StoreApplication.getInstance().getImageLoader().get(gameInfo.getLdpi_icon_url(),listener);
+//				recommendGameList.addView(gameView);
+//				
+//					TextView view = new TextView(getActivity());
+//					LayoutParams lp = new LayoutParams((int) (30 * Rx), LayoutParams.MATCH_PARENT);
+//					view.setLayoutParams(lp);
+//					recommendGameList.addView(view);
+//			}
+//		}
+//	}
 	
 	private void initTop(){
 		final int count = topRecommendtInfo.getCount();
@@ -250,7 +250,7 @@ public class RecommendFragment extends Fragment implements OnPageChangeListener,
 			if (i != 0) {
 				lp.leftMargin = (int) (10 * Rx);
 			}
-			view.setLayoutParams(lp);
+			 view.setLayoutParams(lp);
 			if (i== 0) {
 				view.setBackgroundResource(R.drawable.dian_blue);
 			}else {
@@ -355,7 +355,7 @@ public class RecommendFragment extends Fragment implements OnPageChangeListener,
 			@Override
 			public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 				// TODO Auto-generated method stub
-				startActivity(new Intent(getActivity(), DetailActivity.class).putExtra("p_id", resultList.get(position - 1).getP_id()));
+//				startActivity(new Intent(getActivity(), DetailActivity.class).putExtra("p_id", resultList.get(position - 1).getP_id()));
 			}
 		});
 		
@@ -466,48 +466,48 @@ public class RecommendFragment extends Fragment implements OnPageChangeListener,
 	public void onResponse(JSONObject arg0) {
 		// TODO Auto-generated method stub
 		Log.i("TAG", "onResponse");
-		if (refreshShow) {
-			refreshShow = false;
-			pullToRefreshLayout.refreshFinish(PullToRefreshLayout.SUCCEED);
-		}
-		try {
-			JSONArray array = (JSONArray) arg0.get("item");
-			resultList = JSON.parseArray(array.toString(), GameInfo.class);
-
-			adapter.clearAllItem();
-			adapter.addItems(resultList);
-
-			for (GameInfo gameInfo : resultList) {
-				gameInfo.setAdapterType(1);
-			}
-			
-			List<InstalledApp> apps = InstalledAppTool.getPersonalApp(getActivity());
-			
-			int count = DEFAULT_PAGE_SIZE;
-			if (resultList.size() < DEFAULT_PAGE_SIZE) {
-				count = resultList.size();
-			}
-			
-			for(int i = resultList.size() - count;i<resultList.size();i++){
-				DownloadAppinfo info = DownloadManager.getInstance().getDownloadInfo(Long.parseLong(resultList.get(i).getP_id()));
-				int state = InstalledAppTool.contain(apps,resultList.get(i).getPackagename(), Integer.parseInt(resultList.get(i).getVersion_code()));
-				if (resultList.get(i).getUrl().endsWith(".zip")) {
-					Log.i("TAG", resultList.get(i).getName() + " / " + resultList.get(i).getUrl());
-				}
-				if (state != -1) {
-					resultList.get(i).setState(state);
-				}else {
-					if (info != null 
-							&& (info.getDownloadState() == DownloadManager.STATE_INSTALLED
-							|| info.getDownloadState() == DownloadManager.STATE_NEED_UPDATE)) {
-						DownloadManager.DBManager.delete(info);
-					}
-				}
-			}
-			adapter.notifyDataSetChanged();
-		} catch (JSONException e) {
-			e.printStackTrace();
-		}
+//		if (refreshShow) {
+//			refreshShow = false;
+//			pullToRefreshLayout.refreshFinish(PullToRefreshLayout.SUCCEED);
+//		}
+//		try {
+//			JSONArray array = (JSONArray) arg0.get("item");
+//			resultList = JSON.parseArray(array.toString(), GameInfo.class);
+//
+//			adapter.clearAllItem();
+//			adapter.addItems(resultList);
+//
+//			for (GameInfo gameInfo : resultList) {
+//				gameInfo.setAdapterType(1);
+//			}
+//			
+//			List<InstalledApp> apps = InstalledAppTool.getPersonalApp(getActivity());
+//			
+//			int count = DEFAULT_PAGE_SIZE;
+//			if (resultList.size() < DEFAULT_PAGE_SIZE) {
+//				count = resultList.size();
+//			}
+//			
+//			for(int i = resultList.size() - count;i<resultList.size();i++){
+//				DownloadAppinfo info = DownloadManager.getInstance().getDownloadInfo(Long.parseLong(resultList.get(i).getP_id()));
+//				int state = InstalledAppTool.contain(apps,resultList.get(i).getPackagename(), Integer.parseInt(resultList.get(i).getVersion_code()));
+//				if (resultList.get(i).getUrl().endsWith(".zip")) {
+//					Log.i("TAG", resultList.get(i).getName() + " / " + resultList.get(i).getUrl());
+//				}
+//				if (state != -1) {
+//					resultList.get(i).setState(state);
+//				}else {
+//					if (info != null 
+//							&& (info.getDownloadState() == DownloadManager.STATE_INSTALLED
+//							|| info.getDownloadState() == DownloadManager.STATE_NEED_UPDATE)) {
+//						DownloadManager.DBManager.delete(info);
+//					}
+//				}
+//			}
+//			adapter.notifyDataSetChanged();
+//		} catch (JSONException e) {
+//			e.printStackTrace();
+//		}
 	}
 	
 	@Override
@@ -543,50 +543,50 @@ public class RecommendFragment extends Fragment implements OnPageChangeListener,
 			if ("deleted_downloaded_files_action".equals(action)) {
 				String pkg = intent.getStringExtra("pkg");
 				for(GameInfo info : resultList){
-					if (info.getPackagename().equals(pkg)) {
-						info.setState(DownloadManager.STATE_NONE);
-					}
+//					if (info.getPackagename().equals(pkg)) {
+//						info.setState(DownloadManager.STATE_NONE);
+//					}
 				}
 				adapter.notifyDataSetChanged();
 			}
 		};
 	};
 
-	private BroadcastReceiver appInstallReceiver = new BroadcastReceiver(){
-
-		@Override
-		public void onReceive(Context context, Intent intent) {
-			// TODO Auto-generated method stub
-			String action = intent.getAction();
-			if (Intent.ACTION_PACKAGE_ADDED.equals(action)) {
-				String addPkg = intent.getDataString().split(":")[1];
-				for(GameInfo info : resultList){
-					if (info.getPackagename().equals(addPkg)) {
-						info.setState(DownloadManager.STATE_INSTALLED);
-						QueryBuilder<DownloadAppinfo> qb = StoreApplication.daoSession.getDownloadAppinfoDao().queryBuilder();
-						DownloadAppinfo downloadAppinfo = qb.where(Properties.Id.eq(info.getP_id())).unique();
-						if (downloadAppinfo != null) {
-							downloadAppinfo.setDownloadState(DownloadManager.STATE_INSTALLED);
-							DownloadManager.DBManager.getDownloadAppinfoDao().insertOrReplace(downloadAppinfo);
-						}
-					}
-				}
-			}else if (Intent.ACTION_PACKAGE_REMOVED.equals(action)) {
-				String removePkg = intent.getDataString().split(":")[1];
-				for(GameInfo info : resultList){
-					if (info.getPackagename().equals(removePkg)) {
-						info.setState(DownloadManager.STATE_NONE);
-						QueryBuilder<DownloadAppinfo> qb = StoreApplication.daoSession.getDownloadAppinfoDao().queryBuilder();
-						DownloadAppinfo downloadAppinfo = qb.where(Properties.Id.eq(info.getP_id())).unique();
-						if (downloadAppinfo != null) {
-							DownloadManager.DBManager.getDownloadAppinfoDao().delete(downloadAppinfo);
-						}
-					}
-				}
-			}
-			adapter.notifyDataSetChanged();
-		}
-	};
+//	private BroadcastReceiver appInstallReceiver = new BroadcastReceiver(){
+//
+//		@Override
+//		public void onReceive(Context context, Intent intent) {
+//			// TODO Auto-generated method stub
+//			String action = intent.getAction();
+//			if (Intent.ACTION_PACKAGE_ADDED.equals(action)) {
+//				String addPkg = intent.getDataString().split(":")[1];
+//				for(GameInfo info : resultList){
+//					if (info.getPackagename().equals(addPkg)) {
+//						info.setState(DownloadManager.STATE_INSTALLED);
+//						QueryBuilder<DownloadAppinfo> qb = StoreApplication.daoSession.getDownloadAppinfoDao().queryBuilder();
+//						DownloadAppinfo downloadAppinfo = qb.where(Properties.Id.eq(info.getP_id())).unique();
+//						if (downloadAppinfo != null) {
+//							downloadAppinfo.setDownloadState(DownloadManager.STATE_INSTALLED);
+//							DownloadManager.DBManager.getDownloadAppinfoDao().insertOrReplace(downloadAppinfo);
+//						}
+//					}
+//				}
+//			}else if (Intent.ACTION_PACKAGE_REMOVED.equals(action)) {
+//				String removePkg = intent.getDataString().split(":")[1];
+//				for(GameInfo info : resultList){
+//					if (info.getPackagename().equals(removePkg)) {
+//						info.setState(DownloadManager.STATE_NONE);
+//						QueryBuilder<DownloadAppinfo> qb = StoreApplication.daoSession.getDownloadAppinfoDao().queryBuilder();
+//						DownloadAppinfo downloadAppinfo = qb.where(Properties.Id.eq(info.getP_id())).unique();
+//						if (downloadAppinfo != null) {
+//							DownloadManager.DBManager.getDownloadAppinfoDao().delete(downloadAppinfo);
+//						}
+//					}
+//				}
+//			}
+//			adapter.notifyDataSetChanged();
+//		}
+//	};
 	
 	public void onDestroyView() {
 		super.onDestroyView();
@@ -596,7 +596,7 @@ public class RecommendFragment extends Fragment implements OnPageChangeListener,
 		if (timer != null) {
 			timer.cancel();
 		}
-		getActivity().unregisterReceiver(appInstallReceiver);
+//		getActivity().unregisterReceiver(appInstallReceiver);
 		getActivity().unregisterReceiver(deleteReceiver);
 	};
 	

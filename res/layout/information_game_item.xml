@@ -11,23 +11,22 @@
 
         <ImageView
             android:id="@+id/gameIcon"
-            android:layout_width="@dimen/informationListViewIconW"
-            android:layout_height="@dimen/informationListViewIconH"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:layout_centerVertical="true"
-            android:layout_marginLeft="@dimen/informationListViewMargin"
-            android:background="@color/red" />
+            android:scaleType="fitXY"/>
 
         <RelativeLayout
             android:id="@+id/timeRel"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignBottom="@id/gameIcon"
-            android:layout_alignParentRight="true" >
+            android:layout_alignParentRight="true"
+            android:visibility="gone">
 
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:background="@color/red"
                 android:orientation="horizontal" >
 
                 <TextView
@@ -40,8 +39,8 @@
 
                 <ImageView
                     android:id="@+id/img"
-                    android:layout_width="@dimen/informationTimeImgW"
-                    android:layout_height="@dimen/informationTimeImgH"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
                     android:background="@drawable/more" />
             </LinearLayout>
@@ -51,7 +50,6 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 fontPath="fonts/lantinghei.ttf"
-                android:maxLength="10"
                 android:singleLine="true"
                 android:textColor="@color/informationListTimeColor"
                 android:textSize="12sp"
@@ -74,7 +72,6 @@
                 android:layout_marginTop="5dp"
                 fontPath="fonts/lantinghei.ttf"
                 android:ellipsize="end"
-                android:maxLength="17"
                 android:singleLine="true"
                 android:textColor="@color/informationListGameColor" />
 
@@ -85,7 +82,6 @@
                 android:layout_alignLeft="@id/gameName"
                 android:layout_below="@id/gameName"
                 android:layout_marginBottom="5dp"
-                android:layout_marginRight="@dimen/informationListViewTimeMarginB"
                 fontPath="fonts/lantinghei.ttf"
                 android:ellipsize="end"
                 android:maxLines="3"
