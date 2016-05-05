@@ -26,7 +26,7 @@ import com.jiqu.database.DaoSession;
 import com.jiqu.database.DownloadAppinfo;
 import com.jiqu.database.DownloadAppinfoDao.Properties;
 import com.jiqu.download.Downloader.ChangeObserver;
-import com.jiqu.tools.Constant;
+import com.jiqu.tools.Constants;
 
 import de.greenrobot.dao.query.QueryBuilder;
 
@@ -582,7 +582,7 @@ public class DownloadManager implements ChangeObserver{
 										install(info);
 									}else {
 										info.setDownloadState(STATE_UNZIPING);
-										UnZipManager.getInstance().unzip(info, Constant.PASSWORD,handler);
+										UnZipManager.getInstance().unzip(info, Constants.PASSWORD,handler);
 									}
 									DBManager.getDownloadAppinfoDao().insertOrReplace(info);
 									notifyDownloadStateChanged(info);

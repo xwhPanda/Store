@@ -9,7 +9,7 @@ import com.jiqu.activity.SortActivity;
 import com.jiqu.activity.SortInfoActivity;
 import com.jiqu.object.ThematicInfo;
 import com.jiqu.object.ThematicItem;
-import com.jiqu.store.R;
+import com.vr.store.R;
 import com.jiqu.tools.MetricsTool;
 import com.jiqu.tools.UIUtil;
 import com.jiqu.view.MaxGridView;

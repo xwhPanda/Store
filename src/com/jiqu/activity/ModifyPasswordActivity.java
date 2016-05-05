@@ -5,7 +5,7 @@ import android.view.View;
 import android.widget.Button;
 
 import com.jiqu.store.BaseActivity;
-import com.jiqu.store.R;
+import com.vr.store.R;
 import com.jiqu.tools.UIUtil;
 import com.jiqu.view.PasswordView;
 import com.jiqu.view.TitleView;

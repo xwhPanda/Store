@@ -25,6 +25,7 @@ import com.jiqu.tools.NetReceiver;
 import com.jiqu.tools.NetReceiver.OnNetChangeListener;
 import com.jiqu.tools.UIUtil;
 import com.jiqu.view.CustomDialog;
+import com.vr.store.R;
 
 import de.greenrobot.dao.query.QueryBuilder;
 

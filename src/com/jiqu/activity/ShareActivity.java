@@ -3,14 +3,17 @@ package com.jiqu.activity;
 import java.util.ArrayList;
 import java.util.List;
 
+import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
+import android.view.View.OnClickListener;
 import android.widget.ListView;
 import android.widget.TextView;
 
 import com.jiqu.adapter.ShareAddFriendAdapter;
 import com.jiqu.object.FriendItem;
 import com.jiqu.store.BaseActivity;
-import com.jiqu.store.R;
+import com.vr.store.R;
 import com.jiqu.tools.UIUtil;
 import com.jiqu.view.FriendShareItem;
 import com.jiqu.view.PullToRefreshLayout;
@@ -64,6 +67,15 @@ public class ShareActivity extends BaseActivity {
 		}
 		adapter = new ShareAddFriendAdapter(this, friendItems);
 		friendListView.setAdapter(adapter);
+		
+		weibo.getShareBtn().setOnClickListener(new OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				// TODO Auto-generated method stub
+				startActivity(new Intent(ShareActivity.this, Aaaa.class));
+			}
+		});
 	}
 	
 	private void initViewSize(){

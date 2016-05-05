@@ -9,7 +9,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.jiqu.store.BaseActivity;
-import com.jiqu.store.R;
+import com.vr.store.R;
 import com.jiqu.tools.MetricsTool;
 import com.jiqu.tools.UIUtil;
 import com.jiqu.view.EvaluationBottomView;

@@ -15,8 +15,8 @@ import com.jiqu.download.AppUtil;
 import com.jiqu.download.DownloadManager;
 import com.jiqu.download.FileUtil;
 import com.jiqu.download.UnZipManager;
-import com.jiqu.store.R;
-import com.jiqu.tools.Constant;
+import com.vr.store.R;
+import com.jiqu.tools.Constants;
 import com.jiqu.tools.MetricsTool;
 import com.jiqu.tools.UIUtil;
 import com.jiqu.view.RatingBarView;
@@ -45,7 +45,7 @@ public class DownloadedAdapter extends BaseAdapter {
 	private Context context;
 	private List<DownloadAppinfo> downloadAppinfos;
 
-	private Map<Long, Boolean> checkMap = new ConcurrentHashMap<Long, Boolean>();
+	private Map<String, Boolean> checkMap = new ConcurrentHashMap<String, Boolean>();
 
 	public DownloadedAdapter(Context context, List<DownloadAppinfo> downloadAppinfos) {
 		// TODO Auto-generated constructor stub
@@ -55,7 +55,7 @@ public class DownloadedAdapter extends BaseAdapter {
 
 	public void putAllMap(boolean isChecked) {
 		for (DownloadAppinfo downloadAppinfo : downloadAppinfos) {
-//			checkMap.put(downloadAppinfo.getId(), isChecked);
+			checkMap.put(downloadAppinfo.getId(), isChecked);
 		}
 	}
 
@@ -197,7 +197,7 @@ public class DownloadedAdapter extends BaseAdapter {
 				@Override
 				public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
 					// TODO Auto-generated method stub
-//					checkMap.put(info.getId(), isChecked);
+					checkMap.put(info.getId(), isChecked);
 				}
 			});
 
@@ -218,7 +218,7 @@ public class DownloadedAdapter extends BaseAdapter {
 						} else {
 							if (info.getHasFinished()) {
 								if (info.getDownloadState() == DownloadManager.STATE_UNZIP_FAILED || info.getDownloadState() == DownloadManager.STATE_DOWNLOADED) {
-									UnZipManager.getInstance().unzip(info, Constant.PASSWORD, null);
+									UnZipManager.getInstance().unzip(info, Constants.PASSWORD, null);
 								} else if (info.getDownloadState() == DownloadManager.STATE_UNZIPED) {
 									DownloadManager.getInstance().install(info);
 									// UnZipManager.getInstance().unzip(info,

@@ -37,8 +37,8 @@ import com.jiqu.adapter.BatteryAdapter;
 import com.jiqu.object.BatteryInfo;
 import com.jiqu.object.BatterySipper;
 import com.jiqu.store.BaseActivity;
-import com.jiqu.store.R;
-import com.jiqu.tools.Constant;
+import com.vr.store.R;
+import com.jiqu.tools.Constants;
 import com.jiqu.tools.SharePreferenceTool;
 import com.jiqu.tools.UIUtil;
 import com.jiqu.tools.Utils;
@@ -133,9 +133,9 @@ public class PowerManagerActivity extends BaseActivity implements OnCheckedChang
 	
 	private void initData(){
 		bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
-		preferences = getSharedPreferences(Constant.BATTERY_SHARE_PREFERENCE_NAME, MODE_PRIVATE);
-		showPreBatteryTog.setChecked(SharePreferenceTool.getBooleanFromPreferences(preferences, Constant.DISPLAY_BATTERY_PERCENT, true));
-		saveBatteryTog.setChecked(SharePreferenceTool.getBooleanFromPreferences(preferences, Constant.POWER_SAVING_MODE, false));
+		preferences = getSharedPreferences(Constants.BATTERY_SHARE_PREFERENCE_NAME, MODE_PRIVATE);
+		showPreBatteryTog.setChecked(SharePreferenceTool.getBooleanFromPreferences(preferences, Constants.DISPLAY_BATTERY_PERCENT, true));
+		saveBatteryTog.setChecked(SharePreferenceTool.getBooleanFromPreferences(preferences, Constants.POWER_SAVING_MODE, false));
 	}
 	
 	private void initViewSize(){
@@ -232,9 +232,9 @@ public class PowerManagerActivity extends BaseActivity implements OnCheckedChang
 		// TODO Auto-generated method stub
 		if (buttonView == showPreBatteryTog) {
 			waveView.setTextVisible(isChecked);
-			SharePreferenceTool.setValuePreferences(preferences, Constant.DISPLAY_BATTERY_PERCENT, isChecked);
+			SharePreferenceTool.setValuePreferences(preferences, Constants.DISPLAY_BATTERY_PERCENT, isChecked);
 		}else if (buttonView == saveBatteryTog) {
-			SharePreferenceTool.setValuePreferences(preferences, Constant.POWER_SAVING_MODE, isChecked);
+			SharePreferenceTool.setValuePreferences(preferences, Constants.POWER_SAVING_MODE, isChecked);
 			bluetoothAdapter.disable();
 			if (isChecked) {
 				try {

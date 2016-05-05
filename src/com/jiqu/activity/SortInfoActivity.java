@@ -33,7 +33,7 @@ import com.jiqu.object.ThematicItem;
 import com.jiqu.object.ThematicSortInfo;
 import com.jiqu.object.ThematicSortInfoItem;
 import com.jiqu.store.BaseActivity;
-import com.jiqu.store.R;
+import com.vr.store.R;
 import com.jiqu.tools.InstalledAppTool;
 import com.jiqu.tools.RequestTool;
 import com.jiqu.view.PullToRefreshLayout;

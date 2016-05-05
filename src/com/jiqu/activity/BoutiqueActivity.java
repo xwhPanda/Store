@@ -39,7 +39,7 @@ import com.jiqu.object.SpecialInfo;
 import com.jiqu.object.SpecialRecommendsItem;
 import com.jiqu.object.SpecialResultsItem;
 import com.jiqu.store.BaseActivity;
-import com.jiqu.store.R;
+import com.vr.store.R;
 import com.jiqu.tools.CountDownTimer;
 import com.jiqu.tools.MetricsTool;
 import com.jiqu.tools.RequestTool;

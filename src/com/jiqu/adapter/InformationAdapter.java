@@ -7,7 +7,7 @@ import com.android.volley.toolbox.ImageLoader.ImageListener;
 import com.jiqu.application.StoreApplication;
 import com.jiqu.object.GameInformation;
 import com.jiqu.object.InformationGallaryItem;
-import com.jiqu.store.R;
+import com.vr.store.R;
 import com.jiqu.tools.MetricsTool;
 import com.jiqu.tools.UIUtil;
 

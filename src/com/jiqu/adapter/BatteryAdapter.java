@@ -13,7 +13,7 @@ import android.widget.TextView;
 import android.widget.RelativeLayout.LayoutParams;
 
 import com.jiqu.object.BatterySipper;
-import com.jiqu.store.R;
+import com.vr.store.R;
 import com.jiqu.tools.MetricsTool;
 import com.jiqu.tools.UIUtil;
 

@@ -42,7 +42,7 @@ import com.jiqu.object.InstalledApp;
 import com.jiqu.object.RecommendAppsInfo;
 import com.jiqu.object.TopRecommendItem;
 import com.jiqu.object.TopRecommendtInfo;
-import com.jiqu.store.R;
+import com.vr.store.R;
 import com.jiqu.tools.CountDownTimer;
 import com.jiqu.tools.InstalledAppTool;
 import com.jiqu.tools.MetricsTool;

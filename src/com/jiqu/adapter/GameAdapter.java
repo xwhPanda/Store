@@ -13,8 +13,8 @@ import com.jiqu.download.DownloadManager.DownloadObserver;
 import com.jiqu.download.FileUtil;
 import com.jiqu.download.UnZipManager;
 import com.jiqu.object.GameInfo;
-import com.jiqu.store.R;
-import com.jiqu.tools.Constant;
+import com.vr.store.R;
+import com.jiqu.tools.Constants;
 import com.jiqu.tools.MetricsTool;
 import com.jiqu.tools.NetReceiver;
 import com.jiqu.tools.UIUtil;
@@ -263,12 +263,12 @@ public class GameAdapter extends BaseAdapter implements DownloadObserver{
 							|| mState == DownloadManager.STATE_NEED_UPDATE) {
 						if (NetReceiver.NET_TYPE == NetReceiver.NET_WIFI) {
 							if (FileUtil.checkSDCard()) {
-								if (Long.parseLong(mData.getAppSize()) * 3 >= FileUtil.getSDcardAvailableSpace()) {
+								if (Float.parseFloat(mData.getAppSize()) * 1024 * 1024 * 3 >= FileUtil.getSDcardAvailableSpace()) {
 									Toast.makeText(context, "可用空间不足", Toast.LENGTH_SHORT).show();
 									return;
 								}
 							}else {
-								if (Long.parseLong(mData.getAppSize()) * 3 >= FileUtil.getDataStorageAvailableSpace()) {
+								if (Float.parseFloat(mData.getAppSize()) * 1024 * 1024 * 3 >= FileUtil.getDataStorageAvailableSpace()) {
 									Toast.makeText(context, "可用空间不足", Toast.LENGTH_SHORT).show();
 									return;
 								}
@@ -286,7 +286,7 @@ public class GameAdapter extends BaseAdapter implements DownloadObserver{
 					}else if (mState == DownloadManager.STATE_INSTALLED) {
 						mDownloadManager.open(mData.getPackageName());
 					}else if (mState == DownloadManager.STATE_UNZIP_FAILED) {
-						UnZipManager.getInstance().unzip(mData, Constant.PASSWORD,null);
+						UnZipManager.getInstance().unzip(mData, Constants.PASSWORD,null);
 						mData.setDownloadState(DownloadManager.STATE_UNZIPING);
 						DownloadAppinfo info = mDownloadManager.getDownloadInfo(mData.getId());
 						info.setDownloadState(DownloadManager.STATE_UNZIPING);
@@ -315,7 +315,7 @@ public class GameAdapter extends BaseAdapter implements DownloadObserver{
 		
 		private void initViewSize(){
 			UIUtil.setViewSize(icon, 170 * MetricsTool.Rx, 170 * MetricsTool.Rx);
-			UIUtil.setViewSize(downloadBtn, 75 * MetricsTool.Rx, 75 * MetricsTool.Rx);
+			UIUtil.setViewSize(downloadBtn, 96 * MetricsTool.Rx, 76 * MetricsTool.Rx);
 			UIUtil.setViewSize(subscriptLin, 85 * MetricsTool.Rx, 85 * MetricsTool.Rx);
 			UIUtil.setViewSize(hotIcon, 55 * MetricsTool.Rx, 35 * MetricsTool.Rx);
 			

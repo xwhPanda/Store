@@ -3,7 +3,7 @@ package com.jiqu.download;
 import java.util.List;
 import com.jiqu.application.StoreApplication;
 import com.jiqu.store.MainActivity;
-import com.jiqu.store.R;
+import com.vr.store.R;
 
 import android.app.ActivityManager;
 import android.app.ActivityManager.RunningServiceInfo;

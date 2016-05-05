@@ -1,6 +1,6 @@
 package com.jiqu.view;
 
-import com.jiqu.store.R;
+import com.vr.store.R;
 import com.jiqu.tools.MetricsTool;
 import com.jiqu.tools.UIUtil;
 
@@ -75,6 +75,10 @@ public class FriendShareItem extends RelativeLayout {
 	
 	public void setTitleContent(int resId){
 		title.setText(resId);
+	}
+	
+	public Button getShareBtn(){
+		return share;
 	}
 	
 	public void setShareBg(int resId){

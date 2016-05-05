@@ -14,7 +14,7 @@ import com.jiqu.database.AccountDao.Properties;
 import com.jiqu.interfaces.DialogDismissObserver;
 import com.jiqu.object.AccountInformation;
 import com.jiqu.store.BaseActivity;
-import com.jiqu.store.R;
+import com.vr.store.R;
 import com.jiqu.tools.MD5;
 import com.jiqu.tools.MetricsTool;
 import com.jiqu.tools.RequestTool;

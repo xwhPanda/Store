@@ -1,8 +1,12 @@
 package com.jiqu.tools;
 
-public class Constant {
+public class Constants {
 
-	/** 设置的sharedprefrences名称 **/
+	/** （新浪） 应用的 APP_KEY **/
+//    public static final String APP_KEY      = "2045436852";
+	public static final String APP_KEY      = "4171998531";
+	
+	/** 设置的sharedprefrences名称  **/
 	public static final String SETTINGS_SHARE_PREFERENCE_NAME = "settins";
 	/** 设置界面自动检查更新的KEY **/
 	public static final String AUTO_CHECK_VERSION = "autoCheckVersion";

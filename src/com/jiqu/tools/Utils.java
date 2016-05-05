@@ -16,7 +16,7 @@
 
 package com.jiqu.tools;
 
-import com.jiqu.store.R;
+import com.vr.store.R;
 
 import android.content.Context;
 import android.content.Intent;

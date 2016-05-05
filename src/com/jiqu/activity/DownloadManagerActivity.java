@@ -8,8 +8,11 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemLongClickListener;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
@@ -28,14 +31,15 @@ import com.jiqu.download.UnZipManager;
 import com.jiqu.interfaces.UninstallStateObserver;
 import com.jiqu.object.InstalledApp;
 import com.jiqu.store.BaseActivity;
-import com.jiqu.store.R;
+import com.vr.store.R;
 import com.jiqu.tools.InstalledAppTool;
 import com.jiqu.tools.UIUtil;
 import com.jiqu.view.TitleView;
 
 import de.greenrobot.dao.query.QueryBuilder;
 
-public class DownloadManagerActivity extends BaseActivity implements OnClickListener,OnCheckedChangeListener{
+public class DownloadManagerActivity extends BaseActivity implements OnClickListener
+	,OnCheckedChangeListener,OnItemLongClickListener{
 	private TitleView titleView;
 	private LinearLayout btnLin;
 	private Button downloading,downloaded;
@@ -48,6 +52,9 @@ public class DownloadManagerActivity extends BaseActivity implements OnClickList
 	private DownloadedAdapter downloadedAdapter;
 	private List<DownloadAppinfo> downloadingApps = new ArrayList<DownloadAppinfo>();
 	private List<DownloadAppinfo> downloadedApps = new ArrayList<DownloadAppinfo>();
+	
+	private boolean downloadingListShowing = false;
+	private boolean downloadedListShowing = false;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -107,6 +114,8 @@ public class DownloadManagerActivity extends BaseActivity implements OnClickList
 		allStartBtn.setOnClickListener(this);
 		allDeleteCB.setOnCheckedChangeListener(this);
 		allStartCB.setOnCheckedChangeListener(this);
+		downloadingList.setOnItemLongClickListener(this);
+		downloadedList.setOnItemLongClickListener(this);
 		
 		initViewSize();
 	}
@@ -191,7 +200,7 @@ public class DownloadManagerActivity extends BaseActivity implements OnClickList
 		List<InstalledApp> apps = InstalledAppTool.getPersonalApp(this);
 		for (DownloadAppinfo info : infos2) {
 				if (info.getDownloadState() != DownloadManager.STATE_INSTALLED) {
-					int state = InstalledAppTool.contain(apps,info.getPackageName(), Integer.parseInt(info.getVersionCode()));
+					int state = InstalledAppTool.contain(apps,info.getPackageName());
 					if (state == DownloadManager.STATE_INSTALLED) {
 						info.setDownloadState(state);
 						DownloadManager.DBManager.insertOrReplace(info);
@@ -293,18 +302,20 @@ public class DownloadManagerActivity extends BaseActivity implements OnClickList
 		// TODO Auto-generated method stub
 		switch (v.getId()) {
 		case R.id.downloading:
+			downloadedListShowing = false;
 			changeButtonState(downloading);
 			downloadedList.setVisibility(View.INVISIBLE);
-			allDeleteRel.setVisibility(View.INVISIBLE);
-			allStartRel.setVisibility(View.VISIBLE);
+			allDeleteRel.setVisibility(View.GONE);
+//			allStartRel.setVisibility(View.VISIBLE);
 			downloadingList.setVisibility(View.VISIBLE);
 			break;
 
 		case R.id.downloaded:
+			downloadingListShowing = false;
 			changeButtonState(downloaded);
 			downloadingList.setVisibility(View.INVISIBLE);
-			allStartRel.setVisibility(View.INVISIBLE);
-			allDeleteRel.setVisibility(View.VISIBLE);
+			allStartRel.setVisibility(View.GONE);
+//			allDeleteRel.setVisibility(View.VISIBLE);
 			downloadedList.setVisibility(View.VISIBLE);
 			break;
 			
@@ -345,5 +356,38 @@ public class DownloadManagerActivity extends BaseActivity implements OnClickList
 				}
 			}
 		}
+	}
+
+	@Override
+	public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
+		// TODO Auto-generated method stub
+		if (parent.getId() == R.id.downloadingList) {
+			allStartRel.setVisibility(View.VISIBLE);
+			downloadingListShowing = true;
+			downloadingAdapter.showAllCheckbox(true);
+			downloadingAdapter.notifyDataSetChanged();
+		}else if (parent.getId() == R.id.downloadedList) {
+			downloadedListShowing = true;
+			allDeleteRel.setVisibility(View.VISIBLE);
+		}
+		return true;
+	}
+	
+	@Override
+	public boolean onKeyDown(int keyCode, KeyEvent event) {
+		// TODO Auto-generated method stub
+		if (keyCode == KeyEvent.KEYCODE_BACK) {
+			if (downloadingListShowing) {
+				downloadingListShowing = false;
+				downloadingAdapter.showAllCheckbox(false);
+				downloadingAdapter.notifyDataSetChanged();
+				allStartRel.setVisibility(View.GONE);
+				return true;
+			}else {
+				downloadedListShowing = false;
+				allDeleteRel.setVisibility(View.GONE);
+			}
+		}
+		return super.onKeyDown(keyCode, event);
 	}
 }

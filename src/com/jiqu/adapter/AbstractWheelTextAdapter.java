@@ -17,7 +17,7 @@ package com.jiqu.adapter;
 
 import java.util.ArrayList;
 
-import com.jiqu.store.R;
+import com.vr.store.R;
 import com.jiqu.tools.UIUtil;
 
 import android.content.Context;

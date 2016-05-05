@@ -16,7 +16,7 @@ import com.jiqu.adapter.PrivateMessageAdapter;
 import com.jiqu.object.GameInformation;
 import com.jiqu.object.PrivateMessage;
 import com.jiqu.store.BaseActivity;
-import com.jiqu.store.R;
+import com.vr.store.R;
 import com.jiqu.tools.UIUtil;
 import com.jiqu.view.PullToRefreshLayout;
 import com.jiqu.view.TitleView;

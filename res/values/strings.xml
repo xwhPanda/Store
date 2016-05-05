@@ -94,6 +94,7 @@
     <string name="resetFailed">重置失败</string>
     <string name="codeWrong">验证码错误</string>
     <string name="codeTimeOut">验证超时</string>
+    <string name="notLogin">未登录</string>
     
     <string name="screenSense">画面感  : </string>
     <string name="immersion">沉浸感  : </string>

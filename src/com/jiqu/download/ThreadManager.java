@@ -8,7 +8,7 @@ import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.ThreadPoolExecutor.AbortPolicy;
 import java.util.concurrent.TimeUnit;
 
-import com.jiqu.tools.Constant;
+import com.jiqu.tools.Constants;
 
 public class ThreadManager {
 	public static final String DEFAULT_SINGLE_POOL_NAME = "DEFAULT_SINGLE_POOL_NAME";
@@ -29,7 +29,7 @@ public class ThreadManager {
 	public static ThreadPoolProxy getDownloadPool() {
 		synchronized (mDownloadLock) {
 			if (mDownloadPool == null) {
-				mDownloadPool = new ThreadPoolProxy(1, Constant.DEFAULT_DOWANLOAD_THREAD_COUNTS, 5L);
+				mDownloadPool = new ThreadPoolProxy(1, Constants.DEFAULT_DOWANLOAD_THREAD_COUNTS, 5L);
 			}
 			return mDownloadPool;
 		}

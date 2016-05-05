@@ -14,7 +14,7 @@ import com.jiqu.download.AppUtil;
 import com.jiqu.download.DownloadManager;
 import com.jiqu.download.DownloadManager.DownloadObserver;
 import com.jiqu.download.FileUtil;
-import com.jiqu.store.R;
+import com.vr.store.R;
 import com.jiqu.tools.MetricsTool;
 import com.jiqu.tools.NetReceiver;
 import com.jiqu.tools.UIUtil;
@@ -50,7 +50,7 @@ public class DownloadingAdapter extends BaseAdapter implements DownloadObserver 
 	private List<Holder> mDisplayedHolders;
 	private Handler handler;
 
-	private Map<Long, Boolean> checkMap = new ConcurrentHashMap<Long, Boolean>();
+	private Map<String, Boolean> checkMap = new ConcurrentHashMap<String, Boolean>();
 
 	public DownloadingAdapter(Context context, List<DownloadAppinfo> downloadAppinfos, Handler handler) {
 		// TODO Auto-generated constructor stub
@@ -62,7 +62,19 @@ public class DownloadingAdapter extends BaseAdapter implements DownloadObserver 
 
 	public void putAllMap(boolean isChecked) {
 		for (DownloadAppinfo downloadAppinfo : downloadAppinfos) {
-//			checkMap.put(downloadAppinfo.getId(), isChecked);
+			checkMap.put(downloadAppinfo.getId(), isChecked);
+		}
+	}
+	
+	public void showAllCheckbox(boolean visible){
+		ArrayList<Holder> holders = (ArrayList<Holder>) getDisplayedHolders();
+		for (int i = 0; i < holders.size(); i++) {
+			if (visible) {
+				
+					holders.get(i).checkBox.setVisibility(View.VISIBLE);
+			}else {
+				holders.get(i).checkBox.setVisibility(View.INVISIBLE);
+			}
 		}
 	}
 
@@ -119,6 +131,7 @@ public class DownloadingAdapter extends BaseAdapter implements DownloadObserver 
 		private ProgressBar downloadPrg;
 		private TextView progressTx;
 		private Button pause;
+		private Button deleted;
 
 		private Context context;
 		private View rootView;
@@ -148,6 +161,7 @@ public class DownloadingAdapter extends BaseAdapter implements DownloadObserver 
 			downloadPrg = (ProgressBar) view.findViewById(R.id.downloadPrg);
 			progressTx = (TextView) view.findViewById(R.id.progressTx);
 			pause = (Button) view.findViewById(R.id.pause);
+			deleted = (Button) view.findViewById(R.id.deleted);
 			pause.setOnClickListener(new OnClickListener() {
 
 				@Override
@@ -160,12 +174,12 @@ public class DownloadingAdapter extends BaseAdapter implements DownloadObserver 
 					} else if (state == DownloadManager.STATE_ERROR || state == DownloadManager.STATE_NONE || state == DownloadManager.STATE_PAUSED) {
 						if (NetReceiver.NET_TYPE == NetReceiver.NET_WIFI) {
 							if (FileUtil.checkSDCard()) {
-								if (Long.parseLong(info.getAppSize()) * 3 >= FileUtil.getSDcardAvailableSpace()) {
+								if (Float.parseFloat(info.getAppSize()) * 1024 * 1024 * 3 >= FileUtil.getSDcardAvailableSpace()) {
 									Toast.makeText(context, "可用空间不足", Toast.LENGTH_SHORT).show();
 									return;
 								}
 							} else {
-								if (Long.parseLong(info.getAppSize()) * 3 >= FileUtil.getDataStorageAvailableSpace()) {
+								if (Float.parseFloat(info.getAppSize()) * 1024 * 1024 * 3 >= FileUtil.getDataStorageAvailableSpace()) {
 									Toast.makeText(context, "可用空间不足", Toast.LENGTH_SHORT).show();
 									return;
 								}
@@ -184,7 +198,7 @@ public class DownloadingAdapter extends BaseAdapter implements DownloadObserver 
 				@Override
 				public void onCheckedChanged(CompoundButton buttonView, boolean isCheck) {
 					// TODO Auto-generated method stub
-//					checkMap.put(info.getId(), isCheck);
+					checkMap.put(info.getId(), isCheck);
 				}
 			});
 
@@ -196,8 +210,10 @@ public class DownloadingAdapter extends BaseAdapter implements DownloadObserver 
 		private void initViewSize(View view) {
 			UIUtil.setViewSize(checkBox, 56 * MetricsTool.Rx, 56 * MetricsTool.Ry);
 			UIUtil.setViewSize(appIcon, 160 * MetricsTool.Rx, 160 * MetricsTool.Ry);
-			UIUtil.setViewSize(pause, 60 * MetricsTool.Rx, 60 * MetricsTool.Rx);
+			UIUtil.setViewSize(pause, 96 * MetricsTool.Rx, 76 * MetricsTool.Rx);
+			UIUtil.setViewSize(deleted, 76 * MetricsTool.Rx, 76 * MetricsTool.Rx);
 			UIUtil.setViewSize(downloadPrg, 545 * MetricsTool.Rx, 20 * MetricsTool.Rx);
+			UIUtil.setViewWidth(appName, 545 * MetricsTool.Rx);
 
 			UIUtil.setTextSize(appName, 40);
 			UIUtil.setTextSize(progressTx, 30);
@@ -210,7 +226,8 @@ public class DownloadingAdapter extends BaseAdapter implements DownloadObserver 
 				UIUtil.setViewSizeMargin(appName, 20 * MetricsTool.Rx, 60 * MetricsTool.Ry, 0, 0);
 				UIUtil.setViewSizeMargin(downloadPrg, 0, 10 * MetricsTool.Ry, 0, 0);
 				UIUtil.setViewSizeMargin(progressTx, 0, 10 * MetricsTool.Ry, 0, 0);
-				UIUtil.setViewSizeMargin(pause, 0, 0, 60 * MetricsTool.Rx, 0);
+				UIUtil.setViewSizeMargin(deleted , 40 * MetricsTool.Rx, 0, 0, 0);
+				UIUtil.setViewSizeMargin(pause , 20 * MetricsTool.Rx, 0, 0, 0);
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
@@ -222,15 +239,18 @@ public class DownloadingAdapter extends BaseAdapter implements DownloadObserver 
 			StoreApplication.getInstance().getImageLoader().get(info.getIconUrl(), listener);
 			appName.setText(appinfo.getAppName());
 
-			// checkBox.setChecked(isChecked);
-			checkBox.setChecked(checkMap.get(info.getId()));
+			if (checkMap.containsKey(info.getId())) {
+				checkBox.setChecked(checkMap.get(info.getId()));
+			}else {
+				checkBox.setChecked(false);
+			}
 			refreshView(appinfo);
 		}
 
 		public void refreshView(DownloadAppinfo appinfo) {
 			pause.clearAnimation();
 			downloadPrg.setProgress((int) (appinfo.getProgress() * 100));
-			progressTx.setText(FileUtil.getFileSize(appinfo.getCurrentSize()) + "/" + FileUtil.getFileSize(Long.parseLong(appinfo.getAppSize())));
+			progressTx.setText(FileUtil.getFileSize(appinfo.getCurrentSize()) + "/" + appinfo.getAppSize() + "M");
 			switch (appinfo.getDownloadState()) {
 			case DownloadManager.STATE_NONE:
 				pause.setBackgroundResource(R.drawable.download_selector);
@@ -279,16 +299,16 @@ public class DownloadingAdapter extends BaseAdapter implements DownloadObserver 
 			final Holder holder = displayedHolder2s.get(i);
 			if (holder != null) {
 				final DownloadAppinfo appInfo = holder.getData();
-//				if (appInfo.getId().longValue() == info.getId().longValue()) {
-//					AppUtil.post(new Runnable() {
-//
-//						@Override
-//						public void run() {
-//							// TODO Auto-generated method stub
-//							holder.refreshView(appInfo);
-//						}
-//					});
-//				}
+				if (appInfo.getId().equals(info.getId())) {
+					AppUtil.post(new Runnable() {
+
+						@Override
+						public void run() {
+							// TODO Auto-generated method stub
+							holder.refreshView(appInfo);
+						}
+					});
+				}
 			}
 		}
 	}

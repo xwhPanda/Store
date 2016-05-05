@@ -10,8 +10,8 @@ import android.widget.CompoundButton;
 import android.widget.CompoundButton.OnCheckedChangeListener;
 
 import com.jiqu.store.BaseActivity;
-import com.jiqu.store.R;
-import com.jiqu.tools.Constant;
+import com.vr.store.R;
+import com.jiqu.tools.Constants;
 import com.jiqu.tools.SharePreferenceTool;
 import com.jiqu.tools.UIUtil;
 import com.jiqu.view.SettingsItem;
@@ -27,7 +27,7 @@ public class SettingActivity extends BaseActivity implements OnCheckedChangeList
 	protected void onCreate(Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
 		super.onCreate(savedInstanceState);
-		preferences = getSharedPreferences(Constant.SETTINGS_SHARE_PREFERENCE_NAME, Context.MODE_PRIVATE);
+		preferences = getSharedPreferences(Constants.SETTINGS_SHARE_PREFERENCE_NAME, Context.MODE_PRIVATE);
 		initView();
 	}
 
@@ -60,12 +60,12 @@ public class SettingActivity extends BaseActivity implements OnCheckedChangeList
 		
 		autoCheckVersion.getToggleButton().setOnCheckedChangeListener(this);
 		
-		autoCheckVersion.getToggleButton().setChecked(SharePreferenceTool.getBooleanFromPreferences(preferences, Constant.AUTO_CHECK_VERSION, true));
-		threadItem.getThreadSizeTextView().setText(SharePreferenceTool.getIntFromPreferences(preferences, Constant.DOWNLOAD_THREAD_COUNTS, Constant.DEFAULT_DOWANLOAD_THREAD_COUNTS) + "");
+		autoCheckVersion.getToggleButton().setChecked(SharePreferenceTool.getBooleanFromPreferences(preferences, Constants.AUTO_CHECK_VERSION, true));
+		threadItem.getThreadSizeTextView().setText(SharePreferenceTool.getIntFromPreferences(preferences, Constants.DOWNLOAD_THREAD_COUNTS, Constants.DEFAULT_DOWANLOAD_THREAD_COUNTS) + "");
 		threadItem.getAddButton().setOnClickListener(this);
 		threadItem.getSubtractButton().setOnClickListener(this);
 		
-		threadNumbers = SharePreferenceTool.getIntFromPreferences(preferences, Constant.DOWNLOAD_THREAD_COUNTS, Constant.DEFAULT_DOWANLOAD_THREAD_COUNTS);
+		threadNumbers = SharePreferenceTool.getIntFromPreferences(preferences, Constants.DOWNLOAD_THREAD_COUNTS, Constants.DEFAULT_DOWANLOAD_THREAD_COUNTS);
 		
 		initViewSize();
 	}
@@ -94,7 +94,7 @@ public class SettingActivity extends BaseActivity implements OnCheckedChangeList
 	public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
 		// TODO Auto-generated method stub
 		if (buttonView == autoCheckVersion.getToggleButton()) {
-			SharePreferenceTool.setValuePreferences(preferences, Constant.AUTO_CHECK_VERSION, isChecked);
+			SharePreferenceTool.setValuePreferences(preferences, Constants.AUTO_CHECK_VERSION, isChecked);
 		}
 	}
 
@@ -102,7 +102,7 @@ public class SettingActivity extends BaseActivity implements OnCheckedChangeList
 	public void onClick(View v) {
 		// TODO Auto-generated method stub
 		if (v == threadItem.getSubtractButton()) {
-			if (threadNumbers > 1 && threadNumbers <= Constant.MAX_DOWANLOAD_THREAD_NUMBER) {
+			if (threadNumbers > 1 && threadNumbers <= Constants.MAX_DOWANLOAD_THREAD_NUMBER) {
 				threadNumbers -= 1;
 			}
 			
@@ -112,7 +112,7 @@ public class SettingActivity extends BaseActivity implements OnCheckedChangeList
 				
 			}
 		}
-		SharePreferenceTool.setValuePreferences(preferences, Constant.DOWNLOAD_THREAD_COUNTS, threadNumbers);
+		SharePreferenceTool.setValuePreferences(preferences, Constants.DOWNLOAD_THREAD_COUNTS, threadNumbers);
 		threadItem.getThreadSizeTextView().setText(threadNumbers +"");
 	}
 	

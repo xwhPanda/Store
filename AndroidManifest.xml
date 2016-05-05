@@ -1,118 +1,168 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.jiqu.store"
+    package="com.vr.store"
     android:versionCode="1001"
     android:versionName="1.0.01" >
 
     <uses-sdk
         android:minSdkVersion="11"
         android:targetSdkVersion="17" />
-    
-    <uses-permission android:name="android.permission.INTERNET"/>
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
-    <uses-permission android:name="android.permission.RESTART_PACKAGES"/>  
-    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>
-    <uses-permission android:name="android.permission.MOUNT_UNMOUNT_FILESYSTEMS"/>
+
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.RESTART_PACKAGES" />
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+    <uses-permission android:name="android.permission.MOUNT_UNMOUNT_FILESYSTEMS" />
     <!-- 获取app大大小，包括 数据，代码，缓存等 -->
-    <uses-permission android:name="android.permission.GET_PACKAGE_SIZE"/>
+    <uses-permission android:name="android.permission.GET_PACKAGE_SIZE" />
     <!-- 清理应用缓存 -->
-    <uses-permission android:name="android.permission.CLEAR_APP_CACHE"/>
-    <uses-permission android:name="android.permission.BLUETOOTH"/>
-    <uses-permission android:name="android.permission.BLUETOOTH_ADMIN"/>
-    <uses-permission android:name="android.permission.WRITE_SETTINGS"/>
-    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
-    <uses-permission android:name="android.permission.READ_PHONE_STATE"/>
-    
+    <uses-permission android:name="android.permission.CLEAR_APP_CACHE" />
+    <uses-permission android:name="android.permission.BLUETOOTH" />
+    <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
+    <uses-permission android:name="android.permission.WRITE_SETTINGS" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
+
     <application
         android:name="com.jiqu.application.StoreApplication"
         android:allowBackup="true"
         android:icon="@drawable/ic_launcher"
         android:label="@string/app_name"
-        android:theme="@style/FullScreen">
-        
-        <activity android:name="com.jiqu.store.SplashActivity"
-            android:screenOrientation="portrait">
-            <intent-filter >
-                <action android:name="android.intent.action.MAIN"/>
-                <category android:name="android.intent.category.LAUNCHER"/>
+        android:theme="@style/FullScreen" >
+        <meta-data
+            android:name="channel"
+            android:value="test" />
+
+        <!-- 微博分享 -->
+        <activity
+            android:name="com.sina.weibo.sdk.demo.WBShareActivity"
+            android:configChanges="keyboardHidden|orientation"
+            android:screenOrientation="portrait" >
+            <intent-filter>
+                <action android:name="com.sina.weibo.sdk.action.ACTION_SDK_REQ_ACTIVITY" />
+                <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
+        <activity
+            android:name="com.sina.weibo.sdk.component.WeiboSdkBrowser"
+            android:configChanges="keyboardHidden|orientation"
+            android:exported="false"
+            android:windowSoftInputMode="adjustResize" >
+        </activity>
         
-        <activity android:name="com.jiqu.store.MainActivity"
-            android:screenOrientation="portrait"></activity>
-        
-        <activity android:name="com.jiqu.activity.MemberLoginActivity"
-            android:screenOrientation="portrait"></activity>
-        
-        <activity android:name="com.jiqu.activity.ShowAccountInformatiomActivity"
-            android:screenOrientation="portrait"></activity>
-        
-        <activity android:name="com.jiqu.activity.ForgetPasswordActivity"
-            android:screenOrientation="portrait"></activity>
-        
-        <activity android:name="com.jiqu.activity.RegisterActivity"
-            android:screenOrientation="portrait"></activity>
-        
-        <activity android:name="com.jiqu.activity.SearchActivity"
-            android:screenOrientation="portrait"></activity>
-        
-        <activity android:name="com.jiqu.activity.SettingActivity"
-            android:screenOrientation="portrait"></activity>
-        
-        <activity android:name="com.jiqu.activity.ModifyPasswordActivity"
-            android:screenOrientation="portrait"></activity>
-        
-        <activity android:name="com.jiqu.activity.MessageCenterActivity"
-            android:screenOrientation="portrait"></activity>
-        
-        <activity android:name="com.jiqu.activity.GameEvaluationInformationActivity"
-            android:screenOrientation="portrait"></activity>
-        
-        <activity android:name="com.jiqu.activity.AppUninstallActivity"
-            android:screenOrientation="portrait"></activity>
-        
-        <activity android:name="com.jiqu.activity.DownloadManagerActivity"
-            android:screenOrientation="portrait"></activity>
-        
-        <activity android:name="com.jiqu.activity.ClearCacheActivity"
-            android:screenOrientation="portrait"></activity>
-        
-        <activity android:name="com.jiqu.activity.DeepClearActivity"
-            android:screenOrientation="portrait"></activity>
-        
-        <activity android:name="com.jiqu.activity.PowerManagerActivity"
-            android:screenOrientation="portrait"></activity>
-        
-        <activity android:name="com.jiqu.activity.CommomProblemActivity"
-            android:screenOrientation="portrait"></activity>
-        
-        <activity android:name="com.jiqu.activity.AboutUsActivity"
-            android:screenOrientation="portrait"></activity>
-        
-        <activity android:name="com.jiqu.activity.ResourceManagementActivity"
-            android:screenOrientation="portrait"></activity>
-        
-        <activity android:name="com.jiqu.activity.ShareActivity"
-            android:screenOrientation="portrait"></activity>
-        
-        <activity android:name="com.jiqu.activity.SortInfoActivity"
-            android:screenOrientation="portrait"></activity>
-        
-        <activity android:name="com.jiqu.activity.SortActivity"
-            android:screenOrientation="portrait"></activity>
-        
-        <activity android:name="com.jiqu.activity.RankingActivity"
-            android:screenOrientation="portrait"></activity>
-        
-        <activity android:name="com.jiqu.activity.BoutiqueActivity"
-            android:screenOrientation="portrait"></activity>
-        
-        <activity android:name="com.jiqu.activity.ThematicActivity"
-            android:screenOrientation="portrait"></activity>
-        
-        <activity android:name="com.jiqu.activity.HeadlineActivity"
-            android:screenOrientation="portrait"></activity>
-        
-        <activity android:name="com.jiqu.activity.DetailActivity"
+        <activity
+            android:name="com.jiqu.store.SplashActivity"
+            android:screenOrientation="portrait" >
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name="com.jiqu.store.MainActivity"
+            android:screenOrientation="portrait" >
+        </activity>
+        <activity
+            android:name="com.jiqu.activity.MemberLoginActivity"
+            android:screenOrientation="portrait" >
+        </activity>
+        <activity
+            android:name="com.jiqu.activity.ShowAccountInformatiomActivity"
+            android:screenOrientation="portrait" >
+        </activity>
+        <activity
+            android:name="com.jiqu.activity.ForgetPasswordActivity"
+            android:screenOrientation="portrait" >
+        </activity>
+        <activity
+            android:name="com.jiqu.activity.RegisterActivity"
+            android:screenOrientation="portrait" >
+        </activity>
+        <activity
+            android:name="com.jiqu.activity.SearchActivity"
+            android:screenOrientation="portrait" >
+        </activity>
+        <activity
+            android:name="com.jiqu.activity.SettingActivity"
+            android:screenOrientation="portrait" >
+        </activity>
+        <activity
+            android:name="com.jiqu.activity.ModifyPasswordActivity"
+            android:screenOrientation="portrait" >
+        </activity>
+        <activity
+            android:name="com.jiqu.activity.MessageCenterActivity"
+            android:screenOrientation="portrait" >
+        </activity>
+        <activity
+            android:name="com.jiqu.activity.GameEvaluationInformationActivity"
+            android:screenOrientation="portrait" >
+        </activity>
+        <activity
+            android:name="com.jiqu.activity.AppUninstallActivity"
+            android:screenOrientation="portrait" >
+        </activity>
+        <activity
+            android:name="com.jiqu.activity.DownloadManagerActivity"
+            android:screenOrientation="portrait" >
+        </activity>
+        <activity
+            android:name="com.jiqu.activity.ClearCacheActivity"
+            android:screenOrientation="portrait" >
+        </activity>
+        <activity
+            android:name="com.jiqu.activity.DeepClearActivity"
+            android:screenOrientation="portrait" >
+        </activity>
+        <activity
+            android:name="com.jiqu.activity.PowerManagerActivity"
+            android:screenOrientation="portrait" >
+        </activity>
+        <activity
+            android:name="com.jiqu.activity.CommomProblemActivity"
+            android:screenOrientation="portrait" >
+        </activity>
+        <activity
+            android:name="com.jiqu.activity.AboutUsActivity"
+            android:screenOrientation="portrait" >
+        </activity>
+        <activity
+            android:name="com.jiqu.activity.ResourceManagementActivity"
+            android:screenOrientation="portrait" >
+        </activity>
+        <activity
+            android:name="com.jiqu.activity.ShareActivity"
+            android:screenOrientation="portrait" >
+        </activity>
+        <activity
+            android:name="com.jiqu.activity.SortInfoActivity"
+            android:screenOrientation="portrait" >
+        </activity>
+        <activity
+            android:name="com.jiqu.activity.SortActivity"
+            android:screenOrientation="portrait" >
+        </activity>
+        <activity
+            android:name="com.jiqu.activity.RankingActivity"
+            android:screenOrientation="portrait" >
+        </activity>
+        <activity
+            android:name="com.jiqu.activity.BoutiqueActivity"
+            android:screenOrientation="portrait" >
+        </activity>
+        <activity
+            android:name="com.jiqu.activity.ThematicActivity"
+            android:screenOrientation="portrait" >
+        </activity>
+        <activity
+            android:name="com.jiqu.activity.HeadlineActivity"
+            android:screenOrientation="portrait" >
+        </activity>
+        <activity
+            android:name="com.jiqu.activity.DetailActivity"
+            android:screenOrientation="portrait" >
+        </activity>
+        <activity android:name="com.jiqu.activity.Aaaa"
             android:screenOrientation="portrait"></activity>
     </application>
 

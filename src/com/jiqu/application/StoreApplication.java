@@ -19,14 +19,16 @@ import com.jiqu.database.DaoMaster.DevOpenHelper;
 import com.jiqu.database.DaoSession;
 import com.jiqu.download.FileUtil;
 import com.jiqu.interfaces.LoginOutObserver;
-import com.jiqu.store.R;
-import com.jiqu.tools.Constant;
+import com.vr.store.R;
+import com.jiqu.tools.Constants;
 import com.jiqu.tools.LruBitmapCache;
 import com.jiqu.tools.MetricsTool;
 import com.jiqu.tools.NetReceiver;
+import com.jiqu.weibo.WeiboShare;
 
 import android.app.Application;
 import android.content.Context;
+import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
@@ -51,6 +53,7 @@ public class StoreApplication extends Application {
 	public static String DATA_CACHE_PATH;
 	public static Context context;
 	public static String DEVICE_ID;
+	public static String CHANNEL;
 	public static LoginOutObserver loginOutObserver;
 	
 	@Override
@@ -69,28 +72,47 @@ public class StoreApplication extends Application {
 		
 		initFiles();
 		initConstant();
+		
+		/** 微博注册 **/
+//		WeiboShare.getInstance().initialize();
 	}
 	
 	public static void setLoginOutObserver(LoginOutObserver observer){
 		loginOutObserver = observer;
 	}
 	
-	
 	private void initConstant(){
 		PackageManager pm = getPackageManager();
-		Constant.MAC = getLocalMacAddressFromIp(context);
-		Constant.PACKAGENAME = getPackageName();
+		Constants.MAC = getLocalMacAddressFromIp(context);
+		Constants.PACKAGENAME = getPackageName();
 		try {
-			PackageInfo pi = pm.getPackageInfo(Constant.PACKAGENAME, 0);
-			Constant.VERSION_NAME = pi.versionName;
-			Constant.VERSION_CODE = pi.versionCode;
-			Constant.DEVICE_ID = Secure.getString(getContentResolver(), Secure.ANDROID_ID);
-			Constant.SERIAL_NUMBER = android.os.Build.SERIAL;
+			PackageInfo pi = pm.getPackageInfo(Constants.PACKAGENAME, 0);
+			Constants.VERSION_NAME = pi.versionName;
+			Constants.VERSION_CODE = pi.versionCode;
+			Constants.DEVICE_ID = Secure.getString(getContentResolver(), Secure.ANDROID_ID);
+			Constants.SERIAL_NUMBER = android.os.Build.SERIAL;
 			DEVICE_ID = ((TelephonyManager)context.getSystemService(TELEPHONY_SERVICE)).getDeviceId();
+			CHANNEL = getMetaDataValue("channel");
 		} catch (NameNotFoundException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+	}
+	
+	private String getMetaDataValue(String name){
+		Object value = null;
+		PackageManager packageManager = context.getPackageManager();
+		ApplicationInfo applicationInfo;
+		try {
+			applicationInfo = packageManager.getApplicationInfo(getPackageName(), PackageManager.GET_META_DATA);
+			if (applicationInfo != null && applicationInfo.metaData.get(name) != null) {
+				value = applicationInfo.metaData.get(name);
+			}
+		} catch (NameNotFoundException e) {
+			e.printStackTrace();
+		}
+		
+		return value.toString();
 	}
 	
 	private void initFiles(){
@@ -170,7 +192,7 @@ public class StoreApplication extends Application {
             }  
    
         } catch (SocketException ex) {  
-            Log.e("TAG", ex.toString());  
+           ex.printStackTrace();
         }  
         return null;  
     }

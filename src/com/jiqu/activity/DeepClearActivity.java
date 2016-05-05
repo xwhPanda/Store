@@ -35,7 +35,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.jiqu.store.BaseActivity;
-import com.jiqu.store.R;
+import com.vr.store.R;
 import com.jiqu.tools.ClearTool;
 import com.jiqu.tools.UIUtil;
 import com.jiqu.view.TitleView;

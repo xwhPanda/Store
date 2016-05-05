@@ -4,7 +4,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 import com.jiqu.adapter.WheelViewAdapter;
-import com.jiqu.store.R;
+import com.vr.store.R;
 
 import android.content.Context;
 import android.database.DataSetObserver;

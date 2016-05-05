@@ -18,7 +18,7 @@ import com.jiqu.object.GameInformation;
 import com.jiqu.object.InformationGallaryItem;
 import com.jiqu.object.InformationInfo;
 import com.jiqu.object.InformationResult;
-import com.jiqu.store.R;
+import com.vr.store.R;
 import com.jiqu.tools.CountDownTimer;
 import com.jiqu.tools.MetricsTool;
 import com.jiqu.tools.RequestTool;

@@ -4,7 +4,7 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 import com.jiqu.inter.Pullable;
-import com.jiqu.store.R;
+import com.vr.store.R;
 import com.jiqu.tools.MetricsTool;
 
 import android.app.Activity;

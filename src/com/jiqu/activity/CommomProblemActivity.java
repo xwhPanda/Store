@@ -12,7 +12,7 @@ import android.widget.ListView;
 import com.jiqu.adapter.CommomProblemAdapter;
 import com.jiqu.object.CommomProblemItem;
 import com.jiqu.store.BaseActivity;
-import com.jiqu.store.R;
+import com.vr.store.R;
 import com.jiqu.tools.UIUtil;
 import com.jiqu.view.TitleView;
 

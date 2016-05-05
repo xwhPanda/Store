@@ -3,7 +3,7 @@ package com.jiqu.adapter;
 import java.util.List;
 
 import com.jiqu.object.PrivateMessage;
-import com.jiqu.store.R;
+import com.vr.store.R;
 import com.jiqu.tools.MetricsTool;
 import com.jiqu.tools.UIUtil;
 import com.jiqu.view.MsgPopWind;

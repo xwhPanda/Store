@@ -42,8 +42,8 @@ import com.jiqu.object.GameDetailInfo;
 import com.jiqu.object.InstalledApp;
 import com.jiqu.object.SpecialResultsItem;
 import com.jiqu.store.BaseActivity;
-import com.jiqu.store.R;
-import com.jiqu.tools.Constant;
+import com.vr.store.R;
+import com.jiqu.tools.Constants;
 import com.jiqu.tools.InstalledAppTool;
 import com.jiqu.tools.NetReceiver;
 import com.jiqu.tools.RequestTool;
@@ -508,7 +508,7 @@ public class DetailActivity extends BaseActivity implements Listener<JSONObject>
 				DownloadManager.getInstance().pause(downloadAppinfo);
 			}else if (state == DownloadManager.STATE_UNZIP_FAILED) {
 				if (downloadAppinfo != null) {
-					UnZipManager.getInstance().unzip(downloadAppinfo, Constant.PASSWORD,null);
+					UnZipManager.getInstance().unzip(downloadAppinfo, Constants.PASSWORD,null);
 				}
 			}else if (state == DownloadManager.STATE_UNZIPING) {
 				download.setEnabled(false);

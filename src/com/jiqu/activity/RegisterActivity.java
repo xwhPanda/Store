@@ -19,8 +19,8 @@ import com.android.volley.VolleyError;
 import com.jiqu.download.StringUtil;
 import com.jiqu.object.AccountResponeInfo;
 import com.jiqu.store.BaseActivity;
-import com.jiqu.store.R;
-import com.jiqu.tools.Constant;
+import com.vr.store.R;
+import com.jiqu.tools.Constants;
 import com.jiqu.tools.MD5;
 import com.jiqu.tools.RequestTool;
 import com.jiqu.tools.UIUtil;
@@ -136,7 +136,7 @@ public class RegisterActivity extends BaseActivity implements OnClickListener{
 		
 		if (TextUtils.isEmpty(account)) {
 			Toast.makeText(this, R.string.accountIsNull,Toast.LENGTH_SHORT).show();
-		}else if(account.length() > Constant.ACCOUNT_MAX_LENGTH){
+		}else if(account.length() > Constants.ACCOUNT_MAX_LENGTH){
 			Toast.makeText(this, R.string.accountIsTooLong,Toast.LENGTH_SHORT).show();
 		}else if (TextUtils.isEmpty(email)) {
 			Toast.makeText(this, R.string.emailIsNull,Toast.LENGTH_SHORT).show();

@@ -3,7 +3,7 @@ package com.jiqu.view;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.jiqu.store.R;
+import com.vr.store.R;
 import com.jiqu.tools.MetricsTool;
 
 import android.content.Context;

@@ -5,7 +5,7 @@ import java.util.List;
 import org.w3c.dom.Text;
 
 import com.jiqu.object.AccountInformation;
-import com.jiqu.store.R;
+import com.vr.store.R;
 import com.jiqu.tools.MetricsTool;
 import com.jiqu.tools.UIUtil;
 

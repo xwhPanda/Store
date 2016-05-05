@@ -20,7 +20,7 @@ import com.jiqu.object.GameInfo;
 import com.jiqu.object.GameInformation;
 import com.jiqu.object.InstalledApp;
 import com.jiqu.object.RankInfo;
-import com.jiqu.store.R;
+import com.vr.store.R;
 import com.jiqu.tools.InstalledAppTool;
 import com.jiqu.tools.MetricsTool;
 import com.jiqu.tools.RequestTool;

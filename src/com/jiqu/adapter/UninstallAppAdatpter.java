@@ -22,7 +22,7 @@ import android.widget.TextView;
 import com.jiqu.download.AppUtil;
 import com.jiqu.interfaces.UninstallStateObserver;
 import com.jiqu.object.InstalledApp;
-import com.jiqu.store.R;
+import com.vr.store.R;
 import com.jiqu.tools.InstalledAppTool;
 import com.jiqu.tools.MetricsTool;
 import com.jiqu.tools.UIUtil;

@@ -12,7 +12,7 @@ import com.jiqu.activity.ShareActivity;
 import com.jiqu.application.StoreApplication;
 import com.jiqu.database.Account;
 import com.jiqu.interfaces.LoginOutObserver;
-import com.jiqu.store.R;
+import com.vr.store.R;
 import com.jiqu.tools.MetricsTool;
 import com.jiqu.tools.UIUtil;
 import com.jiqu.view.ToolItemView;
@@ -193,9 +193,11 @@ public class ToolFragment extends Fragment implements OnClickListener,LoginOutOb
 	private void setData(Account account){
 		if (account != null) {
 			accountName.setText(account.getUsername());
+			level.setVisibility(View.VISIBLE);
 			level.setText("LV " + account.getLevel());
 		}else {
-			accountName.setText("");
+			accountName.setText(R.string.notLogin);
+			level.setVisibility(View.INVISIBLE);
 			level.setText("LV " + "");
 		}
 	}

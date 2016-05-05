@@ -12,7 +12,7 @@ import android.os.Message;
 import android.util.Log;
 
 import com.jiqu.database.DownloadAppinfo;
-import com.jiqu.tools.Constant;
+import com.jiqu.tools.Constants;
 
 public class Downloader implements Runnable {
 	public static final int REFRESH_STATE_CHANGED = 1;
@@ -48,7 +48,8 @@ public class Downloader implements Runnable {
 			path = info.getApkPath();
 		}
 		File file = new File(path);
-		long apkSize = Long.parseLong(info.getAppSize());
+		float size = Float.parseFloat(info.getAppSize());
+		long apkSize = (long) (size * 1024 * 1024);
 		/** 如果本地文件大小大于数据库所记载的，则删除 **/
 		if (file.length() > apkSize) {
 			info.setCurrentSize(0l);
@@ -67,7 +68,7 @@ public class Downloader implements Runnable {
 		HttpURLConnection connection = null;
 		InputStream in = null;
 		try {
-			if (apkSize <= 0l) {
+//			if (apkSize <= 0l) {
 				URL url = new URL(info.getUrl());
 				connection = (HttpURLConnection) url.openConnection();
 				connection.setConnectTimeout(30 * 1000);
@@ -90,7 +91,7 @@ public class Downloader implements Runnable {
 					downloading = false;
 					return;
 				}
-			} else {
+//			} else {
 				int threadCount = threads.length;
 				long specSize = apkSize / threadCount;
 				for (int i = 0; i < threadCount - 1; i++) {
@@ -100,7 +101,7 @@ public class Downloader implements Runnable {
 				threads[threadCount - 1] = new DownloadThread(threadCount - 1, (threadCount - 1) * specSize, 
 						getCompelete(threadCount - 1), apkSize - 1);
 				threads[threadCount - 1].start();
-			}
+//			}
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -137,7 +138,7 @@ public class Downloader implements Runnable {
 							DownloadManager.getInstance().install(info);
 						} else {
 							info.setDownloadState(DownloadManager.STATE_UNZIPING);
-							UnZipManager.getInstance().unzip(info, Constant.PASSWORD, unzipHandler);
+							UnZipManager.getInstance().unzip(info, Constants.PASSWORD, unzipHandler);
 						}
 						DownloadManager.DBManager.getDownloadAppinfoDao().insertOrReplace(info);
 						observer.onStateChanged(info);
