@@ -108,7 +108,7 @@ public class DetailActivity extends BaseActivity implements Listener<JSONObject>
 		// TODO Auto-generated method stub
 		super.onCreate(savedInstanceState);
 		requestTool = RequestTool.getInstance();
-		p_id = getIntent().getStringExtra("p_id");
+		p_id = getIntent().getStringExtra("id");
 		requestType = getIntent().getIntExtra("requestType", 0);
 		
 		initView();

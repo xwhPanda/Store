@@ -18,16 +18,12 @@ import android.widget.RelativeLayout;
 
 import com.jiqu.adapter.UninstallAppAdatpter;
 import com.jiqu.adapter.UninstallSystemAppAdapter;
-import com.jiqu.database.DownloadAppinfo;
-import com.jiqu.database.DownloadAppinfoDao.Properties;
-import com.jiqu.download.DownloadManager;
 import com.jiqu.store.BaseActivity;
 import com.vr.store.R;
 import com.jiqu.tools.InstalledAppTool;
 import com.jiqu.tools.UIUtil;
 import com.jiqu.view.TitleView;
 
-import de.greenrobot.dao.query.QueryBuilder;
 
 public class AppUninstallActivity extends BaseActivity implements OnClickListener,OnCheckedChangeListener{
 	private TitleView titleView;

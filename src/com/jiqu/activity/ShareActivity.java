@@ -73,7 +73,7 @@ public class ShareActivity extends BaseActivity {
 			@Override
 			public void onClick(View v) {
 				// TODO Auto-generated method stub
-				startActivity(new Intent(ShareActivity.this, Aaaa.class));
+				startActivity(new Intent(ShareActivity.this, WeiboShareActivity.class));
 			}
 		});
 	}

@@ -40,6 +40,8 @@ import com.jiqu.object.GameInfo;
 import com.jiqu.object.GameInformation;
 import com.jiqu.object.InstalledApp;
 import com.jiqu.object.RecommendAppsInfo;
+import com.jiqu.object.RecommendDataInfo;
+import com.jiqu.object.RecommendHeadlineInfo;
 import com.jiqu.object.TopRecommendItem;
 import com.jiqu.object.TopRecommendtInfo;
 import com.vr.store.R;
@@ -48,8 +50,10 @@ import com.jiqu.tools.InstalledAppTool;
 import com.jiqu.tools.MetricsTool;
 import com.jiqu.tools.RequestTool;
 import com.jiqu.tools.UIUtil;
+import com.jiqu.view.LoadDataDialog.OnLoadAgain;
 import com.jiqu.view.PullToRefreshLayout;
 import com.jiqu.view.PullToRefreshLayout.OnRefreshListener;
+import com.jiqu.view.LoadDataDialog;
 import com.jiqu.view.PullableListView;
 import com.jiqu.view.RecommedGameView;
 
@@ -60,6 +64,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
@@ -72,6 +77,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.View.OnClickListener;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.HorizontalScrollView;
@@ -83,8 +90,10 @@ import android.widget.LinearLayout.LayoutParams;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
 
-public class RecommendFragment extends Fragment implements OnPageChangeListener, OnRefreshListener, ErrorListener, OnClickListener, Listener<JSONObject> {
+public class RecommendFragment extends Fragment implements OnPageChangeListener, OnRefreshListener, 
+	ErrorListener, OnClickListener, Listener<String>{
 	private static final int DEFAULT_PAGE_SIZE = 20;
+	private static final String RECOMMEND_REQUEST_TAG = "recommendRequestTag";
 	private float Rx, Ry;
 	private View view;
 	private View headView;
@@ -122,7 +131,8 @@ public class RecommendFragment extends Fragment implements OnPageChangeListener,
 	private boolean refreshShow = false;
 	private int currentIndex = 0;
 	private CountDownTimer timer;
-
+	private RecommendHeadlineInfo headlineInfo;
+	
 	@Override
 	@Nullable
 	public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -139,16 +149,15 @@ public class RecommendFragment extends Fragment implements OnPageChangeListener,
 		IntentFilter filter2 = new IntentFilter();
 		filter2.addAction("deleted_downloaded_files_action");
 		getActivity().registerReceiver(deleteReceiver, filter2);
+		requestTool = RequestTool.getInstance();
 
 		initView();
-
 		initAdapter();
 		
 		if (adapter != null) {
 			adapter.startObserver();
 		}
 
-//		requestTool = RequestTool.getInstance();
 //		requestTool.initParam();
 //		requestTool.setParam("start_position", "0");
 //		requestTool.setParam("size", "20");
@@ -157,7 +166,15 @@ public class RecommendFragment extends Fragment implements OnPageChangeListener,
 //		loadTopData();
 //		loadRecommendApps();
 		
+		loadRecommedData();
+		
 		return view;
+	}
+	
+	private void loadRecommedData(){
+		requestTool.getMap().clear();
+		requestTool.startStringRequest(Method.GET, 
+				this, RequestTool.RECOMMEND_URL, this, requestTool.getMap(), true,RECOMMEND_REQUEST_TAG);
 	}
 	
 	/**
@@ -172,7 +189,7 @@ public class RecommendFragment extends Fragment implements OnPageChangeListener,
 				// TODO Auto-generated method stub
 				topRecommendtInfo = JSON.parseObject(arg0.toString(), TopRecommendtInfo.class);
 				if (topRecommendtInfo != null) {
-					initTop();
+//					initTop();
 				}
 			}
 		}, new ErrorListener() {
@@ -239,67 +256,6 @@ public class RecommendFragment extends Fragment implements OnPageChangeListener,
 //		}
 //	}
 	
-	private void initTop(){
-		final int count = topRecommendtInfo.getCount();
-		radioImgs = new ImageView[count];
-		contentImgs = new ImageView[count];
-		for (int i = 0; i < count; i++) {
-			final TopRecommendItem item = topRecommendtInfo.getItem()[i];
-			ImageView view = new ImageView(getActivity());
-			LayoutParams lp = new LayoutParams((int)(20 * Rx), (int) (20 * Rx));
-			if (i != 0) {
-				lp.leftMargin = (int) (10 * Rx);
-			}
-			 view.setLayoutParams(lp);
-			if (i== 0) {
-				view.setBackgroundResource(R.drawable.dian_blue);
-			}else {
-				view.setBackgroundResource(R.drawable.dian_white);
-			}
-			radioImgs[i] = view;
-			imgList.addView(view);
-			
-			ImageView contentImg = new ImageView(getActivity());
-			contentImg.setClickable(true);
-			contentImg.setOnClickListener(new OnClickListener() {
-				
-				@Override
-				public void onClick(View v) {
-					// TODO Auto-generated method stub
-					startActivity(new Intent(getActivity(), DetailActivity.class).putExtra("p_id", String.valueOf(item.getP_id())));
-				}
-			});
-			LayoutParams params = new LayoutParams(android.support.v4.view.ViewPager.LayoutParams.MATCH_PARENT,
-					android.support.v4.view.ViewPager.LayoutParams.MATCH_PARENT);
-			contentImg.setLayoutParams(params);
-			contentImg.setScaleType(ScaleType.FIT_XY);
-			ImageListener listener = ImageLoader.getImageListener(contentImg,R.drawable.ic_launcher, R.drawable.ic_launcher);
-			StoreApplication.getInstance().getImageLoader().get(topRecommendtInfo.getItem()[i].getPic(),listener);
-			contentImgs[i] = contentImg;
-		}
-		ViewPagerAdapter adapter = new ViewPagerAdapter(getActivity(), contentImgs);
-		recommendImgViewPager.setAdapter(adapter);
-		
-		timer = new CountDownTimer(Integer.MAX_VALUE, 5000) {
-			
-			@Override
-			public void onTick(long millisUntilFinished) {
-				// TODO Auto-generated method stub
-				if (recommendImgViewPager != null && count != 0) {
-					recommendImgViewPager.setCurrentItem(currentIndex % count);
-					currentIndex++;
-				}
-			}
-			
-			@Override
-			public void onFinish() {
-				// TODO Auto-generated method stub
-				
-			}
-		};
-		timer.start();
-	}
-
 	@Override
 	public void onResume() {
 		// TODO Auto-generated method stub
@@ -445,27 +401,100 @@ public class RecommendFragment extends Fragment implements OnPageChangeListener,
 	@Override
 	public void onLoadMore(PullToRefreshLayout pullToRefreshLayout) {
 		// TODO Auto-generated method stub
-		requestTool.initParam();
-		requestTool.setParam("size", String.valueOf(resultList.size() + 20));
-		requestTool.startHomeRecommendRequest(this, this, false);
+//		requestTool.initParam();
+//		requestTool.setParam("size", String.valueOf(resultList.size() + 20));
+//		requestTool.startHomeRecommendRequest(this, this, false);
 		
 		refreshShow = true;
 	}
+	
 
 	@Override
 	public void onErrorResponse(VolleyError arg0) {
 		// TODO Auto-generated method stub
-		Log.i("TAG", "onErrorResponse");
+		Log.i("TAG", arg0.toString());
 		if (refreshShow) {
 			refreshShow = false;
 			pullToRefreshLayout.refreshFinish(PullToRefreshLayout.SUCCEED);
 		}
 	}
 
+	private void initTop(GameInfo[] infos){
+		final int count = infos.length;
+		radioImgs = new ImageView[count];
+		contentImgs = new ImageView[count];
+		for (int i = 0; i < count; i++) {
+			final GameInfo item = infos[i];
+			ImageView view = new ImageView(getActivity());
+			LayoutParams lp = new LayoutParams((int)(20 * Rx), (int) (20 * Rx));
+			if (i != 0) {
+				lp.leftMargin = (int) (10 * Rx);
+			}
+			 view.setLayoutParams(lp);
+			if (i== 0) {
+				view.setBackgroundResource(R.drawable.dian_blue);
+			}else {
+				view.setBackgroundResource(R.drawable.dian_white);
+			}
+			radioImgs[i] = view;
+			imgList.addView(view);
+			
+			ImageView contentImg = new ImageView(getActivity());
+			contentImg.setClickable(true);
+			contentImg.setOnClickListener(new OnClickListener() {
+				
+				@Override
+				public void onClick(View v) {
+					// TODO Auto-generated method stub
+					startActivity(new Intent(getActivity(), DetailActivity.class).putExtra("id", item.getId()));
+				}
+			});
+			LayoutParams params = new LayoutParams(android.support.v4.view.ViewPager.LayoutParams.MATCH_PARENT,
+					android.support.v4.view.ViewPager.LayoutParams.MATCH_PARENT);
+			contentImg.setLayoutParams(params);
+			contentImg.setScaleType(ScaleType.FIT_XY);
+			ImageListener listener = ImageLoader.getImageListener(contentImg,R.drawable.ic_launcher, R.drawable.ic_launcher);
+			StoreApplication.getInstance().getImageLoader().get(item.getPic(),listener);
+			contentImgs[i] = contentImg;
+		}
+		ViewPagerAdapter adapter = new ViewPagerAdapter(getActivity(), contentImgs);
+		recommendImgViewPager.setAdapter(adapter);
+		
+		timer = new CountDownTimer(Integer.MAX_VALUE, 5000) {
+			
+			@Override
+			public void onTick(long millisUntilFinished) {
+				// TODO Auto-generated method stub
+				if (recommendImgViewPager != null && count != 0) {
+					recommendImgViewPager.setCurrentItem(currentIndex % count);
+					currentIndex++;
+				}
+			}
+			
+			@Override
+			public void onFinish() {
+				// TODO Auto-generated method stub
+				
+			}
+		};
+		timer.start();
+	}
+	
+	private void initHeadline(RecommendHeadlineInfo headlineInfo){
+		headlinesInformation.setText(headlineInfo.getTitle());
+	}
+	
 	@Override
-	public void onResponse(JSONObject arg0) {
+	public void onResponse(String arg0) {
 		// TODO Auto-generated method stub
-		Log.i("TAG", "onResponse");
+		RecommendDataInfo dataInfo = JSON.parseObject(arg0, RecommendDataInfo.class);
+		if (dataInfo.getData1() != null && dataInfo.getData1().length > 0) {
+			initTop(dataInfo.getData1());
+		}
+		if (dataInfo.getData2() != null && dataInfo.getData2().length > 0) {
+			headlineInfo = dataInfo.getData2()[0];
+			initHeadline(headlineInfo);
+		}
 //		if (refreshShow) {
 //			refreshShow = false;
 //			pullToRefreshLayout.refreshFinish(PullToRefreshLayout.SUCCEED);
@@ -531,8 +560,11 @@ public class RecommendFragment extends Fragment implements OnPageChangeListener,
 			break;
 
 		case R.id.headlineContenLin:
-			// startActivity(new Intent(getActivity(), HeadlineActivity.class));
-			startActivity(new Intent(getActivity(), DetailActivity.class));
+			if (headlineInfo.getUrl() != null) {
+				startActivity(new Intent(getActivity(), HeadlineActivity.class)
+				.putExtra("isWeb", true)
+				.putExtra("url", headlineInfo.getUrl()));
+			}
 			break;
 		}
 	}
@@ -607,6 +639,5 @@ public class RecommendFragment extends Fragment implements OnPageChangeListener,
 			// TODO Auto-generated method stub
 			return null;
 		}
-		
 	}
 }

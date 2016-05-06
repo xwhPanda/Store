@@ -58,6 +58,11 @@ public class GameInfo implements Serializable{
 	private String siteID;
 	private String statisticsID;
 	private String time;
+	private String pic;
+	private String rotate_title;
+	
+	private String title;
+	private String intro;
 	
 	private int adapterType;//布局类型
 	private int state = -1;
@@ -183,7 +188,30 @@ public class GameInfo implements Serializable{
 	public synchronized void setTime(String time) {
 		this.time = time;
 	}
-	
+	public synchronized String getPic() {
+		return pic;
+	}
+	public synchronized void setPic(String pic) {
+		this.pic = pic;
+	}
+	public synchronized String getRotate_title() {
+		return rotate_title;
+	}
+	public synchronized void setRotate_title(String rotate_title) {
+		this.rotate_title = rotate_title;
+	}
+	public synchronized String getTitle() {
+		return title;
+	}
+	public synchronized void setTitle(String title) {
+		this.title = title;
+	}
+	public synchronized String getIntro() {
+		return intro;
+	}
+	public synchronized void setIntro(String intro) {
+		this.intro = intro;
+	}
 	
 	public static DownloadAppinfo toDownloadAppInfo(GameInfo info){
 		DownloadAppinfo downloadInfo = new DownloadAppinfo();
@@ -221,5 +249,9 @@ public class GameInfo implements Serializable{
 		}
 		
 		return downloadInfo;
+	}
+	@Override
+	public String toString() {
+		return "GameInfo [id=" + id + ", apply_name=" + apply_name + ", descript=" + descript + ", product_name=" + product_name + ", column=" + column + ", version=" + version + ", size=" + size + ", type=" + type + ", down=" + down + ", down_url=" + down_url + ", icon=" + icon + ", market=" + market + ", plist=" + plist + ", score=" + score + ", star=" + star + ", siteID=" + siteID + ", statisticsID=" + statisticsID + ", time=" + time + ", pic=" + pic + ", rotate_title=" + rotate_title + ", title=" + title + ", intro=" + intro + ", adapterType=" + adapterType + ", state=" + state + "]";
 	}
 }

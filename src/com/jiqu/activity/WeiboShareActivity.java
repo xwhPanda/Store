@@ -2,24 +2,26 @@ package com.jiqu.activity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Toast;
 
-import com.jiqu.application.StoreApplication;
 import com.jiqu.store.BaseActivity;
 import com.jiqu.tools.Constants;
 import com.sina.weibo.sdk.api.TextObject;
 import com.sina.weibo.sdk.api.WeiboMultiMessage;
 import com.sina.weibo.sdk.api.share.BaseResponse;
-import com.sina.weibo.sdk.api.share.IWeiboHandler.Response;
+import com.sina.weibo.sdk.api.share.IWeiboHandler;
 import com.sina.weibo.sdk.api.share.IWeiboShareAPI;
 import com.sina.weibo.sdk.api.share.SendMultiMessageToWeiboRequest;
 import com.sina.weibo.sdk.api.share.WeiboShareSDK;
+import com.sina.weibo.sdk.constant.WBConstants;
 import com.vr.store.R;
 
-public class Aaaa extends BaseActivity implements Response{
+public class WeiboShareActivity extends BaseActivity implements IWeiboHandler.Response{
 	private EditText shareText;
 	private Button share;
 	private IWeiboShareAPI mWeiboShareAPI;
@@ -39,7 +41,7 @@ public class Aaaa extends BaseActivity implements Response{
 			@Override
 			public void onClick(View v) {
 				// TODO Auto-generated method stub
-				sendMultiMessage(true, false, false, false, false, false);
+				sendMessage(true, false, false, false, false, false);
 			}
 		});
 	}
@@ -55,6 +57,20 @@ public class Aaaa extends BaseActivity implements Response{
 	    textObject.text = shareText.getText().toString();
 	    return textObject;
 	}
+	
+	private void sendMessage(boolean hasText, boolean hasImage, 
+			boolean hasWebpage, boolean hasMusic, boolean hasVideo, boolean hasVoice) {
+        
+            if (mWeiboShareAPI.isWeiboAppSupportAPI()) {
+                int supportApi = mWeiboShareAPI.getWeiboAppSupportAPI();
+                if (supportApi >= 10351 /*ApiUtils.BUILD_INT_VER_2_2*/) {
+                    sendMultiMessage(hasText, hasImage, hasWebpage, hasMusic, hasVideo, hasVoice);
+                } else {
+//                    sendSingleMessage(hasText, hasImage, hasWebpage, hasMusic, hasVideo/*, hasVoice*/);
+                }
+            } else {
+            }
+        }
 	
 	private void sendMultiMessage(boolean hasText, boolean hasImage, boolean hasWebpage,
 	        boolean hasMusic, boolean hasVideo, boolean hasVoice) {
@@ -79,8 +95,20 @@ public class Aaaa extends BaseActivity implements Response{
 	    }
 
 	@Override
-	public void onResponse(BaseResponse arg0) {
+	public void onResponse(BaseResponse baseResp) {
 		// TODO Auto-generated method stub
-		
+		if(baseResp!= null){
+            switch (baseResp.errCode) {
+            case WBConstants.ErrorCode.ERR_OK:
+            	Log.i("TAG", "ERR_OK");
+                break;
+            case WBConstants.ErrorCode.ERR_CANCEL:
+            	Log.i("TAG", "ERR_CANCEL");
+                break;
+            case WBConstants.ErrorCode.ERR_FAIL:
+            	Log.i("TAG", "ERR_FAIL :　" + "Error Message: " + baseResp.errMsg);
+                break;
+            }
+        }
 	}
 }

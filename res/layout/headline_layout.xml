@@ -11,109 +11,123 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" />
 
-    <com.jiqu.view.EvaluationBottomView
-        android:id="@+id/evaGameView"
+    <RelativeLayout
+        android:id="@+id/parent"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true" />
+        android:layout_height="match_parent" 
+        android:layout_below="@id/titleView">
 
-    <ScrollView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_above="@id/evaGameView"
-        android:layout_below="@id/titleView"
-        android:scrollbars="none" >
-
-        <RelativeLayout
+        <com.jiqu.view.EvaluationBottomView
+            android:id="@+id/evaGameView"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" >
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true" />
 
-            <TextView
-                android:id="@+id/evaluationTitle"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_below="@id/title"
-                android:layout_centerHorizontal="true"
-                fontPath="fonts/lantinghei.ttf"
-                android:ellipsize="end"
-                android:singleLine="true"
-                android:text="复合式服务阿飞看哈客家话"
-                android:textColor="@color/white" />
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_above="@id/evaGameView"
+            android:scrollbars="none" >
 
-            <LinearLayout
-                android:id="@+id/informationLin"
+            <RelativeLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_below="@id/evaluationTitle"
-                android:layout_centerHorizontal="true"
-                android:gravity="center_horizontal"
-                android:orientation="horizontal" >
+                android:layout_height="wrap_content" >
 
                 <TextView
-                    android:id="@+id/evaluationTime"
+                    android:id="@+id/evaluationTitle"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_below="@id/title"
+                    android:layout_centerHorizontal="true"
                     fontPath="fonts/lantinghei.ttf"
                     android:ellipsize="end"
                     android:singleLine="true"
-                    android:text="时间 ： 2016-3-23"
-                    android:textColor="@color/itemDesColor" />
+                    android:text="复合式服务阿飞看哈客家话"
+                    android:textColor="@color/white" />
 
-                <TextView
-                    android:id="@+id/evaluationAuthor"
+                <LinearLayout
+                    android:id="@+id/informationLin"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/evaluationTitle"
+                    android:layout_centerHorizontal="true"
+                    android:gravity="center_horizontal"
+                    android:orientation="horizontal" >
+
+                    <TextView
+                        android:id="@+id/evaluationTime"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        fontPath="fonts/lantinghei.ttf"
+                        android:ellipsize="end"
+                        android:singleLine="true"
+                        android:text="时间 ： 2016-3-23"
+                        android:textColor="@color/itemDesColor" />
+
+                    <TextView
+                        android:id="@+id/evaluationAuthor"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        fontPath="fonts/lantinghei.ttf"
+                        android:ellipsize="end"
+                        android:singleLine="true"
+                        android:text="作者 ： panda"
+                        android:textColor="@color/itemDesColor" />
+
+                    <TextView
+                        android:id="@+id/browseCount"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        fontPath="fonts/lantinghei.ttf"
+                        android:ellipsize="end"
+                        android:singleLine="true"
+                        android:text="浏览 ： 2000"
+                        android:textColor="@color/itemDesColor" />
+                </LinearLayout>
+
+                <ImageView
+                    android:id="@+id/gameImg"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    fontPath="fonts/lantinghei.ttf"
-                    android:ellipsize="end"
-                    android:singleLine="true"
-                    android:text="作者 ： panda"
-                    android:textColor="@color/itemDesColor" />
+                    android:layout_below="@id/informationLin"
+                    android:layout_centerHorizontal="true"
+                    android:background="@color/red" />
 
                 <TextView
-                    android:id="@+id/browseCount"
+                    android:id="@+id/information"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_alignLeft="@id/gameImg"
+                    android:layout_alignRight="@id/gameImg"
+                    android:layout_below="@id/gameImg"
                     fontPath="fonts/lantinghei.ttf"
-                    android:ellipsize="end"
-                    android:singleLine="true"
-                    android:text="浏览 ： 2000"
+                    android:text="防水防奇偶推荐给公司计划和基金公司的管理键盘以及天津哈飞和放假了符合日哦俄特国内首个绿色可能给人类价格收购计划开了更好的了解历史较高"
                     android:textColor="@color/itemDesColor" />
-            </LinearLayout>
 
-            <ImageView
-                android:id="@+id/gameImg"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_below="@id/informationLin"
-                android:layout_centerHorizontal="true"
-                android:background="@color/red" />
+                <ImageView
+                    android:id="@+id/view"
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:layout_below="@id/information"
+                    android:background="@drawable/xian" />
 
-            <TextView
-                android:id="@+id/information"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignLeft="@id/gameImg"
-                android:layout_alignRight="@id/gameImg"
-                android:layout_below="@id/gameImg"
-                fontPath="fonts/lantinghei.ttf"
-                android:text="防水防奇偶推荐给公司计划和基金公司的管理键盘以及天津哈飞和放假了符合日哦俄特国内首个绿色可能给人类价格收购计划开了更好的了解历史较高"
-                android:textColor="@color/itemDesColor" />
+                <LinearLayout
+                    android:id="@+id/detailedEvaLin"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/view"
+                    android:orientation="vertical" >
+                </LinearLayout>
+            </RelativeLayout>
+        </ScrollView>
+    </RelativeLayout>
 
-            <ImageView
-                android:id="@+id/view"
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:layout_below="@id/information"
-                android:background="@drawable/xian" />
-            
-            <LinearLayout
-                android:id="@+id/detailedEvaLin"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_below="@id/view"
-                android:orientation="vertical" >
-            </LinearLayout>
-        </RelativeLayout>
-    </ScrollView>
+    <WebView
+        android:id="@+id/webView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/titleView"
+        android:background="@color/white"
+        android:visibility="gone" />
 
 </RelativeLayout>

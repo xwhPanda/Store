@@ -11,6 +11,8 @@ import android.util.Log;
 import com.android.volley.AuthFailureError;
 import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.Request;
+import com.android.volley.RetryPolicy;
+import com.android.volley.VolleyError;
 import com.android.volley.Request.Method;
 import com.android.volley.Response.ErrorListener;
 import com.android.volley.Response.Listener;
@@ -36,6 +38,8 @@ public class RequestTool {
 	public static final String informationDetailUrl = "http://cdn.4399sj.com/service/android/v2.1/";
 	
 	public static final String PRIKEY = "*7&SKJuas";
+	/** 推荐页数据URL **/
+	public static final String RECOMMEND_URL = "http://ht.163zs.com/index.php/Api/Recommend/getRecommend";
 	/**活跃统计URL**/
 	public static final String ACTIVE_URL = "http://ht.163zs.com/index.php/Api/Channel/active";
 	/**注册URL**/
@@ -250,7 +254,7 @@ public class RequestTool {
 	}
 
 	/**
-	 * 开始请求
+	 * 开始请求，默认不重试
 	 * 
 	 * @param listener
 	 * @param url
@@ -262,7 +266,24 @@ public class RequestTool {
 		if (method == Method.POST) {
 			stringPostRequest(method, listener, url, errorListener, map, tag);
 		} else if (method == Method.GET) {
-			stringGetRequest(method, listener, url, errorListener, map, tag);
+			stringGetRequest(method, listener, url, errorListener, map, false,tag);
+		}
+	}
+	
+	/**
+	 * 开始请求,设置重试
+	 * 
+	 * @param listener
+	 * @param url
+	 * @param errorListener
+	 * @param map
+	 * @param tag
+	 */
+	public void startStringRequest(int method, Listener<String> listener, String url, ErrorListener errorListener, final Map<String, Object> map, boolean retry,String tag) {
+		if (method == Method.POST) {
+			stringPostRequest(method, listener, url, errorListener, map, tag);
+		} else if (method == Method.GET) {
+			stringGetRequest(method, listener, url, errorListener, map, retry,tag);
 		}
 	}
 
@@ -310,9 +331,12 @@ public class RequestTool {
 	 * @param map
 	 * @param tag
 	 */
-	private void stringGetRequest(int method, Listener<String> listener, String url, ErrorListener errorListener, final Map<String, Object> map, String tag) {
+	private void stringGetRequest(int method, Listener<String> listener, String url, ErrorListener errorListener, final Map<String, Object> map, boolean retry,String tag) {
 		StringRequest stringRequest = new StringRequest(method, url, listener, errorListener) {
 		};
+		if (retry) {
+			stringRequest.setRetryPolicy(new DefaultRetryPolicy(10 * 1000, 2, 1.0f));
+		}
 		StoreApplication.getInstance().addToRequestQueue(stringRequest, tag);
 		StoreApplication.getInstance().getRequestQueue().start();
 	}

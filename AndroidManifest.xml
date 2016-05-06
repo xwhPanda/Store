@@ -21,6 +21,8 @@
     <uses-permission android:name="android.permission.WRITE_SETTINGS" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.READ_PHONE_STATE" />
+    <!-- 用于调用 JNI -->
+    <uses-permission android:name="android.permission.READ_PHONE_STATE" /> 
 
     <application
         android:name="com.jiqu.application.StoreApplication"
@@ -28,6 +30,7 @@
         android:icon="@drawable/ic_launcher"
         android:label="@string/app_name"
         android:theme="@style/FullScreen" >
+        
         <meta-data
             android:name="channel"
             android:value="test" />
@@ -162,8 +165,14 @@
             android:name="com.jiqu.activity.DetailActivity"
             android:screenOrientation="portrait" >
         </activity>
-        <activity android:name="com.jiqu.activity.Aaaa"
-            android:screenOrientation="portrait"></activity>
+        <activity android:name="com.jiqu.activity.WeiboShareActivity"
+            android:configChanges="keyboardHidden|orientation"
+            android:screenOrientation="portrait" >
+            <intent-filter>
+                <action android:name="com.sina.weibo.sdk.action.ACTION_SDK_REQ_ACTIVITY" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
     </application>
 
 </manifest>
