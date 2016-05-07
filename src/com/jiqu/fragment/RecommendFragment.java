@@ -54,6 +54,7 @@ import com.jiqu.view.LoadDataDialog.OnLoadAgain;
 import com.jiqu.view.PullToRefreshLayout;
 import com.jiqu.view.PullToRefreshLayout.OnRefreshListener;
 import com.jiqu.view.LoadDataDialog;
+import com.jiqu.view.LoadStateView;
 import com.jiqu.view.PullableListView;
 import com.jiqu.view.RecommedGameView;
 
@@ -69,7 +70,6 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
 import android.support.v4.view.ViewPager.OnPageChangeListener;
 import android.util.Log;
@@ -90,7 +90,7 @@ import android.widget.LinearLayout.LayoutParams;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
 
-public class RecommendFragment extends Fragment implements OnPageChangeListener, OnRefreshListener, 
+public class RecommendFragment extends BaseFragment implements OnPageChangeListener, OnRefreshListener, 
 	ErrorListener, OnClickListener, Listener<String>{
 	private static final int DEFAULT_PAGE_SIZE = 20;
 	private static final String RECOMMEND_REQUEST_TAG = "recommendRequestTag";
@@ -119,6 +119,7 @@ public class RecommendFragment extends Fragment implements OnPageChangeListener,
 	private View view1, view2, view3;
 	private int currentItem = 0;
 
+	private LoadStateView loadStateView;
 	private PullToRefreshLayout pullToRefreshLayout;
 	private PullableListView recommendListView;
 	private GameAdapter adapter;
@@ -134,12 +135,8 @@ public class RecommendFragment extends Fragment implements OnPageChangeListener,
 	private RecommendHeadlineInfo headlineInfo;
 	
 	@Override
-	@Nullable
-	public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+	public void init() {
 		// TODO Auto-generated method stub
-		view = inflater.inflate(R.layout.recommend_1, container, false);
-		headView = inflater.inflate(R.layout.recommend_head, null);
-		
 		IntentFilter filter = new IntentFilter();
 		filter.addAction(Intent.ACTION_PACKAGE_ADDED);
 		filter.addAction(Intent.ACTION_PACKAGE_REMOVED);
@@ -150,25 +147,12 @@ public class RecommendFragment extends Fragment implements OnPageChangeListener,
 		filter2.addAction("deleted_downloaded_files_action");
 		getActivity().registerReceiver(deleteReceiver, filter2);
 		requestTool = RequestTool.getInstance();
-
-		initView();
-		initAdapter();
-		
-		if (adapter != null) {
-			adapter.startObserver();
-		}
-
-//		requestTool.initParam();
-//		requestTool.setParam("start_position", "0");
-//		requestTool.setParam("size", "20");
-//		requestTool.startHomeRecommendRequest(this, this,true);
-		
-//		loadTopData();
-//		loadRecommendApps();
-		
+	}
+	
+	@Override
+	public void initData() {
+		// TODO Auto-generated method stub
 		loadRecommedData();
-		
-		return view;
 	}
 	
 	private void loadRecommedData(){
@@ -293,9 +277,13 @@ public class RecommendFragment extends Fragment implements OnPageChangeListener,
 		}
 	}
 
-	private void initView() {
+	@Override
+	public View initView() {
 		Rx = MetricsTool.Rx;
 		Ry = MetricsTool.Ry;
+		view = LayoutInflater.from(activity).inflate(R.layout.recommend_1, null);
+		headView = LayoutInflater.from(getActivity()).inflate(R.layout.recommend_head, null);
+		loadStateView = (LoadStateView) view.findViewById(R.id.loadStateView);
 		pullToRefreshLayout = (PullToRefreshLayout) view.findViewById(R.id.refresh_view);
 		recommendListView = (PullableListView) view.findViewById(R.id.recommendListView);
 
@@ -314,9 +302,23 @@ public class RecommendFragment extends Fragment implements OnPageChangeListener,
 //				startActivity(new Intent(getActivity(), DetailActivity.class).putExtra("p_id", resultList.get(position - 1).getP_id()));
 			}
 		});
-		
-		
 		initViewSize();
+		
+		initAdapter();
+		if (adapter != null) {
+			adapter.startObserver();
+		}
+		
+		loadStateView.loadAgain(new OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				// TODO Auto-generated method stub
+				loadStateView.showLoading();
+				loadRecommedData();
+			}
+		});
+		return view;
 	}
 
 	private void initViewSize() {
@@ -407,12 +409,13 @@ public class RecommendFragment extends Fragment implements OnPageChangeListener,
 		
 		refreshShow = true;
 	}
-	
+
+	int i = 0;
 
 	@Override
 	public void onErrorResponse(VolleyError arg0) {
 		// TODO Auto-generated method stub
-		Log.i("TAG", arg0.toString());
+		loadStateView.loadDataFail();
 		if (refreshShow) {
 			refreshShow = false;
 			pullToRefreshLayout.refreshFinish(PullToRefreshLayout.SUCCEED);
@@ -487,6 +490,9 @@ public class RecommendFragment extends Fragment implements OnPageChangeListener,
 	@Override
 	public void onResponse(String arg0) {
 		// TODO Auto-generated method stub
+		loadStateView.loadDataSuccess();
+		loadStateView.setVisibility(View.GONE);
+		pullToRefreshLayout.setVisibility(View.VISIBLE);
 		RecommendDataInfo dataInfo = JSON.parseObject(arg0, RecommendDataInfo.class);
 		if (dataInfo.getData1() != null && dataInfo.getData1().length > 0) {
 			initTop(dataInfo.getData1());
@@ -494,6 +500,10 @@ public class RecommendFragment extends Fragment implements OnPageChangeListener,
 		if (dataInfo.getData2() != null && dataInfo.getData2().length > 0) {
 			headlineInfo = dataInfo.getData2()[0];
 			initHeadline(headlineInfo);
+		}
+		if (dataInfo.getData4() != null && dataInfo.getData4().getPic() != null) {
+			ImageListener listener = ImageLoader.getImageListener(recommendGameInformationImg, R.drawable.ic_launcher, R.drawable.ic_launcher);
+			StoreApplication.getInstance().getImageLoader().get(dataInfo.getData4().getPic(), listener);
 		}
 //		if (refreshShow) {
 //			refreshShow = false;

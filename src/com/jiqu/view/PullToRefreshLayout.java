@@ -612,8 +612,8 @@ public class PullToRefreshLayout extends RelativeLayout
 //						+ pullableView.getMeasuredHeight());
 		
 		pullableView.layout((MetricsTool.width - pullableView.getMeasuredWidth()) / 2, (int) (pullDownY + pullUpY),
-				(MetricsTool.width - pullableView.getMeasuredWidth()) / 2 + pullableView.getMeasuredWidth(), (int) (pullDownY + pullUpY)
-						+ pullableView.getMeasuredHeight());
+				(MetricsTool.width - pullableView.getMeasuredWidth()) / 2 + pullableView.getMeasuredWidth(), 
+				(int) (pullDownY + pullUpY) + pullableView.getMeasuredHeight());
 		
 		loadmoreView.layout(0,
 				(int) (pullDownY + pullUpY) + pullableView.getMeasuredHeight(),

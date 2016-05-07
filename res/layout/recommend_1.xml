@@ -1,21 +1,33 @@
-<com.jiqu.view.PullToRefreshLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/refresh_view"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android" 
     android:layout_width="match_parent"
-    android:layout_height="match_parent" 
-    android:background="@color/bottomBgColor">
+    android:layout_height="wrap_content">
+    
+    <com.jiqu.view.LoadStateView 
+        android:id="@+id/loadStateView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
+        
 
-    <include layout="@layout/refresh_head" />
-
-    <com.jiqu.view.PullableListView
-        android:id="@+id/recommendListView"
+    <com.jiqu.view.PullToRefreshLayout
+        android:id="@+id/refresh_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@color/bottomBgColor"
-        android:dividerHeight="1dp" 
-        android:divider="@drawable/divider"
-        android:listSelector="@null"
-        android:scrollbars="none"/>
+        android:visibility="invisible">
 
-    <include layout="@layout/load_more" />
+        <include layout="@layout/refresh_head" />
 
-</com.jiqu.view.PullToRefreshLayout>
+        <com.jiqu.view.PullableListView
+            android:id="@+id/recommendListView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/bottomBgColor"
+            android:divider="@drawable/divider"
+            android:dividerHeight="1dp"
+            android:listSelector="@null"
+            android:scrollbars="none" />
+
+        <include layout="@layout/load_more" />
+    </com.jiqu.view.PullToRefreshLayout>
+
+</RelativeLayout>

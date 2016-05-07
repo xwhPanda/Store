@@ -55,7 +55,7 @@ public class RequestTool {
 	/**最新游戏URL**/
 	public static final String LATEST_GAME_URL = "http://mb.123sjzs.com/index.php/Game/latestGame";
 	/**最热游戏URL**/
-	public static final String HOT_GAME_URL = "http://mb.123sjzs.com/index.php/Game/hotGame";
+	public static final String HOT_GAME_URL = "http://ht.163zs.com/index.php/Api/Game/hotGame";
 	/**安装统计URL（第一次使用）**/
 	public static final String INSTALL_URL = "http://ht.163zs.com/index.php/Api/Channel/install";
 

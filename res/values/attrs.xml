@@ -36,4 +36,11 @@
         <attr name="progressbtn_text_color" format="color" />
         <attr name="progressbtn_text_covercolor" format="color" />
     </declare-styleable>
+    
+    <declare-styleable name="WaitingDots">
+        <attr name="dotsColor" format="color" />
+        <attr name="period" format="integer" />
+        <attr name="jumpHeight" format="integer" />
+        <attr name="autoplay" format="boolean" />
+    </declare-styleable>
 </resources>

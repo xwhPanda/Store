@@ -64,13 +64,11 @@ public class HeadlineActivity extends BaseActivity {
 			parent.setVisibility(View.GONE);
 			webView.setVisibility(View.VISIBLE);
 
-			WebSettings webSettings = webView.getSettings();
-			webSettings.setJavaScriptEnabled(true);
-			webSettings.setAllowFileAccess(true);
-			webSettings.setBuiltInZoomControls(true);
-			webSettings.setSupportZoom(true);
-			webSettings.setLayoutAlgorithm(LayoutAlgorithm.SINGLE_COLUMN);
-			webSettings.setLoadWithOverviewMode(true);
+			webView.getSettings().setJavaScriptEnabled(true);
+			webView.getSettings().setAllowFileAccess(true);
+			webView.getSettings().setBuiltInZoomControls(true);
+			webView.getSettings().setSupportZoom(true);
+			webView.getSettings().setLayoutAlgorithm(LayoutAlgorithm.SINGLE_COLUMN);
 			webView.loadUrl(url);
 			// 加载数据
 			webView.setWebChromeClient(new WebChromeClient() {

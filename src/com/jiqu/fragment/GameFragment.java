@@ -137,7 +137,7 @@ public class GameFragment extends Fragment implements OnClickListener,OnRefreshL
 			public void onResponse(String arg0) {
 				// TODO Auto-generated method stub
 				RankInfo rankInfo = JSON.parseObject(arg0.toString(), RankInfo.class);
-				if (rankInfo != null) {
+				if (rankInfo != null && rankInfo.getData() != null) {
 					hotPageNum++;
 					Collections.addAll(hotGameList, rankInfo.getData());
 					int count = DEFAULT_PAGE_SIZE;

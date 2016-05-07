@@ -11,7 +11,7 @@ public class RecommendDataInfo {
 	/** 最新头条 **/
 	private GameInfo[] data3;
 	/** 最新头条下banner **/
-	private GameInfo[] data4;
+	private GameInfo data4;
 	/** 新游榜 **/
 	private GameInfo[] data5;
 	/** 热游榜 **/
@@ -43,10 +43,10 @@ public class RecommendDataInfo {
 	public synchronized void setData3(GameInfo[] data3) {
 		this.data3 = data3;
 	}
-	public synchronized GameInfo[] getData4() {
+	public synchronized GameInfo getData4() {
 		return data4;
 	}
-	public synchronized void setData4(GameInfo[] data4) {
+	public synchronized void setData4(GameInfo data4) {
 		this.data4 = data4;
 	}
 	public synchronized GameInfo[] getData5() {
@@ -69,6 +69,6 @@ public class RecommendDataInfo {
 	}
 	@Override
 	public String toString() {
-		return "RecommendDataInfo [status=" + status + ", data1=" + Arrays.toString(data1) + ", data2=" + Arrays.toString(data2) + ", data3=" + Arrays.toString(data3) + ", data4=" + Arrays.toString(data4) + ", data5=" + Arrays.toString(data5) + ", data6=" + Arrays.toString(data6) + ", data7=" + Arrays.toString(data7) + "]";
+		return "RecommendDataInfo [status=" + status + ", data1=" + Arrays.toString(data1) + ", data2=" + Arrays.toString(data2) + ", data3=" + Arrays.toString(data3) + ", data4=" + data4.toString() + ", data5=" + Arrays.toString(data5) + ", data6=" + Arrays.toString(data6) + ", data7=" + Arrays.toString(data7) + "]";
 	}
 }

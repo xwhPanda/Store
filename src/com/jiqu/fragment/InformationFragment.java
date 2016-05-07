@@ -23,6 +23,7 @@ import com.jiqu.tools.CountDownTimer;
 import com.jiqu.tools.MetricsTool;
 import com.jiqu.tools.RequestTool;
 import com.jiqu.tools.UIUtil;
+import com.jiqu.view.LoadStateView;
 import com.jiqu.view.MyImageView;
 import com.jiqu.view.PullToRefreshLayout;
 
@@ -50,7 +51,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 
-public class InformationFragment extends Fragment implements OnClickListener,OnPageChangeListener{
+public class InformationFragment extends BaseFragment implements OnClickListener,OnPageChangeListener{
 	private float Rx,Ry;
 	private View view;
 	private LinearLayout explosiveHeadlinesLin,allHeadlinesLin;
@@ -63,6 +64,7 @@ public class InformationFragment extends Fragment implements OnClickListener,OnP
 	
 	private ListView informationListView;
 	private PullToRefreshLayout ptrl;
+	private LoadStateView loadStateView;
 	//头部view
 	private View headView;
 	
@@ -75,17 +77,15 @@ public class InformationFragment extends Fragment implements OnClickListener,OnP
 	private CountDownTimer timer;
 	
 	@Override
-	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+	public void init() {
 		// TODO Auto-generated method stub
-		view = inflater.inflate(R.layout.information, container, false);
-		headView = inflater.inflate(R.layout.information_head, null);
-		
 		requestTool = RequestTool.getInstance();
-		
-		initView();
+	}
+	
+	@Override
+	public void initData() {
+		// TODO Auto-generated method stub
 		loadData(RequestTool.informationUrl + "1.html");
-		
-		return view;
 	}
 
 	private void loadData(String url){
@@ -99,13 +99,16 @@ public class InformationFragment extends Fragment implements OnClickListener,OnP
 				
 				setData(info.getResult().getData());
 				setTopData(info.getResult().getGallary());
+				loadStateView.loadDataSuccess();
+				loadStateView.setVisibility(View.GONE);
+				ptrl.setVisibility(View.VISIBLE);
 			}
 		}, url, new ErrorListener() {
 
 			@Override
 			public void onErrorResponse(VolleyError arg0) {
 				// TODO Auto-generated method stub
-				Log.i("TAG", arg0.toString());
+				loadStateView.loadDataFail();
 			}
 		}, requestTool.getMap(), "infortmation");
 	}
@@ -194,18 +197,21 @@ public class InformationFragment extends Fragment implements OnClickListener,OnP
 		allHeadlinesLin.setOnClickListener(this);
 	}
 	
-	private void initView (){
+	@Override
+	public View initView (){
 		Rx = MetricsTool.Rx;
 		Ry = MetricsTool.Ry;
+		view = LayoutInflater.from(activity).inflate(R.layout.information, null);
+		headView = LayoutInflater.from(activity).inflate(R.layout.information_head, null);
 		informationListView = (ListView) view.findViewById(R.id.informationListView);
 		ptrl = ((PullToRefreshLayout) view.findViewById(R.id.refresh_view));
+		loadStateView = (LoadStateView) view.findViewById(R.id.loadStateView);
 		
 		initHeadView();
 		setOnClick();
 		
 		//必须在设置adapter之前执行
 		informationListView.addHeaderView(headView);
-		
 		
 		adapter = new InformationAdapter(getActivity(), informationGallaryItems,0);
 		informationListView.setAdapter(adapter);
@@ -221,6 +227,17 @@ public class InformationFragment extends Fragment implements OnClickListener,OnP
 				.putExtra("data", informationGallaryItems.get(position - 1)));
 			}
 		});
+		
+		loadStateView.loadAgain(new OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				// TODO Auto-generated method stub
+				loadStateView.showLoading();
+			}
+		});
+		
+		return view;
 	}
 	
 	private void initHeadView(){
