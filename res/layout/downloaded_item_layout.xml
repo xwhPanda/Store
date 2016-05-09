@@ -11,7 +11,8 @@
         android:layout_height="wrap_content"
         android:layout_centerVertical="true"
         android:background="@drawable/checkbox_yellow_sel"
-        android:button="@null" />
+        android:button="@null" 
+        android:visibility="invisible"/>
 
     <Button
         android:id="@+id/open"

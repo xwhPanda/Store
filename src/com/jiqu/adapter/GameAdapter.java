@@ -5,6 +5,7 @@ import java.util.List;
 
 import com.android.volley.toolbox.ImageLoader;
 import com.android.volley.toolbox.ImageLoader.ImageListener;
+import com.jiqu.activity.SortInfoActivity;
 import com.jiqu.application.StoreApplication;
 import com.jiqu.database.DownloadAppinfo;
 import com.jiqu.download.AppUtil;
@@ -21,6 +22,7 @@ import com.jiqu.tools.UIUtil;
 import com.jiqu.view.RatingBarView;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Handler;
 import android.text.Html;
 import android.util.Log;
@@ -133,10 +135,22 @@ public class GameAdapter extends BaseAdapter implements DownloadObserver{
 				holder1.sortName = (TextView) convertView.findViewById(R.id.sortName);
 				holder1.moreTx = (TextView) convertView.findViewById(R.id.moreTx);
 				holder1.moreBtn = (ImageView) convertView.findViewById(R.id.moreBt);
+				holder1.moreLin = (LinearLayout) convertView.findViewById(R.id.moreLin);
 				
 				UIUtil.setTextSize(holder1.sortName, 42);
 				UIUtil.setTextSize(holder1.moreTx, 35);
 				UIUtil.setViewSize(holder1.moreBtn, 36 * MetricsTool.Rx, 36 * MetricsTool.Rx);
+				
+				holder1.moreLin.setOnClickListener(new OnClickListener() {
+					
+					@Override
+					public void onClick(View v) {
+						// TODO Auto-generated method stub
+						context.startActivity(new Intent(context, SortInfoActivity.class)
+						.putExtra("gameType", informations.get(position)));
+					}
+				});
+				
 				convertView.setTag(holder1);
 			}else {
 				holder1 = (Holder1) convertView.getTag();
@@ -188,6 +202,7 @@ public class GameAdapter extends BaseAdapter implements DownloadObserver{
 		private TextView sortName;
 		private TextView moreTx;
 		private ImageView moreBtn;
+		private LinearLayout moreLin;
 	}
 	
 	private class Holder2{
@@ -413,7 +428,7 @@ public class GameAdapter extends BaseAdapter implements DownloadObserver{
 			} catch (Exception e) {
 				gameSize.setText(mData.getAppSize() + "M");
 			}
-			ImageListener listener = ImageLoader.getImageListener(icon,R.drawable.ic_launcher, R.drawable.ic_launcher);
+			ImageListener listener = ImageLoader.getImageListener(icon,R.drawable.default_tubiao, R.drawable.default_tubiao);
 			StoreApplication.getInstance().getImageLoader().get(mData.getIconUrl(), listener);
 			
 			refreshState(mState, true);

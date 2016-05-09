@@ -114,7 +114,7 @@ public class DownloadingAdapter extends BaseAdapter implements DownloadObserver 
 		} else {
 			holder = (Holder) convertView.getTag();
 		}
-		holder.setData(appinfo);
+		holder.setData(appinfo,position);
 		mDisplayedHolders.add(holder);
 
 		return holder.getRootView();
@@ -136,6 +136,7 @@ public class DownloadingAdapter extends BaseAdapter implements DownloadObserver 
 		private Context context;
 		private View rootView;
 		private DownloadAppinfo info;
+		private int position;
 
 		public Holder(Context context) {
 			this.context = context;
@@ -192,6 +193,18 @@ public class DownloadingAdapter extends BaseAdapter implements DownloadObserver 
 					}
 				}
 			});
+			
+			deleted.setOnClickListener(new OnClickListener() {
+				
+				@Override
+				public void onClick(View v) {
+					// TODO Auto-generated method stub
+					mDisplayedHolders.remove(this);
+					downloadAppinfos.remove(position);
+					DownloadManager.DBManager.getDownloadAppinfoDao().deleteByKey(info.getId());
+					notifyDataSetChanged();
+				}
+			});
 
 			checkBox.setOnCheckedChangeListener(new OnCheckedChangeListener() {
 
@@ -233,8 +246,9 @@ public class DownloadingAdapter extends BaseAdapter implements DownloadObserver 
 			}
 		}
 
-		private void setData(DownloadAppinfo appinfo) {
+		private void setData(DownloadAppinfo appinfo,int position) {
 			this.info = appinfo;
+			this.position = position;
 			ImageListener listener = ImageLoader.getImageListener(appIcon, R.drawable.ic_launcher, R.drawable.ic_launcher);
 			StoreApplication.getInstance().getImageLoader().get(info.getIconUrl(), listener);
 			appName.setText(appinfo.getAppName());

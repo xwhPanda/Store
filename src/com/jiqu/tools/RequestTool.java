@@ -318,7 +318,7 @@ public class RequestTool {
 			}
 		};
 		StoreApplication.getInstance().addToRequestQueue(stringRequest, tag);
-		StoreApplication.getInstance().getRequestQueue().start();
+//		StoreApplication.getInstance().getRequestQueue().start();
 	}
 
 	/**
@@ -338,7 +338,7 @@ public class RequestTool {
 			stringRequest.setRetryPolicy(new DefaultRetryPolicy(10 * 1000, 2, 1.0f));
 		}
 		StoreApplication.getInstance().addToRequestQueue(stringRequest, tag);
-		StoreApplication.getInstance().getRequestQueue().start();
+//		StoreApplication.getInstance().getRequestQueue().start();
 	}
 
 	/**

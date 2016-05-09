@@ -17,6 +17,7 @@ import com.jiqu.download.AppInfo;
 import com.jiqu.download.DownloadManager;
 import com.jiqu.fragment.EvaluationFragment;
 import com.jiqu.fragment.GameFragment;
+import com.jiqu.fragment.GameNewFragment;
 import com.jiqu.fragment.InformationFragment;
 import com.jiqu.fragment.RecommendFragment;
 import com.jiqu.fragment.ToolFragment;
@@ -72,6 +73,7 @@ public class MainActivity extends FragmentActivity implements OnClickListener,On
 	private RecommendFragment recommendFragment;
 	private InformationFragment informationFragment;
 	private GameFragment gameFragment;
+	private GameNewFragment gameNewFragment;
 	private EvaluationFragment evaluationFragment;
 	private ToolFragment toolFragment;
 	private List<Fragment> fragments = new ArrayList<Fragment>();
@@ -183,13 +185,15 @@ public class MainActivity extends FragmentActivity implements OnClickListener,On
 		
 		recommendFragment = new RecommendFragment();
 		informationFragment = new InformationFragment();
-		gameFragment = new GameFragment();
+//		gameFragment = new GameFragment();
+		gameNewFragment = new GameNewFragment();
 		evaluationFragment = new EvaluationFragment();
 		toolFragment = new ToolFragment();
 		
 		fragments.add(recommendFragment);
 		fragments.add(informationFragment);
-		fragments.add(gameFragment);
+//		fragments.add(gameFragment);
+		fragments.add(gameNewFragment);
 		fragments.add(evaluationFragment);
 		fragments.add(toolFragment);
 		
@@ -341,11 +345,16 @@ public class MainActivity extends FragmentActivity implements OnClickListener,On
 				toolTop.setVisibility(View.INVISIBLE);
 				top.setVisibility(View.VISIBLE);
 				changeFocusState(currentIndex, false);
-				if (!gameFragment.isAdded()) {
-					mFragmentTransaction.add(R.id.homeFrameLayout, gameFragment);
+//				if (!gameFragment.isAdded()) {
+//					mFragmentTransaction.add(R.id.homeFrameLayout, gameFragment);
+//				}
+//				mFragmentTransaction.hide(fragments.get(currentIndex));
+//				mFragmentTransaction.show(gameFragment);
+				if (!gameNewFragment.isAdded()) {
+					mFragmentTransaction.add(R.id.homeFrameLayout, gameNewFragment);
 				}
 				mFragmentTransaction.hide(fragments.get(currentIndex));
-				mFragmentTransaction.show(gameFragment);
+				mFragmentTransaction.show(gameNewFragment);
 				currentIndex = 2;
 				changeFocusState(currentIndex, true);
 			}

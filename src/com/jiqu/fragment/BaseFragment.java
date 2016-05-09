@@ -1,5 +1,7 @@
 package com.jiqu.fragment;
 
+import com.jiqu.tools.MetricsTool;
+
 import android.app.Activity;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -10,12 +12,15 @@ import android.view.ViewGroup;
 
 public abstract class BaseFragment extends Fragment {
 	public Activity activity;
+	public float Rx,Ry;
 
 	@Override
 	public void onCreate(@Nullable Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
 		super.onCreate(savedInstanceState);
 		activity = getActivity();
+		Rx = MetricsTool.Rx;
+		Ry = MetricsTool.Ry;
 		init();
 	}
 	

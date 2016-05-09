@@ -68,6 +68,8 @@ public class StoreApplication extends Application {
 		PACKAGE_NAME = getPackageName();
 		DATA_CACHE_PATH = getCacheDir().getAbsolutePath();
 		
+		getRequestQueue();
+		
 		context = this;
 		
 		initFiles();

@@ -65,6 +65,7 @@ public class GameInfo implements Serializable{
 	private String intro;
 	
 	private int adapterType;//布局类型
+	private int gameType;//1:新游榜,2:热游榜,3:必玩榜
 	private int state = -1;
 	
 	public synchronized int getState() {
@@ -205,6 +206,13 @@ public class GameInfo implements Serializable{
 	}
 	public synchronized void setTitle(String title) {
 		this.title = title;
+	}
+	
+	public synchronized int getGameType() {
+		return gameType;
+	}
+	public synchronized void setGameType(int gameType) {
+		this.gameType = gameType;
 	}
 	public synchronized String getIntro() {
 		return intro;

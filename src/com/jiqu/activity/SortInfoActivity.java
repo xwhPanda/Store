@@ -209,7 +209,7 @@ public class SortInfoActivity extends BaseActivity implements OnRefreshListener,
 		// TODO Auto-generated method stub
 		Log.i("TAG", "onResponse :" + arg0);
 		CategoryAppsInfo categoryAppsInfo = JSON.parseObject(arg0.toString(), CategoryAppsInfo.class);
-		if (categoryAppsInfo != null) {
+		if (categoryAppsInfo != null && categoryAppsInfo.getItem() != null) {
 			Collections.addAll(gameInformations, categoryAppsInfo.getItem());
 			List<InstalledApp> apps = InstalledAppTool.getPersonalApp(this);
 			int count = DEFAULT_PAGE_SIZE;

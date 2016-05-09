@@ -1,6 +1,7 @@
 package com.jiqu.fragment;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -57,6 +58,7 @@ import com.jiqu.view.LoadDataDialog;
 import com.jiqu.view.LoadStateView;
 import com.jiqu.view.PullableListView;
 import com.jiqu.view.RecommedGameView;
+import com.jiqu.view.ViewPagerLinView;
 
 import de.greenrobot.dao.query.QueryBuilder;
 
@@ -115,6 +117,7 @@ public class RecommendFragment extends BaseFragment implements OnPageChangeListe
 	private LinearLayout imgList;
 	private RelativeLayout recommendImgRel;
 	private ViewPager recommendImgViewPager;
+	private ViewPagerLinView viewPager;
 	private ImageView[] radioImgs,contentImgs;
 	private View view1, view2, view3;
 	private int currentItem = 0;
@@ -161,84 +164,6 @@ public class RecommendFragment extends BaseFragment implements OnPageChangeListe
 				this, RequestTool.RECOMMEND_URL, this, requestTool.getMap(), true,RECOMMEND_REQUEST_TAG);
 	}
 	
-	/**
-	 * 顶部轮换图片
-	 */
-	private void loadTopData() {
-		requestTool.initParam();
-		requestTool.startTopRecommendRequest(new Listener<JSONObject>() {
-
-			@Override
-			public void onResponse(JSONObject arg0) {
-				// TODO Auto-generated method stub
-				topRecommendtInfo = JSON.parseObject(arg0.toString(), TopRecommendtInfo.class);
-				if (topRecommendtInfo != null) {
-//					initTop();
-				}
-			}
-		}, new ErrorListener() {
-
-			@Override
-			public void onErrorResponse(VolleyError arg0) {
-				// TODO Auto-generated method stub
-				
-			}
-		});
-	}
-	
-	/**
-	 * 获取推荐游戏
-	 */
-	private void loadRecommendApps(){
-		requestTool.initParam();
-		requestTool.setParam("start_position", "0");
-		requestTool.setParam("size", "5");
-		requestTool.startRecommendAppsRequest(new Listener<JSONObject>() {
-
-			@Override
-			public void onResponse(JSONObject arg0) {
-				// TODO Auto-generated method stub
-				RecommendAppsInfo info = JSON.parseObject(arg0.toString(), RecommendAppsInfo.class);
-//				initRecommendApps(info);
-			}
-		}, new ErrorListener() {
-
-			@Override
-			public void onErrorResponse(VolleyError arg0) {
-				// TODO Auto-generated method stub
-				
-			}
-		});
-	}
-	
-//	private void initRecommendApps(RecommendAppsInfo info){
-//		if (info != null && info.getItem().length > 0) {
-//			int count = info.getItem().length;
-//			for (int i = 0; i < count; i++) {
-//				final GameInfo gameInfo = info.getItem()[i];
-//				RecommedGameView gameView = new RecommedGameView(getActivity());
-//				gameView.setClickable(true);
-//				gameView.setOnClickListener(new OnClickListener() {
-//					
-//					@Override
-//					public void onClick(View v) {
-//						// TODO Auto-generated method stub
-//						startActivity(new Intent(getActivity(), DetailActivity.class).putExtra("p_id", String.valueOf(gameInfo.getP_id())));
-//					}
-//				});
-//				gameView.gameName.setText(gameInfo.getName());
-//				gameView.getDesView().setText(gameInfo.getShort_description());
-//				ImageListener listener = ImageLoader.getImageListener(gameView.gameIcon,R.drawable.ic_launcher, R.drawable.ic_launcher);
-//				StoreApplication.getInstance().getImageLoader().get(gameInfo.getLdpi_icon_url(),listener);
-//				recommendGameList.addView(gameView);
-//				
-//					TextView view = new TextView(getActivity());
-//					LayoutParams lp = new LayoutParams((int) (30 * Rx), LayoutParams.MATCH_PARENT);
-//					view.setLayoutParams(lp);
-//					recommendGameList.addView(view);
-//			}
-//		}
-//	}
 	
 	@Override
 	public void onResume() {
@@ -286,7 +211,7 @@ public class RecommendFragment extends BaseFragment implements OnPageChangeListe
 		loadStateView = (LoadStateView) view.findViewById(R.id.loadStateView);
 		pullToRefreshLayout = (PullToRefreshLayout) view.findViewById(R.id.refresh_view);
 		recommendListView = (PullableListView) view.findViewById(R.id.recommendListView);
-
+		
 		pullToRefreshLayout.setOnRefreshListener(this);
 
 		initHeadView();
@@ -322,7 +247,8 @@ public class RecommendFragment extends BaseFragment implements OnPageChangeListe
 	}
 
 	private void initViewSize() {
-		UIUtil.setViewSize(recommendImgRel, MetricsTool.width, 455 * Ry);
+		UIUtil.setViewSize(recommendImgRel, MetricsTool.width, 455 * Rx);
+		UIUtil.setViewSize(viewPager, MetricsTool.width, 455 * Rx);
 		UIUtil.setViewSize(recommendCategory, MetricsTool.width, 150 * Ry);
 		UIUtil.setViewSize(boutiqueImg, 72 * Rx, 72 * Rx);
 		UIUtil.setViewSize(thematicImg, 72 * Rx, 72 * Rx);
@@ -354,6 +280,8 @@ public class RecommendFragment extends BaseFragment implements OnPageChangeListe
 	private void initHeadView() {
 		imgList = (LinearLayout) headView.findViewById(R.id.imgList);
 		recommendImgViewPager = (ViewPager) headView.findViewById(R.id.recommendImgViewPager);
+		viewPager = (ViewPagerLinView) headView.findViewById(R.id.viewPagerLin);
+		viewPager.setClass(DetailActivity.class);
 		
 		recommendImgViewPager.setOnPageChangeListener(this);
 		
@@ -456,8 +384,10 @@ public class RecommendFragment extends BaseFragment implements OnPageChangeListe
 					android.support.v4.view.ViewPager.LayoutParams.MATCH_PARENT);
 			contentImg.setLayoutParams(params);
 			contentImg.setScaleType(ScaleType.FIT_XY);
-			ImageListener listener = ImageLoader.getImageListener(contentImg,R.drawable.ic_launcher, R.drawable.ic_launcher);
-			StoreApplication.getInstance().getImageLoader().get(item.getPic(),listener);
+			ImageListener listener = ImageLoader.getImageListener(contentImg,R.drawable.recommend_viewpager_default, R.drawable.recommend_viewpager_default);
+			if (item.getPic() != null) {
+				StoreApplication.getInstance().getImageLoader().get(item.getPic(),listener);
+			}
 			contentImgs[i] = contentImg;
 		}
 		ViewPagerAdapter adapter = new ViewPagerAdapter(getActivity(), contentImgs);
@@ -487,6 +417,71 @@ public class RecommendFragment extends BaseFragment implements OnPageChangeListe
 		headlinesInformation.setText(headlineInfo.getTitle());
 	}
 	
+	private void initRecommedGame(GameInfo[] gameInfos){
+		if (gameInfos.length > 0) {
+			int count = gameInfos.length;
+			for (int i = 0; i < count; i++) {
+				final GameInfo gameInfo = gameInfos[i];
+				RecommedGameView gameView = new RecommedGameView(getActivity());
+				gameView.setClickable(true);
+				gameView.setOnClickListener(new OnClickListener() {
+					
+					@Override
+					public void onClick(View v) {
+						// TODO Auto-generated method stub
+						startActivity(new Intent(getActivity(), DetailActivity.class).putExtra("p_id", gameInfo.getId()));
+					}
+				});
+				gameView.gameName.setText(gameInfo.getApply_name());
+				gameView.getDesView().setText(gameInfo.getDescript());
+				ImageListener listener = ImageLoader.getImageListener(gameView.gameIcon,R.drawable.recommend_default, R.drawable.recommend_default);
+				if (gameInfo.getIcon() != null) {
+					StoreApplication.getInstance().getImageLoader().get(gameInfo.getIcon(),listener);
+				}
+				recommendGameList.addView(gameView);
+				
+					TextView view = new TextView(getActivity());
+					LayoutParams lp = new LayoutParams((int) (30 * Rx), LayoutParams.MATCH_PARENT);
+					view.setLayoutParams(lp);
+					recommendGameList.addView(view);
+			}
+		}
+	}
+	
+	public void initGame(RecommendDataInfo dataInfo){
+		if (dataInfo.getData5() != null && dataInfo.getData5().length > 0) {
+			GameInfo info = new GameInfo();
+			info.setGameType(1);
+			info.setAdapterType(0);
+			resultList.add(info);
+			for(int i = 0;i < dataInfo.getData5().length;i++){
+				dataInfo.getData5()[i].setAdapterType(1);
+			}
+			Collections.addAll(resultList, dataInfo.getData5());
+		}
+		if (dataInfo.getData6() != null && dataInfo.getData6().length > 0) {
+			GameInfo info = new GameInfo();
+			info.setGameType(1);
+			info.setAdapterType(0);
+			resultList.add(info);
+			for(int i = 0;i < dataInfo.getData6().length;i++){
+				dataInfo.getData6()[i].setAdapterType(1);
+			}
+			Collections.addAll(resultList, dataInfo.getData6());
+		}
+		if (dataInfo.getData7() != null && dataInfo.getData7().length > 0) {
+			GameInfo info = new GameInfo();
+			info.setGameType(1);
+			info.setAdapterType(0);
+			resultList.add(info);
+			for(int i = 0;i < dataInfo.getData7().length;i++){
+				dataInfo.getData7()[i].setAdapterType(1);
+			}
+			Collections.addAll(resultList, dataInfo.getData7());
+		}
+		adapter.notifyDataSetChanged();
+	}
+	
 	@Override
 	public void onResponse(String arg0) {
 		// TODO Auto-generated method stub
@@ -495,16 +490,17 @@ public class RecommendFragment extends BaseFragment implements OnPageChangeListe
 		pullToRefreshLayout.setVisibility(View.VISIBLE);
 		RecommendDataInfo dataInfo = JSON.parseObject(arg0, RecommendDataInfo.class);
 		if (dataInfo.getData1() != null && dataInfo.getData1().length > 0) {
-			initTop(dataInfo.getData1());
+//			initTop(dataInfo.getData1());
+			viewPager.setData(dataInfo.getData1());
 		}
 		if (dataInfo.getData2() != null && dataInfo.getData2().length > 0) {
 			headlineInfo = dataInfo.getData2()[0];
 			initHeadline(headlineInfo);
 		}
-		if (dataInfo.getData4() != null && dataInfo.getData4().getPic() != null) {
-			ImageListener listener = ImageLoader.getImageListener(recommendGameInformationImg, R.drawable.ic_launcher, R.drawable.ic_launcher);
-			StoreApplication.getInstance().getImageLoader().get(dataInfo.getData4().getPic(), listener);
+		if (dataInfo.getData3() != null && dataInfo.getData3().length > 0) {
+			initRecommedGame(dataInfo.getData3());
 		}
+		initGame(dataInfo);
 //		if (refreshShow) {
 //			refreshShow = false;
 //			pullToRefreshLayout.refreshFinish(PullToRefreshLayout.SUCCEED);

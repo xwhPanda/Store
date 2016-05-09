@@ -7,7 +7,8 @@
     <RelativeLayout
         android:id="@+id/recommendImgRel"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:visibility="invisible">
 
         <android.support.v4.view.ViewPager
             android:id="@+id/recommendImgViewPager"
@@ -24,6 +25,11 @@
             android:orientation="horizontal">
         </LinearLayout>
     </RelativeLayout>
+    
+    <com.jiqu.view.ViewPagerLinView
+        android:id="@+id/viewPagerLin"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
 
     <include
         android:id="@+id/recommendCategory"

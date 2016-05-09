@@ -251,7 +251,7 @@ public class DownloadManagerActivity extends BaseActivity implements OnClickList
 				List<DownloadAppinfo> apps2 = StoreApplication.daoSession.getDownloadAppinfoDao()
 						.queryBuilder().where(Properties.HasFinished.eq(true)).list();
 				for (DownloadAppinfo info : apps2) {
-					if (info.getDownloadState() != DownloadManager.STATE_INSTALLED) {
+					if (info.getDownloadState() != DownloadManager.STATE_INSTALLED && info.getVersionCode() != null) {
 						int state = InstalledAppTool.contain(installedApps,info.getPackageName(), Integer.parseInt(info.getVersionCode()));
 						if (state == DownloadManager.STATE_INSTALLED) {
 							info.setDownloadState(state);
