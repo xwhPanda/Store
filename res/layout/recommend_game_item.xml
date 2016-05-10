@@ -13,28 +13,40 @@
 		android:background="@color/itemBgColor">
 
 
-		<ImageView android:id="@+id/icon" android:layout_width="wrap_content"
-			android:layout_height="wrap_content" android:layout_centerVertical="true" />
+		<ImageView android:id="@+id/icon" 
+		android:layout_width="wrap_content"
+			android:layout_height="wrap_content" 
+			android:layout_centerVertical="true" />
 
 		<RelativeLayout android:id="@+id/informationLin"
-			android:layout_width="wrap_content" android:layout_height="wrap_content"
-			android:layout_centerVertical="true" android:layout_toRightOf="@id/icon">
+			android:layout_width="wrap_content" 
+			android:layout_height="wrap_content"
+			android:layout_centerVertical="true" 
+			android:layout_toRightOf="@id/icon">
 
 			<RelativeLayout android:id="@+id/gameNameRel"
-				android:layout_width="wrap_content" android:layout_height="wrap_content">
+				android:layout_width="wrap_content" 
+				android:layout_height="wrap_content">
 
-				<ImageView android:id="@+id/hotIcon" android:layout_width="wrap_content"
-					android:layout_height="wrap_content" android:layout_centerVertical="true"
-					android:background="@drawable/hot_icon" />
+				<ImageView android:id="@+id/hotIcon" 
+				android:layout_width="wrap_content"
+					android:layout_height="wrap_content" 
+					android:layout_centerVertical="true"/>
 
-				<TextView android:id="@+id/gameName" android:layout_width="wrap_content"
-					android:layout_height="wrap_content" android:layout_toRightOf="@id/hotIcon"
-					fontPath="fonts/lantinghei.ttf" android:ellipsize="end"
-					android:maxEms="10" android:singleLine="true" android:textColor="@color/white"
+				<TextView android:id="@+id/gameName" 
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content" 
+					android:layout_toRightOf="@id/hotIcon"
+					fontPath="fonts/lantinghei.ttf" 
+					android:ellipsize="end"
+					android:maxEms="10" 
+					android:singleLine="true" 
+					android:textColor="@color/white"
 					android:textSize="14sp" />
 			</RelativeLayout>
 
-			<TextView android:id="@+id/gameDes" android:layout_width="wrap_content"
+			<TextView android:id="@+id/gameDes" 
+				android:layout_width="wrap_content"
 				android:layout_height="wrap_content" android:layout_below="@id/gameNameRel"
 				fontPath="fonts/lantinghei.ttf" android:ellipsize="end"
 				android:maxEms="20" android:singleLine="true" android:textColor="@color/itemDesColor" />
@@ -63,7 +75,7 @@
 		<LinearLayout android:id="@+id/subscriptLin"
 			android:layout_width="wrap_content" android:layout_height="wrap_content"
 			android:layout_alignParentLeft="true" android:layout_alignParentTop="true"
-			android:background="@drawable/subscript_red" android:paddingLeft="3dp">
+			android:paddingLeft="3dp">
 
 			<TextView android:id="@+id/subscriptTx"
 				android:layout_width="wrap_content" android:layout_height="wrap_content"

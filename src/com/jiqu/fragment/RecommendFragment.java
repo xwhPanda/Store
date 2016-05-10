@@ -2,17 +2,10 @@ package com.jiqu.fragment;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.TreeMap;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import com.alibaba.fastjson.JSON;
-import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.Request.Method;
 import com.android.volley.Response.ErrorListener;
 import com.android.volley.Response.Listener;
@@ -22,79 +15,49 @@ import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.ImageLoader.ImageListener;
 import com.jiqu.activity.BoutiqueActivity;
 import com.jiqu.activity.DetailActivity;
-import com.jiqu.activity.GameEvaluationInformationActivity;
 import com.jiqu.activity.HeadlineActivity;
 import com.jiqu.activity.RankingActivity;
 import com.jiqu.activity.SortActivity;
 import com.jiqu.activity.ThematicActivity;
 import com.jiqu.adapter.GameAdapter;
-import com.jiqu.adapter.ViewPagerAdapter;
 import com.jiqu.application.StoreApplication;
-import com.jiqu.database.DownloadAppinfo;
-import com.jiqu.database.DownloadAppinfoDao.Properties;
-import com.jiqu.download.AppInfo;
-import com.jiqu.download.DownloadManager;
-import com.jiqu.download.FileUtil;
-import com.jiqu.download.UnZipManager;
-import com.jiqu.download.Upgrade;
 import com.jiqu.object.GameInfo;
-import com.jiqu.object.GameInformation;
-import com.jiqu.object.InstalledApp;
-import com.jiqu.object.RecommendAppsInfo;
 import com.jiqu.object.RecommendDataInfo;
 import com.jiqu.object.RecommendHeadlineInfo;
-import com.jiqu.object.TopRecommendItem;
 import com.jiqu.object.TopRecommendtInfo;
 import com.vr.store.R;
-import com.jiqu.tools.CountDownTimer;
-import com.jiqu.tools.InstalledAppTool;
 import com.jiqu.tools.MetricsTool;
 import com.jiqu.tools.RequestTool;
 import com.jiqu.tools.UIUtil;
-import com.jiqu.view.LoadDataDialog.OnLoadAgain;
 import com.jiqu.view.PullToRefreshLayout;
 import com.jiqu.view.PullToRefreshLayout.OnRefreshListener;
-import com.jiqu.view.LoadDataDialog;
 import com.jiqu.view.LoadStateView;
 import com.jiqu.view.PullableListView;
 import com.jiqu.view.RecommedGameView;
 import com.jiqu.view.ViewPagerLinView;
 
-import de.greenrobot.dao.query.QueryBuilder;
 
-import android.R.integer;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.net.Uri;
+import android.graphics.Bitmap;
 import android.os.AsyncTask;
-import android.os.Bundle;
-import android.os.Handler;
-import android.support.annotation.Nullable;
-import android.support.v4.view.ViewPager;
-import android.support.v4.view.ViewPager.OnPageChangeListener;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.View.OnClickListener;
-import android.view.Window;
-import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.HorizontalScrollView;
 import android.widget.ImageView;
-import android.widget.ImageView.ScaleType;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.LinearLayout.LayoutParams;
-import android.widget.ListView;
 import android.widget.RelativeLayout;
 
-public class RecommendFragment extends BaseFragment implements OnPageChangeListener, OnRefreshListener, 
+public class RecommendFragment extends BaseFragment implements OnRefreshListener, 
 	ErrorListener, OnClickListener, Listener<String>{
-	private static final int DEFAULT_PAGE_SIZE = 20;
+	private static final int DEFAULT_PAGE_SIZE = 10;
 	private static final String RECOMMEND_REQUEST_TAG = "recommendRequestTag";
 	private float Rx, Ry;
 	private View view;
@@ -110,15 +73,11 @@ public class RecommendFragment extends BaseFragment implements OnPageChangeListe
 	private TextView headlinesTx;
 	private ImageView headlineContenImg;
 	private TextView headlinesInformation;
-	private ImageView recommendGameInformationImg;
 	private HorizontalScrollView scrollView;
 	private TextView emptyView;
 
-	private LinearLayout imgList;
-	private RelativeLayout recommendImgRel;
-	private ViewPager recommendImgViewPager;
 	private ViewPagerLinView viewPager;
-	private ImageView[] radioImgs,contentImgs;
+    private ViewPagerLinView recommendGameInformationPager;
 	private View view1, view2, view3;
 	private int currentItem = 0;
 
@@ -134,7 +93,6 @@ public class RecommendFragment extends BaseFragment implements OnPageChangeListe
 	
 	private boolean refreshShow = false;
 	private int currentIndex = 0;
-	private CountDownTimer timer;
 	private RecommendHeadlineInfo headlineInfo;
 	
 	@Override
@@ -176,30 +134,6 @@ public class RecommendFragment extends BaseFragment implements OnPageChangeListe
 			adapter = new GameAdapter(getActivity(), resultList,false,false);
 		}
 		recommendListView.setAdapter(adapter);
-	}
-
-	@Override
-	public void onPageScrollStateChanged(int arg0) {
-		// TODO Auto-generated method stub
-		recommendImgViewPager.getCurrentItem();
-		
-	}
-
-	@Override
-	public void onPageScrolled(int arg0, float arg1, int arg2) {
-		// TODO Auto-generated method stub
-	}
-
-	@Override
-	public void onPageSelected(int arg0) {
-		// TODO Auto-generated method stub
-		for(int i = 0;i<radioImgs.length;i++){
-			if (arg0 == i) {
-				radioImgs[i].setBackgroundResource(R.drawable.dian_blue);
-			}else {
-				radioImgs[i].setBackgroundResource(R.drawable.dian_white);
-			}
-		}
 	}
 
 	@Override
@@ -247,7 +181,6 @@ public class RecommendFragment extends BaseFragment implements OnPageChangeListe
 	}
 
 	private void initViewSize() {
-		UIUtil.setViewSize(recommendImgRel, MetricsTool.width, 455 * Rx);
 		UIUtil.setViewSize(viewPager, MetricsTool.width, 455 * Rx);
 		UIUtil.setViewSize(recommendCategory, MetricsTool.width, 150 * Ry);
 		UIUtil.setViewSize(boutiqueImg, 72 * Rx, 72 * Rx);
@@ -260,7 +193,7 @@ public class RecommendFragment extends BaseFragment implements OnPageChangeListe
 
 		UIUtil.setTextSize(headlinesInformation, 30);
 
-		UIUtil.setViewSize(recommendGameInformationImg, MetricsTool.width, 235 * Ry);
+		UIUtil.setViewSize(recommendGameInformationPager, MetricsTool.width, 235 * Ry);
 
 		UIUtil.setTextSize(boutiqueTx, 40);
 		UIUtil.setTextSize(thematicTx, 40);
@@ -270,26 +203,25 @@ public class RecommendFragment extends BaseFragment implements OnPageChangeListe
 
 		try {
 			UIUtil.setViewSizeMargin(scrollView, 0, 30 * Ry, 0, 0);
-			UIUtil.setViewSizeMargin(recommendGameInformationImg, 0, 25 * Ry, 0, 0);
-			UIUtil.setViewSizeMargin(imgList, 0, 0, 0, 30 * Ry);
+			UIUtil.setViewSizeMargin(recommendGameInformationPager, 0, 25 * Ry, 0, 0);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}
 
 	private void initHeadView() {
-		imgList = (LinearLayout) headView.findViewById(R.id.imgList);
-		recommendImgViewPager = (ViewPager) headView.findViewById(R.id.recommendImgViewPager);
 		viewPager = (ViewPagerLinView) headView.findViewById(R.id.viewPagerLin);
 		viewPager.setClass(DetailActivity.class);
-		
-		recommendImgViewPager.setOnPageChangeListener(this);
+		viewPager.setDefaultImgId(R.drawable.recommend_viewpager_default);
 		
 		boutiqueLin = (LinearLayout) headView.findViewById(R.id.boutiqueLin);
 		thematicLin = (LinearLayout) headView.findViewById(R.id.thematicLin);
 		rankingLin = (LinearLayout) headView.findViewById(R.id.rankingLin);
 		sortLin = (LinearLayout) headView.findViewById(R.id.sortLin);
-
+		
+		view1 = (View) headView.findViewById(R.id.view1);
+		view1.setBackgroundDrawable(UIUtil.readBitmapDrawable(activity, R.drawable.xiaotiao));
+		
 		boutiqueLin.setOnClickListener(this);
 		thematicLin.setOnClickListener(this);
 		rankingLin.setOnClickListener(this);
@@ -305,6 +237,8 @@ public class RecommendFragment extends BaseFragment implements OnPageChangeListe
 		headlinesTx = (TextView) headView.findViewById(R.id.headlinesTx);
 		headlineContenImg = (ImageView) headView.findViewById(R.id.headlineContenImg);
 		headlinesInformation = (TextView) headView.findViewById(R.id.headlinesInformation);
+		
+		headlineContenImg.setBackgroundDrawable(UIUtil.readBitmapDrawable(activity, R.drawable.bao));
 
 		headlineContenLin.setOnClickListener(this);
 
@@ -317,10 +251,11 @@ public class RecommendFragment extends BaseFragment implements OnPageChangeListe
 		emptyView = (TextView) headView.findViewById(R.id.emptyView);
 
 		recommendCategory = (LinearLayout) headView.findViewById(R.id.recommendCategory);
-		recommendImgRel = (RelativeLayout) headView.findViewById(R.id.recommendImgRel);
 		recommendGameList = (LinearLayout) headView.findViewById(R.id.recommendGameList);
 
-		recommendGameInformationImg = (ImageView) headView.findViewById(R.id.recommendGameInformationImg);
+		recommendGameInformationPager = (ViewPagerLinView) headView.findViewById(R.id.recommendGameInformationPager);
+		recommendGameInformationPager.setClass(DetailActivity.class);
+		recommendGameInformationPager.setDefaultImgId(R.drawable.recomend_default_3);
 	}
 
 	@Override
@@ -350,69 +285,6 @@ public class RecommendFragment extends BaseFragment implements OnPageChangeListe
 		}
 	}
 
-	private void initTop(GameInfo[] infos){
-		final int count = infos.length;
-		radioImgs = new ImageView[count];
-		contentImgs = new ImageView[count];
-		for (int i = 0; i < count; i++) {
-			final GameInfo item = infos[i];
-			ImageView view = new ImageView(getActivity());
-			LayoutParams lp = new LayoutParams((int)(20 * Rx), (int) (20 * Rx));
-			if (i != 0) {
-				lp.leftMargin = (int) (10 * Rx);
-			}
-			 view.setLayoutParams(lp);
-			if (i== 0) {
-				view.setBackgroundResource(R.drawable.dian_blue);
-			}else {
-				view.setBackgroundResource(R.drawable.dian_white);
-			}
-			radioImgs[i] = view;
-			imgList.addView(view);
-			
-			ImageView contentImg = new ImageView(getActivity());
-			contentImg.setClickable(true);
-			contentImg.setOnClickListener(new OnClickListener() {
-				
-				@Override
-				public void onClick(View v) {
-					// TODO Auto-generated method stub
-					startActivity(new Intent(getActivity(), DetailActivity.class).putExtra("id", item.getId()));
-				}
-			});
-			LayoutParams params = new LayoutParams(android.support.v4.view.ViewPager.LayoutParams.MATCH_PARENT,
-					android.support.v4.view.ViewPager.LayoutParams.MATCH_PARENT);
-			contentImg.setLayoutParams(params);
-			contentImg.setScaleType(ScaleType.FIT_XY);
-			ImageListener listener = ImageLoader.getImageListener(contentImg,R.drawable.recommend_viewpager_default, R.drawable.recommend_viewpager_default);
-			if (item.getPic() != null) {
-				StoreApplication.getInstance().getImageLoader().get(item.getPic(),listener);
-			}
-			contentImgs[i] = contentImg;
-		}
-		ViewPagerAdapter adapter = new ViewPagerAdapter(getActivity(), contentImgs);
-		recommendImgViewPager.setAdapter(adapter);
-		
-		timer = new CountDownTimer(Integer.MAX_VALUE, 5000) {
-			
-			@Override
-			public void onTick(long millisUntilFinished) {
-				// TODO Auto-generated method stub
-				if (recommendImgViewPager != null && count != 0) {
-					recommendImgViewPager.setCurrentItem(currentIndex % count);
-					currentIndex++;
-				}
-			}
-			
-			@Override
-			public void onFinish() {
-				// TODO Auto-generated method stub
-				
-			}
-		};
-		timer.start();
-	}
-	
 	private void initHeadline(RecommendHeadlineInfo headlineInfo){
 		headlinesInformation.setText(headlineInfo.getTitle());
 	}
@@ -434,7 +306,8 @@ public class RecommendFragment extends BaseFragment implements OnPageChangeListe
 				});
 				gameView.gameName.setText(gameInfo.getApply_name());
 				gameView.getDesView().setText(gameInfo.getDescript());
-				ImageListener listener = ImageLoader.getImageListener(gameView.gameIcon,R.drawable.recommend_default, R.drawable.recommend_default);
+				Bitmap bitmap = UIUtil.readBitmap(activity, R.drawable.recommend_default);
+				ImageListener listener = ImageLoader.getImageListener(gameView.gameIcon, bitmap, bitmap);
 				if (gameInfo.getIcon() != null) {
 					StoreApplication.getInstance().getImageLoader().get(gameInfo.getIcon(),listener);
 				}
@@ -451,6 +324,7 @@ public class RecommendFragment extends BaseFragment implements OnPageChangeListe
 	public void initGame(RecommendDataInfo dataInfo){
 		if (dataInfo.getData5() != null && dataInfo.getData5().length > 0) {
 			GameInfo info = new GameInfo();
+			info.setTitle("新游榜");
 			info.setGameType(1);
 			info.setAdapterType(0);
 			resultList.add(info);
@@ -461,6 +335,7 @@ public class RecommendFragment extends BaseFragment implements OnPageChangeListe
 		}
 		if (dataInfo.getData6() != null && dataInfo.getData6().length > 0) {
 			GameInfo info = new GameInfo();
+			info.setTitle("热游榜");
 			info.setGameType(1);
 			info.setAdapterType(0);
 			resultList.add(info);
@@ -471,6 +346,7 @@ public class RecommendFragment extends BaseFragment implements OnPageChangeListe
 		}
 		if (dataInfo.getData7() != null && dataInfo.getData7().length > 0) {
 			GameInfo info = new GameInfo();
+			info.setTitle("必玩榜");
 			info.setGameType(1);
 			info.setAdapterType(0);
 			resultList.add(info);
@@ -490,7 +366,6 @@ public class RecommendFragment extends BaseFragment implements OnPageChangeListe
 		pullToRefreshLayout.setVisibility(View.VISIBLE);
 		RecommendDataInfo dataInfo = JSON.parseObject(arg0, RecommendDataInfo.class);
 		if (dataInfo.getData1() != null && dataInfo.getData1().length > 0) {
-//			initTop(dataInfo.getData1());
 			viewPager.setData(dataInfo.getData1());
 		}
 		if (dataInfo.getData2() != null && dataInfo.getData2().length > 0) {
@@ -499,6 +374,9 @@ public class RecommendFragment extends BaseFragment implements OnPageChangeListe
 		}
 		if (dataInfo.getData3() != null && dataInfo.getData3().length > 0) {
 			initRecommedGame(dataInfo.getData3());
+		}
+		if (dataInfo.getData4() != null && dataInfo.getData4().length > 0) {
+			recommendGameInformationPager.setData(dataInfo.getData4());
 		}
 		initGame(dataInfo);
 //		if (refreshShow) {
@@ -631,9 +509,8 @@ public class RecommendFragment extends BaseFragment implements OnPageChangeListe
 		if (adapter != null) {
 			adapter.stopObserver();
 		}
-		if (timer != null) {
-			timer.cancel();
-		}
+		viewPager.cancleTimer();
+		recommendGameInformationPager.cancleTimer();
 //		getActivity().unregisterReceiver(appInstallReceiver);
 		getActivity().unregisterReceiver(deleteReceiver);
 	};

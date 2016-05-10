@@ -31,8 +31,7 @@
             android:layout_width="@dimen/headlineContenImgSize"
             android:layout_height="@dimen/headlineContenImgSize"
             android:layout_centerVertical="true"
-            android:layout_marginLeft="5dp"
-            android:background="@drawable/bao" />
+            android:layout_marginLeft="5dp"/>
 
         <TextView
             android:id="@+id/headlinesInformation"
@@ -46,7 +45,6 @@
             android:ellipsize="end"
             android:maxEms="20"
             android:singleLine="true"
-            android:text="使命召唤最新公测，最炫风暴等你来开启"
             android:textColor="@color/white"
             android:textSize="12sp" />
     </RelativeLayout>

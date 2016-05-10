@@ -13,6 +13,8 @@
     <color name="headlineColor">#3a3a3a</color>
     <color name="headlineContentBg">#ff3333</color>
     
+    <color name="toolTopBg">#34383a</color>
+    
     <color name="itemColor">#686f73</color>
     <color name="itemDesColor">#999999</color>
     

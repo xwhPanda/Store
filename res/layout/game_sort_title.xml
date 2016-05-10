@@ -19,7 +19,6 @@
         android:ellipsize="end"
         android:maxLength="10"
         android:singleLine="true"
-        android:text="动作冒险"
         android:textColor="@color/sortTitleColor"
         android:textSize="14sp" />
 
@@ -45,8 +44,7 @@
             android:id="@+id/moreBt"
             android:layout_width="@dimen/moreBtnSize"
             android:layout_height="@dimen/moreBtnSize"
-            android:layout_gravity="center_vertical"
-            android:background="@drawable/more" />
+            android:layout_gravity="center_vertical"/>
     </LinearLayout>
 
 </RelativeLayout>

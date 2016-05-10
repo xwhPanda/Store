@@ -2,27 +2,26 @@ package com.jiqu.view;
 
 import com.android.volley.toolbox.ImageLoader;
 import com.android.volley.toolbox.ImageLoader.ImageListener;
-import com.jiqu.activity.DetailActivity;
 import com.jiqu.adapter.ViewPagerAdapter;
 import com.jiqu.application.StoreApplication;
 import com.jiqu.object.GameInfo;
 import com.jiqu.tools.CountDownTimer;
 import com.jiqu.tools.MetricsTool;
+import com.jiqu.tools.UIUtil;
 import com.vr.store.R;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.support.v4.view.ViewPager;
 import android.support.v4.view.ViewPager.OnPageChangeListener;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.View.OnClickListener;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.ImageView.ScaleType;
-import android.widget.LinearLayout.LayoutParams;
 
 public class ViewPagerLinView extends RelativeLayout implements OnPageChangeListener{
 	private View view;
@@ -34,6 +33,7 @@ public class ViewPagerLinView extends RelativeLayout implements OnPageChangeList
 	private ImageView[] contentImgs;
 	private CountDownTimer timer;
 	private int currentIndex = 0;
+	private int defaultImgId = 0;
 
 	public ViewPagerLinView(Context context) {
 		super(context);
@@ -60,10 +60,20 @@ public class ViewPagerLinView extends RelativeLayout implements OnPageChangeList
 		radioGroup = (LinearLayout) view.findViewById(R.id.radioGroup);
 		
 		viewPager.setOnPageChangeListener(this);
+		
+		try {
+			UIUtil.setViewSizeMargin(radioGroup, 0, 0, 0, 30 * MetricsTool.Ry);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 	
 	public void setClass(Class intentClass){
 		this.intentClass = intentClass;
+	}
+	
+	public void setDefaultImgId(int id){
+		this.defaultImgId = id;
 	}
 	
 	public void cancleTimer(){
@@ -79,9 +89,12 @@ public class ViewPagerLinView extends RelativeLayout implements OnPageChangeList
 		for (int i = 0; i < count; i++) {
 			final GameInfo item = infos[i];
 			ImageView view = new ImageView(context);
-			LayoutParams lp = new LayoutParams((int)(20 * MetricsTool.Rx), (int) (20 * MetricsTool.Rx));
+			LayoutParams lp = new LayoutParams((int)(20 * MetricsTool.Rx), (int)(20 * MetricsTool.Rx));
 			if (i != 0) {
-				lp.leftMargin = (int) (10 * MetricsTool.Rx);
+				ImageView emptyView = new ImageView(context);
+				LayoutParams emptyLp = new LayoutParams((int)(10 * MetricsTool.Rx), (int)(20 * MetricsTool.Rx));
+				emptyView.setLayoutParams(emptyLp);
+				radioGroup.addView(emptyView);
 			}
 			 view.setLayoutParams(lp);
 			if (i== 0) {
@@ -106,7 +119,8 @@ public class ViewPagerLinView extends RelativeLayout implements OnPageChangeList
 					android.support.v4.view.ViewPager.LayoutParams.MATCH_PARENT);
 			contentImg.setLayoutParams(params);
 			contentImg.setScaleType(ScaleType.FIT_XY);
-			ImageListener listener = ImageLoader.getImageListener(contentImg,R.drawable.recommend_viewpager_default, R.drawable.recommend_viewpager_default);
+			Bitmap bitmap = UIUtil.readBitmap(context, defaultImgId);
+			ImageListener listener = ImageLoader.getImageListener(contentImg, bitmap, bitmap);
 			if (item.getPic() != null) {
 				StoreApplication.getInstance().getImageLoader().get(item.getPic(),listener);
 			}

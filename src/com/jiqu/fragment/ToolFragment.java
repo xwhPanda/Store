@@ -31,7 +31,7 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-public class ToolFragment extends Fragment implements OnClickListener,LoginOutObserver{
+public class ToolFragment extends BaseFragment implements OnClickListener,LoginOutObserver{
 	private float Rx,Ry;
 	private View view;
 	private ImageView accountIcon;
@@ -40,30 +40,34 @@ public class ToolFragment extends Fragment implements OnClickListener,LoginOutOb
 	private ImageView messageImg;
 	private TextView level;
 	private RelativeLayout itemRel;
+	private RelativeLayout toolView;
 	
 	private ToolItemView downloadItem,resourcesItem,uninstallItem;
 	private ToolItemView clearCacheItem,clearUpItem,powerItem;
 	private ToolItemView commomProblemItem,shareItem,aboutUsItem;
 	
 	private Account account;
-
+	
 	@Override
-	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+	public void init() {
 		// TODO Auto-generated method stub
-		view = inflater.inflate(R.layout.tool, null, false);
 		StoreApplication.setLoginOutObserver(this);
-		
-		init();
-		
+	}
+	
+	@Override
+	public void initData() {
+		// TODO Auto-generated method stub
 		QueryBuilder qb = StoreApplication.daoSession.getAccountDao().queryBuilder();
 		account = (Account) qb.unique();
 		setData(account);
-		return view;
 	}
 	
-	private void init(){
+	@Override
+	public View initView(){
 		Rx = MetricsTool.Rx;
 		Ry = MetricsTool.Ry;
+		view = LayoutInflater.from(activity).inflate(R.layout.tool, null, false);
+		toolView = (RelativeLayout) view.findViewById(R.id.toolView);
 		accountIcon = (ImageView) view.findViewById(R.id.accountIcon);
 		accountLin = (LinearLayout) view.findViewById(R.id.accountLin);
 		accountName = (TextView) view.findViewById(R.id.accountName);
@@ -82,28 +86,38 @@ public class ToolFragment extends Fragment implements OnClickListener,LoginOutOb
 		shareItem = (ToolItemView) view.findViewById(R.id.shareItem);
 		aboutUsItem = (ToolItemView) view.findViewById(R.id.aboutUsItem);
 		
-		downloadItem.setImgBgRes(R.drawable.tool_download_selector);
+		downloadItem.setImgBgRes(R.drawable.xiazai_tool, R.drawable.xiazai_tool_focus);
+		downloadItem.setItemBgRes(R.drawable.gongju_item, R.drawable.gongju_item_focus);
 		downloadItem.setTitleText(R.string.toolDownload);
-		resourcesItem.setImgBgRes(R.drawable.tool_resources_selector);
+		resourcesItem.setImgBgRes(R.drawable.ziyuan, R.drawable.ziyuan_focus);
+		resourcesItem.setItemBgRes(R.drawable.gongju_item, R.drawable.gongju_item_focus);
 		resourcesItem.setTitleText(R.string.toolResources);
-		uninstallItem.setImgBgRes(R.drawable.tool_uninstall_selector);
+		uninstallItem.setImgBgRes(R.drawable.xiezai, R.drawable.xiezai_focus);
+		uninstallItem.setItemBgRes(R.drawable.gongju_item, R.drawable.gongju_item_focus);
 		uninstallItem.setTitleText(R.string.toolUninstall);
-		clearCacheItem.setImgBgRes(R.drawable.tool_clearcache_selector);
+		clearCacheItem.setImgBgRes(R.drawable.huancun, R.drawable.huancun_focus);
+		clearCacheItem.setItemBgRes(R.drawable.gongju_item, R.drawable.gongju_item_focus);
 		clearCacheItem.setTitleText(R.string.toolClearCache);
-		clearUpItem.setImgBgRes(R.drawable.tool_clearup_selector);
+		clearUpItem.setImgBgRes(R.drawable.jiasu, R.drawable.jiasu_focus);
+		clearUpItem.setItemBgRes(R.drawable.gongju_item, R.drawable.gongju_item_focus);
 		clearUpItem.setTitleText(R.string.toolClearUp);
-		powerItem.setImgBgRes(R.drawable.tool_power_selector);
+		powerItem.setImgBgRes(R.drawable.dianliang, R.drawable.dianliang_focus);
+		powerItem.setItemBgRes(R.drawable.gongju_item, R.drawable.gongju_item_focus);
 		powerItem.setTitleText(R.string.toolPower);
-		commomProblemItem.setImgBgRes(R.drawable.tool_common_problem_selector);
+		commomProblemItem.setImgBgRes(R.drawable.wenti, R.drawable.wenti_focus);
+		commomProblemItem.setItemBgRes(R.drawable.gongju_item, R.drawable.gongju_item_focus);
 		commomProblemItem.setTitleText(R.string.toolCommonProblem);
-		shareItem.setImgBgRes(R.drawable.tool_share_selector);
+		shareItem.setImgBgRes(R.drawable.fenxiang, R.drawable.fenxiang_focus);
+		shareItem.setItemBgRes(R.drawable.gongju_item, R.drawable.gongju_item_focus);
 		shareItem.setTitleText(R.string.toolShare);
-		aboutUsItem.setImgBgRes(R.drawable.tool_about_selector);
+		aboutUsItem.setImgBgRes(R.drawable.lianxi, R.drawable.lianxi_focus);
+		aboutUsItem.setItemBgRes(R.drawable.gongju_item, R.drawable.gongju_item_focus);
 		aboutUsItem.setTitleText(R.string.toolAbout);
-		
 		
 		initViewSize();
 		registerClick();
+		
+		return view;
 	}
 	
 	private void initViewSize(){
@@ -134,6 +148,11 @@ public class ToolFragment extends Fragment implements OnClickListener,LoginOutOb
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+		
+		toolView.setBackgroundDrawable(UIUtil.readBitmapDrawableNotChange(activity, R.drawable.toolbg));
+		accountIcon.setImageBitmap(UIUtil.readBitmap(activity, R.drawable.yonghuicon));
+		messageImg.setImageBitmap(UIUtil.readBitmap(activity, R.drawable.xinxi));
+		level.setBackgroundDrawable(UIUtil.readBitmapDrawable(activity, R.drawable.dengji));
 	}
 	
 	private void registerClick(){

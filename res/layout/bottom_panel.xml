@@ -20,8 +20,7 @@
         <ImageView 
             android:id="@+id/recommendImg"
             android:layout_width="@dimen/bottomImgSize"
-            android:layout_height="@dimen/bottomImgSize"
-            android:background="@drawable/tuijian"/>
+            android:layout_height="@dimen/bottomImgSize"/>
         
         <TextView 
             android:id="@+id/recommendTx"
@@ -47,8 +46,7 @@
         <ImageView 
             android:id="@+id/informationImg"
             android:layout_width="@dimen/bottomImgSize"
-            android:layout_height="@dimen/bottomImgSize"
-            android:background="@drawable/zixun"/>
+            android:layout_height="@dimen/bottomImgSize"/>
         
         <TextView 
             android:id="@+id/informationTx"
@@ -73,8 +71,7 @@
         <ImageView 
             android:id="@+id/gameImg"
             android:layout_width="@dimen/bottomImgSize"
-            android:layout_height="@dimen/bottomImgSize"
-            android:background="@drawable/youxi"/>
+            android:layout_height="@dimen/bottomImgSize"/>
         
         <TextView 
             android:id="@+id/gameTx"
@@ -99,8 +96,7 @@
         <ImageView 
             android:id="@+id/evaluationImg"
             android:layout_width="@dimen/bottomImgSize"
-            android:layout_height="@dimen/bottomImgSize"
-            android:background="@drawable/ceping"/>
+            android:layout_height="@dimen/bottomImgSize"/>
         
         <TextView 
             android:id="@+id/evaluationTx"
@@ -125,8 +121,7 @@
         <ImageView
             android:id="@+id/toolImg"
             android:layout_width="@dimen/bottomImgSize"
-            android:layout_height="@dimen/bottomImgSize"
-            android:background="@drawable/gongju"/>
+            android:layout_height="@dimen/bottomImgSize"/>
         
         <TextView 
             android:id="@+id/toolTx"

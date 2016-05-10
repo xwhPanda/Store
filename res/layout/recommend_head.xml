@@ -4,28 +4,6 @@
     android:layout_height="match_parent" 
     android:background="@color/bottomBgColor">
 
-    <RelativeLayout
-        android:id="@+id/recommendImgRel"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:visibility="invisible">
-
-        <android.support.v4.view.ViewPager
-            android:id="@+id/recommendImgViewPager"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent" >
-        </android.support.v4.view.ViewPager>
-
-        <LinearLayout
-            android:id="@+id/imgList"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true"
-            android:layout_centerHorizontal="true"
-            android:orientation="horizontal">
-        </LinearLayout>
-    </RelativeLayout>
-    
     <com.jiqu.view.ViewPagerLinView
         android:id="@+id/viewPagerLin"
         android:layout_width="match_parent"
@@ -35,7 +13,7 @@
         android:id="@+id/recommendCategory"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/recommendImgRel"
+        android:layout_below="@id/viewPagerLin"
         layout="@layout/recommend_category" />
 
     <include
@@ -63,17 +41,16 @@
 	    </LinearLayout>
     </HorizontalScrollView>
     
-    <ImageView 
-        android:id="@+id/recommendGameInformationImg"
+    <com.jiqu.view.ViewPagerLinView 
+        android:id="@+id/recommendGameInformationPager"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:scaleType="fitXY"
         android:layout_below="@id/scrollView"/>
     
     <TextView 
         android:id="@+id/emptyView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/recommendGameInformationImg"/>
+        android:layout_below="@id/recommendGameInformationPager"/>
 
 </RelativeLayout>

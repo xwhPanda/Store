@@ -15,6 +15,7 @@ import android.widget.TextView;
 
 public class ToolItemView extends LinearLayout {
 	private LayoutInflater inflater;
+	private Context context;
 	private View view;
 	private ImageView img;
 	private TextView title;
@@ -31,6 +32,7 @@ public class ToolItemView extends LinearLayout {
 	}
 	
 	private void init(Context context){
+		this.context = context;
 		inflater = LayoutInflater.from(context);
 		//
 		view = inflater.inflate(R.layout.tool_item, this);
@@ -46,11 +48,20 @@ public class ToolItemView extends LinearLayout {
 	}
 
 	public void setImgBgRes(int res){
+//		img.setImageBitmap(UIUtil.readBitmap(context, res));
 		img.setBackgroundResource(res);
+	}
+	
+	public void setImgBgRes(int normalId,int pressId){
+		img.setImageDrawable(UIUtil.setbg(context, normalId, pressId));
 	}
 	
 	public void setItemBgRes(int res){
 		view.setBackgroundResource(res);
+	}
+	
+	public void setItemBgRes(int normalId,int pressId){
+		view.setBackgroundDrawable(UIUtil.setbg(context, normalId, pressId));
 	}
 	
 	public void setTitleText(String text){

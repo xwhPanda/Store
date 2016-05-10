@@ -8,25 +8,39 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"/>
     
-    <com.jiqu.view.PullToRefreshLayout 
-        android:id="@+id/refreshView"
+    <com.jiqu.view.LoadStateView 
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-	    android:background="@color/bottomBgColor"
-	    android:layout_below="@id/titleView">
+        android:layout_height="match_parent"
+        android:layout_below="@+id/titleView"/>
+    
+    <RelativeLayout 
+        android:id="@+id/dataView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+		android:layout_below="@id/titleView"
+		android:visibility="gone">
         
-	    <include layout="@layout/refresh_head" />
-	
-	    <com.jiqu.view.PullableListView
-	        android:id="@+id/boutiqueListView"
+	    <com.jiqu.view.PullToRefreshLayout 
+	        android:id="@+id/refreshView"
 	        android:layout_width="match_parent"
-	        android:layout_height="match_parent"
-	        android:background="@color/bottomBgColor"
-	        android:dividerHeight="1dp" 
-	        android:listSelector="@null"
-	        android:scrollbars="none"/>
-	
-	    <include layout="@layout/load_more" />
-    </com.jiqu.view.PullToRefreshLayout>
+	        android:layout_height="wrap_content"
+		    android:background="@color/bottomBgColor">
+	        
+		    <include layout="@layout/refresh_head" />
+		
+		    <com.jiqu.view.PullableListView
+		        android:id="@+id/boutiqueListView"
+		        android:layout_width="match_parent"
+		        android:layout_height="match_parent"
+		        android:background="@color/bottomBgColor"
+		        android:dividerHeight="1dp" 
+		        android:listSelector="@null"
+		        android:scrollbars="none"/>
+		
+		    <include layout="@layout/load_more" />
+	    </com.jiqu.view.PullToRefreshLayout>
+        
+    </RelativeLayout>
+    
 
 </RelativeLayout>

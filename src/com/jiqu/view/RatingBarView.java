@@ -13,6 +13,7 @@ import android.widget.RelativeLayout;
 
 public class RatingBarView extends RelativeLayout {
 	private ImageView start1,start2,start3,start4,start5;
+	private Context context;
 	private int[] resID = new int[3];
 	public float step = 0.2f;
 
@@ -39,6 +40,7 @@ public class RatingBarView extends RelativeLayout {
 	}
 	
 	private void initView(Context context){
+		this.context = context;
 		LayoutInflater inflater = LayoutInflater.from(context);
 		View view = inflater.inflate(R.layout.rating_bar_view_layout, this);
 		start1 = (ImageView) view.findViewById(R.id.start1);
@@ -74,71 +76,71 @@ public class RatingBarView extends RelativeLayout {
 	
 	public void setRating(float rating){
 		if (rating < step) {
-			start1.setBackgroundResource(resID[0]);
-			start2.setBackgroundResource(resID[0]);
-			start3.setBackgroundResource(resID[0]);
-			start4.setBackgroundResource(resID[0]);
-			start5.setBackgroundResource(resID[0]);
+			start1.setImageBitmap(UIUtil.readBitmap(context, resID[0]));
+			start2.setImageBitmap(UIUtil.readBitmap(context, resID[0]));
+			start3.setImageBitmap(UIUtil.readBitmap(context, resID[0]));
+			start4.setImageBitmap(UIUtil.readBitmap(context, resID[0]));
+			start5.setImageBitmap(UIUtil.readBitmap(context, resID[0]));
 		}else if (rating >= step && rating < step * 2) {
-			start1.setBackgroundResource(resID[1]);
-			start2.setBackgroundResource(resID[0]);
-			start3.setBackgroundResource(resID[0]);
-			start4.setBackgroundResource(resID[0]);
-			start5.setBackgroundResource(resID[0]);
+			start1.setImageBitmap(UIUtil.readBitmap(context, resID[1]));
+			start2.setImageBitmap(UIUtil.readBitmap(context, resID[0]));
+			start3.setImageBitmap(UIUtil.readBitmap(context, resID[0]));
+			start4.setImageBitmap(UIUtil.readBitmap(context, resID[0]));
+			start5.setImageBitmap(UIUtil.readBitmap(context, resID[0]));
 		}else if (rating >= step * 2 && rating < step * 3) {
-			start1.setBackgroundResource(resID[2]);
-			start2.setBackgroundResource(resID[0]);
-			start3.setBackgroundResource(resID[0]);
-			start4.setBackgroundResource(resID[0]);
-			start5.setBackgroundResource(resID[0]);
+			start1.setImageBitmap(UIUtil.readBitmap(context, resID[2]));
+			start2.setImageBitmap(UIUtil.readBitmap(context, resID[0]));
+			start3.setImageBitmap(UIUtil.readBitmap(context, resID[0]));
+			start4.setImageBitmap(UIUtil.readBitmap(context, resID[0]));
+			start5.setImageBitmap(UIUtil.readBitmap(context, resID[0]));
 		}else if (rating >= step * 3 && rating < step * 4) {
-			start1.setBackgroundResource(resID[2]);
-			start2.setBackgroundResource(resID[1]);
-			start3.setBackgroundResource(resID[0]);
-			start4.setBackgroundResource(resID[0]);
-			start5.setBackgroundResource(resID[0]);
+			start1.setImageBitmap(UIUtil.readBitmap(context, resID[2]));
+			start2.setImageBitmap(UIUtil.readBitmap(context, resID[1]));
+			start3.setImageBitmap(UIUtil.readBitmap(context, resID[0]));
+			start4.setImageBitmap(UIUtil.readBitmap(context, resID[0]));
+			start5.setImageBitmap(UIUtil.readBitmap(context, resID[0]));
 		}else if (rating >= step * 4 && rating < step * 5) {
-			start1.setBackgroundResource(resID[2]);
-			start2.setBackgroundResource(resID[2]);
-			start3.setBackgroundResource(resID[0]);
-			start4.setBackgroundResource(resID[0]);
-			start5.setBackgroundResource(resID[0]);
+			start1.setImageBitmap(UIUtil.readBitmap(context, resID[2]));
+			start2.setImageBitmap(UIUtil.readBitmap(context, resID[2]));
+			start3.setImageBitmap(UIUtil.readBitmap(context, resID[0]));
+			start4.setImageBitmap(UIUtil.readBitmap(context, resID[0]));
+			start5.setImageBitmap(UIUtil.readBitmap(context, resID[0]));
 		}else if (rating >= step * 5 && rating < step * 6) {
-			start1.setBackgroundResource(resID[2]);
-			start2.setBackgroundResource(resID[2]);
-			start3.setBackgroundResource(resID[1]);
-			start4.setBackgroundResource(resID[0]);
-			start5.setBackgroundResource(resID[0]);
+			start1.setImageBitmap(UIUtil.readBitmap(context, resID[2]));
+			start2.setImageBitmap(UIUtil.readBitmap(context, resID[2]));
+			start3.setImageBitmap(UIUtil.readBitmap(context, resID[1]));
+			start4.setImageBitmap(UIUtil.readBitmap(context, resID[0]));
+			start5.setImageBitmap(UIUtil.readBitmap(context, resID[0]));
 		}else if (rating >= step * 6 && rating < step * 7) {
-			start1.setBackgroundResource(resID[2]);
-			start2.setBackgroundResource(resID[2]);
-			start3.setBackgroundResource(resID[2]);
-			start4.setBackgroundResource(resID[0]);
-			start5.setBackgroundResource(resID[0]);
+			start1.setImageBitmap(UIUtil.readBitmap(context, resID[2]));
+			start2.setImageBitmap(UIUtil.readBitmap(context, resID[2]));
+			start3.setImageBitmap(UIUtil.readBitmap(context, resID[2]));
+			start4.setImageBitmap(UIUtil.readBitmap(context, resID[0]));
+			start5.setImageBitmap(UIUtil.readBitmap(context, resID[0]));
 		}else if (rating >= step * 7 && rating < step * 8) {
-			start1.setBackgroundResource(resID[2]);
-			start2.setBackgroundResource(resID[2]);
-			start3.setBackgroundResource(resID[2]);
-			start4.setBackgroundResource(resID[1]);
-			start5.setBackgroundResource(resID[0]);
+			start1.setImageBitmap(UIUtil.readBitmap(context, resID[2]));
+			start2.setImageBitmap(UIUtil.readBitmap(context, resID[2]));
+			start3.setImageBitmap(UIUtil.readBitmap(context, resID[2]));
+			start4.setImageBitmap(UIUtil.readBitmap(context, resID[1]));
+			start5.setImageBitmap(UIUtil.readBitmap(context, resID[0]));
 		}else if (rating >= step * 8 && rating < step * 9) {
-			start1.setBackgroundResource(resID[2]);
-			start2.setBackgroundResource(resID[2]);
-			start3.setBackgroundResource(resID[2]);
-			start4.setBackgroundResource(resID[2]);
-			start5.setBackgroundResource(resID[0]);
+			start1.setImageBitmap(UIUtil.readBitmap(context, resID[2]));
+			start2.setImageBitmap(UIUtil.readBitmap(context, resID[2]));
+			start3.setImageBitmap(UIUtil.readBitmap(context, resID[2]));
+			start4.setImageBitmap(UIUtil.readBitmap(context, resID[2]));
+			start5.setImageBitmap(UIUtil.readBitmap(context, resID[0]));
 		}else if (rating >= step * 9 && rating < step * 10) {
-			start1.setBackgroundResource(resID[2]);
-			start2.setBackgroundResource(resID[2]);
-			start3.setBackgroundResource(resID[2]);
-			start4.setBackgroundResource(resID[2]);
-			start5.setBackgroundResource(resID[1]);
+			start1.setImageBitmap(UIUtil.readBitmap(context, resID[2]));
+			start2.setImageBitmap(UIUtil.readBitmap(context, resID[2]));
+			start3.setImageBitmap(UIUtil.readBitmap(context, resID[2]));
+			start4.setImageBitmap(UIUtil.readBitmap(context, resID[2]));
+			start5.setImageBitmap(UIUtil.readBitmap(context, resID[1]));
 		}else if (rating >= step * 10) {
-			start1.setBackgroundResource(resID[2]);
-			start2.setBackgroundResource(resID[2]);
-			start3.setBackgroundResource(resID[2]);
-			start4.setBackgroundResource(resID[2]);
-			start5.setBackgroundResource(resID[2]);
+			start1.setImageBitmap(UIUtil.readBitmap(context, resID[2]));
+			start2.setImageBitmap(UIUtil.readBitmap(context, resID[2]));
+			start3.setImageBitmap(UIUtil.readBitmap(context, resID[2]));
+			start4.setImageBitmap(UIUtil.readBitmap(context, resID[2]));
+			start5.setImageBitmap(UIUtil.readBitmap(context, resID[2]));
 		}
 	}
 }

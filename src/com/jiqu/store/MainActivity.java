@@ -1,5 +1,6 @@
 package com.jiqu.store;
 
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -30,8 +31,12 @@ import com.vr.store.R;
 
 import de.greenrobot.dao.query.QueryBuilder;
 
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.Process;
 import android.support.v4.app.Fragment;
@@ -94,7 +99,6 @@ public class MainActivity extends FragmentActivity implements OnClickListener,On
 		// TODO Auto-generated method stub
 		super.onCreate(savedInstanceState);
 		MetricsTool.initMetrics(getWindowManager());
-		
 		netReceiver = NetReceiver.getInstance();
 		netReceiver.setNetChangeListener(this);
 		netReceiver.registerReceive(StoreApplication.context);
@@ -138,10 +142,8 @@ public class MainActivity extends FragmentActivity implements OnClickListener,On
 	private void init(){
 		top = (LinearLayout) findViewById(R.id.top);
 		toolTop = (RelativeLayout) findViewById(R.id.toolTop);
-		
 		toolTopTx = (TextView) findViewById(R.id.toolTopTx);
 		toolTopImg = (ImageView) findViewById(R.id.toolTopImg);
-		
 		bottomPanel = (LinearLayout) findViewById(R.id.bottomPanel);
 		
 		accountImg = (Button) findViewById(R.id.accountImg);
@@ -237,6 +239,20 @@ public class MainActivity extends FragmentActivity implements OnClickListener,On
 		UIUtil.setTextSize(toolTx, 30);
 		UIUtil.setTextSize(searchEd, 30);
 		UIUtil.setTextSize(toolTopTx, 45);
+		
+		toolTop.setBackgroundDrawable(UIUtil.readBitmapDrawable(this, R.drawable.tool_top_bg));
+		
+		toolTopImg.setImageBitmap(UIUtil.readBitmap(this, R.drawable.shezhi_icon));
+		accountImg.setBackgroundDrawable(UIUtil.readBitmapDrawable(this, R.drawable.yonghuicon));
+		searchRel.setBackgroundDrawable(UIUtil.readBitmapDrawable(this, R.drawable.sousuobg));
+		searchBtn.setBackgroundDrawable(UIUtil.readBitmapDrawable(this, R.drawable.sousuoicon));
+		download.setBackgroundDrawable(UIUtil.readBitmapDrawable(this, R.drawable.top_xiazai_icon));
+		
+		recommendImg.setImageBitmap(UIUtil.readBitmap(this, R.drawable.tuijian));
+		informationImg.setImageBitmap(UIUtil.readBitmap(this, R.drawable.zixun));
+		gameImg.setImageBitmap(UIUtil.readBitmap(this, R.drawable.youxi));
+		evaluationImg.setImageBitmap(UIUtil.readBitmap(this, R.drawable.ceping));
+		toolImg.setImageBitmap(UIUtil.readBitmap(this, R.drawable.gongju));
 	}
 	
 	private void setOnclick(){
@@ -256,47 +272,47 @@ public class MainActivity extends FragmentActivity implements OnClickListener,On
 		switch (index) {
 		case 0:
 			if (isFocus) {
-				recommendImg.setBackgroundDrawable(getResources().getDrawable(R.drawable.tuijian_press));
+				recommendImg.setImageBitmap(UIUtil.readBitmap(this, R.drawable.tuijian_press));
 				recommendTx.setTextColor(getResources().getColor(R.color.bottomFocus));
 			}else {
-				recommendImg.setBackgroundDrawable(getResources().getDrawable(R.drawable.tuijian));
+				recommendImg.setImageBitmap(UIUtil.readBitmap(this, R.drawable.tuijian));
 				recommendTx.setTextColor(getResources().getColor(R.color.white));
 			}
 			break;
 
 		case 1:
 			if (isFocus) {
-				informationImg.setBackgroundDrawable(getResources().getDrawable(R.drawable.zixun_press));
+				informationImg.setImageBitmap(UIUtil.readBitmap(this, R.drawable.zixun_press));
 				informationTx.setTextColor(getResources().getColor(R.color.bottomFocus));
 			}else {
-				informationImg.setBackgroundDrawable(getResources().getDrawable(R.drawable.zixun));
+				informationImg.setImageBitmap(UIUtil.readBitmap(this, R.drawable.zixun));
 				informationTx.setTextColor(getResources().getColor(R.color.white));
 			}
 			break;
 		case 2:
 			if (isFocus) {
-				gameImg.setBackgroundDrawable(getResources().getDrawable(R.drawable.youxi_press));
+				gameImg.setImageBitmap(UIUtil.readBitmap(this, R.drawable.youxi_press));
 				gameTx.setTextColor(getResources().getColor(R.color.bottomFocus));
 			} else {
-				gameImg.setBackgroundDrawable(getResources().getDrawable(R.drawable.youxi));
+				gameImg.setImageBitmap(UIUtil.readBitmap(this, R.drawable.youxi));
 				gameTx.setTextColor(getResources().getColor(R.color.white));
 			}
 			break;
 		case 3:
 			if (isFocus) {
-				evaluationImg.setBackgroundDrawable(getResources().getDrawable(R.drawable.ceping_press));
+				evaluationImg.setImageBitmap(UIUtil.readBitmap(this, R.drawable.ceping_press));
 				evaluationTx.setTextColor(getResources().getColor(R.color.bottomFocus));
 			} else {
-				evaluationImg.setBackgroundDrawable(getResources().getDrawable(R.drawable.ceping));
+				evaluationImg.setImageBitmap(UIUtil.readBitmap(this, R.drawable.ceping));
 				evaluationTx.setTextColor(getResources().getColor(R.color.white));
 			}
 			break;
 		case 4:
 			if (isFocus) {
-				toolImg.setBackgroundDrawable(getResources().getDrawable(R.drawable.gongju_press));
+				toolImg.setImageBitmap(UIUtil.readBitmap(this, R.drawable.gongju_press));
 				toolTx.setTextColor(getResources().getColor(R.color.bottomFocus));
 			} else {
-				toolImg.setBackgroundDrawable(getResources().getDrawable(R.drawable.gongju));
+				toolImg.setImageBitmap(UIUtil.readBitmap(this, R.drawable.gongju));
 				toolTx.setTextColor(getResources().getColor(R.color.white));
 			}
 			break;

@@ -23,6 +23,7 @@ import com.jiqu.view.RatingBarView;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.os.Handler;
 import android.text.Html;
 import android.util.Log;
@@ -137,6 +138,7 @@ public class GameAdapter extends BaseAdapter implements DownloadObserver{
 				holder1.moreBtn = (ImageView) convertView.findViewById(R.id.moreBt);
 				holder1.moreLin = (LinearLayout) convertView.findViewById(R.id.moreLin);
 				
+				holder1.moreBtn.setImageBitmap(UIUtil.readBitmap(context, R.drawable.more));
 				UIUtil.setTextSize(holder1.sortName, 42);
 				UIUtil.setTextSize(holder1.moreTx, 35);
 				UIUtil.setViewSize(holder1.moreBtn, 36 * MetricsTool.Rx, 36 * MetricsTool.Rx);
@@ -155,7 +157,7 @@ public class GameAdapter extends BaseAdapter implements DownloadObserver{
 			}else {
 				holder1 = (Holder1) convertView.getTag();
 			}
-			
+			holder1.sortName.setText(informations.get(position).getTitle());
 			break;
 
 		case 1:
@@ -236,9 +238,9 @@ public class GameAdapter extends BaseAdapter implements DownloadObserver{
 		public Holder2(Context context,boolean hotIConVisible,boolean subscriptVisible){
 			this.hotIConVisible = hotIConVisible;
 			this.subscriptVisible = subscriptVisible;
+			this.context = context;
 			rootView = initView();
 			rootView.setTag(this);
-			this.context = context;
 		}
 		
 		public View getRootView(){
@@ -261,11 +263,14 @@ public class GameAdapter extends BaseAdapter implements DownloadObserver{
 			subscriptTx = (TextView) view.findViewById(R.id.subscriptTx);
 			hotIcon = (ImageView) view.findViewById(R.id.hotIcon);
 			
+			hotIcon.setImageBitmap(UIUtil.readBitmap(context, R.drawable.hot_icon));
+			
 			gameScore.setResID(resIds);
 			gameScore.setStep(0.5f);
 			
 			informationLin = (RelativeLayout) view.findViewById(R.id.informationLin);
 			subscriptLin = (LinearLayout) view.findViewById(R.id.subscriptLin);
+			subscriptLin.setBackgroundDrawable(UIUtil.readBitmapDrawable(context, R.drawable.subscript_red));
 			
 			downloadBtn.setOnClickListener(new OnClickListener() {
 				
@@ -428,7 +433,8 @@ public class GameAdapter extends BaseAdapter implements DownloadObserver{
 			} catch (Exception e) {
 				gameSize.setText(mData.getAppSize() + "M");
 			}
-			ImageListener listener = ImageLoader.getImageListener(icon,R.drawable.default_tubiao, R.drawable.default_tubiao);
+			Bitmap bitmap = UIUtil.readBitmap(context, R.drawable.default_tubiao);
+			ImageListener listener = ImageLoader.getImageListener(icon,bitmap, bitmap);
 			StoreApplication.getInstance().getImageLoader().get(mData.getIconUrl(), listener);
 			
 			refreshState(mState, true);

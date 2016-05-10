@@ -1,17 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/toolView"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/toolbg" 
     tools:ignore="MissingPrefix" >
 
     <ImageView
         android:id="@+id/accountIcon"
         android:layout_width="@dimen/toolAccountIconSize"
         android:layout_height="@dimen/toolAccountIconSize"
-        android:layout_centerHorizontal="true"
-        android:background="@drawable/yonghuicon" />
+        android:layout_centerHorizontal="true"/>
 
     <LinearLayout
         android:id="@+id/accountLin"
@@ -33,8 +32,7 @@
             android:id="@+id/messageImg"
             android:layout_width="@dimen/toolMessageImgW"
             android:layout_height="@dimen/toolMessageImgH"
-            android:layout_marginLeft="@dimen/toolTwoMargin"
-            android:background="@drawable/xinxi" />
+            android:layout_marginLeft="@dimen/toolTwoMargin"/>
     </LinearLayout>
 
     <TextView
@@ -43,7 +41,6 @@
         android:layout_height="wrap_content"
         android:layout_below="@id/accountLin"
         android:layout_centerHorizontal="true"
-        android:background="@drawable/dengji"
         android:gravity="center"
         android:textColor="@color/informationListGameColor"
         android:textSize="14sp" 
@@ -60,8 +57,7 @@
 	        android:id="@+id/downloadItem"
 	        android:layout_width="wrap_content"
 	        android:layout_height="wrap_content"
-	        android:clickable="true"
-	        android:background="@drawable/tool_item_selector"/>
+	        android:clickable="true"/>
         
         <com.jiqu.view.ToolItemView 
 	        android:id="@+id/resourcesItem"
@@ -70,8 +66,7 @@
 	        android:layout_toRightOf="@id/downloadItem"
 	        android:layout_alignTop="@id/downloadItem"
 	        android:layout_alignBottom="@id/downloadItem"
-	        android:clickable="true"
-	        android:background="@drawable/tool_item_selector"/>
+	        android:clickable="true"/>
         
         <com.jiqu.view.ToolItemView 
 	        android:id="@+id/uninstallItem"
@@ -80,8 +75,7 @@
 	        android:layout_toRightOf="@id/resourcesItem"
 	        android:layout_alignTop="@id/resourcesItem"
 	        android:layout_alignBottom="@id/resourcesItem"
-	        android:clickable="true"
-	        android:background="@drawable/tool_item_selector"/>
+	        android:clickable="true"/>
         
         
         
@@ -92,8 +86,7 @@
 	        android:layout_below="@id/downloadItem"
 	        android:layout_alignRight="@id/downloadItem"
 	        android:layout_alignLeft="@id/downloadItem"
-	        android:clickable="true"
-	        android:background="@drawable/tool_item_selector"/>
+	        android:clickable="true"/>
         
         <com.jiqu.view.ToolItemView 
 	        android:id="@+id/clearUpItem"
@@ -104,8 +97,7 @@
 	        android:layout_alignBottom="@id/clearCacheItem"
 	        android:layout_alignLeft="@id/resourcesItem"
 	        android:layout_alignRight="@id/resourcesItem"
-	        android:clickable="true"
-	        android:background="@drawable/tool_item_selector"/>
+	        android:clickable="true"/>
         
         <com.jiqu.view.ToolItemView 
 	        android:id="@+id/powerItem"
@@ -116,8 +108,7 @@
 	        android:layout_alignBottom="@id/clearUpItem"
 	        android:layout_alignLeft="@id/uninstallItem"
 	        android:layout_alignRight="@id/uninstallItem"
-	        android:clickable="true"
-	        android:background="@drawable/tool_item_selector"/>
+	        android:clickable="true"/>
         
         <com.jiqu.view.ToolItemView 
 	        android:id="@+id/commomProblemItem"
@@ -126,8 +117,7 @@
 	        android:layout_below="@id/clearCacheItem"
 	        android:layout_alignRight="@id/clearCacheItem"
 	        android:layout_alignLeft="@id/clearCacheItem"
-	        android:clickable="true"
-	        android:background="@drawable/tool_item_selector"/>
+	        android:clickable="true"/>
         
         <com.jiqu.view.ToolItemView 
 	        android:id="@+id/shareItem"
@@ -138,8 +128,7 @@
 	        android:layout_alignBottom="@id/commomProblemItem"
 	        android:layout_alignLeft="@id/clearUpItem"
 	        android:layout_alignRight="@id/clearUpItem"
-	        android:clickable="true"
-	        android:background="@drawable/tool_item_selector"/>
+	        android:clickable="true"/>
         
         <com.jiqu.view.ToolItemView 
 	        android:id="@+id/aboutUsItem"
@@ -150,8 +139,7 @@
 	        android:layout_alignBottom="@id/shareItem"
 	        android:layout_alignLeft="@id/powerItem"
 	        android:layout_alignRight="@id/powerItem"
-	        android:clickable="true"
-	        android:background="@drawable/tool_item_selector"/>
+	        android:clickable="true"/>
     </RelativeLayout>
     
 </RelativeLayout>

@@ -10,7 +10,6 @@
         android:id="@+id/toolTop"
         android:layout_width="match_parent"
         android:layout_height="@dimen/bottomHeight"
-        android:background="@drawable/tool_top_bg"
         android:visibility="gone" >
 
         <TextView
@@ -30,8 +29,7 @@
             android:layout_height="@dimen/toolTopImgSize"
             android:layout_alignParentRight="true"
             android:layout_centerVertical="true"
-            android:layout_marginRight="@dimen/toolTopImgMarginR"
-            android:background="@drawable/shezhi_icon" />
+            android:layout_marginRight="@dimen/toolTopImgMarginR"/>
     </RelativeLayout>
 
     <LinearLayout
@@ -54,16 +52,14 @@
                 android:layout_width="@dimen/topAccountIconSize"
                 android:layout_height="@dimen/topAccountIconSize"
                 android:layout_centerInParent="true"
-                fontPath="fonts/lantinghei.ttf"
-                android:background="@drawable/yonghuicon" />
+                fontPath="fonts/lantinghei.ttf"/>
         </RelativeLayout>
 
         <RelativeLayout
             android:id="@+id/searchRel"
             android:layout_width="0dp"
             android:layout_height="@dimen/topAccountIconSize"
-            android:layout_weight="6"
-            android:background="@drawable/sousuobg" >
+            android:layout_weight="6">
 
             <Button
                 android:id="@+id/searchBtn"
@@ -72,8 +68,7 @@
                 android:layout_alignParentRight="true"
                 android:layout_centerVertical="true"
                 android:layout_marginRight="@dimen/searchBtnMarginR"
-                fontPath="fonts/lantinghei.ttf"
-                android:background="@drawable/sousuoicon" />
+                fontPath="fonts/lantinghei.ttf"/>
 
             <EditText
                 android:id="@+id/searchEd"
@@ -102,8 +97,7 @@
                 android:layout_width="@dimen/topAccountIconSize"
                 android:layout_height="@dimen/topAccountIconSize"
                 android:layout_centerInParent="true"
-                fontPath="fonts/lantinghei.ttf"
-                android:background="@drawable/top_xiazai_icon" />
+                fontPath="fonts/lantinghei.ttf"/>
         </RelativeLayout>
     </LinearLayout>
 
