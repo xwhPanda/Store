@@ -326,33 +326,24 @@ public class RecommendFragment extends BaseFragment implements OnRefreshListener
 			GameInfo info = new GameInfo();
 			info.setTitle("新游榜");
 			info.setGameType(1);
-			info.setAdapterType(0);
+			info.setAdapterType(1);
 			resultList.add(info);
-			for(int i = 0;i < dataInfo.getData5().length;i++){
-				dataInfo.getData5()[i].setAdapterType(1);
-			}
 			Collections.addAll(resultList, dataInfo.getData5());
 		}
 		if (dataInfo.getData6() != null && dataInfo.getData6().length > 0) {
 			GameInfo info = new GameInfo();
 			info.setTitle("热游榜");
 			info.setGameType(1);
-			info.setAdapterType(0);
+			info.setAdapterType(1);
 			resultList.add(info);
-			for(int i = 0;i < dataInfo.getData6().length;i++){
-				dataInfo.getData6()[i].setAdapterType(1);
-			}
 			Collections.addAll(resultList, dataInfo.getData6());
 		}
 		if (dataInfo.getData7() != null && dataInfo.getData7().length > 0) {
 			GameInfo info = new GameInfo();
 			info.setTitle("必玩榜");
 			info.setGameType(1);
-			info.setAdapterType(0);
+			info.setAdapterType(1);
 			resultList.add(info);
-			for(int i = 0;i < dataInfo.getData7().length;i++){
-				dataInfo.getData7()[i].setAdapterType(1);
-			}
 			Collections.addAll(resultList, dataInfo.getData7());
 		}
 		adapter.notifyDataSetChanged();

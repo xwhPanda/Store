@@ -129,7 +129,7 @@ public class GameAdapter extends BaseAdapter implements DownloadObserver{
 		int type = getItemViewType(position);
 		Holder2 holder2 = null;
 		switch (type) {
-		case 0:
+		case 1:
 			if (convertView == null) {
 				convertView = inflater.inflate(R.layout.game_sort_title, null);
 				holder1 = new Holder1();
@@ -160,7 +160,7 @@ public class GameAdapter extends BaseAdapter implements DownloadObserver{
 			holder1.sortName.setText(informations.get(position).getTitle());
 			break;
 
-		case 1:
+		case 0:
 			if (convertView == null) {
 				holder2 = new Holder2(context,hotIconVisible,subscriptVisible);
 				convertView = holder2.getRootView();

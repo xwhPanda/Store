@@ -1,5 +1,8 @@
 package com.jiqu.fragment;
 
+import java.io.IOException;
+import java.io.InputStream;
+
 import com.jiqu.activity.AboutUsActivity;
 import com.jiqu.activity.AppUninstallActivity;
 import com.jiqu.activity.ClearCacheActivity;
@@ -20,8 +23,15 @@ import com.jiqu.view.ToolItemView;
 import de.greenrobot.dao.query.QueryBuilder;
 
 import android.content.Intent;
+import android.content.res.AssetManager;
+import android.content.res.Resources;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.util.DisplayMetrics;
+import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -149,7 +159,7 @@ public class ToolFragment extends BaseFragment implements OnClickListener,LoginO
 			e.printStackTrace();
 		}
 		
-		toolView.setBackgroundDrawable(UIUtil.readBitmapDrawableNotChange(activity, R.drawable.toolbg));
+		toolView.setBackgroundResource(R.drawable.toolbg);
 		accountIcon.setImageBitmap(UIUtil.readBitmap(activity, R.drawable.yonghuicon));
 		messageImg.setImageBitmap(UIUtil.readBitmap(activity, R.drawable.xinxi));
 		level.setBackgroundDrawable(UIUtil.readBitmapDrawable(activity, R.drawable.dengji));

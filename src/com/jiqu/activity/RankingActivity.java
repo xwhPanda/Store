@@ -15,8 +15,11 @@ import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.Button;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
+import android.widget.Toast;
 
 import com.alibaba.fastjson.JSON;
+import com.android.volley.Request.Method;
 import com.android.volley.Response.ErrorListener;
 import com.android.volley.Response.Listener;
 import com.android.volley.VolleyError;
@@ -33,15 +36,22 @@ import com.vr.store.R;
 import com.jiqu.tools.InstalledAppTool;
 import com.jiqu.tools.RequestTool;
 import com.jiqu.tools.UIUtil;
+import com.jiqu.view.LoadStateView;
 import com.jiqu.view.PullToRefreshLayout;
 import com.jiqu.view.PullableListView;
 import com.jiqu.view.TitleView;
 import com.jiqu.view.PullToRefreshLayout.OnRefreshListener;
 
 public class RankingActivity extends BaseActivity implements OnClickListener,OnRefreshListener{
-	private static final int DEFAULT_PAGE_SIZE = 20;
+	private final int DEFAULT_PAGE_SIZE = 10;
+	private final String PRAISE_REQUEST = "praiseRequest";
+	private final String HOT_REQUEST = "hotRequest";
 	private TitleView titleView;
 	private LinearLayout rankLin;
+	private RelativeLayout praiseRel;
+	private RelativeLayout hotRel;
+	private LoadStateView hotLoadView;
+	private LoadStateView praiseLoadView;
 	private Button favorableComment,hot;
 	private PullToRefreshLayout favorableRefreshView,hotRefreshView;
 	private PullableListView favorableListView,hotListView;
@@ -55,6 +65,8 @@ public class RankingActivity extends BaseActivity implements OnClickListener,OnR
 	
 	private boolean favorableRefreshViewShowing = false;
 	private boolean hotRefreshViewShowing = false;
+	private int praisePageNum = 1;
+	private int hotPageNum = 1;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -63,8 +75,83 @@ public class RankingActivity extends BaseActivity implements OnClickListener,OnR
 		requestTool = RequestTool.getInstance();
 		initView();
 		
-		favorableRequest(0,DEFAULT_PAGE_SIZE);
-		hotRequest(0,DEFAULT_PAGE_SIZE);
+		loadPraiseData(RequestTool.PRAISE_URL);
+	}
+	
+	private void loadPraiseData(String url){
+		requestTool.getMap().clear();
+		requestTool.startStringRequest(Method.GET, new Listener<String>() {
+
+			@Override
+			public void onResponse(String arg0) {
+				// TODO Auto-generated method stub
+				praiseLoadView.loadDataSuccess();
+				praiseLoadView.setVisibility(View.GONE);
+				favorableRefreshView.setVisibility(View.VISIBLE);
+				RankInfo rankInfo = JSON.parseObject(arg0, RankInfo.class);
+				if (rankInfo != null) {
+					if (rankInfo.getStatus() == 1 && rankInfo.getData() != null) {
+						Collections.addAll(favorableGameInformations, rankInfo.getData());
+						favorableAdapter.notifyDataSetChanged();
+						praisePageNum++;
+					}else if (rankInfo.getStatus() == 0) {
+						Toast.makeText(RankingActivity.this, R.string.notMore, Toast.LENGTH_SHORT).show();
+					}
+				}
+				if (favorableRefreshViewShowing) {
+					favorableRefreshViewShowing = false;
+					favorableRefreshView.refreshFinish(PullToRefreshLayout.SUCCEED);
+				}
+			}
+		}, url, new ErrorListener() {
+
+			@Override
+			public void onErrorResponse(VolleyError arg0) {
+				// TODO Auto-generated method stub
+				if (favorableRefreshViewShowing) {
+					favorableRefreshViewShowing = false;
+					favorableRefreshView.refreshFinish(PullToRefreshLayout.FAIL);
+				}
+			}
+		}, requestTool.getMap(), PRAISE_REQUEST);
+	}
+	
+	private void loadHotData(String url){
+		requestTool.getMap().clear();
+		requestTool.startStringRequest(Method.GET, new Listener<String>() {
+
+			@Override
+			public void onResponse(String arg0) {
+				// TODO Auto-generated method stub
+				hotLoadView.loadDataSuccess();
+				hotLoadView.setVisibility(View.GONE);
+				hotRefreshView.setVisibility(View.VISIBLE);
+				RankInfo rankInfo = JSON.parseObject(arg0, RankInfo.class);
+				if (rankInfo != null) {
+					if (rankInfo.getStatus() == 1 && rankInfo.getData() != null) {
+						Collections.addAll(hotGameInformations, rankInfo.getData());
+						hotAdapter.notifyDataSetChanged();
+						hotPageNum++;
+					}else if (rankInfo.getStatus() == 0) {
+						Toast.makeText(RankingActivity.this, R.string.notMore, Toast.LENGTH_SHORT).show();
+					}
+				}
+				if (hotRefreshViewShowing) {
+					hotRefreshViewShowing = false;
+					hotRefreshView.refreshFinish(PullToRefreshLayout.SUCCEED);
+				}
+			}
+		}, url, new ErrorListener() {
+
+			@Override
+			public void onErrorResponse(VolleyError arg0) {
+				// TODO Auto-generated method stub
+				if (hotRefreshViewShowing) {
+					hotRefreshViewShowing = false;
+					hotRefreshView.refreshFinish(PullToRefreshLayout.FAIL);
+				}
+			}
+		}, requestTool.getMap(), PRAISE_REQUEST);
 	}
 	
 	private void favorableRequest(int start,int end){
@@ -185,12 +272,16 @@ public class RankingActivity extends BaseActivity implements OnClickListener,OnR
 	private void initView(){
 		titleView  = (TitleView) findViewById(R.id.titleView);
 		rankLin = (LinearLayout) findViewById(R.id.rankLin);
+		hotLoadView = (LoadStateView) findViewById(R.id.hotLoadView);
+		praiseLoadView = (LoadStateView) findViewById(R.id.praiseLoadView);
 		favorableComment = (Button) findViewById(R.id.favorableComment);
 		hot = (Button) findViewById(R.id.hot);
 		favorableRefreshView = (PullToRefreshLayout) findViewById(R.id.favorableRefreshView);
 		hotRefreshView = (PullToRefreshLayout) findViewById(R.id.hotRefreshView);
 		favorableListView = (PullableListView) findViewById(R.id.favorableListView);
 		hotListView = (PullableListView) findViewById(R.id.hotListView);
+		praiseRel = (RelativeLayout) findViewById(R.id.praiseRel);
+		hotRel = (RelativeLayout) findViewById(R.id.hotRel);
 		
 		favorableRefreshView.setOnRefreshListener(this);
 		hotRefreshView.setOnRefreshListener(this);
@@ -252,14 +343,17 @@ public class RankingActivity extends BaseActivity implements OnClickListener,OnR
 		switch (v.getId()) {
 		case R.id.favorableComment:
 			changeBg(favorableComment);
-			favorableRefreshView.setVisibility(View.VISIBLE);
-			hotRefreshView.setVisibility(View.INVISIBLE);
+			praiseRel.setVisibility(View.VISIBLE);
+			hotRel.setVisibility(View.INVISIBLE);
 			break;
 
 		case R.id.hot:
 			changeBg(hot);
-			hotRefreshView.setVisibility(View.VISIBLE);
-			favorableRefreshView.setVisibility(View.INVISIBLE);
+			hotRel.setVisibility(View.VISIBLE);
+			praiseRel.setVisibility(View.INVISIBLE);
+			if (hotGameInformations.size() == 0) {
+				loadHotData(RequestTool.HOT_URL);
+			}
 			break;
 		}
 	}
@@ -277,7 +371,6 @@ public class RankingActivity extends BaseActivity implements OnClickListener,OnR
 	@Override
 	public void onRefresh(PullToRefreshLayout pullToRefreshLayout) {
 		// TODO Auto-generated method stub
-		
 	}
 
 	@Override
@@ -285,10 +378,10 @@ public class RankingActivity extends BaseActivity implements OnClickListener,OnR
 		// TODO Auto-generated method stub
 		if (pullToRefreshLayout.getId() == R.id.favorableRefreshView) {
 			favorableRefreshViewShowing = true;
-			favorableRequest(favorableGameInformations.size(), DEFAULT_PAGE_SIZE);
+			loadPraiseData(RequestTool.PRAISE_URL + "?pageNum=" + praisePageNum);
 		}else if (pullToRefreshLayout.getId() == R.id.hotRefreshView) {
 			hotRefreshViewShowing = true;
-			hotRequest(hotGameInformations.size(), DEFAULT_PAGE_SIZE);
+			loadHotData(RequestTool.HOT_URL + "?pageNum=" + hotPageNum);
 		}
 	}
 	
@@ -296,7 +389,8 @@ public class RankingActivity extends BaseActivity implements OnClickListener,OnR
 	protected void onDestroy() {
 		// TODO Auto-generated method stub
 		super.onDestroy();
-		requestTool.stopRankRequest();
+		requestTool.stopRequest(HOT_REQUEST);
+		requestTool.stopRequest(PRAISE_REQUEST);
 		favorableAdapter.stopObserver();
 		hotAdapter.stopObserver();
 	}

@@ -112,7 +112,7 @@ public class ThematicItemAdapter extends BaseAdapter {
 		public void setData(ThematicItem item){
 			data = item;
 			ImageListener listener = ImageLoader.getImageListener(thematicImg, R.drawable.ic_launcher, R.drawable.ic_launcher);
-			StoreApplication.getInstance().getImageLoader().get(item.getFocus(), listener);
+//			StoreApplication.getInstance().getImageLoader().get(item.getFocus(), listener);
 			thematicTitle.setText(item.getTitle());
 			
 		}

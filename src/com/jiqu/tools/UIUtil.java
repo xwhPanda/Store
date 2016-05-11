@@ -139,7 +139,7 @@ public class UIUtil {
 	
 	public static BitmapDrawable readBitmapDrawableNotChange(Context context, int resId) {
 		BitmapFactory.Options opt = new BitmapFactory.Options();
-		opt.inPreferredConfig = Bitmap.Config.RGB_565;
+		opt.inPreferredConfig = Bitmap.Config.ARGB_8888;
 		opt.inPurgeable = true;
 		opt.inInputShareable = true;
 		// 获取资源图片
@@ -177,7 +177,7 @@ public class UIUtil {
 		Drawable idNormal = readBitmapDrawable(context, normalId);
 		Drawable idPressed = context.getResources().getDrawable(pressId);
 		bg.addState(new int[] { android.R.attr.state_pressed}, idPressed);
-		bg.addState(new int[] { android.R.attr.state_enabled }, idNormal);
+		bg.addState(new int[] { android.R.attr.state_enabled}, idNormal);
 		bg.addState(new int[] {}, idNormal);
 		return bg;
 	}

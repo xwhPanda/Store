@@ -8,11 +8,18 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" />
 
+    <com.jiqu.view.LoadStateView 
+        android:id="@+id/loadView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/titleView"/>
+    
     <com.jiqu.view.PullToRefreshLayout
         android:id="@+id/refreshView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/titleView" >
+        android:layout_below="@id/titleView"
+        android:visibility="gone">
 
         <include layout="@layout/refresh_head" />
 

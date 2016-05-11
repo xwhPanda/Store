@@ -106,6 +106,7 @@ public class CustomDialog extends Dialog {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+		
 	}
 
 }

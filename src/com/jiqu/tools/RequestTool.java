@@ -58,7 +58,15 @@ public class RequestTool {
 	public static final String HOT_GAME_URL = "http://ht.163zs.com/index.php/Api/Game/hotGame";
 	/**安装统计URL（第一次使用）**/
 	public static final String INSTALL_URL = "http://ht.163zs.com/index.php/Api/Channel/install";
-
+	/** 精品URL **/
+	public static final String BOUTIQUE_URL = "http://ht.163zs.com/index.php/Api/Recommend/getChoice";
+	/** 专题URL**/
+	public static final String SPECIAL_URL = "http://ht.163zs.com/index.php/Api/Recommend/getTopics";
+	/**好评榜URL**/
+	public static final String PRAISE_URL = "http://ht.163zs.com/index.php/Api/Recommend/getPraiseGold";
+	/** 最热榜 URL**/
+	public static final String HOT_URL = "http://ht.163zs.com/index.php/Api/Recommend/getHotGold";
+	
 	private Map<String, Object> paramMap = new HashMap<String, Object>();
 
 	public static RequestTool getInstance() {

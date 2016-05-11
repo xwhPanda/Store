@@ -77,7 +77,6 @@ public class LoadStateView extends RelativeLayout {
 	
 	public void loadDataSuccess(){
 		animationDrawable.stop();
-		loadingImg.setBackgroundResource(0);
 	}
 	
 	public void loadDataFail(){
@@ -93,5 +92,9 @@ public class LoadStateView extends RelativeLayout {
 	
 	public void loadAgain(OnClickListener onClickListener){
 		loadAgain.setOnClickListener(onClickListener);
+	}
+	
+	public Button getLoadBtn(){
+		return loadAgain;
 	}
 }

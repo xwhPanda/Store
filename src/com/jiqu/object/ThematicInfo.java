@@ -1,26 +1,29 @@
 package com.jiqu.object;
 
+import java.io.Serializable;
 import java.util.Arrays;
 
-public class ThematicInfo {
-	private ThematicItem[] alldata;
-	private int sum;
+public class ThematicInfo implements Serializable{
+	private static final long serialVersionUID = 1L;
 	
-	public synchronized ThematicItem[] getAlldata() {
-		return alldata;
+	private ThematicItem[] data1;
+	private ThematicItem[] data2;
+	
+	public synchronized ThematicItem[] getData1() {
+		return data1;
 	}
-	public synchronized void setAlldata(ThematicItem[] alldata) {
-		this.alldata = alldata;
+	public synchronized void setData1(ThematicItem[] data1) {
+		this.data1 = data1;
 	}
-	public synchronized int getSum() {
-		return sum;
+	public synchronized ThematicItem[] getData2() {
+		return data2;
 	}
-	public synchronized void setSum(int sum) {
-		this.sum = sum;
+	public synchronized void setData2(ThematicItem[] data2) {
+		this.data2 = data2;
 	}
 	
 	@Override
 	public String toString() {
-		return "ThematicInfo [alldata=" + Arrays.toString(alldata) + ", sum=" + sum + "]";
+		return "ThematicInfo [data1=" + Arrays.toString(data1) + ", data2=" + Arrays.toString(data2) + "]";
 	}
 }

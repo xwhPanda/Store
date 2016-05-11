@@ -1,49 +1,44 @@
 package com.jiqu.object;
 
+import java.io.Serializable;
 import java.util.Arrays;
 
-
-public class SpecialInfo {
-
-	private int count;
-	private String next;
-	private String previous;
-	private SpecialRecommendsItem[] recommends;
-	private SpecialResultsItem[] results;
+public class SpecialInfo implements Serializable{
+	private static final long serialVersionUID = 1L;
+	private int status;
+	private int total;
+	/** 广告位数据 **/
+	private GameInfo[] data1;
+	/** 精品数据 **/
+	private GameInfo[] data2;
 	
-	public synchronized int getCount() {
-		return count;
+	public synchronized int getStatus() {
+		return status;
 	}
-	public synchronized void setCount(int count) {
-		this.count = count;
+	public synchronized void setStatus(int status) {
+		this.status = status;
 	}
-	public synchronized String getNext() {
-		return next;
+	public synchronized int getTotal() {
+		return total;
 	}
-	public synchronized void setNext(String next) {
-		this.next = next;
+	public synchronized void setTotal(int total) {
+		this.total = total;
 	}
-	public synchronized String getPrevious() {
-		return previous;
+	public synchronized GameInfo[] getData1() {
+		return data1;
 	}
-	public synchronized void setPrevious(String previous) {
-		this.previous = previous;
+	public synchronized void setData1(GameInfo[] data1) {
+		this.data1 = data1;
 	}
-	public synchronized SpecialRecommendsItem[] getRecommends() {
-		return recommends;
+	public synchronized GameInfo[] getData2() {
+		return data2;
 	}
-	public synchronized void setRecommends(SpecialRecommendsItem[] recommends) {
-		this.recommends = recommends;
-	}
-	public synchronized SpecialResultsItem[] getResults() {
-		return results;
-	}
-	public synchronized void setResults(SpecialResultsItem[] results) {
-		this.results = results;
+	public synchronized void setData2(GameInfo[] data2) {
+		this.data2 = data2;
 	}
 	
 	@Override
 	public String toString() {
-		return "SpecialInfo [count=" + count + ", next=" + next + ", previous=" + previous + ", recommends=" + Arrays.toString(recommends) + ", results=" + Arrays.toString(results) + "]";
+		return "SpecialInfo [status=" + status + ", total=" + total + ", data1=" + Arrays.toString(data1) + ", data2=" + Arrays.toString(data2) + "]";
 	}
 }

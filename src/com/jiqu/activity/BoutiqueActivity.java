@@ -1,6 +1,7 @@
 package com.jiqu.activity;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import android.content.Intent;
@@ -11,6 +12,7 @@ import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ImageView;
@@ -20,6 +22,7 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.alibaba.fastjson.JSON;
 import com.android.volley.Request.Method;
@@ -36,8 +39,6 @@ import com.jiqu.download.DownloadManager;
 import com.jiqu.object.GameInfo;
 import com.jiqu.object.GameInformation;
 import com.jiqu.object.SpecialInfo;
-import com.jiqu.object.SpecialRecommendsItem;
-import com.jiqu.object.SpecialResultsItem;
 import com.jiqu.store.BaseActivity;
 import com.vr.store.R;
 import com.jiqu.tools.CountDownTimer;
@@ -46,35 +47,35 @@ import com.jiqu.tools.RequestTool;
 import com.jiqu.tools.UIUtil;
 import com.jiqu.view.PullToRefreshLayout;
 import com.jiqu.view.PullToRefreshLayout.OnRefreshListener;
+import com.jiqu.view.LoadStateView;
 import com.jiqu.view.PullableListView;
 import com.jiqu.view.TitleView;
+import com.jiqu.view.ViewPagerLinView;
 
-public class BoutiqueActivity extends BaseActivity implements OnPageChangeListener,OnItemClickListener,OnRefreshListener{
+public class BoutiqueActivity extends BaseActivity implements OnPageChangeListener,OnItemClickListener,OnRefreshListener,OnClickListener{
+	private final String BOUTIQUE_REQUEST = "boutiqueRequest";
+	private final int DEFAULT_SIZE = 10;
 	private TitleView titleView;
 	private PullToRefreshLayout refreshLayout;
 	private ListView boutiqueListView;
+	private LoadStateView loadView;
 	
 	private View headView;
-	private RelativeLayout pagerRel;
-	private ViewPager viewPager;
-	private LinearLayout viewGroup;
 	private RelativeLayout allGameRel;
 	private ImageView totalGameImg;
 	private TextView totalGameTx;
 	private TextView addedTime;
+	private ViewPagerLinView pagerView;
 	
-	private ViewPagerAdapter viewPagerAdapter;
 	private GameAdapter adapter;
 	private List<GameInfo> informations = new ArrayList<GameInfo>();
 	
 	private RequestTool requestTool;
 	private String nextUrl;
-	private ImageView[] imgs;
 	private ImageView[] radioImgs;
-	private int currentIndex = 0;
-	private List<SpecialResultsItem> resultsItems = new ArrayList<SpecialResultsItem>();
 	private boolean refreshShowing = false;
-	private CountDownTimer timer;
+	private int total = 0;
+	private int pageNum = 1;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -84,104 +85,52 @@ public class BoutiqueActivity extends BaseActivity implements OnPageChangeListen
 		requestTool = RequestTool.getInstance();
 		
 		initView();
-		loadData(RequestTool.specialsUrl);
+		loadData(RequestTool.BOUTIQUE_URL);
 	}
 	
 	private void loadData(String url){
 		requestTool.getMap().clear();
-		
 		requestTool.startStringRequest(Method.GET, new Listener<String>() {
 
 			@Override
 			public void onResponse(String arg0) {
 				// TODO Auto-generated method stub
-				SpecialInfo specialInfo = JSON.parseObject(arg0, SpecialInfo.class);
-				nextUrl = specialInfo.getNext();
-				if (specialInfo.getRecommends() != null && specialInfo.getRecommends().length > 0) {
-					setRecommendImgs(specialInfo.getRecommends());
-				}
-				if (specialInfo.getResults() != null && specialInfo.getResults().length > 0) {
-					setSpecialData(specialInfo.getResults());
-				}
+				loadView.loadDataSuccess();
+				loadView.setVisibility(View.GONE);
+				refreshLayout.setVisibility(View.VISIBLE);
 				
+				SpecialInfo specialInfo = JSON.parseObject(arg0, SpecialInfo.class);
+				if (specialInfo != null) {
+					if (specialInfo.getData1() != null && specialInfo.getData1().length > 0) {
+						pagerView.setData(specialInfo.getData1());
+					}
+					if (specialInfo.getData2() != null && specialInfo.getData2().length > 0) {
+						Collections.addAll(informations, specialInfo.getData2());
+						adapter.notifyDataSetChanged();
+					}
+					totalGameTx.setText("共" + specialInfo.getTotal() + "款");
+					total = specialInfo.getTotal();
+					pageNum++;
+				}
 				if (refreshShowing) {
-					refreshLayout.refreshFinish(PullToRefreshLayout.SUCCEED);
 					refreshShowing = false;
+					refreshLayout.refreshFinish(PullToRefreshLayout.SUCCEED);
 				}
 			}
-		}, url, new ErrorListener(){
+		}, url, new ErrorListener() {
 
 			@Override
 			public void onErrorResponse(VolleyError arg0) {
 				// TODO Auto-generated method stub
+				loadView.loadDataFail();
 				if (refreshShowing) {
-					refreshLayout.refreshFinish(PullToRefreshLayout.SUCCEED);
 					refreshShowing = false;
+					refreshLayout.refreshFinish(PullToRefreshLayout.FAIL);
 				}
 			}
-			
-		}, requestTool.getMap(), "special");
-		
+		}, requestTool.getMap(), BOUTIQUE_REQUEST);
 	}
 	
-	private void setRecommendImgs(final SpecialRecommendsItem[] items){
-		imgs = new ImageView[items.length];
-		radioImgs = new ImageView[items.length];
-		for(int i = 0; i < items.length;i++){
-			ImageView img = new ImageView(BoutiqueActivity.this);
-			img.setScaleType(ScaleType.FIT_XY);
-			ImageListener listener = ImageLoader.getImageListener(img, R.drawable.ic_launcher, R.drawable.ic_launcher);
-			StoreApplication.getInstance().getImageLoader().get(items[i].getPic_url(), listener);
-			LayoutParams lp = new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT);
-			img.setLayoutParams(lp);
-			imgs[i] = img;
-			ImageView radio = new ImageView(this);
-			if (i== 0) {
-				radio.setBackgroundResource(R.drawable.dian_blue);
-			}else {
-				radio.setBackgroundResource(R.drawable.dian_white);
-			}
-			android.widget.LinearLayout.LayoutParams params  = new android.widget.LinearLayout.LayoutParams((int)(20 * Rx), (int)(20 * Rx));
-			if (i != 0) {
-				params.leftMargin = (int) (10 * Rx);
-			}
-			radio.setLayoutParams(params);
-			radioImgs[i] = radio;
-			viewGroup.addView(radio);
-		}
-		viewPagerAdapter = new ViewPagerAdapter(this, imgs);
-		viewPager.setAdapter(viewPagerAdapter);
-		
-		timer = new CountDownTimer(Integer.MAX_VALUE, 5000) {
-			
-			@Override
-			public void onTick(long millisUntilFinished) {
-				// TODO Auto-generated method stub
-				
-				viewPager.setCurrentItem(currentIndex % items.length);
-				currentIndex++;
-			}
-			
-			@Override
-			public void onFinish() {
-				// TODO Auto-generated method stub
-				
-			}
-		};
-		timer.start();
-	}
-	
-	private void setSpecialData(SpecialResultsItem[] items){
-		int length = items.length;
-		for(int i = 0;i < length; i++){
-			SpecialResultsItem item = items[i];
-			resultsItems.add(item);
-			GameInfo gameInfo = SpecialResultsItem.toGameInfo(item);
-			informations.add(gameInfo);
-		}
-		adapter.notifyDataSetChanged();
-	}
-
 	@Override
 	public int getContentView() {
 		// TODO Auto-generated method stub
@@ -193,6 +142,7 @@ public class BoutiqueActivity extends BaseActivity implements OnPageChangeListen
 		titleView = (TitleView) findViewById(R.id.titleView);
 		refreshLayout = (PullToRefreshLayout) findViewById(R.id.refreshView);
 		boutiqueListView = (PullableListView) findViewById(R.id.boutiqueListView);
+		loadView = (LoadStateView) findViewById(R.id.loadView);
 		
 		refreshLayout.setOnRefreshListener(this);
 		boutiqueListView.addHeaderView(headView);
@@ -211,26 +161,26 @@ public class BoutiqueActivity extends BaseActivity implements OnPageChangeListen
 		boutiqueListView.setAdapter(adapter);
 		boutiqueListView.setOnItemClickListener(this);
 		
+		loadView.loadAgain(this);
 	}
 	
 	private void initHeadView(){
 		LayoutInflater inflater = LayoutInflater.from(this);
 		headView = inflater.inflate(R.layout.boutique_head_layout, null);
 		
-		pagerRel = (RelativeLayout) headView.findViewById(R.id.pagerRel);
-		viewPager = (ViewPager) headView.findViewById(R.id.viewPager);
-		viewGroup = (LinearLayout) headView.findViewById(R.id.viewGroup);
+		pagerView = (ViewPagerLinView) headView.findViewById(R.id.pagerView);
 		allGameRel = (RelativeLayout) headView.findViewById(R.id.allGameRel);
 		totalGameImg = (ImageView) headView.findViewById(R.id.totalGameImg);
 		totalGameTx = (TextView) headView.findViewById(R.id.totalGameTx);
 		addedTime = (TextView) headView.findViewById(R.id.addedTiem);
 		
-		viewPager.setOnPageChangeListener(this);
+		pagerView.setClass(BoutiqueActivity.class);
+		pagerView.setDefaultImgId(R.drawable.recommend_viewpager_default);
 	}
 	
 	private void initViewSize(){
-		UIUtil.setViewSize(pagerRel, MetricsTool.width, 455 * Ry);
-		UIUtil.setViewSize(allGameRel, 1050 * Rx, 75 * Ry);
+		UIUtil.setViewSize(pagerView, MetricsTool.width, 455 * Ry);
+		UIUtil.setViewHeight(allGameRel, 75 * Rx);
 		UIUtil.setViewSize(totalGameImg, 56 * Rx, 56 * Rx);
 		
 		UIUtil.setTextSize(totalGameTx, 45);
@@ -240,8 +190,6 @@ public class BoutiqueActivity extends BaseActivity implements OnPageChangeListen
 			UIUtil.setViewSizeMargin(totalGameImg, 20 * Rx, 0, 0, 0);
 			UIUtil.setViewSizeMargin(totalGameTx, 10 * Rx, 0, 0, 0);
 			UIUtil.setViewSizeMargin(addedTime, 0, 0, 20 * Rx, 0);
-			UIUtil.setViewSizeMargin(allGameRel, 0, 25 * Ry, 0, 0);
-			UIUtil.setViewSizeMargin(viewGroup, 0, 0, 0, 30 * Ry);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -274,7 +222,8 @@ public class BoutiqueActivity extends BaseActivity implements OnPageChangeListen
 	@Override
 	public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 		// TODO Auto-generated method stub
-		startActivity(new Intent(this, DetailActivity.class).putExtra("requestType", 1).putExtra("data", resultsItems.get(position -1)));
+		startActivity(new Intent(this, DetailActivity.class)
+		.putExtra("id", informations.get(position - 1).getId()));
 	}
 
 	@Override
@@ -284,8 +233,8 @@ public class BoutiqueActivity extends BaseActivity implements OnPageChangeListen
 		if (adapter != null) {
 			adapter.stopObserver();
 		}
-		if (timer != null) {
-			timer.cancel();
+		if (pagerView != null) {
+			pagerView.cancleTimer();
 		}
 	}
 
@@ -298,16 +247,28 @@ public class BoutiqueActivity extends BaseActivity implements OnPageChangeListen
 	@Override
 	public void onLoadMore(PullToRefreshLayout pullToRefreshLayout) {
 		// TODO Auto-generated method stub
+		Log.i("TAG", "onLoadMore");
 		refreshShowing = true;
-		if (!TextUtils.isEmpty(nextUrl)) {
-			loadData(nextUrl);
+		if ((pageNum * DEFAULT_SIZE) < total) {
+			loadData(RequestTool.BOUTIQUE_URL + "?pageNum=" + pageNum);
 		}else {
-			if (refreshShowing) {
-				refreshLayout.refreshFinish(PullToRefreshLayout.SUCCEED);
-				refreshShowing = false;
+			if ((pageNum - 1) * DEFAULT_SIZE < total) {
+				loadData(RequestTool.BOUTIQUE_URL + "?pageNum=" + pageNum);
+			}else {
+				/**没有更多数据**/
+				Toast.makeText(this, R.string.notMore, Toast.LENGTH_SHORT).show();
+				if (refreshShowing = true) {
+					refreshLayout.refreshFinish(PullToRefreshLayout.SUCCEED);
+				}
 			}
 		}
 	}
-	
-	
+
+	@Override
+	public void onClick(View v) {
+		// TODO Auto-generated method stub
+		if (v == loadView.getLoadBtn()) {
+			loadData(RequestTool.BOUTIQUE_URL);
+		}
+	}
 }
