@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.Serializable;
 
 import android.text.TextUtils;
+import android.util.Log;
 
 import com.jiqu.database.DownloadAppinfo;
 import com.jiqu.download.AppUtil;
@@ -249,7 +250,6 @@ public class GameInfo implements Serializable{
 		downloadInfo.setProgress(0.0f);
 		downloadInfo.setHasFinished(false);
 		downloadInfo.setScore(info.score);
-		
 		if (!info.down_url.endsWith(".apk")) {
 			downloadInfo.setIsZip(true);
 		}else {

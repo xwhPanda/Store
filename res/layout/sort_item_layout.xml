@@ -4,7 +4,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent" 
     tools:ignore="MissingPrefix" 
-    android:background="@color/itemBgColor">
+    android:background="@color/itemBgColor"
+    android:descendantFocusability="blocksDescendants">
     
     <TextView 
         android:id="@+id/sortTitle"
@@ -27,6 +28,7 @@
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
         android:layout_below="@id/sortImg"
+        android:clickable="true"
         android:gravity="center"
         fontPath="fonts/lantinghei.ttf"/>
 

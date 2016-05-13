@@ -11,22 +11,32 @@ import com.jiqu.tools.Constants;
 import com.jiqu.tools.MD5;
 import com.jiqu.tools.RequestTool;
 import com.jiqu.tools.SharePreferenceTool;
+import com.jiqu.tools.UIUtil;
 import com.vr.store.R;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
 import android.os.CountDownTimer;
+import android.widget.ImageView;
+import android.widget.RelativeLayout;
 
 public class SplashActivity extends BaseActivity {
 	private RequestTool requestTool;
 	private SharedPreferences preferences;
+	private Bitmap bitmap;
+	private ImageView img;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
 		super.onCreate(savedInstanceState);
 		requestTool = RequestTool.getInstance();
+		img = (ImageView) findViewById(R.id.img);
+		bitmap = UIUtil.readBitmap(this, R.drawable.welcome);
+		img.setImageBitmap(bitmap);
 		preferences = getSharedPreferences(Constants.STATISTICS_SHARE_PREFERENCE_NAME, MODE_PRIVATE);
 		initFirst();
 		active();
@@ -58,6 +68,13 @@ public class SplashActivity extends BaseActivity {
 			startActivity(new Intent(SplashActivity.this, MainActivity.class));
 			SplashActivity.this.finish();
 		}
+	}
+	
+	@Override
+	protected void onDestroy() {
+		// TODO Auto-generated method stub
+		super.onDestroy();
+		bitmap.recycle();
 	}
 	
 	private void initFirst(){

@@ -51,7 +51,6 @@ public class MyScrollView extends ScrollView {
 			scrollTo(0, 0);
 		super.onLayout(changed, l, t, r, b);
 		}
-		Log.i("TAG", pullDownY + " / " + pullUpY);
 		if (viewOne != null) {
 			viewOne.layout(0, (int)(pullDownY + pullUpY), 
 					viewOne.getMeasuredWidth(), (int)(pullDownY + pullUpY + viewOne.getMeasuredHeight()));

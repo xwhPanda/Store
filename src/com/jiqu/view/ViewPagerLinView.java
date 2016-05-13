@@ -17,6 +17,7 @@ import android.graphics.Bitmap;
 import android.support.v4.view.ViewPager;
 import android.support.v4.view.ViewPager.OnPageChangeListener;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ImageView;
@@ -84,6 +85,7 @@ public class ViewPagerLinView extends RelativeLayout implements OnPageChangeList
 	}
 	
 	public void setData(GameInfo[] infos){
+		Log.i("TAG", "data");
 		final int count = infos.length;
 		radioImgs = new ImageView[count];
 		contentImgs = new ImageView[count];
@@ -123,7 +125,7 @@ public class ViewPagerLinView extends RelativeLayout implements OnPageChangeList
 			Bitmap bitmap = UIUtil.readBitmap(context, defaultImgId);
 			ImageListener listener = ImageLoader.getImageListener(contentImg, bitmap, bitmap);
 			if (item.getPic() != null) {
-				StoreApplication.getInstance().getImageLoader().get(item.getPic(),listener);
+				StoreApplication.getInstance().getImageLoader().get(item.getPic(),listener,MetricsTool.width,(int)(455 * MetricsTool.Ry));
 			}
 			contentImgs[i] = contentImg;
 		}

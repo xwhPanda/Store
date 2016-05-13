@@ -1,18 +1,14 @@
 package com.jiqu.activity;
 
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
-import org.json.JSONObject;
-
 import android.R.integer;
+import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.support.v4.view.ViewPager;
 import android.support.v4.view.ViewPager.OnPageChangeListener;
-import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -41,6 +37,7 @@ import com.jiqu.download.DownloadManager;
 import com.jiqu.download.FileUtil;
 import com.jiqu.download.DownloadManager.DownloadObserver;
 import com.jiqu.download.UnZipManager;
+import com.jiqu.object.GameDetailData;
 import com.jiqu.object.GameDetailInfo;
 import com.jiqu.object.InstalledApp;
 import com.jiqu.store.BaseActivity;
@@ -291,10 +288,10 @@ public class DetailActivity extends BaseActivity implements Listener<String> , E
 		loadView.setVisibility(View.GONE);
 		scrollView.setVisibility(View.VISIBLE);
 		if (arg0 != null) {
-			GameDetailInfo info = JSON.parseObject(arg0.toString(), GameDetailInfo.class);
-			JSON.par
-			Log.i("TAG", info.getPic().toString());
-//			setData(info);
+			GameDetailData data = JSON.parseObject(arg0.toString(), GameDetailData.class);
+			if (data.getStatus() == 1 && data.getData() != null) {
+				setData(data.getData());
+			}
 		}
 	}
 	
@@ -389,8 +386,9 @@ public class DetailActivity extends BaseActivity implements Listener<String> , E
 	
 	private void setData(GameDetailInfo info){
 		DownloadManager.getInstance().registerObserver(this);
-		ImageListener listener = ImageLoader.getImageListener(gameIcon, R.drawable.ic_launcher, R.drawable.ic_launcher);
-		StoreApplication.getInstance().getImageLoader().get(info.getIcon(), listener);
+		Bitmap bitmap = UIUtil.readBitmap(this, R.drawable.default_tubiao);
+		ImageListener listener = ImageLoader.getImageListener(gameIcon, bitmap, bitmap);
+		StoreApplication.getInstance().getImageLoader().get(info.getIcon(), listener,(int)(190 * Rx), (int)(190 * Rx));
 		titleView.tip.setText(info.getApply_name());
 		gameName.setText(info.getApply_name());
 		downloadCount.setText(info.getDown() + "人下载");
@@ -398,38 +396,34 @@ public class DetailActivity extends BaseActivity implements Listener<String> , E
 		type.setText(info.getColumn());
 		size.setText(UIUtil.getDataSize(Long.parseLong(info.getSize())));
 		
-		List<String> screenshot = new ArrayList<String>();
-//		Collections.addAll(screenshot, info.getPic());
-//		if (!TextUtils.isEmpty(info.getScreenshot_1())) {
-//			screenshot.add(info.getScreenshot_1());
-//		}
-//		if (!TextUtils.isEmpty(info.getScreenshot_2())) {
-//			screenshot.add(info.getScreenshot_2());
-//		}
-//		if (!TextUtils.isEmpty(info.getScreenshot_3())) {
-//			screenshot.add(info.getScreenshot_3());
-//		}
-//		if (!TextUtils.isEmpty(info.getScreenshot_4())) {
-//			screenshot.add(info.getScreenshot_4());
-//		}
-//		if (!TextUtils.isEmpty(info.getScreenshot_5())) {
-//			screenshot.add(info.getScreenshot_5());
-//		}
-		int count = screenshot.size();
+		int support = Integer.parseInt(info.getDevice_support());
+		if (support == 1) {
+			headControlRel.setBackgroundColor(getResources().getColor(R.color.blue));
+			handleRel.setBackgroundColor(getResources().getColor(R.color.blue));
+		}else if (support == 2) {
+			headControlRel.setBackgroundColor(getResources().getColor(R.color.blue));
+			handleRel.setBackgroundColor(getResources().getColor(R.color.detailControl));
+		}else if (support == 3) {
+			headControlRel.setBackgroundColor(getResources().getColor(R.color.detailControl));
+			handleRel.setBackgroundColor(getResources().getColor(R.color.blue));
+		}
+		
+		int count = info.getPic().size();
 		if (count > 0) {
 			imgs = new ImageView[count];
 			radioImgs = new ImageView[count];
 			for(int i = 0;i < count;i++){
 				ImageView view = new ImageView(this);
-				ImageListener imageListener = ImageLoader.getImageListener(view, R.drawable.ic_launcher, R.drawable.ic_launcher);
-				StoreApplication.getInstance().getImageLoader().get(screenshot.get(i), imageListener);
+				Bitmap bitmapPager = UIUtil.readBitmap(this, R.drawable.recommend_viewpager_default);
+				ImageListener imageListener = ImageLoader.getImageListener(view, bitmapPager, bitmapPager);
+				StoreApplication.getInstance().getImageLoader().get(info.getPic().get(i), imageListener,(int)(1040 * Rx), (int)(515 * Ry));
 				view.setScaleType(ScaleType.FIT_XY);
 				LayoutParams lp = new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT);
 				view.setLayoutParams(lp);
 				imgs[i] = view;
 				
 				ImageView radio = new ImageView(this);
-				if (i== 0) {
+				if (i== 0) { 
 					radio.setBackgroundResource(R.drawable.dian_blue);
 				}else {
 					radio.setBackgroundResource(R.drawable.dian_white);
@@ -447,29 +441,24 @@ public class DetailActivity extends BaseActivity implements Listener<String> , E
 			viewPager.setAdapter(adapter);
 		}
 		
-//		float vertigo = Float.parseFloat(info.getGrade_vertigo());
-//		if (vertigo == 0) {
-//			vertigoValue.setBackgroundResource(R.drawable.jindu1);
-//		}else if (vertigo > 0 && vertigo < 1.2) {
-//			vertigoValue.setBackgroundResource(R.drawable.jindu2);
-//		}else if (vertigo >= 1.4 && vertigo <= 2.0) {
-//			vertigoValue.setBackgroundResource(R.drawable.jindu3);
-//		}else if (vertigo > 2.0) {
-//			vertigoValue.setBackgroundResource(R.drawable.jindu4);
-//		}
-//		float frames = Float.parseFloat(info.getGrade_frames());
-//		float immersive = Float.parseFloat(info.getGrade_immersive());
-//		float gameplay = Float.parseFloat(info.getGrade_gameplay());
-//		float difficulty = Float.parseFloat(info.getGrade_difficulty());
+		float vertigo = info.getGame_feeling().getF5();
+		if (vertigo == 0) {
+			vertigoValue.setBackgroundResource(R.drawable.jindu1);
+		}else if (vertigo > 0 && vertigo < 1.2) {
+			vertigoValue.setBackgroundResource(R.drawable.jindu2);
+		}else if (vertigo >= 1.4 && vertigo <= 2.0) {
+			vertigoValue.setBackgroundResource(R.drawable.jindu3);
+		}else if (vertigo > 2.0) {
+			vertigoValue.setBackgroundResource(R.drawable.jindu4);
+		}
 		
-//		screenSenseBar.setRating(frames);
-//		immersionBar.setRating(immersive);
-//		gameplayBar.setRating(gameplay);
-//		difficultyBar.setRating(difficulty);
+		screenSenseBar.setRating(info.getGame_feeling().getF1());
+		immersionBar.setRating(info.getGame_feeling().getF2());
+		gameplayBar.setRating(info.getGame_feeling().getF3());
+		difficultyBar.setRating(info.getGame_feeling().getF4());
 		
-//		float rat = (frames + immersive + gameplay + difficulty + vertigo);
-//		evaluationScore.setText(rat + "");
-//		comprehensiveBar.setRating(rat);
+		evaluationScore.setText(info.getScore());
+		comprehensiveBar.setRating(Float.parseFloat(info.getStar()));
 		
 		QueryBuilder<DownloadAppinfo> qb = StoreApplication.daoSession.getDownloadAppinfoDao().queryBuilder();
 		downloadAppinfo = qb.where(Properties.Id.eq(Long.parseLong(id))).unique();

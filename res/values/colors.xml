@@ -33,4 +33,5 @@
     <color name="progressBgColor">#dfdfdf</color>
     
     <color name="green">#00ba28</color>
+    <color name="detailControl">#efefef</color>
 </resources>

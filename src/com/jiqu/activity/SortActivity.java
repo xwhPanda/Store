@@ -92,7 +92,6 @@ public class SortActivity extends BaseActivity implements Listener<String> , Err
 
 			@Override
 			public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-				SortItem sortItem = sortItems.get(position);
 				startActivity(new Intent(SortActivity.this, SortInfoActivity.class)
 				.putExtra("fromWhere", 0)
 				.putExtra("categoryItem", sortItems.get(position)));

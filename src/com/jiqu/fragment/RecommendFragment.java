@@ -328,7 +328,7 @@ public class RecommendFragment extends BaseFragment implements OnRefreshListener
 	public void initGame(RecommendDataInfo dataInfo){
 		if (dataInfo.getData5() != null && dataInfo.getData5().length > 0) {
 			GameInfo info = new GameInfo();
-			info.setTitle("新游榜");
+			info.setTitle(getResources().getString(R.string.newGameList));
 			info.setGameType(1);
 			info.setAdapterType(1);
 			resultList.add(info);
@@ -336,16 +336,16 @@ public class RecommendFragment extends BaseFragment implements OnRefreshListener
 		}
 		if (dataInfo.getData6() != null && dataInfo.getData6().length > 0) {
 			GameInfo info = new GameInfo();
-			info.setTitle("热游榜");
-			info.setGameType(1);
+			info.setTitle(getResources().getString(R.string.popularGameList));
+			info.setGameType(2);
 			info.setAdapterType(1);
 			resultList.add(info);
 			Collections.addAll(resultList, dataInfo.getData6());
 		}
 		if (dataInfo.getData7() != null && dataInfo.getData7().length > 0) {
 			GameInfo info = new GameInfo();
-			info.setTitle("必玩榜");
-			info.setGameType(1);
+			info.setTitle(getResources().getString(R.string.willGameList));
+			info.setGameType(3);
 			info.setAdapterType(1);
 			resultList.add(info);
 			Collections.addAll(resultList, dataInfo.getData7());

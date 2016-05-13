@@ -149,7 +149,8 @@ public class GameAdapter extends BaseAdapter implements DownloadObserver{
 					public void onClick(View v) {
 						// TODO Auto-generated method stub
 						context.startActivity(new Intent(context, SortInfoActivity.class)
-						.putExtra("gameType", informations.get(position)));
+						.putExtra("fromWhere", 2)
+						.putExtra("gameType", informations.get(position).getGameType()));
 					}
 				});
 				

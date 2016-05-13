@@ -72,6 +72,16 @@ public class RequestTool {
 	public static final String CATEGORY_URL = "http://ht.163zs.com/index.php/Api/Recommend/getClassify";
 	/** 游戏详情URL **/
 	public static final String GAME_DETAIL_URL = "http://ht.163zs.com/index.php/Api/InfoDetail/getGame";
+	/** 分类详情URL **/
+	public static final String CATEGORY_APPS_URL = "http://ht.163zs.com/index.php/Api/recommend/getGameClass";
+	/** 新游榜URL **/
+	public static final String NEW_GAME_LIST_URL = "http://ht.163zs.com/index.php/Api/Recommend/newGameList";
+	/** 热游榜URL **/
+	public static final String POPULAR_GAME_LIST_URL = "http://ht.163zs.com/index.php/Api/Recommend/popularGameList";
+	/** 必玩榜URL **/
+	public static final String WILL_GAME_LIST_URL = "http://ht.163zs.com/index.php/Api/Recommend/willGameScroll";
+	/** 游戏推广URL **/
+	public static final String SPREAD_URL = "http://ht.163zs.com/index.php/Api/Game/getSpread";
 	
 	private Map<String, Object> paramMap = new HashMap<String, Object>();
 

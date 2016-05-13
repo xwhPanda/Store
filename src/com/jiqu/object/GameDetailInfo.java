@@ -27,7 +27,7 @@ public class GameDetailInfo {
 	private String star;
 	private String device_support;
 	private GameDetailFeeling game_feeling;
-	private TypeReference<List<Object>> pic;
+	private List<String> pic = new ArrayList<String>();
 	private String intro;
 	private String package_name;
 	
@@ -153,11 +153,11 @@ public class GameDetailInfo {
 		this.game_feeling = game_feeling;
 	}
 
-	public synchronized TypeReference<List<Object>> getPic() {
+	public synchronized List<String> getPic() {
 		return pic;
 	}
 
-	public synchronized void setPic(TypeReference<List<Object>> pic) {
+	public synchronized void setPic(List<String> pic) {
 		this.pic = pic;
 	}
 

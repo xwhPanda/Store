@@ -45,11 +45,10 @@ import com.jiqu.view.PullToRefreshLayout;
 import com.jiqu.view.TitleView;
 import com.jiqu.view.PullToRefreshLayout.OnRefreshListener;
 
-public class SortInfoActivity extends BaseActivity implements OnRefreshListener
-,Listener<JSONObject>,ErrorListener,OnClickListener{
+public class SortInfoActivity extends BaseActivity implements OnRefreshListener,OnClickListener{
 	private final int DEFAULT_PAGE_SIZE = 10;
 	private final String THEMATIC_DETAIL_REQUEST = "thematicDetailRequest";
-	private final String CATEGORY_REQUEST = "categoryRequest";
+	private final String CATEGORY_APPS_REQUEST = "categoryAppsRequest";
 	private View headView;
 	private TitleView titleView;
 	private ListView sortListView;
@@ -61,9 +60,9 @@ public class SortInfoActivity extends BaseActivity implements OnRefreshListener
 	private TextView sortHeadNewAddGameContent;
 	
 	private List<GameInfo> gameInformations = new ArrayList<GameInfo>();
-	//分类的类型
-	private int type = 0;
-	//0：从分类页跳转；1：从专题页跳转
+	//分类的类型: 1:新游榜；2：热游榜；3：必玩榜
+	private int gameType = 0;
+	//0：从分类页跳转；1：从专题页跳转;2:从首页跳转
 	private int fromWhere = 0;
 	private ThematicItem thematicItem;
 	private SortItem sortItem;
@@ -72,7 +71,10 @@ public class SortInfoActivity extends BaseActivity implements OnRefreshListener
 	private int categoryId;
 	private boolean refreshViewShowing;
 	
+	private int sortPageNum = 1;
 	private int thematicPageNum = 1;
+	private int gamePageNum = 1;
+	private String loadUrl = "";
 	private RequestTool requestTool;
 	
 	@Override
@@ -86,13 +88,40 @@ public class SortInfoActivity extends BaseActivity implements OnRefreshListener
 			if (fromWhere == 0) {
 				sortItem = (SortItem) getIntent().getSerializableExtra("categoryItem");
 				if (sortItem != null) {
-					loadCategoryData(RequestTool.CATEGORY_URL + "?id=" + sortItem.getId());
+					if (sortItem.getName() != null && !TextUtils.isEmpty(sortItem.getName())) {
+						titleView.tip.setText(sortItem.getName());
+					}
+					loadCategoryData(RequestTool.CATEGORY_APPS_URL + "?columnId=" + sortItem.getId());
 				}
 			}else if (fromWhere == 1) {
 				thematicItem = (ThematicItem) getIntent().getSerializableExtra("thematicItem");
 				if (thematicItem != null) {
+					if (thematicItem.getName() != null && !TextUtils.isEmpty(thematicItem.getName())) {
+						titleView.tip.setText(thematicItem.getName());
+					}else {
+						if (thematicItem.getTitle() != null && !TextUtils.isEmpty(thematicItem.getTitle())) {
+							titleView.tip.setText(thematicItem.getTitle());
+						}
+					}
 					thematicAppsRequest(RequestTool.SPECIAL_DETAIL_URL + "?id=" + thematicItem.getId());
 				}
+			}else if (fromWhere == 2) {
+				gameType = getIntent().getIntExtra("gameType", 0);
+				switch (gameType) {
+				case 1:
+					titleView.tip.setText(getResources().getString(R.string.newGameList));
+					loadUrl = RequestTool.NEW_GAME_LIST_URL;
+					break;
+				case 2:
+					titleView.tip.setText(getResources().getString(R.string.popularGameList));
+					loadUrl = RequestTool.POPULAR_GAME_LIST_URL;
+					break;
+				case 3:
+					titleView.tip.setText(getResources().getString(R.string.willGameList));
+					loadUrl = RequestTool.WILL_GAME_LIST_URL;
+					break;
+				}
+				loadCategoryData(loadUrl);
 			}
 		}
 
@@ -103,35 +132,47 @@ public class SortInfoActivity extends BaseActivity implements OnRefreshListener
 	}
 	
 	private void loadCategoryData(String url){
-		if (sortItem.getName() != null && !TextUtils.isEmpty(sortItem.getName())) {
-			titleView.tip.setText(sortItem.getName());
-		}
 		requestTool.getMap().clear();
 		requestTool.startStringRequest(Method.GET, new Listener<String>() {
 
 			@Override
 			public void onResponse(String arg0) {
 				// TODO Auto-generated method stub
-				Log.i("TAG", arg0);
+				loadView.loadDataSuccess();
+				loadView.setVisibility(View.GONE);
+				refreshLayout.setVisibility(View.VISIBLE);
+				CategoryAppsInfo categoryAppsInfo = JSON.parseObject(arg0.toString(), CategoryAppsInfo.class);
+				if (categoryAppsInfo != null) {
+					if (categoryAppsInfo.getStatus() == 1) {
+						sortPageNum++;
+						if (categoryAppsInfo.getData() != null) {
+							setThematicData(categoryAppsInfo.getData());
+						}
+					}else if (categoryAppsInfo.getStatus() == 0) {
+						Toast.makeText(SortInfoActivity.this, R.string.notMore, Toast.LENGTH_SHORT).show();
+					}
+				}
+				if (refreshViewShowing) {
+					refreshViewShowing = false;
+					refreshLayout.refreshFinish(PullToRefreshLayout.SUCCEED);
+				}
 			}
+			
 		}, url, new ErrorListener() {
 
 			@Override
 			public void onErrorResponse(VolleyError arg0) {
 				// TODO Auto-generated method stub
-				
+				loadView.loadDataFail();
+				if (refreshViewShowing) {
+					refreshViewShowing = false;
+					refreshLayout.refreshFinish(PullToRefreshLayout.FAIL);
+				}
 			}
-		}, requestTool.getMap(), CATEGORY_REQUEST);
+		}, requestTool.getMap(), CATEGORY_APPS_REQUEST);
 	}
 	
 	private void thematicAppsRequest(String url){
-		if (thematicItem.getName() != null && !TextUtils.isEmpty(thematicItem.getName())) {
-			titleView.tip.setText(thematicItem.getName());
-		}else {
-			if (thematicItem.getTitle() != null && !TextUtils.isEmpty(thematicItem.getTitle())) {
-				titleView.tip.setText(thematicItem.getTitle());
-			}
-		}
 		requestTool.getMap().clear();
 		requestTool.startStringRequest(Method.GET, new Listener<String>() {
 
@@ -144,8 +185,8 @@ public class SortInfoActivity extends BaseActivity implements OnRefreshListener
 				ThematicSortInfo thematicSortInfo = JSON.parseObject(arg0, ThematicSortInfo.class);
 				if (thematicSortInfo != null) {
 					if (thematicSortInfo.getStatus() == 1) {
+						thematicPageNum++;
 						if (thematicSortInfo.getData() != null) {
-							thematicPageNum++;
 							setThematicData(thematicSortInfo.getData());
 						}
 					}else if (thematicSortInfo.getStatus() == 0) {
@@ -174,14 +215,6 @@ public class SortInfoActivity extends BaseActivity implements OnRefreshListener
 	private void setThematicData(GameInfo[] infos){
 		Collections.addAll(gameInformations, infos);
 		adapter.notifyDataSetChanged();
-	}
-	
-	private void categoryAppsRequest(int start,int end){
-		requestTool.initParam();
-		requestTool.setParam("start_position", start);
-		requestTool.setParam("size", end);
-		requestTool.setParam("category_id", categoryId);
-		requestTool.startCategoryAppsRequest(this, this);
 	}
 	
 	private void initView(){
@@ -241,6 +274,7 @@ public class SortInfoActivity extends BaseActivity implements OnRefreshListener
 		super.onDestroy();
 		adapter.stopObserver();
 		requestTool.stopRequest(THEMATIC_DETAIL_REQUEST);
+		requestTool.stopRequest(CATEGORY_APPS_REQUEST);
 	}
 
 	@Override
@@ -253,57 +287,16 @@ public class SortInfoActivity extends BaseActivity implements OnRefreshListener
 	public void onLoadMore(PullToRefreshLayout pullToRefreshLayout) {
 		// TODO Auto-generated method stub
 		refreshViewShowing = true;
-//		categoryAppsRequest(gameInformations.size(),DEFAULT_PAGE_SIZE);
 		if (fromWhere == 0) {
-			
+			if (sortItem != null) {
+				loadCategoryData(RequestTool.CATEGORY_APPS_URL + "?columnId=" + sortItem.getId() + "&pageNum=" + sortPageNum);
+			}
 		}else if (fromWhere == 1) {
-			thematicAppsRequest(RequestTool.SPECIAL_DETAIL_URL + "?id=" + thematicItem.getId() + "&pageNum=" + thematicPageNum);
-		}
-	}
-
-	@Override
-	public void onErrorResponse(VolleyError arg0) {
-		// TODO Auto-generated method stub
-		Log.i("TAG", "onErrorResponse :" + arg0);
-		if (refreshViewShowing) {
-			refreshViewShowing = false;
-			refreshLayout.refreshFinish(PullToRefreshLayout.FAIL);
-		}
-	}
-
-	@Override
-	public void onResponse(JSONObject arg0) {
-		// TODO Auto-generated method stub
-		Log.i("TAG", "onResponse :" + arg0);
-		CategoryAppsInfo categoryAppsInfo = JSON.parseObject(arg0.toString(), CategoryAppsInfo.class);
-		if (categoryAppsInfo != null && categoryAppsInfo.getItem() != null) {
-			Collections.addAll(gameInformations, categoryAppsInfo.getItem());
-			List<InstalledApp> apps = InstalledAppTool.getPersonalApp(this);
-			int count = DEFAULT_PAGE_SIZE;
-			if (gameInformations.size() < DEFAULT_PAGE_SIZE) {
-				count = gameInformations.size();
+			if (thematicItem != null) {
+				thematicAppsRequest(RequestTool.SPECIAL_DETAIL_URL + "?id=" + thematicItem.getId() + "&pageNum=" + thematicPageNum);
 			}
-			
-//			for(int i = gameInformations.size() - count;i<gameInformations.size();i++){
-//				GameInfo gameInfo = gameInformations.get(i);
-//				DownloadAppinfo info = DownloadManager.getInstance().getDownloadInfo(Long.parseLong(gameInfo.getP_id()));
-//				gameInfo.setAdapterType(1);
-//				int state = InstalledAppTool.contain(apps,gameInfo.getPackagename(), Integer.parseInt(gameInfo.getVersion_code()));
-//				if (state != -1) {
-//					gameInfo.setState(state);
-//				}else {
-//					if (info != null 
-//							&& (info.getDownloadState() == DownloadManager.STATE_INSTALLED
-//							|| info.getDownloadState() == DownloadManager.STATE_NEED_UPDATE)) {
-//						DownloadManager.DBManager.delete(info);
-//					}
-//				}
-//			}
-			if (refreshViewShowing) {
-				refreshViewShowing = false;
-				refreshLayout.refreshFinish(PullToRefreshLayout.SUCCEED);
-			}
-			adapter.notifyDataSetChanged();
+		}else if (fromWhere == 2) {
+			loadCategoryData(loadUrl + "?pageNum=" + gamePageNum);
 		}
 	}
 
@@ -318,6 +311,4 @@ public class SortInfoActivity extends BaseActivity implements OnRefreshListener
 			}
 		}
 	}
-	
-	
 }

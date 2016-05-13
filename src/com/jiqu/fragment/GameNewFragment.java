@@ -9,6 +9,7 @@ import com.android.volley.Request.Method;
 import com.android.volley.Response.ErrorListener;
 import com.android.volley.Response.Listener;
 import com.android.volley.VolleyError;
+import com.jiqu.activity.DetailActivity;
 import com.jiqu.adapter.GameAdapter;
 import com.jiqu.application.StoreApplication;
 import com.jiqu.database.DownloadAppinfo;
@@ -16,16 +17,21 @@ import com.jiqu.download.DownloadManager;
 import com.jiqu.object.GameInfo;
 import com.jiqu.object.InstalledApp;
 import com.jiqu.object.RankInfo;
+import com.jiqu.object.SpecialInfo;
 import com.jiqu.tools.InstalledAppTool;
 import com.jiqu.tools.MetricsTool;
 import com.jiqu.tools.RequestTool;
 import com.jiqu.tools.UIUtil;
+import com.jiqu.view.LoadStateView;
+import com.jiqu.view.MyScrollView;
 import com.jiqu.view.PullUpListView;
 import com.jiqu.view.PullToRefreshLayout;
 import com.jiqu.view.PullableListView;
 import com.jiqu.view.PullUpListView.MyPullUpListViewCallBack;
+import com.jiqu.view.ViewPagerLinView;
 import com.vr.store.R;
 
+import android.os.Handler;
 import android.support.v4.view.ViewPager;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -38,13 +44,14 @@ import android.widget.TextView;
 
 public class GameNewFragment extends BaseFragment implements MyPullUpListViewCallBack,OnClickListener{
 	private View view;
+	private final String PAGER_REQUEST = "pagerRequest";
 	private final String LATSEST_REQUEST = "latestGameRequest";
 	private final String HOT_REQUEST = "hotGameRequest";
 	private RequestTool requestTool;
 	
-	private ViewPager informationImgViewPager;
-	private RelativeLayout informationImgRel;
-	private LinearLayout imgList;
+	private LoadStateView loadView;
+	private MyScrollView contentScroll;
+	private ViewPagerLinView pagerView;
 	private LinearLayout explosiveHeadlinesLin;
 	private LinearLayout allHeadlinesLin;
 	private LinearLayout headlineLin;
@@ -64,6 +71,8 @@ public class GameNewFragment extends BaseFragment implements MyPullUpListViewCal
 	private boolean latestLoading = false;
 	private boolean hotLoading = false;
 	private boolean isFirst = true;
+	private boolean isFirstLoad = true;
+	private GameInfo[] viewPagerData;
 
 	@Override
 	public void init() {
@@ -76,9 +85,11 @@ public class GameNewFragment extends BaseFragment implements MyPullUpListViewCal
 		// TODO Auto-generated method stub
 		view = LayoutInflater.from(activity).inflate(R.layout.game_new_fragment, null);
 		
-		informationImgRel = (RelativeLayout) view.findViewById(R.id.informationImgRel);
-		informationImgViewPager = (ViewPager) view.findViewById(R.id.informationImgViewPager);
-		imgList = (LinearLayout) view.findViewById(R.id.imgList);
+		loadView = (LoadStateView) view.findViewById(R.id.loadView);
+		contentScroll = (MyScrollView) view.findViewById(R.id.contentScroll);
+		pagerView = (ViewPagerLinView) view.findViewById(R.id.pagerView);
+		pagerView.setClass(DetailActivity.class);
+		pagerView.setDefaultImgId(R.drawable.recommend_viewpager_default);
 		explosiveHeadlinesLin = (LinearLayout) view.findViewById(R.id.explosiveHeadlinesLin);
 		allHeadlinesLin = (LinearLayout) view.findViewById(R.id.allHeadlinesLin);
 		headlineLin = (LinearLayout) view.findViewById(R.id.headlineLin);
@@ -108,7 +119,7 @@ public class GameNewFragment extends BaseFragment implements MyPullUpListViewCal
 	}
 	
 	private void initViewSize(){
-		UIUtil.setViewSize(informationImgRel, MetricsTool.width, 455 * MetricsTool.Ry);
+		UIUtil.setViewSize(pagerView, MetricsTool.width, 455 * MetricsTool.Ry);
 		UIUtil.setViewSize(headlineLin, MetricsTool.width, 75 * MetricsTool.Ry);
 		UIUtil.setViewSize(explosiveHeadlinesImg, 56 * MetricsTool.Rx, 56 * MetricsTool.Rx);
 		UIUtil.setViewSize(allHeadlinesImg, 56 * MetricsTool.Rx, 56 * MetricsTool.Rx);
@@ -128,8 +139,41 @@ public class GameNewFragment extends BaseFragment implements MyPullUpListViewCal
 	@Override
 	public void initData() {
 		// TODO Auto-generated method stub
-		loadLastGameData(RequestTool.LATEST_GAME_URL);
+		loadPagerData(RequestTool.SPREAD_URL);
 	}
+	
+	private void loadPagerData(String url){
+		requestTool.getMap().clear();
+		requestTool.startStringRequest(Method.GET, new Listener<String>() {
+			
+			@Override
+			public void onResponse(String arg0) {
+				// TODO Auto-generated method stub
+				RankInfo spreadInfo = JSON.parseObject(arg0.toString(), RankInfo.class);
+				if (spreadInfo != null) {
+					if (spreadInfo.getStatus() == 1) {
+						viewPagerData = spreadInfo.getData();
+					}
+				}
+				loadLastGameData(RequestTool.LATEST_GAME_URL);
+			}
+		}, url, new ErrorListener() {
+
+			@Override
+			public void onErrorResponse(VolleyError arg0) {
+				// TODO Auto-generated method stub
+				loadView.loadDataFail();
+			}
+		}, requestTool.getMap(), PAGER_REQUEST);
+	}
+	
+	Handler handler = new Handler(){
+		public void handleMessage(android.os.Message msg) {
+			if (msg.what == 1) {
+				
+			}
+		};
+	};
 	
 	private void loadLastGameData(String url){
 		if (latestLoading) {
@@ -142,6 +186,9 @@ public class GameNewFragment extends BaseFragment implements MyPullUpListViewCal
 			@Override
 			public void onResponse(String arg0) {
 				// TODO Auto-generated method stub
+				loadView.loadDataSuccess();
+				loadView.setVisibility(View.GONE);
+				contentScroll.setVisibility(View.VISIBLE);
 				RankInfo rankInfo = JSON.parseObject(arg0.toString(), RankInfo.class);
 				if (rankInfo != null && rankInfo.getStatus() == 1 && rankInfo.getData() != null) {
 					latestPageNum++;
@@ -154,7 +201,6 @@ public class GameNewFragment extends BaseFragment implements MyPullUpListViewCal
 					for(int i = lastGameInfos.size() - count;i<lastGameInfos.size();i++){
 						GameInfo gameInfo = lastGameInfos.get(i);
 						DownloadAppinfo info = DownloadManager.getInstance().getDownloadInfo(Long.parseLong(gameInfo.getId()));
-						gameInfo.setAdapterType(1);
 						int state = InstalledAppTool.contain(apps,gameInfo.getProduct_name());
 						if (state != -1) {
 							lastGameInfos.get(i).setState(state);
@@ -165,10 +211,14 @@ public class GameNewFragment extends BaseFragment implements MyPullUpListViewCal
 							}
 						}
 					}
-					lastGameAdapter.notifyDataSetChanged();
-					latestListView.refreshFinish();
-					latestLoading = false;
 				}
+				if (isFirstLoad) {
+					isFirstLoad = false;
+					pagerView.setData(viewPagerData);
+				}
+				lastGameAdapter.notifyDataSetChanged();
+				latestListView.refreshFinish();
+				latestLoading = false;
 			}
 		}, url, new ErrorListener(){
 
@@ -199,13 +249,12 @@ public class GameNewFragment extends BaseFragment implements MyPullUpListViewCal
 					Collections.addAll(hotGameInfos, rankInfo.getData());
 					int count = 10;
 					if (hotGameInfos.size() < 10) {
-						count = lastGameInfos.size();
+						count = hotGameInfos.size();
 					}
 					List<InstalledApp> apps = InstalledAppTool.getPersonalApp(getActivity());
 					for(int i = hotGameInfos.size() - count;i<hotGameInfos.size();i++){
 						GameInfo gameInfo = hotGameInfos.get(i);
 						DownloadAppinfo info = DownloadManager.getInstance().getDownloadInfo(Long.parseLong(gameInfo.getId()));
-						gameInfo.setAdapterType(1);
 						int state = InstalledAppTool.contain(apps,gameInfo.getProduct_name());
 						if (state != -1) {
 							hotGameInfos.get(i).setState(state);
