@@ -4,6 +4,7 @@ import com.vr.store.R;
 import com.jiqu.tools.MetricsTool;
 import com.jiqu.tools.UIUtil;
 
+import android.R.integer;
 import android.app.Activity;
 import android.content.Context;
 import android.util.AttributeSet;
@@ -19,6 +20,7 @@ import android.widget.TextView;
 
 public class TitleView extends RelativeLayout implements OnClickListener{
 	private View view;
+	private Context context;
 	public RelativeLayout parentView;
 	private LinearLayout backLin;
 	public ImageView back;
@@ -45,6 +47,7 @@ public class TitleView extends RelativeLayout implements OnClickListener{
 	}
 	
 	private void init(Context context){
+		this.context = context;
 		LayoutInflater inflater = LayoutInflater.from(context);
 		view = inflater.inflate(R.layout.account_title, this);
 		back = (ImageView) view.findViewById(R.id.backBtn);

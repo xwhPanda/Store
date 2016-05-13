@@ -12,6 +12,8 @@ import com.jiqu.tools.MetricsTool;
 import com.jiqu.tools.UIUtil;
 
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -100,20 +102,24 @@ public class ThematicItemAdapter extends BaseAdapter {
 			heart = (ImageView) view.findViewById(R.id.heart);
 			rightBrackets = (TextView) view.findViewById(R.id.rightBrackets);
 			
-			titleImg.setVisibility(View.GONE);
-			leftBrackets.setVisibility(View.GONE);
-			count.setVisibility(View.GONE);
-			heart.setVisibility(View.GONE);
-			rightBrackets.setVisibility(View.GONE);
+//			titleImg.setVisibility(View.GONE);
+//			leftBrackets.setVisibility(View.GONE);
+//			count.setVisibility(View.GONE);
+//			heart.setVisibility(View.GONE);
+//			rightBrackets.setVisibility(View.GONE);
 
 			return view;
 		}
 		
 		public void setData(ThematicItem item){
 			data = item;
-			ImageListener listener = ImageLoader.getImageListener(thematicImg, R.drawable.ic_launcher, R.drawable.ic_launcher);
-//			StoreApplication.getInstance().getImageLoader().get(item.getFocus(), listener);
-			thematicTitle.setText(item.getTitle());
+			Bitmap bitmap = UIUtil.readBitmap(context, R.drawable.zhuanti_item_default);
+			ImageListener listener = ImageLoader.getImageListener(thematicImg, bitmap, bitmap);
+			StoreApplication.getInstance().getImageLoader().get(item.getPic(), listener);
+			if (item.getName() != null && !TextUtils.isEmpty(item.getName())) {
+				thematicTitle.setText(item.getName());
+			}
+			count.setText(item.getFavorite() + "人");
 			
 		}
 

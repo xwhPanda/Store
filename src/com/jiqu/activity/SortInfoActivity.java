@@ -9,14 +9,17 @@ import org.json.JSONObject;
 import android.R.integer;
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.alibaba.fastjson.JSON;
 import com.android.volley.Request.Method;
@@ -29,6 +32,7 @@ import com.jiqu.download.DownloadManager;
 import com.jiqu.object.CategoryAppsInfo;
 import com.jiqu.object.GameInfo;
 import com.jiqu.object.InstalledApp;
+import com.jiqu.object.SortItem;
 import com.jiqu.object.ThematicItem;
 import com.jiqu.object.ThematicSortInfo;
 import com.jiqu.object.ThematicSortInfoItem;
@@ -36,18 +40,22 @@ import com.jiqu.store.BaseActivity;
 import com.vr.store.R;
 import com.jiqu.tools.InstalledAppTool;
 import com.jiqu.tools.RequestTool;
+import com.jiqu.view.LoadStateView;
 import com.jiqu.view.PullToRefreshLayout;
 import com.jiqu.view.TitleView;
 import com.jiqu.view.PullToRefreshLayout.OnRefreshListener;
-import com.jiqu.view.SortTitleView;
 
-public class SortInfoActivity extends BaseActivity implements OnRefreshListener,Listener<JSONObject>,ErrorListener{
-	private static final int DEFAULT_PAGE_SIZE = 20;
+public class SortInfoActivity extends BaseActivity implements OnRefreshListener
+,Listener<JSONObject>,ErrorListener,OnClickListener{
+	private final int DEFAULT_PAGE_SIZE = 10;
+	private final String THEMATIC_DETAIL_REQUEST = "thematicDetailRequest";
+	private final String CATEGORY_REQUEST = "categoryRequest";
 	private View headView;
 	private TitleView titleView;
 	private ListView sortListView;
 	private PullToRefreshLayout refreshLayout;
 	private GameAdapter adapter;
+	private LoadStateView loadView;
 	
 	private ImageView sortHeadNewAddGameImg;
 	private TextView sortHeadNewAddGameContent;
@@ -58,11 +66,13 @@ public class SortInfoActivity extends BaseActivity implements OnRefreshListener,
 	//0：从分类页跳转；1：从专题页跳转
 	private int fromWhere = 0;
 	private ThematicItem thematicItem;
+	private SortItem sortItem;
 	
 	private String categoryTitle = "";
 	private int categoryId;
 	private boolean refreshViewShowing;
 	
+	private int thematicPageNum = 1;
 	private RequestTool requestTool;
 	
 	@Override
@@ -74,11 +84,14 @@ public class SortInfoActivity extends BaseActivity implements OnRefreshListener,
 			initView();
 			
 			if (fromWhere == 0) {
-				categoryAppsRequest(0,DEFAULT_PAGE_SIZE);
+				sortItem = (SortItem) getIntent().getSerializableExtra("categoryItem");
+				if (sortItem != null) {
+					loadCategoryData(RequestTool.CATEGORY_URL + "?id=" + sortItem.getId());
+				}
 			}else if (fromWhere == 1) {
 				thematicItem = (ThematicItem) getIntent().getSerializableExtra("thematicItem");
 				if (thematicItem != null) {
-					thematicAppsRequest();
+					thematicAppsRequest(RequestTool.SPECIAL_DETAIL_URL + "?id=" + thematicItem.getId());
 				}
 			}
 		}
@@ -89,31 +102,77 @@ public class SortInfoActivity extends BaseActivity implements OnRefreshListener,
 		return R.layout.sort_info_layout;
 	}
 	
-	private void thematicAppsRequest(){
-		titleView.tip.setText(thematicItem.getTitle());
+	private void loadCategoryData(String url){
+		if (sortItem.getName() != null && !TextUtils.isEmpty(sortItem.getName())) {
+			titleView.tip.setText(sortItem.getName());
+		}
 		requestTool.getMap().clear();
 		requestTool.startStringRequest(Method.GET, new Listener<String>() {
 
 			@Override
 			public void onResponse(String arg0) {
 				// TODO Auto-generated method stub
-				ThematicSortInfo thematicSortInfo = JSON.parseObject(arg0, ThematicSortInfo.class);
-				setThematicData(thematicSortInfo.getAlldata());
+				Log.i("TAG", arg0);
 			}
-		}, RequestTool.thematicUrl + thematicItem.getId(), new ErrorListener() {
+		}, url, new ErrorListener() {
 
 			@Override
 			public void onErrorResponse(VolleyError arg0) {
 				// TODO Auto-generated method stub
+				
 			}
-		}, requestTool.getMap(), "thematic");
+		}, requestTool.getMap(), CATEGORY_REQUEST);
 	}
 	
-	private void setThematicData(ThematicSortInfoItem[] items){
-		int length = items.length;
-		for (int i = 0; i < length; i++) {
-			gameInformations.add(ThematicSortInfoItem.toGameInfo(items[i]));
+	private void thematicAppsRequest(String url){
+		if (thematicItem.getName() != null && !TextUtils.isEmpty(thematicItem.getName())) {
+			titleView.tip.setText(thematicItem.getName());
+		}else {
+			if (thematicItem.getTitle() != null && !TextUtils.isEmpty(thematicItem.getTitle())) {
+				titleView.tip.setText(thematicItem.getTitle());
+			}
 		}
+		requestTool.getMap().clear();
+		requestTool.startStringRequest(Method.GET, new Listener<String>() {
+
+			@Override
+			public void onResponse(String arg0) {
+				// TODO Auto-generated method stub
+				loadView.loadDataSuccess();
+				loadView.setVisibility(View.GONE);
+				refreshLayout.setVisibility(View.VISIBLE);
+				ThematicSortInfo thematicSortInfo = JSON.parseObject(arg0, ThematicSortInfo.class);
+				if (thematicSortInfo != null) {
+					if (thematicSortInfo.getStatus() == 1) {
+						if (thematicSortInfo.getData() != null) {
+							thematicPageNum++;
+							setThematicData(thematicSortInfo.getData());
+						}
+					}else if (thematicSortInfo.getStatus() == 0) {
+						Toast.makeText(SortInfoActivity.this, R.string.notMore, Toast.LENGTH_SHORT).show();
+					}
+				}
+				if (refreshViewShowing) {
+					refreshViewShowing = false;
+					refreshLayout.refreshFinish(PullToRefreshLayout.SUCCEED);
+				}
+			}
+		}, url, new ErrorListener() {
+
+			@Override
+			public void onErrorResponse(VolleyError arg0) {
+				// TODO Auto-generated method stub
+				loadView.loadDataFail();
+				if (refreshViewShowing) {
+					refreshViewShowing = false;
+					refreshLayout.refreshFinish(PullToRefreshLayout.FAIL);
+				}
+			}
+		}, requestTool.getMap(), THEMATIC_DETAIL_REQUEST);
+	}
+	
+	private void setThematicData(GameInfo[] infos){
+		Collections.addAll(gameInformations, infos);
 		adapter.notifyDataSetChanged();
 	}
 	
@@ -132,11 +191,13 @@ public class SortInfoActivity extends BaseActivity implements OnRefreshListener,
 		
 		titleView = (TitleView) findViewById(R.id.titleView);
 		sortListView = (ListView) findViewById(R.id.sortListView);
+		loadView = (LoadStateView) findViewById(R.id.loadView);
 		refreshLayout = (PullToRefreshLayout) findViewById(R.id.refreshLayout);
 		refreshLayout.setOnRefreshListener(this);
+		loadView.loadAgain(this);
 		
 		titleView.setActivity(this);
-		titleView.parentView.setBackgroundColor(getResources().getColor(R.color.bottomBgColor));
+		titleView.parentView.setBackgroundResource(R.drawable.zhuanti_bg);
 		titleView.back.setBackgroundResource(R.drawable.fanhui);
 		titleView.tip.setText(categoryTitle);
 		titleView.editBtn.setBackgroundResource(R.drawable.fenxiang_white);
@@ -179,6 +240,7 @@ public class SortInfoActivity extends BaseActivity implements OnRefreshListener,
 		// TODO Auto-generated method stub
 		super.onDestroy();
 		adapter.stopObserver();
+		requestTool.stopRequest(THEMATIC_DETAIL_REQUEST);
 	}
 
 	@Override
@@ -191,7 +253,12 @@ public class SortInfoActivity extends BaseActivity implements OnRefreshListener,
 	public void onLoadMore(PullToRefreshLayout pullToRefreshLayout) {
 		// TODO Auto-generated method stub
 		refreshViewShowing = true;
-		categoryAppsRequest(gameInformations.size(),DEFAULT_PAGE_SIZE);
+//		categoryAppsRequest(gameInformations.size(),DEFAULT_PAGE_SIZE);
+		if (fromWhere == 0) {
+			
+		}else if (fromWhere == 1) {
+			thematicAppsRequest(RequestTool.SPECIAL_DETAIL_URL + "?id=" + thematicItem.getId() + "&pageNum=" + thematicPageNum);
+		}
 	}
 
 	@Override
@@ -239,4 +306,18 @@ public class SortInfoActivity extends BaseActivity implements OnRefreshListener,
 			adapter.notifyDataSetChanged();
 		}
 	}
+
+	@Override
+	public void onClick(View v) {
+		// TODO Auto-generated method stub
+		if (v == loadView.getLoadBtn()) {
+			if (fromWhere == 0) {
+				
+			}else if (fromWhere == 1) {
+				thematicAppsRequest(RequestTool.SPECIAL_DETAIL_URL);
+			}
+		}
+	}
+	
+	
 }

@@ -1,6 +1,7 @@
 package com.jiqu.activity;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import org.json.JSONObject;
@@ -17,6 +18,7 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.ScrollView;
 import android.widget.Toast;
 import android.widget.ImageView.ScaleType;
 import android.widget.LinearLayout;
@@ -25,6 +27,7 @@ import android.widget.RelativeLayout.LayoutParams;
 import android.widget.TextView;
 
 import com.alibaba.fastjson.JSON;
+import com.android.volley.Request.Method;
 import com.android.volley.Response.ErrorListener;
 import com.android.volley.Response.Listener;
 import com.android.volley.toolbox.ImageLoader;
@@ -47,13 +50,17 @@ import com.jiqu.tools.InstalledAppTool;
 import com.jiqu.tools.NetReceiver;
 import com.jiqu.tools.RequestTool;
 import com.jiqu.tools.UIUtil;
+import com.jiqu.view.LoadStateView;
 import com.jiqu.view.RatingBarView;
 import com.jiqu.view.TitleView;
 
 import de.greenrobot.dao.query.QueryBuilder;
 
-public class DetailActivity extends BaseActivity implements Listener<JSONObject> , ErrorListener,OnPageChangeListener,OnClickListener,DownloadObserver{
+public class DetailActivity extends BaseActivity implements Listener<String> , ErrorListener,OnPageChangeListener,OnClickListener,DownloadObserver{
+	private final String GAME_DETAIL_REQUEST = "gameDetailRequest";
 	private TitleView titleView;
+	private LoadStateView loadView;
+	private ScrollView scrollView;
 	private LinearLayout gameIconLin;
 	private ImageView gameIcon;
 	private RelativeLayout titleLine;
@@ -93,7 +100,8 @@ public class DetailActivity extends BaseActivity implements Listener<JSONObject>
 	
 	private RequestTool requestTool;
 	//游戏ID
-	private String p_id;
+	private String id;
+	private String name;
 	//0：根据id请求数据；1：不需要请求数据，数据是传过来的
 	private int requestType = 0;
 	private ImageView[] imgs;
@@ -107,23 +115,21 @@ public class DetailActivity extends BaseActivity implements Listener<JSONObject>
 		// TODO Auto-generated method stub
 		super.onCreate(savedInstanceState);
 		requestTool = RequestTool.getInstance();
-		p_id = getIntent().getStringExtra("id");
+		id = getIntent().getStringExtra("id");
 		requestType = getIntent().getIntExtra("requestType", 0);
-		
+		name = getIntent().getStringExtra("name");
 		initView();
 		
 		if (requestType == 0) {
-			loadDetail();
+			titleView.tip.setText(name);
+			loadDetailData(RequestTool.GAME_DETAIL_URL + "?id=" + id);
 		}else if (requestType == 1) {
-//			SpecialResultsItem item = (SpecialResultsItem) getIntent().getSerializableExtra("data");
-//			setData(item);
 		}
 	}
 	
-	private void loadDetail(){
-		requestTool.initParam();
-		requestTool.setParam("P_ID", p_id);
-		requestTool.startGameDetailRequest(this, this);
+	private void loadDetailData(String url){
+		requestTool.getMap().clear();
+		requestTool.startStringRequest(Method.GET, this, url, this, requestTool.getMap(), GAME_DETAIL_REQUEST);
 	}
 
 	@Override
@@ -146,6 +152,8 @@ public class DetailActivity extends BaseActivity implements Listener<JSONObject>
 		initStar();
 		
 		titleView = (TitleView) findViewById(R.id.titleView);
+		loadView = (LoadStateView) findViewById(R.id.loadView);
+		scrollView = (ScrollView) findViewById(R.id.scrollView);
 		gameIconLin = (LinearLayout) findViewById(R.id.gameIconLin);
 		gameIcon = (ImageView) findViewById(R.id.gameIcon);
 		titleLine = (RelativeLayout) findViewById(R.id.titleLine);
@@ -273,15 +281,20 @@ public class DetailActivity extends BaseActivity implements Listener<JSONObject>
 	@Override
 	public void onErrorResponse(VolleyError arg0) {
 		// TODO Auto-generated method stub
-		
+		loadView.loadDataFail();
 	}
 
 	@Override
-	public void onResponse(JSONObject arg0) {
+	public void onResponse(String arg0) {
 		// TODO Auto-generated method stub
+		loadView.loadDataSuccess();
+		loadView.setVisibility(View.GONE);
+		scrollView.setVisibility(View.VISIBLE);
 		if (arg0 != null) {
 			GameDetailInfo info = JSON.parseObject(arg0.toString(), GameDetailInfo.class);
-			setData(info);
+			JSON.par
+			Log.i("TAG", info.getPic().toString());
+//			setData(info);
 		}
 	}
 	
@@ -377,30 +390,31 @@ public class DetailActivity extends BaseActivity implements Listener<JSONObject>
 	private void setData(GameDetailInfo info){
 		DownloadManager.getInstance().registerObserver(this);
 		ImageListener listener = ImageLoader.getImageListener(gameIcon, R.drawable.ic_launcher, R.drawable.ic_launcher);
-		StoreApplication.getInstance().getImageLoader().get(info.getLdpi_icon_url(), listener);
-		titleView.tip.setText(info.getName());
-		gameName.setText(info.getName());
-		downloadCount.setText(info.getDownload_count() + "人下载");
+		StoreApplication.getInstance().getImageLoader().get(info.getIcon(), listener);
+		titleView.tip.setText(info.getApply_name());
+		gameName.setText(info.getApply_name());
+		downloadCount.setText(info.getDown() + "人下载");
 		version.setText("版本:" + info.getVersion_name());
-		type.setText(info.getProduct_type());
-		size.setText(UIUtil.getDataSize(Long.parseLong(info.getApp_size())));
+		type.setText(info.getColumn());
+		size.setText(UIUtil.getDataSize(Long.parseLong(info.getSize())));
 		
 		List<String> screenshot = new ArrayList<String>();
-		if (!TextUtils.isEmpty(info.getScreenshot_1())) {
-			screenshot.add(info.getScreenshot_1());
-		}
-		if (!TextUtils.isEmpty(info.getScreenshot_2())) {
-			screenshot.add(info.getScreenshot_2());
-		}
-		if (!TextUtils.isEmpty(info.getScreenshot_3())) {
-			screenshot.add(info.getScreenshot_3());
-		}
-		if (!TextUtils.isEmpty(info.getScreenshot_4())) {
-			screenshot.add(info.getScreenshot_4());
-		}
-		if (!TextUtils.isEmpty(info.getScreenshot_5())) {
-			screenshot.add(info.getScreenshot_5());
-		}
+//		Collections.addAll(screenshot, info.getPic());
+//		if (!TextUtils.isEmpty(info.getScreenshot_1())) {
+//			screenshot.add(info.getScreenshot_1());
+//		}
+//		if (!TextUtils.isEmpty(info.getScreenshot_2())) {
+//			screenshot.add(info.getScreenshot_2());
+//		}
+//		if (!TextUtils.isEmpty(info.getScreenshot_3())) {
+//			screenshot.add(info.getScreenshot_3());
+//		}
+//		if (!TextUtils.isEmpty(info.getScreenshot_4())) {
+//			screenshot.add(info.getScreenshot_4());
+//		}
+//		if (!TextUtils.isEmpty(info.getScreenshot_5())) {
+//			screenshot.add(info.getScreenshot_5());
+//		}
 		int count = screenshot.size();
 		if (count > 0) {
 			imgs = new ImageView[count];
@@ -433,32 +447,32 @@ public class DetailActivity extends BaseActivity implements Listener<JSONObject>
 			viewPager.setAdapter(adapter);
 		}
 		
-		float vertigo = Float.parseFloat(info.getGrade_vertigo());
-		if (vertigo == 0) {
-			vertigoValue.setBackgroundResource(R.drawable.jindu1);
-		}else if (vertigo > 0 && vertigo < 1.2) {
-			vertigoValue.setBackgroundResource(R.drawable.jindu2);
-		}else if (vertigo >= 1.4 && vertigo <= 2.0) {
-			vertigoValue.setBackgroundResource(R.drawable.jindu3);
-		}else if (vertigo > 2.0) {
-			vertigoValue.setBackgroundResource(R.drawable.jindu4);
-		}
-		float frames = Float.parseFloat(info.getGrade_frames());
-		float immersive = Float.parseFloat(info.getGrade_immersive());
-		float gameplay = Float.parseFloat(info.getGrade_gameplay());
-		float difficulty = Float.parseFloat(info.getGrade_difficulty());
+//		float vertigo = Float.parseFloat(info.getGrade_vertigo());
+//		if (vertigo == 0) {
+//			vertigoValue.setBackgroundResource(R.drawable.jindu1);
+//		}else if (vertigo > 0 && vertigo < 1.2) {
+//			vertigoValue.setBackgroundResource(R.drawable.jindu2);
+//		}else if (vertigo >= 1.4 && vertigo <= 2.0) {
+//			vertigoValue.setBackgroundResource(R.drawable.jindu3);
+//		}else if (vertigo > 2.0) {
+//			vertigoValue.setBackgroundResource(R.drawable.jindu4);
+//		}
+//		float frames = Float.parseFloat(info.getGrade_frames());
+//		float immersive = Float.parseFloat(info.getGrade_immersive());
+//		float gameplay = Float.parseFloat(info.getGrade_gameplay());
+//		float difficulty = Float.parseFloat(info.getGrade_difficulty());
 		
-		screenSenseBar.setRating(frames);
-		immersionBar.setRating(immersive);
-		gameplayBar.setRating(gameplay);
-		difficultyBar.setRating(difficulty);
+//		screenSenseBar.setRating(frames);
+//		immersionBar.setRating(immersive);
+//		gameplayBar.setRating(gameplay);
+//		difficultyBar.setRating(difficulty);
 		
-		float rat = (frames + immersive + gameplay + difficulty + vertigo);
-		evaluationScore.setText(rat + "");
-		comprehensiveBar.setRating(rat);
+//		float rat = (frames + immersive + gameplay + difficulty + vertigo);
+//		evaluationScore.setText(rat + "");
+//		comprehensiveBar.setRating(rat);
 		
 		QueryBuilder<DownloadAppinfo> qb = StoreApplication.daoSession.getDownloadAppinfoDao().queryBuilder();
-		downloadAppinfo = qb.where(Properties.Id.eq(Long.parseLong(p_id))).unique();
+		downloadAppinfo = qb.where(Properties.Id.eq(Long.parseLong(id))).unique();
 		if (downloadAppinfo != null) {
 			state = downloadAppinfo.getDownloadState();
 		}else {
@@ -630,7 +644,7 @@ public class DetailActivity extends BaseActivity implements Listener<JSONObject>
 		// TODO Auto-generated method stub
 		super.onDestroy();
 		DownloadManager.getInstance().unRegisterObserver(this);
-		requestTool.stopGameDetailRequest();
+		requestTool.stopRequest(GAME_DETAIL_REQUEST);
 	}
 	
 	@Override

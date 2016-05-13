@@ -62,10 +62,16 @@ public class RequestTool {
 	public static final String BOUTIQUE_URL = "http://ht.163zs.com/index.php/Api/Recommend/getChoice";
 	/** 专题URL**/
 	public static final String SPECIAL_URL = "http://ht.163zs.com/index.php/Api/Recommend/getTopics";
+	/** 专题详情URL **/
+	public static final String SPECIAL_DETAIL_URL = "http://ht.163zs.com/index.php/Api/Recommend/getTopicsDetail";
 	/**好评榜URL**/
 	public static final String PRAISE_URL = "http://ht.163zs.com/index.php/Api/Recommend/getPraiseGold";
 	/** 最热榜 URL**/
 	public static final String HOT_URL = "http://ht.163zs.com/index.php/Api/Recommend/getHotGold";
+	/** 分类URL **/
+	public static final String CATEGORY_URL = "http://ht.163zs.com/index.php/Api/Recommend/getClassify";
+	/** 游戏详情URL **/
+	public static final String GAME_DETAIL_URL = "http://ht.163zs.com/index.php/Api/InfoDetail/getGame";
 	
 	private Map<String, Object> paramMap = new HashMap<String, Object>();
 

@@ -8,6 +8,7 @@ import com.jiqu.tools.MetricsTool;
 import com.jiqu.tools.UIUtil;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.provider.ContactsContract.Contacts.Data;
 import android.text.Html;
 import android.view.LayoutInflater;
@@ -79,44 +80,40 @@ public class SortAdapter extends BaseAdapter {
 		}
 		
 		public void setData(SortItem data){
-//			sortTitle.setBackgroundColor(context.getResources().getColor(R.color.red));
-			sortTitle.setText(data.getCategory_name());
-//			sortImg.setBackgroundColor(context.getResources().getColor(R.color.red));
-//			sortGamesInfo.setText(Html.fromHtml("<font color=\"white\">" +data.getTotal() + "</font>" + "<font color=\"white\">" + "fsjfhsfh hl" + "</font>" + "<font color=\"green\">" + data.getNewAddCount() + "</font>"));
+			sortTitle.setText(data.getName());
+			sortGamesInfo.setText(Html.fromHtml("<font color=\"white\">" +"总共" + data.getTotal() + "</font>" 
+					+ "<font color=\"white\">" + "款,新增" + "</font>" 
+					+ "<font color=\"green\">" + data.getFavorite() + "</font>" 
+					+ "<font color=\"white\">" + "款" + "</font>" ));
 			
-			setCategoryImg(data.getCategory_id());
+			sortTitle.setBackgroundColor(Color.parseColor(data.getColor_code()));
+			setCategoryImg(data.getId());
 		}
 		
 		private void setCategoryImg(int categoryId){
 			switch (categoryId) {
-			case 2:
+			case 23:
 				sortImg.setBackgroundResource(R.drawable.sheji_icon);
-				sortTitle.setBackgroundColor(0xffe43366);
 				break;
 
-			case 3:
+			case 24:
 				sortImg.setBackgroundResource(R.drawable.dongzuo_icon);
-				sortTitle.setBackgroundColor(0xffff3333);
 				break;
 				
-			case 4:
+			case 25:
 				sortImg.setBackgroundResource(R.drawable.celue_icon);
-				sortTitle.setBackgroundColor(0xfffbb03b);
 				break;
 				
-			case 5:
+			case 26:
 				sortImg.setBackgroundResource(R.drawable.yizhi_icon);
-				sortTitle.setBackgroundColor(0xff4aae4a);
 				break;
 				
-			case 6:
+			case 27:
 				sortImg.setBackgroundResource(R.drawable.tiyu_icon);
-				sortTitle.setBackgroundColor(0xff32c4f5);
 				break;
 				
-			case 8:
+			case 28:
 				sortImg.setBackgroundResource(R.drawable.jiaose_icon);
-				sortTitle.setBackgroundColor(0xff8b65ff);
 				break;
 			}
 		}

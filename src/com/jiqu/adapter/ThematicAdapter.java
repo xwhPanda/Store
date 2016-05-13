@@ -105,12 +105,11 @@ public class ThematicAdapter extends BaseAdapter {
 				@Override
 				public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 					// TODO Auto-generated method stub
-//					context.startActivity(new Intent(context, SortInfoActivity.class)
-//					.putExtra("thematicItem", data.getAlldata()[position + 3])
-//					.putExtra("fromWhere", 1));
+					context.startActivity(new Intent(context, SortInfoActivity.class)
+					.putExtra("thematicItem", data.getData2()[position])
+					.putExtra("fromWhere", 1));
 				}
 			});
-			
 			return view;
 		}
 		
@@ -130,15 +129,14 @@ public class ThematicAdapter extends BaseAdapter {
 			}
 		}
 		
-		
 		public void initData(ThematicInfo infos){
 			data = infos;
 			thematicTitleLin.setVisibility(View.GONE);
 			List<ThematicItem> items = new ArrayList<ThematicItem>();
-//			int length = infos.getAlldata().length;
-//			for(int i = 3;i < length;i++){
-//				items.add(infos.getAlldata()[i]);
-//			}
+			int length = infos.getData2().length;
+			for(int i = 0;i < length;i++){
+				items.add(infos.getData2()[i]);
+			}
 			ThematicItemAdapter adapter = new ThematicItemAdapter(context, items);
 			thematicGridView.setAdapter(adapter);
 		}

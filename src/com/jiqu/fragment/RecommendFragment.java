@@ -158,7 +158,9 @@ public class RecommendFragment extends BaseFragment implements OnRefreshListener
 			@Override
 			public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 				// TODO Auto-generated method stub
-//				startActivity(new Intent(getActivity(), DetailActivity.class).putExtra("p_id", resultList.get(position - 1).getP_id()));
+				startActivity(new Intent(getActivity(), DetailActivity.class)
+				.putExtra("id", resultList.get(position - 1).getId())
+				.putExtra("name", resultList.get(position - 1).getApply_name()));
 			}
 		});
 		initViewSize();
@@ -301,7 +303,9 @@ public class RecommendFragment extends BaseFragment implements OnRefreshListener
 					@Override
 					public void onClick(View v) {
 						// TODO Auto-generated method stub
-						startActivity(new Intent(getActivity(), DetailActivity.class).putExtra("p_id", gameInfo.getId()));
+						startActivity(new Intent(getActivity(), DetailActivity.class)
+						.putExtra("id", gameInfo.getId())
+						.putExtra("name", gameInfo.getApply_name()));
 					}
 				});
 				gameView.gameName.setText(gameInfo.getApply_name());

@@ -15,6 +15,7 @@ import android.widget.AdapterView.OnItemClickListener;
 import android.widget.GridView;
 
 import com.alibaba.fastjson.JSON;
+import com.android.volley.Request.Method;
 import com.android.volley.Response.ErrorListener;
 import com.android.volley.Response.Listener;
 import com.android.volley.VolleyError;
@@ -25,11 +26,15 @@ import com.jiqu.store.BaseActivity;
 import com.vr.store.R;
 import com.jiqu.tools.MetricsTool;
 import com.jiqu.tools.RequestTool;
+import com.jiqu.tools.UIUtil;
+import com.jiqu.view.LoadStateView;
 import com.jiqu.view.TitleView;
 
-public class SortActivity extends BaseActivity implements Listener<JSONObject> , ErrorListener{
+public class SortActivity extends BaseActivity implements Listener<String> , ErrorListener{
+	private final String CATEGORY_REQUEST = "categoryRequest";
 	private TitleView titleView;
 	private GridView sortGridView;
+	private LoadStateView loadView;
 	
 	private SortAdapter adapter;
 	private List<SortItem> sortItems = new ArrayList<SortItem>();
@@ -42,7 +47,8 @@ public class SortActivity extends BaseActivity implements Listener<JSONObject> ,
 		super.onCreate(savedInstanceState);
 		requestTool = RequestTool.getInstance();
 		initView();
-		requestTool.startCategoryRequest(this, this);
+		
+		loadData(RequestTool.CATEGORY_URL);
 	}
 
 	@Override
@@ -51,12 +57,17 @@ public class SortActivity extends BaseActivity implements Listener<JSONObject> ,
 		return R.layout.sort_layout;
 	}
 	
+	private void loadData(String url){
+		requestTool.getMap().clear();
+		requestTool.startStringRequest(Method.GET, this, url, this, requestTool.getMap(), CATEGORY_REQUEST);
+	}
 	
 	private void initView(){
 		titleView = (TitleView) findViewById(R.id.titleView);
 		sortGridView = (GridView) findViewById(R.id.sortGridView);
+		loadView = (LoadStateView) findViewById(R.id.loadView);
 		
-		titleView.parentView.setBackgroundColor(getResources().getColor(R.color.bottomBgColor));
+		titleView.parentView.setBackgroundResource(R.drawable.zhuanti_bg);
 		titleView.setActivity(this);
 		titleView.tip.setText(getResources().getString(R.string.sort));
 		titleView.back.setBackgroundResource(R.drawable.fanhui);
@@ -84,10 +95,15 @@ public class SortActivity extends BaseActivity implements Listener<JSONObject> ,
 				SortItem sortItem = sortItems.get(position);
 				startActivity(new Intent(SortActivity.this, SortInfoActivity.class)
 				.putExtra("fromWhere", 0)
-				.putExtra("categoryTitle", sortItem.getCategory_name())
-				.putExtra("categoryId", sortItem.getCategory_id()));
+				.putExtra("categoryItem", sortItems.get(position)));
 			}
 		});
+		
+		try {
+			UIUtil.setViewSizeMargin(sortGridView, 0, 75 * MetricsTool.Rx, 0, 0);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 
 	@Override
@@ -97,11 +113,14 @@ public class SortActivity extends BaseActivity implements Listener<JSONObject> ,
 	}
 
 	@Override
-	public void onResponse(JSONObject arg0) {
+	public void onResponse(String arg0) {
 		// TODO Auto-generated method stub
-		CategoryInfo categoryInfo = JSON.parseObject(arg0.toString(), CategoryInfo.class);
-		if (categoryInfo != null && categoryInfo.getItem().length > 0) {
-			Collections.addAll(sortItems, categoryInfo.getItem());
+		loadView.loadDataSuccess();
+		loadView.setVisibility(View.GONE);
+		sortGridView.setVisibility(View.VISIBLE);
+		CategoryInfo categoryInfo = JSON.parseObject(arg0, CategoryInfo.class);
+		if (categoryInfo != null && categoryInfo.getData().length > 0) {
+			Collections.addAll(sortItems, categoryInfo.getData());
 			adapter.notifyDataSetChanged();
 		}
 	}
@@ -110,6 +129,6 @@ public class SortActivity extends BaseActivity implements Listener<JSONObject> ,
 	protected void onDestroy() {
 		// TODO Auto-generated method stub
 		super.onDestroy();
-		requestTool.stopCategoryRequest();
+		requestTool.stopRequest(CATEGORY_REQUEST);
 	}
 }
