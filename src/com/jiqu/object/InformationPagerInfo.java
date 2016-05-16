@@ -3,20 +3,21 @@ package com.jiqu.object;
 import java.io.Serializable;
 import java.util.Arrays;
 
-public class InformationInfo implements Serializable{
+public class InformationPagerInfo implements Serializable{
 	private static final long serialVersionUID = 1L;
 	private int status;
-	private InformationItemInfo[] data;
+	private InformationPagerItemInfo[] data;
+	
 	public synchronized int getStatus() {
 		return status;
 	}
 	public synchronized void setStatus(int status) {
 		this.status = status;
 	}
-	public synchronized InformationItemInfo[] getData() {
+	public synchronized InformationPagerItemInfo[] getData() {
 		return data;
 	}
-	public synchronized void setData(InformationItemInfo[] data) {
+	public synchronized void setData(InformationPagerItemInfo[] data) {
 		this.data = data;
 	}
 	@Override

@@ -82,6 +82,14 @@ public class RequestTool {
 	public static final String WILL_GAME_LIST_URL = "http://ht.163zs.com/index.php/Api/Recommend/willGameScroll";
 	/** 游戏推广URL **/
 	public static final String SPREAD_URL = "http://ht.163zs.com/index.php/Api/Game/getSpread";
+	/** 资讯页顶部URL **/
+	public static final String HEADLINE_TOP_URL = "http://ht.163zs.com/index.php/Api/News/getSpread";
+	/** 资讯头条URL **/
+	public static final String HOT_HEADLINE_URL = "http://ht.163zs.com/index.php/Api/News/headlinesNews";
+	/** 全部资讯URL **/
+	public static final String ALL_HEADLINE_URL = "http://ht.163zs.com/index.php/Api/News/getAllNews";
+	/** 评测URL **/
+	public static final String EVALUATION_URL = "http://ht.163zs.com/index.php/Api/Reviews/getReviewsList";
 	
 	private Map<String, Object> paramMap = new HashMap<String, Object>();
 

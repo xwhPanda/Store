@@ -84,34 +84,41 @@
                         android:textColor="@color/white" />
                 </LinearLayout>
             </LinearLayout>
-
+			
             <RelativeLayout
                 android:id="@+id/listViewRel"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent" >
+                android:layout_height="match_parent">
 
+                <View 
+                    android:id="@+id/emptyView"
+                    android:layout_width="match_parent"
+                    android:layout_height="2dp"/>
+                
                 <com.jiqu.view.PullUpListView
-                    android:id="@+id/latestListView"
+                    android:id="@+id/hotHeadlineListView"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:background="@color/bottomBgColor"
-                    android:divider="@drawable/divider"
+		            android:background="@color/bottomBgColor"
+                    android:divider="@drawable/divider" 
                     android:dividerHeight="1dp"
-                    android:scrollbars="none" />
+                    android:scrollbars="none" 
+                    android:layout_below="@id/emptyView"/>
 
                 <RelativeLayout
-                    android:id="@+id/hotGameRel"
+                    android:id="@+id/allHeadlineRel"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
+                    android:layout_below="@id/emptyView"
                     android:visibility="gone">
                     
                     <com.jiqu.view.LoadStateView 
-                        android:id="@+id/hotLoadView"
+                        android:id="@+id/allHeadlineLoadView"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"/>
                     
 	                <com.jiqu.view.PullUpListView
-	                    android:id="@+id/hotListView"
+	                    android:id="@+id/allHeadlineListView"
 	                    android:layout_width="match_parent"
 	                    android:layout_height="match_parent"
 	                    android:background="@color/bottomBgColor"

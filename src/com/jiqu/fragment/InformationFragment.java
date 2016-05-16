@@ -16,8 +16,7 @@ import com.jiqu.adapter.ViewPagerAdapter;
 import com.jiqu.application.StoreApplication;
 import com.jiqu.object.GameInformation;
 import com.jiqu.object.InformationGallaryItem;
-import com.jiqu.object.InformationInfo;
-import com.jiqu.object.InformationResult;
+import com.jiqu.object.InformationPagerInfo;
 import com.vr.store.R;
 import com.jiqu.tools.CountDownTimer;
 import com.jiqu.tools.MetricsTool;
@@ -95,10 +94,10 @@ public class InformationFragment extends BaseFragment implements OnClickListener
 			@Override
 			public void onResponse(String arg0) {
 				// TODO Auto-generated method stub
-				InformationInfo info = JSON.parseObject(arg0, InformationInfo.class);
+				InformationPagerInfo info = JSON.parseObject(arg0, InformationPagerInfo.class);
 				
-				setData(info.getResult().getData());
-				setTopData(info.getResult().getGallary());
+//				setData(info.getResult().getData());
+//				setTopData(info.getResult().getGallary());
 				loadStateView.loadDataSuccess();
 				loadStateView.setVisibility(View.GONE);
 				ptrl.setVisibility(View.VISIBLE);
@@ -213,7 +212,7 @@ public class InformationFragment extends BaseFragment implements OnClickListener
 		//必须在设置adapter之前执行
 		informationListView.addHeaderView(headView);
 		
-		adapter = new InformationAdapter(getActivity(), informationGallaryItems,0);
+//		adapter = new InformationAdapter(getActivity(), informationGallaryItems,0);
 		informationListView.setAdapter(adapter);
 		
 		initViewSize();

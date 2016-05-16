@@ -7,6 +7,9 @@ import com.android.volley.toolbox.ImageLoader.ImageListener;
 import com.jiqu.application.StoreApplication;
 import com.jiqu.object.GameInformation;
 import com.jiqu.object.InformationGallaryItem;
+import com.jiqu.object.InformationItemInfo;
+import com.jiqu.object.InformationPagerInfo;
+import com.jiqu.object.InformationPagerItemInfo;
 import com.vr.store.R;
 import com.jiqu.tools.MetricsTool;
 import com.jiqu.tools.UIUtil;
@@ -24,12 +27,12 @@ import android.widget.TextView;
 
 public class InformationAdapter extends BaseAdapter {
 	private Context context;
-	private List<InformationGallaryItem> informations;
+	private List<InformationItemInfo> informations;
 	private LayoutInflater inflater;
 	/** 0  资讯页  1 消息中心 **/
 	private int type = 0;
 
-	public InformationAdapter(Context context, List<InformationGallaryItem> informations,int type) {
+	public InformationAdapter(Context context, List<InformationItemInfo> informations,int type) {
 		this.context = context;
 		this.informations = informations;
 		inflater = LayoutInflater.from(context);
@@ -93,11 +96,11 @@ public class InformationAdapter extends BaseAdapter {
 		} else {
 			holder = (Holder) convertView.getTag();
 		}
-		InformationGallaryItem item = informations.get(position);
-		ImageListener listener = ImageLoader.getImageListener(holder.gameIcon, R.drawable.ic_launcher, R.drawable.ic_launcher);
-		StoreApplication.getInstance().getImageLoader().get(item.getImg(), listener);
+		InformationItemInfo item = informations.get(position);
+		ImageListener listener = ImageLoader.getImageListener(holder.gameIcon, R.drawable.zixun_item_default, R.drawable.zixun_item_default);
+		StoreApplication.getInstance().getImageLoader().get(item.getPic(), listener);
 		holder.gameName.setText(item.getTitle());
-		holder.gameDes.setText(item.getDesc());
+		holder.gameDes.setText(item.getComments());
 		holder.time.setVisibility(View.INVISIBLE);
 		return convertView;
 	}

@@ -24,7 +24,6 @@ import com.jiqu.view.RatingBarView;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.os.Handler;
 import android.text.Html;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -162,6 +161,7 @@ public class GameAdapter extends BaseAdapter implements DownloadObserver{
 			break;
 
 		case 0:
+			Log.i("TAG", "getView()");
 			if (convertView == null) {
 				holder2 = new Holder2(context,hotIconVisible,subscriptVisible);
 				convertView = holder2.getRootView();

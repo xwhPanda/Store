@@ -5,6 +5,7 @@ import com.android.volley.toolbox.ImageLoader.ImageListener;
 import com.jiqu.adapter.ViewPagerAdapter;
 import com.jiqu.application.StoreApplication;
 import com.jiqu.object.GameInfo;
+import com.jiqu.object.InformationPagerItemInfo;
 import com.jiqu.object.ThematicItem;
 import com.jiqu.tools.CountDownTimer;
 import com.jiqu.tools.MetricsTool;
@@ -84,8 +85,76 @@ public class ViewPagerLinView extends RelativeLayout implements OnPageChangeList
 		}
 	}
 	
+	public void setData(InformationPagerItemInfo[] infos){
+		final int count = infos.length;
+		radioImgs = new ImageView[count];
+		contentImgs = new ImageView[count];
+		for (int i = 0; i < count; i++) {
+			final InformationPagerItemInfo item = infos[i];
+			ImageView view = new ImageView(context);
+			LayoutParams lp = new LayoutParams((int)(20 * MetricsTool.Rx), (int)(20 * MetricsTool.Rx));
+			if (i != 0) {
+				ImageView emptyView = new ImageView(context);
+				LayoutParams emptyLp = new LayoutParams((int)(10 * MetricsTool.Rx), (int)(20 * MetricsTool.Rx));
+				emptyView.setLayoutParams(emptyLp);
+				radioGroup.addView(emptyView);
+			}
+			 view.setLayoutParams(lp);
+			if (i== 0) {
+				view.setBackgroundResource(R.drawable.dian_blue);
+			}else {
+				view.setBackgroundResource(R.drawable.dian_white);
+			}
+			radioImgs[i] = view;
+			radioGroup.addView(view);
+			
+			ImageView contentImg = new ImageView(context);
+			contentImg.setClickable(true);
+			contentImg.setOnClickListener(new OnClickListener() {
+				
+				@Override
+				public void onClick(View v) {
+					// TODO Auto-generated method stub
+					if (intentClass != null) {
+						context.startActivity(new Intent(context, intentClass).putExtra("id", item.getId()));
+					}
+				}
+			});
+			LayoutParams params = new LayoutParams(android.support.v4.view.ViewPager.LayoutParams.MATCH_PARENT,
+					android.support.v4.view.ViewPager.LayoutParams.MATCH_PARENT);
+			contentImg.setLayoutParams(params);
+			contentImg.setScaleType(ScaleType.FIT_XY);
+			Bitmap bitmap = UIUtil.readBitmap(context, defaultImgId);
+			ImageListener listener = ImageLoader.getImageListener(contentImg, bitmap, bitmap);
+			if (item.getPic() != null) {
+				StoreApplication.getInstance().getImageLoader().get(item.getPic(),listener,MetricsTool.width,(int)(455 * MetricsTool.Ry));
+			}
+			contentImgs[i] = contentImg;
+		}
+		ViewPagerAdapter adapter = new ViewPagerAdapter(context, contentImgs);
+		viewPager.setAdapter(adapter);
+		
+		timer = new CountDownTimer(Integer.MAX_VALUE, 5000) {
+			
+			@Override
+			public void onTick(long millisUntilFinished) {
+				// TODO Auto-generated method stub
+				if (viewPager != null && count != 0) {
+					viewPager.setCurrentItem(currentIndex % count);
+					currentIndex++;
+				}
+			}
+			
+			@Override
+			public void onFinish() {
+				// TODO Auto-generated method stub
+				
+			}
+		};
+		timer.start();
+	}
+	
 	public void setData(GameInfo[] infos){
-		Log.i("TAG", "data");
 		final int count = infos.length;
 		radioImgs = new ImageView[count];
 		contentImgs = new ImageView[count];
@@ -115,7 +184,9 @@ public class ViewPagerLinView extends RelativeLayout implements OnPageChangeList
 				@Override
 				public void onClick(View v) {
 					// TODO Auto-generated method stub
-					context.startActivity(new Intent(context, intentClass).putExtra("id", item.getId()));
+					if (intentClass != null) {
+						context.startActivity(new Intent(context, intentClass).putExtra("id", item.getId()));
+					}
 				}
 			});
 			LayoutParams params = new LayoutParams(android.support.v4.view.ViewPager.LayoutParams.MATCH_PARENT,
@@ -182,7 +253,9 @@ public class ViewPagerLinView extends RelativeLayout implements OnPageChangeList
 				@Override
 				public void onClick(View v) {
 					// TODO Auto-generated method stub
-					context.startActivity(new Intent(context, intentClass).putExtra("id", item.getId()));
+					if (intentClass != null) {
+						context.startActivity(new Intent(context, intentClass).putExtra("id", item.getId()));
+					}
 				}
 			});
 			LayoutParams params = new LayoutParams(android.support.v4.view.ViewPager.LayoutParams.MATCH_PARENT,

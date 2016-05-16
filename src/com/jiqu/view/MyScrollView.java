@@ -37,20 +37,21 @@ public class MyScrollView extends ScrollView {
 		super(context, attrs, defStyleAttr);
 		// TODO Auto-generated constructor stub
 	}
-
+	
 	@Override
 	protected void onLayout(boolean changed, int l, int t, int r, int b) {
 		// TODO Auto-generated method stub
 		if (isFirst) {
-			isFirst = false;
 			viewGroup = (ViewGroup) getChildAt(0);
 			viewOne = viewGroup.getChildAt(0);
 			viewTwo = viewGroup.getChildAt(1);
 			viewThree = viewGroup.getChildAt(2);
 			hegihtDist = viewOne.getMeasuredHeight();
 			scrollTo(0, 0);
-		super.onLayout(changed, l, t, r, b);
 		}
+		
+		super.onLayout(changed, l, t, r, b);
+		
 		if (viewOne != null) {
 			viewOne.layout(0, (int)(pullDownY + pullUpY), 
 					viewOne.getMeasuredWidth(), (int)(pullDownY + pullUpY + viewOne.getMeasuredHeight()));

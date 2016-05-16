@@ -192,11 +192,11 @@ public class GameFragment extends Fragment implements OnClickListener,OnRefreshL
 		
 		allHeadlinesImg.setBackgroundResource(R.drawable.zuire);
 		explosiveHeadlinesImg.setBackgroundResource(R.drawable.zuibao);
+		explosiveHeadlinesTx.setText(R.string.latestGame);
+		allHeadlinesTx.setText(R.string.newGame);
 		
 		gameListView.addHeaderView(headView);
 		
-		explosiveHeadlinesTx.setText(R.string.latestGame);
-		allHeadlinesTx.setText(R.string.newGame);
 		
 		explosiveHeadlinesLin.setOnClickListener(this);
 		explosiveHeadlinesLin.setOnTouchListener(this);

@@ -8,6 +8,7 @@ import com.jiqu.adapter.EvaluationGridViewAdapter;
 import com.jiqu.object.GameInformation;
 import com.vr.store.R;
 import com.jiqu.tools.MetricsTool;
+import com.jiqu.tools.RequestTool;
 import com.jiqu.tools.UIUtil;
 import com.jiqu.view.PullToRefreshLayout;
 import com.jiqu.view.PullToRefreshLayout.OnRefreshListener;
@@ -23,25 +24,22 @@ import android.widget.AdapterView.OnItemClickListener;
 import android.widget.BaseAdapter;
 import android.widget.GridView;
 
-public class EvaluationFragment extends Fragment implements OnRefreshListener{
+public class EvaluationFragment extends BaseFragment implements OnRefreshListener{
 	private float Rx,Ry;
 	private View view;
 	private PullToRefreshLayout pullToRefreshLayout;
 	private GridView evaluationGridView;
+	private RequestTool requestTool;
 	
 	@Override
-	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+	public void init() {
 		// TODO Auto-generated method stub
-		view = inflater.inflate(R.layout.evaluation, null, false);
-		
-		init();
-		
-		return view;
+		requestTool = RequestTool.getInstance();
 	}
 	
-	private void init(){
-		Rx = MetricsTool.Rx;
-		Ry = MetricsTool.Ry;
+	@Override
+	public View initView(){
+		view = LayoutInflater.from(activity).inflate(R.layout.evaluation, null);
 		pullToRefreshLayout = (PullToRefreshLayout) view.findViewById(R.id.refresh_view);
 		evaluationGridView = (GridView) view.findViewById(R.id.content_view);
 		pullToRefreshLayout.setOnRefreshListener(this);
@@ -64,6 +62,13 @@ public class EvaluationFragment extends Fragment implements OnRefreshListener{
 				startActivity(new Intent(getActivity(), GameEvaluationInformationActivity.class));
 			}
 		});
+		
+		return view;
+	}
+	
+	@Override
+	public void initData() {
+		// TODO Auto-generated method stub
 	}
 	
 	private void initViewSize(){

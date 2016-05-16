@@ -41,6 +41,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 public class GameNewFragment extends BaseFragment implements MyPullUpListViewCallBack,OnClickListener{
 	private View view;
@@ -58,6 +59,9 @@ public class GameNewFragment extends BaseFragment implements MyPullUpListViewCal
 	private ImageView explosiveHeadlinesImg,allHeadlinesImg;
 	private TextView explosiveHeadlinesTx,allHeadlinesTx;
 
+	private RelativeLayout hotGameRel;
+	private RelativeLayout listViewRel;
+	private LoadStateView hotLoadView;
 	private PullUpListView latestListView;
 	private PullUpListView hotListView;
 	
@@ -99,6 +103,14 @@ public class GameNewFragment extends BaseFragment implements MyPullUpListViewCal
 		allHeadlinesTx = (TextView) view.findViewById(R.id.allHeadlinesTx);
 		latestListView = (PullUpListView) view.findViewById(R.id.latestListView);
 		hotListView = (PullUpListView) view.findViewById(R.id.hotListView);
+		hotGameRel = (RelativeLayout) view.findViewById(R.id.hotGameRel);
+		hotLoadView = (LoadStateView) view.findViewById(R.id.hotLoadView);
+		listViewRel = (RelativeLayout) view.findViewById(R.id.listViewRel);
+		
+		allHeadlinesImg.setBackgroundResource(R.drawable.zuire);
+		explosiveHeadlinesImg.setBackgroundResource(R.drawable.zuibao);
+		explosiveHeadlinesTx.setText(R.string.latestGame);
+		allHeadlinesTx.setText(R.string.newGame);
 		
 		latestListView.initBottomView();
 		latestListView.setMyPullUpListViewCallBack(this);
@@ -107,6 +119,8 @@ public class GameNewFragment extends BaseFragment implements MyPullUpListViewCal
 		
 		explosiveHeadlinesLin.setOnClickListener(this);
 		allHeadlinesLin.setOnClickListener(this);
+		loadView.loadAgain(this);
+		hotLoadView.loadAgain(this);
 		
 		lastGameAdapter = new GameAdapter(activity, lastGameInfos, false, false);
 		hotGameAdapter = new GameAdapter(activity, hotGameInfos, false, false);
@@ -125,6 +139,8 @@ public class GameNewFragment extends BaseFragment implements MyPullUpListViewCal
 		UIUtil.setViewSize(allHeadlinesImg, 56 * MetricsTool.Rx, 56 * MetricsTool.Rx);
 		UIUtil.setViewHeight(latestListView, MetricsTool.height - 75 * MetricsTool.Ry - 180 * MetricsTool.Rx - 180 * MetricsTool.Rx );
 		UIUtil.setViewHeight(hotListView, MetricsTool.height - 75 * Ry - 180 * Rx - 180 * Rx );
+		UIUtil.setViewHeight(hotLoadView, MetricsTool.height - 75 * Ry - 180 * Rx - 180 * Rx );
+		UIUtil.setViewHeight(listViewRel, MetricsTool.height - 75 * Ry - 180 * Rx - 180 * Rx );
 		
 		UIUtil.setTextSize(explosiveHeadlinesTx, 40);
 		UIUtil.setTextSize(allHeadlinesTx, 40);
@@ -134,6 +150,7 @@ public class GameNewFragment extends BaseFragment implements MyPullUpListViewCal
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+		
 	}
 
 	@Override
@@ -211,6 +228,8 @@ public class GameNewFragment extends BaseFragment implements MyPullUpListViewCal
 							}
 						}
 					}
+				}else if (rankInfo != null && rankInfo.getStatus() == 0) {
+					Toast.makeText(activity, R.string.notMore, Toast.LENGTH_SHORT).show();
 				}
 				if (isFirstLoad) {
 					isFirstLoad = false;
@@ -225,6 +244,7 @@ public class GameNewFragment extends BaseFragment implements MyPullUpListViewCal
 			@Override
 			public void onErrorResponse(VolleyError arg0) {
 				// TODO Auto-generated method stub
+				loadView.loadDataFail();
 				latestListView.refreshFinish();
 				latestLoading = false;
 			}
@@ -243,6 +263,9 @@ public class GameNewFragment extends BaseFragment implements MyPullUpListViewCal
 			@Override
 			public void onResponse(String arg0) {
 				// TODO Auto-generated method stub
+				hotLoadView.loadDataSuccess();
+				hotLoadView.setVisibility(View.GONE);
+				hotListView.setVisibility(View.VISIBLE);
 				RankInfo rankInfo = JSON.parseObject(arg0.toString(), RankInfo.class);
 				if (rankInfo != null && rankInfo.getStatus() == 1 && rankInfo.getData() != null) {
 					hotPageNum++;
@@ -265,16 +288,19 @@ public class GameNewFragment extends BaseFragment implements MyPullUpListViewCal
 							}
 						}
 					}
-					hotGameAdapter.notifyDataSetChanged();
-					hotListView.refreshFinish();
-					hotLoading = false;
+				}else if (rankInfo != null && rankInfo.getStatus() == 0) {
+					Toast.makeText(activity, R.string.notMore, Toast.LENGTH_SHORT).show();
 				}
+				hotListView.refreshFinish();
+				hotGameAdapter.notifyDataSetChanged();
+				hotLoading = false;
 			}
 		}, url, new ErrorListener(){
 
 			@Override
 			public void onErrorResponse(VolleyError arg0) {
 				// TODO Auto-generated method stub
+				hotLoadView.loadDataFail();
 				hotListView.refreshFinish();
 				hotLoading = false;
 			}
@@ -288,7 +314,7 @@ public class GameNewFragment extends BaseFragment implements MyPullUpListViewCal
 		if (viewId == R.id.latestListView) {
 			loadLastGameData(RequestTool.LATEST_GAME_URL + "?pageNum=" + latestPageNum);
 		}else if (viewId == R.id.hotListView) {
-			loadHotGameData(RequestTool.HOT_GAME_URL + "?pageNum=" + latestPageNum);
+			loadHotGameData(RequestTool.HOT_GAME_URL + "?pageNum=" + hotPageNum);
 		}
 	}
 
@@ -298,18 +324,29 @@ public class GameNewFragment extends BaseFragment implements MyPullUpListViewCal
 		int id = v.getId();
 		switch (id) {
 		case R.id.explosiveHeadlinesLin:
-			hotListView.setVisibility(View.GONE);
+			hotGameRel.setVisibility(View.GONE);
 			latestListView.setVisibility(View.VISIBLE);
+			explosiveHeadlinesLin.setBackgroundColor(getResources().getColor(R.color.sortTitleColor));
+			allHeadlinesLin.setBackgroundColor(getResources().getColor(R.color.itemDesColor));
 			break;
 
 		case R.id.allHeadlinesLin:
 			latestListView.setVisibility(View.GONE);
-			hotListView.setVisibility(View.VISIBLE);
+			hotGameRel.setVisibility(View.VISIBLE);
+			explosiveHeadlinesLin.setBackgroundColor(getResources().getColor(R.color.itemDesColor));
+			allHeadlinesLin.setBackgroundColor(getResources().getColor(R.color.sortTitleColor));
 			if (isFirst) {
 				isFirst = false;
 				loadHotGameData(RequestTool.HOT_GAME_URL);
 			}
 			break;
+		}
+		if (loadView.getLoadBtn() == v) {
+			loadView.showLoading();
+			loadPagerData(RequestTool.SPREAD_URL);
+		}else if (hotLoadView.getLoadBtn() == v) {
+			hotLoadView.showLoading();
+			loadHotGameData(RequestTool.HOT_GAME_URL);
 		}
 	}
 	
