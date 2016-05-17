@@ -3,8 +3,10 @@ package com.jiqu.tools;
 import java.io.IOException;
 import java.io.InputStream;
 import java.text.DecimalFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
 
 import com.jiqu.application.StoreApplication;
@@ -114,6 +116,11 @@ public class UIUtil {
 			return 0 + "KB";
 		}
 	}
+	
+	public static String getFormatedDateTime(String pattern, long dateTime) {
+        SimpleDateFormat sDateFormat = new SimpleDateFormat(pattern);
+        return sDateFormat.format(new Date(dateTime + 0));
+    }
 
 	public static void showToast(int stringId) {
 		Toast.makeText(StoreApplication.context, StoreApplication.context.getResources().getString(stringId), Toast.LENGTH_SHORT).show();

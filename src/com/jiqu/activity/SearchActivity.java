@@ -1,11 +1,14 @@
 package com.jiqu.activity;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
 import org.json.JSONObject;
 
+import android.R.integer;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -25,6 +28,7 @@ import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import com.alibaba.fastjson.JSON;
+import com.android.volley.Request.Method;
 import com.android.volley.Response.ErrorListener;
 import com.android.volley.Response.Listener;
 import com.android.volley.VolleyError;
@@ -32,9 +36,13 @@ import com.jiqu.adapter.GameAdapter;
 import com.jiqu.database.DownloadAppinfo;
 import com.jiqu.download.DownloadManager;
 import com.jiqu.download.StringUtil;
+import com.jiqu.interfaces.SearcheListener;
 import com.jiqu.object.GameDetailInfo;
 import com.jiqu.object.GameInfo;
 import com.jiqu.object.InstalledApp;
+import com.jiqu.object.SearchIndexInfo;
+import com.jiqu.object.SearchIndexItem;
+import com.jiqu.object.SearchIndexItemInfo;
 import com.jiqu.object.SearchInfo;
 import com.jiqu.object.SearchKeyword;
 import com.jiqu.store.BaseActivity;
@@ -44,7 +52,9 @@ import com.jiqu.tools.RequestTool;
 import com.jiqu.tools.UIUtil;
 import com.jiqu.view.SearchItemView;
 
-public class SearchActivity extends BaseActivity implements OnClickListener,Listener<JSONObject>,ErrorListener{
+public class SearchActivity extends BaseActivity implements OnClickListener,Listener<String>,ErrorListener,SearcheListener{
+	private final String SEARCH_INDEX_REQUEST = "searchIndexRequest";
+	private final String SEARCH_REQUEST = "searchRequest";
 	private RelativeLayout searchLayout;
 	private Button backBtn;
 	private RelativeLayout searchEditLayout;
@@ -61,10 +71,10 @@ public class SearchActivity extends BaseActivity implements OnClickListener,List
 	protected void onCreate(Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
 		super.onCreate(savedInstanceState);
+		requestTool = RequestTool.getInstance();
 		
 		initView();
 		
-		requestTool = RequestTool.getInstance();
 	}
 
 	@Override
@@ -86,39 +96,6 @@ public class SearchActivity extends BaseActivity implements OnClickListener,List
 		backBtn.setOnClickListener(this);
 		searchBtn.setOnClickListener(this);
 		
-		List<SearchKeyword> keywords = new ArrayList<SearchKeyword>();
-		for(int j = 0 ; j < 4 ; j++){
-			keywords.clear();
-			for(int i = 0;i <6;i++){
-				SearchKeyword searchKeyword = new SearchKeyword();
-				searchKeyword.setKeyword("德玛西亚");
-				if (j == 0) {
-					searchKeyword.setBackgroundType(1);
-				}
-				keywords.add(searchKeyword);
-			}
-			SearchItemView itemView = new SearchItemView(this);
-			itemView.setData(keywords);
-			if (j == 0) {
-				itemView.titleImg.setBackgroundResource(R.drawable.sousuo2);
-				itemView.titleContent.setText("艾欧尼亚");
-			}else {
-				itemView.titleContent.setText("裁决之地");
-				itemView.titleImg.setVisibility(View.GONE);
-			}
-			keywordLin.setOrientation(LinearLayout.VERTICAL);
-			if (j != 0) {
-				ImageView imageView = new ImageView(this);
-				LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(android.widget.LinearLayout.LayoutParams.MATCH_PARENT, (int)(4 * Ry));
-				lp.topMargin = (int)(30 * Ry);
-				lp.bottomMargin = (int)(30 * Ry);
-				imageView.setLayoutParams(lp);
-				imageView.setBackgroundResource(R.drawable.xian);
-				keywordLin.addView(imageView);
-			}
-			keywordLin.addView(itemView);
-		}
-		
 		initViewSize();
 		
 		adapter = new GameAdapter(this, gameInfos,false,false);
@@ -132,6 +109,78 @@ public class SearchActivity extends BaseActivity implements OnClickListener,List
 //				startActivity(new Intent(SearchActivity.this, DetailActivity.class).putExtra("p_id", gameInfos.get(position).getP_id()));
 			}
 		});
+		
+		loadData(RequestTool.SEARCHE_INDEX_URL);
+	}
+	
+	private void setData(SearchIndexItem item){
+		SearchIndexItemInfo[] hots = item.getHot();
+		SearchIndexItemInfo[] lists = item.getList();
+		int hotLength = hots.length;
+		int listLength = lists.length;
+		List<SearchKeyword> hotKeywords = new ArrayList<SearchKeyword>();
+		List<SearchKeyword> listKeywords = new ArrayList<SearchKeyword>();
+		SearchItemView hotItemView = new SearchItemView(this);
+		SearchItemView listItemView = new SearchItemView(this);
+		hotItemView.setSearchListener(this);
+		listItemView.setSearchListener(this);
+		keywordLin.setOrientation(LinearLayout.VERTICAL);
+		for (int i = 0; i < hotLength; i++) {
+			SearchKeyword keyword = new SearchKeyword();
+			keyword.setKeyword(hots[i].getContent());
+			keyword.setBackgroundType(1);
+			hotKeywords.add(keyword);
+		}
+		hotItemView.titleImg.setBackgroundResource(R.drawable.sousuo2);
+		hotItemView.titleContent.setText("热门");
+		hotItemView.setData(hotKeywords);
+		keywordLin.addView(hotItemView);
+		
+		for (int i = 0; i < listLength; i++) {
+			SearchKeyword keyword = new SearchKeyword();
+			keyword.setKeyword(lists[i].getContent());
+			listKeywords.add(keyword);
+		}
+		listItemView.titleContent.setText("");
+		listItemView.titleImg.setVisibility(View.GONE);
+		listItemView.setData(listKeywords);
+		ImageView imageView = new ImageView(this);
+		LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(android.widget.LinearLayout.LayoutParams.MATCH_PARENT, (int)(4 * Ry));
+		lp.topMargin = (int)(30 * Ry);
+		lp.bottomMargin = (int)(30 * Ry);
+		imageView.setLayoutParams(lp);
+		imageView.setBackgroundResource(R.drawable.xian);
+		keywordLin.addView(imageView);
+		keywordLin.addView(listItemView);
+	}
+	
+	private void loadData(String url){
+		requestTool.getMap().clear();
+		requestTool.startStringRequest(Method.GET, new Listener<String>() {
+
+			@Override
+			public void onResponse(String arg0) {
+				// TODO Auto-generated method stub
+				SearchIndexInfo searchInfo = JSON.parseObject(arg0, SearchIndexInfo.class);
+				if (searchInfo != null) {
+					if (searchInfo.getStatus() == 1) {
+						setData(searchInfo.getData());
+					}
+				}
+			}
+		}, url, new ErrorListener() {
+
+			@Override
+			public void onErrorResponse(VolleyError arg0) {
+				// TODO Auto-generated method stub
+				
+			}
+		}, requestTool.getMap(), SEARCH_INDEX_REQUEST);
+	}
+	
+	private void search(String url){
+		requestTool.getMap().clear();
+		requestTool.startStringRequest(Method.GET, this, url, this, requestTool.getMap(), SEARCH_REQUEST);
 	}
 	
 	private void initViewSize(){
@@ -181,9 +230,13 @@ public class SearchActivity extends BaseActivity implements OnClickListener,List
 		}else if (v.getId() == R.id.searchBtn) {
 			String text = getSearchText();
 			if (!TextUtils.isEmpty(text)) {
-				requestTool.initParam();
-				requestTool.setParam("text", text);
-				requestTool.startSearchRequest(this, this);
+				try {
+					text = URLEncoder.encode(text, "utf-8");
+				} catch (UnsupportedEncodingException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				search(RequestTool.SEARCH_URL + "?keyword=" + text);
 			}else {
 				Toast.makeText(this, "请输入要搜索的内容", Toast.LENGTH_SHORT).show();
 			}
@@ -197,11 +250,12 @@ public class SearchActivity extends BaseActivity implements OnClickListener,List
 	}
 
 	@Override
-	public void onResponse(JSONObject arg0) {
+	public void onResponse(String arg0) {
 		// TODO Auto-generated method stub
+		Log.i("TAG", arg0);
 		keywordLin.setVisibility(View.INVISIBLE);
 		searchListView.setVisibility(View.VISIBLE);
-		SearchInfo searchInfo = JSON.parseObject(arg0.toString(), SearchInfo.class);
+		SearchInfo searchInfo = JSON.parseObject(arg0, SearchInfo.class);
 		if (searchInfo != null && searchInfo.getItem() != null) {
 			gameInfos.clear();
 			Collections.addAll(gameInfos, searchInfo.getItem());
@@ -222,5 +276,11 @@ public class SearchActivity extends BaseActivity implements OnClickListener,List
 //			}
 			adapter.notifyDataSetChanged();
 		}
+	}
+
+	@Override
+	public void onSearch(String keyword) {
+		// TODO Auto-generated method stub
+		search(RequestTool.SEARCH_URL + "?keyword=" + keyword);
 	}
 }

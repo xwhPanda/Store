@@ -185,6 +185,7 @@ public class InformationNewFragment extends BaseFragment implements OnClickListe
 		if (hotHeadlineLoading) {
 			return;
 		}
+		hotHeadlineListView.startRefresh();
 		requestTool.getMap().clear();
 		requestTool.startStringRequest(Method.GET, new Listener<String>() {
 
@@ -227,6 +228,7 @@ public class InformationNewFragment extends BaseFragment implements OnClickListe
 		if (allHeadlineLoading) {
 			return;
 		}
+		allHeadlineListView.startRefresh();
 		requestTool.getMap().clear();
 		requestTool.startStringRequest(Method.GET, new Listener<String>() {
 
@@ -300,13 +302,17 @@ public class InformationNewFragment extends BaseFragment implements OnClickListe
 	public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 		// TODO Auto-generated method stub
 		if (parent.getId() == R.id.hotHeadlineListView) {
-			startActivity(new Intent(getActivity(), HeadlineActivity.class)
-			.putExtra("isWeb", true)
-			.putExtra("url", hotInformations.get(position).getUrl()));
+			if (position < hotInformations.size()) {
+				startActivity(new Intent(getActivity(), HeadlineActivity.class)
+				.putExtra("isWeb", true)
+				.putExtra("url", hotInformations.get(position).getUrl()));
+			}
 		}else if (parent.getId() == R.id.allHeadlineListView) {
-			startActivity(new Intent(getActivity(), HeadlineActivity.class)
-			.putExtra("isWeb", true)
-			.putExtra("url", allInformations.get(position).getUrl()));
+			if (position < allInformations.size()) {
+				startActivity(new Intent(getActivity(), HeadlineActivity.class)
+				.putExtra("isWeb", true)
+				.putExtra("url", allInformations.get(position).getUrl()));
+			}
 		}
 	}
 }

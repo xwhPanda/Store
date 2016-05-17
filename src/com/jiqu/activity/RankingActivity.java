@@ -28,7 +28,6 @@ import com.jiqu.adapter.RecommendGameAdapter;
 import com.jiqu.database.DownloadAppinfo;
 import com.jiqu.download.DownloadManager;
 import com.jiqu.object.GameInfo;
-import com.jiqu.object.GameInformation;
 import com.jiqu.object.InstalledApp;
 import com.jiqu.object.RankInfo;
 import com.jiqu.store.BaseActivity;

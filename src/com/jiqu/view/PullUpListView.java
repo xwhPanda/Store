@@ -4,6 +4,7 @@ import com.vr.store.R;
 
 import android.content.Context;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.AbsListView;
@@ -61,11 +62,17 @@ public class PullUpListView extends ListView implements OnScrollListener {
 		addFooterView(footerView);
 	}
 	
+	public void startRefresh(){
+		Log.i("TAG", "startRefresh");
+		addFooterView(footerView);
+	}
+	
 	/**
 	 * 刷新完成，隐藏底部布局
 	 */
 	public void refreshFinish(){
-		footerView.setVisibility(View.GONE);
+		Log.i("TAG", "refreshFinish");
+		removeFooterView(footerView);
 	}
 
 	public void onScrollStateChanged(AbsListView view, int scrollState) {
@@ -86,10 +93,8 @@ public class PullUpListView extends ListView implements OnScrollListener {
 		if (footerView != null) {
 			//判断可视Item是否能在当前页面完全显示
 			if (visibleItemCount == totalItemCount) {
-				// removeFooterView(footerView);
 				footerView.setVisibility(View.GONE);//隐藏底部布局
 			} else {
-				// addFooterView(footerView);
 				footerView.setVisibility(View.VISIBLE);//显示底部布局
 			}
 		}

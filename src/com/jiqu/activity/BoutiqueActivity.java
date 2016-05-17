@@ -37,7 +37,6 @@ import com.jiqu.adapter.ViewPagerAdapter;
 import com.jiqu.application.StoreApplication;
 import com.jiqu.download.DownloadManager;
 import com.jiqu.object.GameInfo;
-import com.jiqu.object.GameInformation;
 import com.jiqu.object.SpecialInfo;
 import com.jiqu.store.BaseActivity;
 import com.vr.store.R;

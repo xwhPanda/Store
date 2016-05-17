@@ -1,10 +1,19 @@
 package com.jiqu.fragment;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
+import com.alibaba.fastjson.JSON;
+import com.android.volley.Request.Method;
+import com.android.volley.Response.ErrorListener;
+import com.android.volley.Response.Listener;
+import com.android.volley.VolleyError;
 import com.jiqu.activity.GameEvaluationInformationActivity;
+import com.jiqu.activity.GameEvaluationWebInfoActivity;
 import com.jiqu.adapter.EvaluationGridViewAdapter;
+import com.jiqu.object.EvaluationInfo;
+import com.jiqu.object.EvaluationItemInfo;
 import com.jiqu.object.GameInformation;
 import com.vr.store.R;
 import com.jiqu.tools.MetricsTool;
@@ -16,6 +25,7 @@ import com.jiqu.view.PullToRefreshLayout.OnRefreshListener;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -23,13 +33,18 @@ import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.BaseAdapter;
 import android.widget.GridView;
+import android.widget.Toast;
 
 public class EvaluationFragment extends BaseFragment implements OnRefreshListener{
-	private float Rx,Ry;
+	private final String EVALUATION_REQUEST = "evaluationRequest";
 	private View view;
 	private PullToRefreshLayout pullToRefreshLayout;
 	private GridView evaluationGridView;
+	private List<EvaluationItemInfo> informations = new ArrayList<EvaluationItemInfo>();
+	private EvaluationGridViewAdapter adapter;
 	private RequestTool requestTool;
+	private int pageNum = 1;
+	private boolean isRefreshing = false;
 	
 	@Override
 	public void init() {
@@ -46,20 +61,16 @@ public class EvaluationFragment extends BaseFragment implements OnRefreshListene
 		
 		initViewSize();
 		
-		List<GameInformation> informations = new ArrayList<GameInformation>();
-		for(int i = 0; i < 30 ; i++){
-			GameInformation information = new GameInformation();
-			informations.add(information);
-		}
-		
-		evaluationGridView.setAdapter(new EvaluationGridViewAdapter(getActivity(), informations));
+		adapter = new EvaluationGridViewAdapter(getActivity(), informations);
+		evaluationGridView.setAdapter(adapter);
 		
 		evaluationGridView.setOnItemClickListener(new OnItemClickListener() {
 
 			@Override
 			public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 				// TODO Auto-generated method stub
-				startActivity(new Intent(getActivity(), GameEvaluationInformationActivity.class));
+				startActivity(new Intent(getActivity(), GameEvaluationWebInfoActivity.class)
+				.putExtra("info", informations.get(position)));
 			}
 		});
 		
@@ -69,6 +80,43 @@ public class EvaluationFragment extends BaseFragment implements OnRefreshListene
 	@Override
 	public void initData() {
 		// TODO Auto-generated method stub
+		loadData(RequestTool.EVALUATION_URL);
+	}
+	
+	private void loadData(String url){
+		requestTool.getMap().clear();
+		requestTool.startStringRequest(Method.GET, new Listener<String>() {
+
+			@Override
+			public void onResponse(String arg0) {
+				// TODO Auto-generated method stub
+				EvaluationInfo evaluationInfo = JSON.parseObject(arg0, EvaluationInfo.class);
+				if (evaluationInfo != null) {
+					if (evaluationInfo.getStatus() == 1) {
+						pageNum++;
+						Collections.addAll(informations, evaluationInfo.getData());
+						adapter.notifyDataSetChanged();
+					}else if (evaluationInfo.getStatus() == 0) {
+						Toast.makeText(activity, R.string.notMore, Toast.LENGTH_SHORT).show();
+					}
+				}
+				if (isRefreshing) {
+					isRefreshing = false;
+					pullToRefreshLayout.refreshFinish(PullToRefreshLayout.SUCCEED);
+				}
+			}
+		}, url, new ErrorListener(){
+
+			@Override
+			public void onErrorResponse(VolleyError arg0) {
+				// TODO Auto-generated method stub
+				if (isRefreshing) {
+					isRefreshing = false;
+					pullToRefreshLayout.refreshFinish(PullToRefreshLayout.FAIL);
+				}
+			}
+			
+		}, requestTool.getMap(), EVALUATION_REQUEST);
 	}
 	
 	private void initViewSize(){
@@ -79,12 +127,13 @@ public class EvaluationFragment extends BaseFragment implements OnRefreshListene
 	@Override
 	public void onRefresh(PullToRefreshLayout pullToRefreshLayout) {
 		// TODO Auto-generated method stub
-		
+		Log.i("TAG", "onRefresh");
 	}
 
 	@Override
 	public void onLoadMore(PullToRefreshLayout pullToRefreshLayout) {
 		// TODO Auto-generated method stub
-		
+		isRefreshing = true;
+		loadData(RequestTool.EVALUATION_URL + "?pageNum=" + pageNum);
 	}
 }

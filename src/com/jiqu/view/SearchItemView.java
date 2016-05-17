@@ -3,6 +3,7 @@ package com.jiqu.view;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.jiqu.interfaces.SearcheListener;
 import com.jiqu.object.SearchKeyword;
 import com.vr.store.R;
 import com.jiqu.tools.MetricsTool;
@@ -24,6 +25,7 @@ public class SearchItemView extends RelativeLayout {
 	public TextView titleContent;
 	public LinearLayout keywordLin;
 	private List<SearchKeyword> keywords;
+	private SearcheListener listener;
 	private Context context;
 	
 	public SearchItemView(Context context) {
@@ -66,14 +68,19 @@ public class SearchItemView extends RelativeLayout {
 		}
 	}
 	
-	public void setData(List<SearchKeyword> keywordList){
+	public void setSearchListener(SearcheListener listener){
+		this.listener = listener;
+	}
+	
+	public void setData(final List<SearchKeyword> keywordList){
 		keywords = keywordList;
 		int size = keywordList.size();
 		List<LinearLayout> layouts = new ArrayList<LinearLayout>();
 		int index = 0;
 		if (size > 0) {
 			for(int i = 0;i < size;i++){
-				if (i % 3 == 0 && i < size - 1) {
+				final SearchKeyword keyword = keywordList.get(i);
+				if (i % 3 == 0 && i < size) {
 					LinearLayout layout = new LinearLayout(context);
 					layout.setOrientation(LinearLayout.HORIZONTAL);
 					index = i / 3;
@@ -84,9 +91,20 @@ public class SearchItemView extends RelativeLayout {
 						params.topMargin = (int)(30 * MetricsTool.Rx);
 					}
 					layout.setLayoutParams(params);
-					layouts.add(layout);
+					layouts.add(layout); 
 				}
 				TextView textView = new TextView(context);
+				textView.setClickable(true);
+				textView.setOnClickListener(new OnClickListener() {
+					
+					@Override
+					public void onClick(View v) {
+						// TODO Auto-generated method stub
+						if (listener != null) {
+							listener.onSearch(keyword.getKeyword());
+						}
+					}
+				});
 				textView.setText(keywordList.get(i).getKeyword());
 				if (keywordList.get(i).getBackgroundType() == 0) {
 					textView.setTextColor(getResources().getColor(R.color.blue));

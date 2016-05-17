@@ -5,14 +5,12 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:ignore="MissingPrefix" >
-
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
-        android:paddingBottom="20dp"
-        android:paddingTop="20dp" >
-
+        android:paddingBottom="15dp"
+        android:paddingTop="15dp" >
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -29,8 +27,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerVertical="true"
-                android:layout_marginLeft="60dp"
-                android:visibility="gone" />
+                android:layout_marginLeft="60dp"/>
 
             <TextView
                 android:id="@+id/loadstate_tv"
@@ -38,10 +35,9 @@
                 android:layout_height="wrap_content"
                 android:layout_centerInParent="true"
                 fontPath="fonts/lantinghei.ttf"
-                android:text="666"
-                android:textColor="@color/black"
-                android:textSize="16sp" 
-                android:visibility="gone"/>
+                android:text="正在加载..."
+                android:textColor="@color/white"
+                android:textSize="16sp"/>
 
             <ImageView
                 android:id="@+id/loadstate_iv"
@@ -52,6 +48,5 @@
                 android:layout_toLeftOf="@id/loadstate_tv"
                 android:visibility="gone" />
         </RelativeLayout>
-    </RelativeLayout>
-
+</RelativeLayout>
 </RelativeLayout>

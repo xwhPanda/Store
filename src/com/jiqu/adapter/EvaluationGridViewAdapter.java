@@ -2,6 +2,11 @@ package com.jiqu.adapter;
 
 import java.util.List;
 
+import com.android.volley.toolbox.ImageLoader;
+import com.android.volley.toolbox.ImageLoader.ImageListener;
+import com.jiqu.application.StoreApplication;
+import com.jiqu.object.EvaluationInfo;
+import com.jiqu.object.EvaluationItemInfo;
 import com.jiqu.object.GameInformation;
 import com.vr.store.R;
 import com.jiqu.tools.MetricsTool;
@@ -21,10 +26,10 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 public class EvaluationGridViewAdapter extends BaseAdapter {
-	private List<GameInformation> informations;
+	private List<EvaluationItemInfo> informations;
 	private LayoutInflater inflater;
 	
-	public EvaluationGridViewAdapter(Context context,List<GameInformation> informations){
+	public EvaluationGridViewAdapter(Context context,List<EvaluationItemInfo> informations){
 		this.informations = informations;
 		inflater = LayoutInflater.from(context);
 	}
@@ -51,6 +56,7 @@ public class EvaluationGridViewAdapter extends BaseAdapter {
 	public View getView(int position, View convertView, ViewGroup parent) {
 		// TODO Auto-generated method stub
 		Holder holder = null;
+		EvaluationItemInfo info = informations.get(position);
 		if (convertView == null) {
 			holder = new Holder();
 			convertView = inflater.inflate(R.layout.evaluation_item, null);
@@ -84,12 +90,12 @@ public class EvaluationGridViewAdapter extends BaseAdapter {
 		}else {
 			holder = (Holder)convertView.getTag();
 		}
-//		holder.gameIcon.setBackgroundResource(R.drawable.touxiang);
-//		holder.scoreLin.setBackgroundResource(R.drawable.ic_launcher);
-		holder.nameAndDes.setText("英雄联盟");
-		holder.gameEvaluation.setText("僵尸粉丝哦你健身房分裂势力供货商");
-		holder.time.setText("2010-8-12");
-		
+		ImageListener listener = ImageLoader.getImageListener(holder.gameIcon, R.drawable.evaluation_default, R.drawable.evaluation_default);
+		StoreApplication.getInstance().getImageLoader().get(info.getPic(), listener);
+		holder.agency.setText(info.getGtop());
+		holder.nameAndDes.setText(info.getTitle());
+		holder.gameEvaluation.setText(info.getDescript());
+		holder.time.setText(UIUtil.getFormatedDateTime("yyyy-MM-dd", Long.parseLong(info.getTime()) * 1000));
 		return convertView;
 	}
 

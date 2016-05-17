@@ -196,6 +196,7 @@ public class GameNewFragment extends BaseFragment implements MyPullUpListViewCal
 		if (latestLoading) {
 			return;
 		}
+		latestListView.startRefresh();
 		latestLoading = true;
 		requestTool.getMap().clear();
 		requestTool.startStringRequest(Method.GET, new Listener<String>() {
@@ -256,6 +257,7 @@ public class GameNewFragment extends BaseFragment implements MyPullUpListViewCal
 		if (hotLoading) {
 			return;
 		}
+		hotListView.startRefresh();
 		hotLoading = true;
 		requestTool.getMap().clear();
 		requestTool.startStringRequest(Method.GET, new Listener<String>() {

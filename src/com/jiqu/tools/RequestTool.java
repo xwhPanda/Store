@@ -90,6 +90,10 @@ public class RequestTool {
 	public static final String ALL_HEADLINE_URL = "http://ht.163zs.com/index.php/Api/News/getAllNews";
 	/** 评测URL **/
 	public static final String EVALUATION_URL = "http://ht.163zs.com/index.php/Api/Reviews/getReviewsList";
+	/** 搜索首页URL **/
+	public static final String SEARCHE_INDEX_URL = "http://ht.163zs.com/index.php/Api/Search/index";
+	/** 搜索URL **/
+	public static final String SEARCH_URL = "http://ht.163zs.com/index.php/Api/Search/getGameList";
 	
 	private Map<String, Object> paramMap = new HashMap<String, Object>();
 

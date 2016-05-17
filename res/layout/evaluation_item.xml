@@ -16,7 +16,8 @@
         <ImageView
             android:id="@+id/gameIcon"
             android:layout_width="match_parent"
-            android:layout_height="@dimen/gameGridViewImgH"
+            android:layout_height="wrap_content"
+            android:scaleType="fitXY"
             android:background="@color/red" />
 
         <TextView

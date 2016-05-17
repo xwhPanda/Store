@@ -96,6 +96,8 @@
                     android:layout_height="match_parent"
                     android:background="@color/bottomBgColor"
                     android:divider="@drawable/divider"
+	                android:fastScrollEnabled="false"
+					android:smoothScrollbar="true"
                     android:dividerHeight="1dp"
                     android:scrollbars="none" />
 
@@ -116,6 +118,8 @@
 	                    android:layout_height="match_parent"
 	                    android:background="@color/bottomBgColor"
 	                    android:divider="@drawable/divider"
+	                    android:fastScrollEnabled="false"
+						android:smoothScrollbar="true"
 	                    android:dividerHeight="1dp"
 	                    android:scrollbars="none"
 	                    android:visibility="gone" />

@@ -165,6 +165,10 @@
             android:name="com.jiqu.activity.DetailActivity"
             android:screenOrientation="portrait" >
         </activity>
+        <activity 
+            android:name="com.jiqu.activity.GameEvaluationWebInfoActivity"
+            android:screenOrientation="portrait">
+        </activity>
         <activity android:name="com.jiqu.activity.WeiboShareActivity"
             android:configChanges="keyboardHidden|orientation"
             android:screenOrientation="portrait" >
