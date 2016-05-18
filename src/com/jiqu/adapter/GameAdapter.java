@@ -3,7 +3,9 @@ package com.jiqu.adapter;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.android.volley.VolleyError;
 import com.android.volley.toolbox.ImageLoader;
+import com.android.volley.toolbox.ImageLoader.ImageContainer;
 import com.android.volley.toolbox.ImageLoader.ImageListener;
 import com.jiqu.activity.SortInfoActivity;
 import com.jiqu.application.StoreApplication;
@@ -161,7 +163,6 @@ public class GameAdapter extends BaseAdapter implements DownloadObserver{
 			break;
 
 		case 0:
-			Log.i("TAG", "getView()");
 			if (convertView == null) {
 				holder2 = new Holder2(context,hotIconVisible,subscriptVisible);
 				convertView = holder2.getRootView();
@@ -284,12 +285,12 @@ public class GameAdapter extends BaseAdapter implements DownloadObserver{
 							|| mState == DownloadManager.STATE_NEED_UPDATE) {
 						if (NetReceiver.NET_TYPE == NetReceiver.NET_WIFI) {
 							if (FileUtil.checkSDCard()) {
-								if (Float.parseFloat(mData.getAppSize()) * 1024 * 1024 * 3 >= FileUtil.getSDcardAvailableSpace()) {
+								if (Float.parseFloat(mData.getAppSize()) * 3 >= FileUtil.getSDcardAvailableSpace()) {
 									Toast.makeText(context, "可用空间不足", Toast.LENGTH_SHORT).show();
 									return;
 								}
 							}else {
-								if (Float.parseFloat(mData.getAppSize()) * 1024 * 1024 * 3 >= FileUtil.getDataStorageAvailableSpace()) {
+								if (Float.parseFloat(mData.getAppSize()) * 3 >= FileUtil.getDataStorageAvailableSpace()) {
 									Toast.makeText(context, "可用空间不足", Toast.LENGTH_SHORT).show();
 									return;
 								}
@@ -423,27 +424,37 @@ public class GameAdapter extends BaseAdapter implements DownloadObserver{
 		
 		private void refreshView(){
 			gameName.setText(mData.getAppName());
-			if (mData.getDes().contains("<p>")) {
-				gameDes.setText(Html.fromHtml(mData.getDes()));
-			}else {
-				gameDes.setText(mData.getDes());
-			}
+			gameDes.setText(mData.getDes());
 			gameScore.setRating(Float.parseFloat(mData.getScore()));
-			try {
-				gameSize.setText(FileUtil.getSize(Long.parseLong(mData.getAppSize())));
-			} catch (Exception e) {
-				gameSize.setText(mData.getAppSize() + "M");
-			}
-			Bitmap bitmap = UIUtil.readBitmap(context, R.drawable.default_tubiao);
-			ImageListener listener = ImageLoader.getImageListener(icon,bitmap, bitmap);
-			StoreApplication.getInstance().getImageLoader().get(mData.getIconUrl(), listener);
+			gameSize.setText(FileUtil.getSize(Long.parseLong(mData.getAppSize())));
+				ImageListener listener = new ImageListener() {
+					
+					@Override
+					public void onErrorResponse(VolleyError arg0) {
+						// TODO Auto-generated method stub
+						icon.setImageResource(R.drawable.default_tubiao);
+					}
+					
+					@Override
+					public void onResponse(ImageContainer arg0, boolean arg1) {
+						// TODO Auto-generated method stub
+						Log.i("TAG", mData.getAppName() + "onResponse");
+						if (arg0.getBitmap() != null) {
+							icon.setImageBitmap(arg0.getBitmap());
+							mData.setIconByte(UIUtil.Bitmap2Bytes(arg0.getBitmap()));
+						}else {
+							icon.setImageResource(R.drawable.default_tubiao);
+						}
+					}
+				};
+				StoreApplication.getInstance().getImageLoader().get(mData.getIconUrl(), listener);
 			
 			refreshState(mState, true);
 		}
 		
 		public void refreshState(int state ,boolean isFirst){
 			mState = state;
-			downloadBtn.clearAnimation();
+//			downloadBtn.clearAnimation();
 			switch (mState) {
 			case DownloadManager.STATE_NONE:
 				downloadBtn.setBackgroundResource(R.drawable.download_selector);
@@ -460,9 +471,9 @@ public class GameAdapter extends BaseAdapter implements DownloadObserver{
 				break;
 			case DownloadManager.STATE_WAITING:
 				downloadBtn.setBackgroundResource(R.drawable.dengdai);
-				Animation animation = AnimationUtils.loadAnimation(context, R.anim.wating_rorating); 
-				downloadBtn.setAnimation(animation);
-				downloadBtn.startAnimation(animation);
+//				Animation animation = AnimationUtils.loadAnimation(context, R.anim.wating_rorating);
+//				downloadBtn.setAnimation(animation);
+//				downloadBtn.startAnimation(animation);
 				downloadBtn.setText("等待下载");
 				break;
 			case DownloadManager.STATE_DOWNLOADING:

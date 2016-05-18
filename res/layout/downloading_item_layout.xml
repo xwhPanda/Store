@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:ignore="MissingPrefix" 
-    android:descendantFocusability="blocksDescendants">
+    android:descendantFocusability="afterDescendants">
 
     <CheckBox
         android:id="@+id/checkBox"
@@ -39,7 +39,6 @@
         android:layout_height="wrap_content"
         android:layout_alignLeft="@id/appName"
         android:layout_below="@id/appName"
-        android:background="@color/red"
         android:max="100" />
 
     <TextView

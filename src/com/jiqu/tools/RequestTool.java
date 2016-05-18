@@ -53,7 +53,7 @@ public class RequestTool {
 	/**重置密码URL**/
 	public static final String RESETPASSWORD_URL = "http://ht.163zs.com/index.php/Api/User/resetPasswd";
 	/**最新游戏URL**/
-	public static final String LATEST_GAME_URL = "http://mb.123sjzs.com/index.php/Game/latestGame";
+	public static final String LATEST_GAME_URL = "http://ht.163zs.com/index.php/Api/Game/latestGame";
 	/**最热游戏URL**/
 	public static final String HOT_GAME_URL = "http://ht.163zs.com/index.php/Api/Game/hotGame";
 	/**安装统计URL（第一次使用）**/
@@ -64,7 +64,7 @@ public class RequestTool {
 	public static final String SPECIAL_URL = "http://ht.163zs.com/index.php/Api/Recommend/getTopics";
 	/** 专题详情URL **/
 	public static final String SPECIAL_DETAIL_URL = "http://ht.163zs.com/index.php/Api/Recommend/getTopicsDetail";
-	/**好评榜URL**/
+	/** 好评榜URL**/
 	public static final String PRAISE_URL = "http://ht.163zs.com/index.php/Api/Recommend/getPraiseGold";
 	/** 最热榜 URL**/
 	public static final String HOT_URL = "http://ht.163zs.com/index.php/Api/Recommend/getHotGold";

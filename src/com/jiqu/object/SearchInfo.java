@@ -1,34 +1,27 @@
 package com.jiqu.object;
 
+import java.io.Serializable;
 import java.util.Arrays;
 
-public class SearchInfo {
-	private String text;
-	private int total_size;
-	private GameInfo[] item;
+public class SearchInfo implements Serializable{
+	private static final long serialVersionUID = 1L;
+	private int status;
+	private GameInfo[] data;
 	
-	public synchronized String getText() {
-		return text;
+	public synchronized int getStatus() {
+		return status;
 	}
-	public synchronized void setText(String text) {
-		this.text = text;
+	public synchronized void setStatus(int status) {
+		this.status = status;
 	}
-	public synchronized int getTotal_size() {
-		return total_size;
+	public synchronized GameInfo[] getData() {
+		return data;
 	}
-	public synchronized void setTotal_size(int total_size) {
-		this.total_size = total_size;
+	public synchronized void setData(GameInfo[] data) {
+		this.data = data;
 	}
-	public synchronized GameInfo[] getItem() {
-		return item;
-	}
-	public synchronized void setItem(GameInfo[] item) {
-		this.item = item;
-	}
-	
 	@Override
 	public String toString() {
-		return "SearchInfo [text=" + text + ", total_size=" + total_size + ", item=" + Arrays.toString(item) + "]";
+		return "SearchInfo [status=" + status + ", data=" + Arrays.toString(data) + "]";
 	}
-	
 }

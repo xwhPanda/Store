@@ -147,6 +147,7 @@ public class RecommendFragment extends BaseFragment implements OnRefreshListener
 		recommendListView = (PullableListView) view.findViewById(R.id.recommendListView);
 		
 		pullToRefreshLayout.setOnRefreshListener(this);
+		recommendListView.setCanPullUp(false);
 
 		initHeadView();
 

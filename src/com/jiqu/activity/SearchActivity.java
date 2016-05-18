@@ -25,6 +25,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.alibaba.fastjson.JSON;
@@ -50,6 +51,7 @@ import com.vr.store.R;
 import com.jiqu.tools.InstalledAppTool;
 import com.jiqu.tools.RequestTool;
 import com.jiqu.tools.UIUtil;
+import com.jiqu.view.LoadStateView;
 import com.jiqu.view.SearchItemView;
 
 public class SearchActivity extends BaseActivity implements OnClickListener,Listener<String>,ErrorListener,SearcheListener{
@@ -61,7 +63,10 @@ public class SearchActivity extends BaseActivity implements OnClickListener,List
 	private Button searchBtn;
 	private EditText searchEdit;
 	private LinearLayout keywordLin;
+	private RelativeLayout searchResultRel;
 	private ListView searchListView;
+	private LoadStateView searchLoadView;
+	private TextView noResultTx;
 	
 	private RequestTool requestTool;
 	private GameAdapter adapter;
@@ -89,6 +94,10 @@ public class SearchActivity extends BaseActivity implements OnClickListener,List
 		searchEditLayout = (RelativeLayout) findViewById(R.id.searchEditLayout);
 		searchBtn = (Button) findViewById(R.id.searchBtn);
 		searchEdit = (EditText) findViewById(R.id.searchEdit);
+		
+		searchResultRel = (RelativeLayout) findViewById(R.id.searchResultRel);
+		searchLoadView = (LoadStateView) findViewById(R.id.searchLoadView);
+		noResultTx = (TextView) findViewById(R.id.noResultTx);
 		
 		keywordLin = (LinearLayout) findViewById(R.id.keywordLin);
 		searchListView = (ListView) findViewById(R.id.searchListView);
@@ -230,6 +239,12 @@ public class SearchActivity extends BaseActivity implements OnClickListener,List
 		}else if (v.getId() == R.id.searchBtn) {
 			String text = getSearchText();
 			if (!TextUtils.isEmpty(text)) {
+				searchLoadView.setVisibility(View.VISIBLE);
+				searchLoadView.showLoading();
+				keywordLin.setVisibility(View.GONE);
+				searchResultRel.setVisibility(View.VISIBLE);
+				noResultTx.setVisibility(View.GONE);
+				searchListView.setVisibility(View.GONE);
 				try {
 					text = URLEncoder.encode(text, "utf-8");
 				} catch (UnsupportedEncodingException e) {
@@ -252,14 +267,18 @@ public class SearchActivity extends BaseActivity implements OnClickListener,List
 	@Override
 	public void onResponse(String arg0) {
 		// TODO Auto-generated method stub
-		Log.i("TAG", arg0);
+		searchLoadView.loadDataSuccess();
+		searchLoadView.setVisibility(View.GONE);
 		keywordLin.setVisibility(View.INVISIBLE);
-		searchListView.setVisibility(View.VISIBLE);
+		searchResultRel.setVisibility(View.VISIBLE);
 		SearchInfo searchInfo = JSON.parseObject(arg0, SearchInfo.class);
-		if (searchInfo != null && searchInfo.getItem() != null) {
-			gameInfos.clear();
-			Collections.addAll(gameInfos, searchInfo.getItem());
-			List<InstalledApp> apps = InstalledAppTool.getPersonalApp(this);
+		if (searchInfo != null) {
+			if (searchInfo.getStatus() == 1) {
+				noResultTx.setVisibility(View.GONE);
+				searchListView.setVisibility(View.VISIBLE);
+				gameInfos.clear();
+				Collections.addAll(gameInfos, searchInfo.getData());
+				List<InstalledApp> apps = InstalledAppTool.getPersonalApp(this);
 //			for (GameInfo gameInfo : gameInfos) {
 //				DownloadAppinfo info = DownloadManager.getInstance().getDownloadInfo(Long.parseLong(gameInfo.getP_id()));
 //				gameInfo.setAdapterType(1);
@@ -274,13 +293,25 @@ public class SearchActivity extends BaseActivity implements OnClickListener,List
 //					}
 //				}
 //			}
-			adapter.notifyDataSetChanged();
+				adapter.notifyDataSetChanged();
+				searchListView.setVisibility(View.VISIBLE);
+			}else if (searchInfo.getStatus() == 0) {
+				Log.i("TAG", "status : 0");
+				noResultTx.setVisibility(View.VISIBLE);
+				searchListView.setVisibility(View.GONE);
+			}
 		}
 	}
 
 	@Override
 	public void onSearch(String keyword) {
 		// TODO Auto-generated method stub
+		searchLoadView.setVisibility(View.VISIBLE);
+		searchLoadView.showLoading();
+		keywordLin.setVisibility(View.GONE);
+		searchResultRel.setVisibility(View.VISIBLE);
+		noResultTx.setVisibility(View.GONE);
+		searchListView.setVisibility(View.GONE);
 		search(RequestTool.SEARCH_URL + "?keyword=" + keyword);
 	}
 }

@@ -314,6 +314,7 @@ public class DownloadManagerActivity extends BaseActivity implements OnClickList
 			downloadingListShowing = false;
 			changeButtonState(downloaded);
 			downloadingList.setVisibility(View.INVISIBLE);
+			downloadingAdapter.showAllCheckbox(false);
 			allStartRel.setVisibility(View.GONE);
 //			allDeleteRel.setVisibility(View.VISIBLE);
 			downloadedList.setVisibility(View.VISIBLE);

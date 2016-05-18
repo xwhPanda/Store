@@ -1,5 +1,6 @@
 package com.jiqu.tools;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.text.DecimalFormat;
@@ -116,6 +117,19 @@ public class UIUtil {
 			return 0 + "KB";
 		}
 	}
+	
+	public static Bitmap bytesToBitmap(byte[] bytes){
+		Bitmap bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.length, null);
+//		BitmapDrawable bitmapDrawable = new BitmapDrawable(bitmap);
+//		Drawable drawable = bitmapDrawable;
+		return bitmap;
+	}
+	
+	public static byte[] Bitmap2Bytes(Bitmap bm){  
+	    ByteArrayOutputStream baos = new ByteArrayOutputStream();    
+	    bm.compress(Bitmap.CompressFormat.PNG, 100, baos);    
+	    return baos.toByteArray();  
+	   }  
 	
 	public static String getFormatedDateTime(String pattern, long dateTime) {
         SimpleDateFormat sDateFormat = new SimpleDateFormat(pattern);

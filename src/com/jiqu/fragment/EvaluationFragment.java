@@ -19,6 +19,7 @@ import com.vr.store.R;
 import com.jiqu.tools.MetricsTool;
 import com.jiqu.tools.RequestTool;
 import com.jiqu.tools.UIUtil;
+import com.jiqu.view.LoadStateView;
 import com.jiqu.view.PullToRefreshLayout;
 import com.jiqu.view.PullToRefreshLayout.OnRefreshListener;
 
@@ -28,6 +29,7 @@ import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
@@ -35,9 +37,10 @@ import android.widget.BaseAdapter;
 import android.widget.GridView;
 import android.widget.Toast;
 
-public class EvaluationFragment extends BaseFragment implements OnRefreshListener{
+public class EvaluationFragment extends BaseFragment implements OnRefreshListener,OnClickListener{
 	private final String EVALUATION_REQUEST = "evaluationRequest";
 	private View view;
+	private LoadStateView loadView;
 	private PullToRefreshLayout pullToRefreshLayout;
 	private GridView evaluationGridView;
 	private List<EvaluationItemInfo> informations = new ArrayList<EvaluationItemInfo>();
@@ -55,9 +58,11 @@ public class EvaluationFragment extends BaseFragment implements OnRefreshListene
 	@Override
 	public View initView(){
 		view = LayoutInflater.from(activity).inflate(R.layout.evaluation, null);
+		loadView = (LoadStateView) view.findViewById(R.id.loadview);
 		pullToRefreshLayout = (PullToRefreshLayout) view.findViewById(R.id.refresh_view);
 		evaluationGridView = (GridView) view.findViewById(R.id.content_view);
 		pullToRefreshLayout.setOnRefreshListener(this);
+		loadView.loadAgain(this);
 		
 		initViewSize();
 		
@@ -90,6 +95,9 @@ public class EvaluationFragment extends BaseFragment implements OnRefreshListene
 			@Override
 			public void onResponse(String arg0) {
 				// TODO Auto-generated method stub
+				loadView.loadDataSuccess();
+				loadView.setVisibility(View.GONE);
+				pullToRefreshLayout.setVisibility(View.VISIBLE);
 				EvaluationInfo evaluationInfo = JSON.parseObject(arg0, EvaluationInfo.class);
 				if (evaluationInfo != null) {
 					if (evaluationInfo.getStatus() == 1) {
@@ -110,6 +118,7 @@ public class EvaluationFragment extends BaseFragment implements OnRefreshListene
 			@Override
 			public void onErrorResponse(VolleyError arg0) {
 				// TODO Auto-generated method stub
+				loadView.loadDataFail();
 				if (isRefreshing) {
 					isRefreshing = false;
 					pullToRefreshLayout.refreshFinish(PullToRefreshLayout.FAIL);
@@ -127,7 +136,6 @@ public class EvaluationFragment extends BaseFragment implements OnRefreshListene
 	@Override
 	public void onRefresh(PullToRefreshLayout pullToRefreshLayout) {
 		// TODO Auto-generated method stub
-		Log.i("TAG", "onRefresh");
 	}
 
 	@Override
@@ -135,5 +143,13 @@ public class EvaluationFragment extends BaseFragment implements OnRefreshListene
 		// TODO Auto-generated method stub
 		isRefreshing = true;
 		loadData(RequestTool.EVALUATION_URL + "?pageNum=" + pageNum);
+	}
+
+	@Override
+	public void onClick(View v) {
+		// TODO Auto-generated method stub
+		if (v == loadView.getLoadBtn()) {
+			loadData(RequestTool.EVALUATION_URL);
+		}
 	}
 }

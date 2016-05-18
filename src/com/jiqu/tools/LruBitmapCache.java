@@ -2,6 +2,7 @@ package com.jiqu.tools;
 
 import android.graphics.Bitmap;
 import android.support.v4.util.LruCache;
+import android.util.Log;
 
 import com.android.volley.toolbox.ImageLoader.ImageCache;
 
@@ -31,6 +32,7 @@ public class LruBitmapCache extends LruCache<String, Bitmap> implements ImageCac
 	@Override
 	public Bitmap getBitmap(String arg0) {
 		// TODO Auto-generated method stub
+		Log.i("TAG", "arg0 : " + arg0);
 		return get(arg0);
 	}
 

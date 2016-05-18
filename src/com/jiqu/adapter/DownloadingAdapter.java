@@ -5,7 +5,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
+import com.android.volley.VolleyError;
 import com.android.volley.toolbox.ImageLoader;
+import com.android.volley.toolbox.ImageLoader.ImageContainer;
 import com.android.volley.toolbox.ImageLoader.ImageListener;
 import com.jiqu.application.StoreApplication;
 import com.jiqu.database.DownloadAppinfo;
@@ -70,8 +72,7 @@ public class DownloadingAdapter extends BaseAdapter implements DownloadObserver 
 		ArrayList<Holder> holders = (ArrayList<Holder>) getDisplayedHolders();
 		for (int i = 0; i < holders.size(); i++) {
 			if (visible) {
-				
-					holders.get(i).checkBox.setVisibility(View.VISIBLE);
+				holders.get(i).checkBox.setVisibility(View.VISIBLE);
 			}else {
 				holders.get(i).checkBox.setVisibility(View.INVISIBLE);
 			}
@@ -175,12 +176,12 @@ public class DownloadingAdapter extends BaseAdapter implements DownloadObserver 
 					} else if (state == DownloadManager.STATE_ERROR || state == DownloadManager.STATE_NONE || state == DownloadManager.STATE_PAUSED) {
 						if (NetReceiver.NET_TYPE == NetReceiver.NET_WIFI) {
 							if (FileUtil.checkSDCard()) {
-								if (Float.parseFloat(info.getAppSize()) * 1024 * 1024 * 3 >= FileUtil.getSDcardAvailableSpace()) {
+								if (Float.parseFloat(info.getAppSize()) * 3 >= FileUtil.getSDcardAvailableSpace()) {
 									Toast.makeText(context, "可用空间不足", Toast.LENGTH_SHORT).show();
 									return;
 								}
 							} else {
-								if (Float.parseFloat(info.getAppSize()) * 1024 * 1024 * 3 >= FileUtil.getDataStorageAvailableSpace()) {
+								if (Float.parseFloat(info.getAppSize()) * 3 >= FileUtil.getDataStorageAvailableSpace()) {
 									Toast.makeText(context, "可用空间不足", Toast.LENGTH_SHORT).show();
 									return;
 								}
@@ -249,8 +250,29 @@ public class DownloadingAdapter extends BaseAdapter implements DownloadObserver 
 		private void setData(DownloadAppinfo appinfo,int position) {
 			this.info = appinfo;
 			this.position = position;
-			ImageListener listener = ImageLoader.getImageListener(appIcon, R.drawable.ic_launcher, R.drawable.ic_launcher);
-			StoreApplication.getInstance().getImageLoader().get(info.getIconUrl(), listener);
+			if (appinfo.getIconByte() != null) {
+				appIcon.setImageBitmap(UIUtil.bytesToBitmap(appinfo.getIconByte()));
+			}else {
+				ImageListener listener = new ImageListener() {
+					
+					@Override
+					public void onErrorResponse(VolleyError arg0) {
+						// TODO Auto-generated method stub
+						appIcon.setImageResource(R.drawable.default_tubiao);
+					}
+					
+					@Override
+					public void onResponse(ImageContainer arg0, boolean arg1) {
+						// TODO Auto-generated method stub
+						if (arg0.getBitmap() != null) {
+							appIcon.setImageBitmap(arg0.getBitmap());
+						}else {
+							appIcon.setImageResource(R.drawable.default_tubiao);
+						}
+					}
+				};
+				StoreApplication.getInstance().getImageLoader().get(info.getIconUrl(), listener);
+			}
 			appName.setText(appinfo.getAppName());
 
 			if (checkMap.containsKey(info.getId())) {
@@ -264,7 +286,7 @@ public class DownloadingAdapter extends BaseAdapter implements DownloadObserver 
 		public void refreshView(DownloadAppinfo appinfo) {
 			pause.clearAnimation();
 			downloadPrg.setProgress((int) (appinfo.getProgress() * 100));
-			progressTx.setText(FileUtil.getFileSize(appinfo.getCurrentSize()) + "/" + appinfo.getAppSize() + "M");
+			progressTx.setText(FileUtil.getFileSize(appinfo.getCurrentSize()) + "/" + FileUtil.getFileSize(Long.parseLong(appinfo.getAppSize())) + "M");
 			switch (appinfo.getDownloadState()) {
 			case DownloadManager.STATE_NONE:
 				pause.setBackgroundResource(R.drawable.download_selector);
