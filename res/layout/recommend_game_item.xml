@@ -13,27 +13,32 @@
 		android:background="@color/itemBgColor">
 
 
-		<ImageView android:id="@+id/icon" 
-		android:layout_width="wrap_content"
+		<ImageView 
+			android:id="@+id/icon" 
+			android:layout_width="wrap_content"
 			android:layout_height="wrap_content" 
 			android:layout_centerVertical="true" />
 
-		<RelativeLayout android:id="@+id/informationLin"
+		<RelativeLayout 
+			android:id="@+id/informationLin"
 			android:layout_width="wrap_content" 
 			android:layout_height="wrap_content"
 			android:layout_centerVertical="true" 
 			android:layout_toRightOf="@id/icon">
 
-			<RelativeLayout android:id="@+id/gameNameRel"
+			<RelativeLayout 
+				android:id="@+id/gameNameRel"
 				android:layout_width="wrap_content" 
 				android:layout_height="wrap_content">
 
-				<ImageView android:id="@+id/hotIcon" 
-				android:layout_width="wrap_content"
+				<ImageView 
+					android:id="@+id/hotIcon" 
+					android:layout_width="wrap_content"
 					android:layout_height="wrap_content" 
 					android:layout_centerVertical="true"/>
 
-				<TextView android:id="@+id/gameName" 
+				<TextView 
+					android:id="@+id/gameName" 
 					android:layout_width="wrap_content"
 					android:layout_height="wrap_content" 
 					android:layout_toRightOf="@id/hotIcon"
@@ -45,41 +50,82 @@
 					android:textSize="14sp" />
 			</RelativeLayout>
 
-			<TextView android:id="@+id/gameDes" 
+			<TextView 
+				android:id="@+id/gameDes" 
 				android:layout_width="wrap_content"
-				android:layout_height="wrap_content" android:layout_below="@id/gameNameRel"
-				fontPath="fonts/lantinghei.ttf" android:ellipsize="end"
-				android:maxEms="20" android:singleLine="true" android:textColor="@color/itemDesColor" />
+				android:layout_height="wrap_content"
+				android:layout_below="@id/gameNameRel"
+				fontPath="fonts/lantinghei.ttf" 
+				android:ellipsize="end"
+				android:maxEms="20" 
+				android:singleLine="true" 
+				android:textColor="@color/itemDesColor" />
 
-			<RelativeLayout android:id="@+id/gameInforRel"
-				android:layout_width="wrap_content" android:layout_height="wrap_content"
+			<RelativeLayout 
+				android:id="@+id/gameInforRel"
+				android:layout_width="wrap_content" 
+				android:layout_height="wrap_content"
 				android:layout_below="@id/gameDes">
 
-				<com.jiqu.view.RatingBarView android:id="@+id/gameScore"
-					style="@style/RatingStyle" android:layout_width="wrap_content"
-					android:layout_height="wrap_content" android:layout_centerVertical="true" />
+				<com.jiqu.view.RatingBarView 
+					android:id="@+id/gameScore"
+					style="@style/RatingStyle" 
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content" 
+					android:layout_centerVertical="true" />
 
-				<TextView android:id="@+id/gameSize" android:layout_width="wrap_content"
-					android:layout_height="wrap_content" android:layout_centerVertical="true"
-					android:layout_marginLeft="10dp" android:layout_toRightOf="@+id/gameScore"
-					fontPath="fonts/lantinghei.ttf" android:singleLine="true"
-					android:textColor="@color/itemColor" android:textSize="12sp" />
+				<TextView 
+					android:id="@+id/gameSize" 
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content" 
+					android:layout_centerVertical="true"
+					android:layout_marginLeft="10dp" 
+					android:layout_toRightOf="@+id/gameScore"
+					fontPath="fonts/lantinghei.ttf" 
+					android:singleLine="true"
+					android:textColor="@color/itemColor" 
+					android:textSize="12sp" />
 			</RelativeLayout>
 		</RelativeLayout>
 
-		<Button android:id="@+id/downloadBtn" android:layout_width="wrap_content"
-			android:layout_height="wrap_content" android:layout_alignParentRight="true"
-			android:layout_centerVertical="true" fontPath="fonts/lantinghei.ttf"
-			android:background="@drawable/download_selector" />
+		<RelativeLayout
+			android:id="@+id/downloadRel"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:layout_alignParentRight="true"
+			android:layout_centerVertical="true">
+			
+			<Button 
+				android:id="@+id/downloadBtn" 
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content" 
+				fontPath="fonts/lantinghei.ttf"
+				android:layout_centerHorizontal="true"
+				android:background="@drawable/download_selector" />
+				
+			<TextView
+				android:id="@+id/stateText"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:layout_centerHorizontal="true"
+				android:layout_below="@id/downloadBtn"/>
+		</RelativeLayout>
 
-		<LinearLayout android:id="@+id/subscriptLin"
-			android:layout_width="wrap_content" android:layout_height="wrap_content"
-			android:layout_alignParentLeft="true" android:layout_alignParentTop="true"
+		<LinearLayout 
+			android:id="@+id/subscriptLin"
+			android:layout_width="wrap_content" 
+			android:layout_height="wrap_content"
+			android:layout_alignParentLeft="true" 
+			android:layout_alignParentTop="true"
 			android:paddingLeft="3dp">
 
-			<TextView android:id="@+id/subscriptTx"
-				android:layout_width="wrap_content" android:layout_height="wrap_content"
-				fontPath="fonts/lantinghei.ttf" android:text="1" android:textColor="@color/black"
+			<TextView 
+				android:id="@+id/subscriptTx"
+				android:layout_width="wrap_content" 
+				android:layout_height="wrap_content"
+				fontPath="fonts/lantinghei.ttf" 
+				android:text="1" 
+				android:textColor="@color/black"
 				android:textSize="16sp" />
 		</LinearLayout>
 	</RelativeLayout>

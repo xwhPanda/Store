@@ -89,10 +89,6 @@ public class HeadlineActivity extends BaseActivity {
 			});
 
 		}
-
-		if (item != null) {
-			loadData(RequestTool.informationDetailUrl + "news-id-" + item.getNews_id() + "-gameId-" + item.getGid() + ".html");
-		}
 	}
 
 	@Override

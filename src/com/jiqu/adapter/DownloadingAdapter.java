@@ -382,4 +382,10 @@ public class DownloadingAdapter extends BaseAdapter implements DownloadObserver 
 		refreshHolder(info);
 	}
 
+	@Override
+	public void onUnZipProgressed(DownloadAppinfo info, int progress) {
+		// TODO Auto-generated method stub
+		
+	}
+
 }

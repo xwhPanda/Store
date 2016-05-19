@@ -305,6 +305,7 @@ public class DownloadManagerActivity extends BaseActivity implements OnClickList
 			downloadedListShowing = false;
 			changeButtonState(downloading);
 			downloadedList.setVisibility(View.INVISIBLE);
+			downloadedAdapter.showAllCheckbox(false);
 			allDeleteRel.setVisibility(View.GONE);
 //			allStartRel.setVisibility(View.VISIBLE);
 			downloadingList.setVisibility(View.VISIBLE);
@@ -370,6 +371,8 @@ public class DownloadManagerActivity extends BaseActivity implements OnClickList
 		}else if (parent.getId() == R.id.downloadedList) {
 			downloadedListShowing = true;
 			allDeleteRel.setVisibility(View.VISIBLE);
+			downloadedAdapter.showAllCheckbox(true);
+			downloadedAdapter.notifyDataSetChanged();
 		}
 		return true;
 	}

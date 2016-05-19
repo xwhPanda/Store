@@ -10,6 +10,7 @@ import net.lingala.zip4j.exception.ZipException;
 import net.lingala.zip4j.progress.ProgressMonitor;
 
 import android.os.Handler;
+import android.os.Message;
 import android.util.Log;
 
 import com.jiqu.database.DownloadAppinfo;
@@ -83,7 +84,7 @@ public class UnZipManager {
 						handler.sendEmptyMessage(1);
 					}
 		            return;
-		        }  
+		        }
 		        File destDir = new File(downloadAppinfo.getUnzipPath());
 		        if (destDir.isDirectory() && !destDir.exists()){
 		            destDir.mkdir();  
@@ -100,6 +101,9 @@ public class UnZipManager {
 								 sleep(1000);
 						        	percent = monitor.getPercentDone();
 						        	Log.i("TAG", "解压进度 ： " + percent);
+						        	Message msg = handler.obtainMessage(2);
+						        	msg.arg1 = percent;
+						        	handler.sendMessage(msg);
 						        	if (percent >= 100) {
 						        		unziping = false;
 						        		map.remove(downloadAppinfo.getPackageName());
@@ -137,9 +141,6 @@ public class UnZipManager {
 		if (file.exists() && file.isDirectory()) {
 			File[] files = file.listFiles();
 			if (file != null) {
-				for(int i = 0; i<files.length;i++){
-					Log.i("TAG", files[i].getAbsolutePath());
-				}
 				if (files.length == 1) {
 					files[0].renameTo(new File(files[0].getParent() + File.separator + newName));
 				}else {

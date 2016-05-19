@@ -47,7 +47,9 @@ public class GameInfo implements Serializable{
 	private String product_name;
 	private String column;
 	private String version;
+	private String version_name;
 	private String size;
+	private String package_name;
 	private String type;
 	private String down;
 	private String down_url;
@@ -69,6 +71,18 @@ public class GameInfo implements Serializable{
 	private int gameType;//1:新游榜,2:热游榜,3:必玩榜
 	private int state = -1;
 	
+	public synchronized String getPackage_name() {
+		return package_name;
+	}
+	public synchronized void setPackage_name(String package_name) {
+		this.package_name = package_name;
+	}
+	public synchronized String getVersion_name() {
+		return version_name;
+	}
+	public synchronized void setVersion_name(String version_name) {
+		this.version_name = version_name;
+	}
 	public synchronized int getState() {
 		return state;
 	}
@@ -238,7 +252,9 @@ public class GameInfo implements Serializable{
 		downloadInfo.setUrl(info.down_url);
 		downloadInfo.setIconUrl(info.icon);
 		downloadInfo.setDes(info.descript);
-		downloadInfo.setVersionName(info.version);
+		downloadInfo.setPackageName(info.package_name);
+		downloadInfo.setVersionCode(info.version);
+		downloadInfo.setVersionName(info.version_name);
 		downloadInfo.setApkPath(FileUtil.getApkDownloadDir(AppUtil.getContext()) + File.separator + info.product_name + ".apk");
 		downloadInfo.setZipPath(FileUtil.getZipDownloadDir(AppUtil.getContext()) + File.separator + info.product_name + ".zip");
 		downloadInfo.setUnzipPath(FileUtil.getZipDownloadDir(AppUtil.getContext()) + File.separator + info.product_name);
@@ -257,9 +273,5 @@ public class GameInfo implements Serializable{
 		}
 		
 		return downloadInfo;
-	}
-	@Override
-	public String toString() {
-		return "GameInfo [id=" + id + ", apply_name=" + apply_name + ", descript=" + descript + ", product_name=" + product_name + ", column=" + column + ", version=" + version + ", size=" + size + ", type=" + type + ", down=" + down + ", down_url=" + down_url + ", icon=" + icon + ", market=" + market + ", plist=" + plist + ", score=" + score + ", star=" + star + ", siteID=" + siteID + ", statisticsID=" + statisticsID + ", time=" + time + ", pic=" + pic + ", rotate_title=" + rotate_title + ", title=" + title + ", intro=" + intro + ", adapterType=" + adapterType + ", state=" + state + "]";
 	}
 }

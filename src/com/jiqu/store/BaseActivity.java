@@ -1,7 +1,14 @@
 package com.jiqu.store;
 
+import java.util.List;
+
 import uk.co.chrisjenx.calligraphy.CalligraphyContextWrapper;
 
+import com.jiqu.database.DownloadAppinfo;
+import com.jiqu.download.DownloadManager;
+import com.jiqu.object.GameInfo;
+import com.jiqu.object.InstalledApp;
+import com.jiqu.tools.InstalledAppTool;
 import com.jiqu.tools.MetricsTool;
 
 import android.app.Activity;
@@ -60,6 +67,28 @@ public abstract class BaseActivity extends Activity {
 	
 	protected void unInstallEvent(String uninstallPackageName){
 		
+	}
+	
+	protected void setState(List<GameInfo> infos,int count){
+		List<InstalledApp> apps = InstalledAppTool.getPersonalApp(this);
+		int size = count;
+		if (infos.size() < count) {
+			count = infos.size();
+		}
+		for (int i = infos.size() - size; i < infos.size(); i++) {
+			if (infos.get(i).getAdapterType() == 0) {
+				DownloadAppinfo info = DownloadManager.getInstance().getDownloadInfo(Long.parseLong(infos.get(i).getId()));
+				int state = InstalledAppTool.contain(apps, infos.get(i).getPackage_name(), Integer.parseInt(infos.get(i).getVersion()));
+				if (state != -1) {
+					infos.get(i).setState(state);
+				} else {
+					if (info != null && (info.getDownloadState() == DownloadManager.STATE_INSTALLED 
+							|| info.getDownloadState() == DownloadManager.STATE_NEED_UPDATE)) {
+						DownloadManager.DBManager.delete(info);
+					}
+				}
+			}
+		}
 	}
 	
 	@Override

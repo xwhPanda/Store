@@ -84,7 +84,6 @@ public class InformationFragment extends BaseFragment implements OnClickListener
 	@Override
 	public void initData() {
 		// TODO Auto-generated method stub
-		loadData(RequestTool.informationUrl + "1.html");
 	}
 
 	private void loadData(String url){

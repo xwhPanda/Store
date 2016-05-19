@@ -35,6 +35,8 @@ import com.jiqu.adapter.GameAdapter;
 import com.jiqu.adapter.RecommendGameAdapter;
 import com.jiqu.adapter.ViewPagerAdapter;
 import com.jiqu.application.StoreApplication;
+import com.jiqu.database.DownloadAppinfo;
+import com.jiqu.database.DownloadAppinfoDao.Properties;
 import com.jiqu.download.DownloadManager;
 import com.jiqu.object.GameInfo;
 import com.jiqu.object.SpecialInfo;
@@ -50,6 +52,8 @@ import com.jiqu.view.LoadStateView;
 import com.jiqu.view.PullableListView;
 import com.jiqu.view.TitleView;
 import com.jiqu.view.ViewPagerLinView;
+
+import de.greenrobot.dao.query.QueryBuilder;
 
 public class BoutiqueActivity extends BaseActivity implements OnPageChangeListener,OnItemClickListener,OnRefreshListener,OnClickListener{
 	private final String BOUTIQUE_REQUEST = "boutiqueRequest";
@@ -100,11 +104,16 @@ public class BoutiqueActivity extends BaseActivity implements OnPageChangeListen
 				
 				SpecialInfo specialInfo = JSON.parseObject(arg0, SpecialInfo.class);
 				if (specialInfo != null) {
-					if (specialInfo.getData1() != null && specialInfo.getData1().length > 0) {
+					if (specialInfo.getData1() != null 
+							&& specialInfo.getStatus() == 1 
+							&& specialInfo.getData1().length > 0) {
 						pagerView.setData(specialInfo.getData1());
 					}
-					if (specialInfo.getData2() != null && specialInfo.getData2().length > 0) {
+					if (specialInfo.getData2() != null 
+							&& specialInfo.getStatus() == 1 
+							&& specialInfo.getData2().length > 0) {
 						Collections.addAll(informations, specialInfo.getData2());
+						setState(informations, DEFAULT_SIZE);
 						adapter.notifyDataSetChanged();
 					}
 					totalGameTx.setText("共" + specialInfo.getTotal() + "款");
@@ -235,6 +244,7 @@ public class BoutiqueActivity extends BaseActivity implements OnPageChangeListen
 		if (pagerView != null) {
 			pagerView.cancleTimer();
 		}
+		requestTool.stopRequest(BOUTIQUE_REQUEST);
 	}
 
 	@Override
@@ -246,7 +256,6 @@ public class BoutiqueActivity extends BaseActivity implements OnPageChangeListen
 	@Override
 	public void onLoadMore(PullToRefreshLayout pullToRefreshLayout) {
 		// TODO Auto-generated method stub
-		Log.i("TAG", "onLoadMore");
 		refreshShowing = true;
 		if ((pageNum * DEFAULT_SIZE) < total) {
 			loadData(RequestTool.BOUTIQUE_URL + "?pageNum=" + pageNum);
@@ -269,5 +278,38 @@ public class BoutiqueActivity extends BaseActivity implements OnPageChangeListen
 		if (v == loadView.getLoadBtn()) {
 			loadData(RequestTool.BOUTIQUE_URL);
 		}
+	}
+	
+	@Override
+	protected void unInstallEvent(String uninstallPackageName) {
+		// TODO Auto-generated method stub
+		for(GameInfo info : informations){
+			if (info.getPackage_name().equals(uninstallPackageName)) {
+				info.setState(DownloadManager.STATE_NONE);
+				QueryBuilder<DownloadAppinfo> qb = StoreApplication.daoSession.getDownloadAppinfoDao().queryBuilder();
+				DownloadAppinfo downloadAppinfo = qb.where(Properties.Id.eq(info.getId())).unique();
+				if (downloadAppinfo != null) {
+					DownloadManager.DBManager.getDownloadAppinfoDao().delete(downloadAppinfo);
+				}
+			}
+		}
+		adapter.notifyDataSetChanged();
+	}
+	
+	@Override
+	protected void installEvent(String installPackageName) {
+		// TODO Auto-generated method stub
+		for(GameInfo info : informations){
+			if (info.getPackage_name().equals(installPackageName)) {
+				info.setState(DownloadManager.STATE_INSTALLED);
+				QueryBuilder<DownloadAppinfo> qb = StoreApplication.daoSession.getDownloadAppinfoDao().queryBuilder();
+				DownloadAppinfo downloadAppinfo = qb.where(Properties.Id.eq(info.getId())).unique();
+				if (downloadAppinfo != null) {
+					downloadAppinfo.setDownloadState(DownloadManager.STATE_INSTALLED);
+					DownloadManager.DBManager.getDownloadAppinfoDao().insertOrReplace(downloadAppinfo);
+				}
+			}
+		}
+		adapter.notifyDataSetChanged();
 	}
 }

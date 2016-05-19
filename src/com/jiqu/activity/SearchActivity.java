@@ -34,7 +34,9 @@ import com.android.volley.Response.ErrorListener;
 import com.android.volley.Response.Listener;
 import com.android.volley.VolleyError;
 import com.jiqu.adapter.GameAdapter;
+import com.jiqu.application.StoreApplication;
 import com.jiqu.database.DownloadAppinfo;
+import com.jiqu.database.DownloadAppinfoDao.Properties;
 import com.jiqu.download.DownloadManager;
 import com.jiqu.download.StringUtil;
 import com.jiqu.interfaces.SearcheListener;
@@ -54,7 +56,10 @@ import com.jiqu.tools.UIUtil;
 import com.jiqu.view.LoadStateView;
 import com.jiqu.view.SearchItemView;
 
+import de.greenrobot.dao.query.QueryBuilder;
+
 public class SearchActivity extends BaseActivity implements OnClickListener,Listener<String>,ErrorListener,SearcheListener{
+	private final int DEFAULT_PAGE_SIZE = 10;
 	private final String SEARCH_INDEX_REQUEST = "searchIndexRequest";
 	private final String SEARCH_REQUEST = "searchRequest";
 	private RelativeLayout searchLayout;
@@ -188,6 +193,7 @@ public class SearchActivity extends BaseActivity implements OnClickListener,List
 	}
 	
 	private void search(String url){
+		requestTool.stopRequest(SEARCH_INDEX_REQUEST);
 		requestTool.getMap().clear();
 		requestTool.startStringRequest(Method.GET, this, url, this, requestTool.getMap(), SEARCH_REQUEST);
 	}
@@ -228,7 +234,8 @@ public class SearchActivity extends BaseActivity implements OnClickListener,List
 		if (adapter != null) {
 			adapter.stopObserver();
 		}
-		requestTool.stopSearchRequest();
+		requestTool.stopRequest(SEARCH_INDEX_REQUEST);
+		requestTool.stopRequest(SEARCH_REQUEST);
 	}
 
 	@Override
@@ -278,25 +285,10 @@ public class SearchActivity extends BaseActivity implements OnClickListener,List
 				searchListView.setVisibility(View.VISIBLE);
 				gameInfos.clear();
 				Collections.addAll(gameInfos, searchInfo.getData());
-				List<InstalledApp> apps = InstalledAppTool.getPersonalApp(this);
-//			for (GameInfo gameInfo : gameInfos) {
-//				DownloadAppinfo info = DownloadManager.getInstance().getDownloadInfo(Long.parseLong(gameInfo.getP_id()));
-//				gameInfo.setAdapterType(1);
-//				int state = InstalledAppTool.contain(apps,gameInfo.getPackagename(), Integer.parseInt(gameInfo.getVersion_code()));
-//				if (state != -1) {
-//					gameInfo.setState(state);
-//				}else {
-//					if (info != null 
-//							&& (info.getDownloadState() == DownloadManager.STATE_INSTALLED
-//							|| info.getDownloadState() == DownloadManager.STATE_NEED_UPDATE)) {
-//						DownloadManager.DBManager.delete(info);
-//					}
-//				}
-//			}
+				setState(gameInfos, DEFAULT_PAGE_SIZE);
 				adapter.notifyDataSetChanged();
 				searchListView.setVisibility(View.VISIBLE);
 			}else if (searchInfo.getStatus() == 0) {
-				Log.i("TAG", "status : 0");
 				noResultTx.setVisibility(View.VISIBLE);
 				searchListView.setVisibility(View.GONE);
 			}
@@ -313,5 +305,38 @@ public class SearchActivity extends BaseActivity implements OnClickListener,List
 		noResultTx.setVisibility(View.GONE);
 		searchListView.setVisibility(View.GONE);
 		search(RequestTool.SEARCH_URL + "?keyword=" + keyword);
+	}
+	
+	@Override
+	protected void unInstallEvent(String uninstallPackageName) {
+		// TODO Auto-generated method stub
+		for(GameInfo info : gameInfos){
+			if (info.getPackage_name().equals(uninstallPackageName)) {
+				info.setState(DownloadManager.STATE_NONE);
+				QueryBuilder<DownloadAppinfo> qb = StoreApplication.daoSession.getDownloadAppinfoDao().queryBuilder();
+				DownloadAppinfo downloadAppinfo = qb.where(Properties.Id.eq(info.getId())).unique();
+				if (downloadAppinfo != null) {
+					DownloadManager.DBManager.getDownloadAppinfoDao().delete(downloadAppinfo);
+				}
+			}
+		}
+		adapter.notifyDataSetChanged();
+	}
+	
+	@Override
+	protected void installEvent(String installPackageName) {
+		// TODO Auto-generated method stub
+		for(GameInfo info : gameInfos){
+			if (info.getPackage_name().equals(installPackageName)) {
+				info.setState(DownloadManager.STATE_INSTALLED);
+				QueryBuilder<DownloadAppinfo> qb = StoreApplication.daoSession.getDownloadAppinfoDao().queryBuilder();
+				DownloadAppinfo downloadAppinfo = qb.where(Properties.Id.eq(info.getId())).unique();
+				if (downloadAppinfo != null) {
+					downloadAppinfo.setDownloadState(DownloadManager.STATE_INSTALLED);
+					DownloadManager.DBManager.getDownloadAppinfoDao().insertOrReplace(downloadAppinfo);
+				}
+			}
+		}
+		adapter.notifyDataSetChanged();
 	}
 }

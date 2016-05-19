@@ -48,10 +48,9 @@ public class Downloader implements Runnable {
 			path = info.getApkPath();
 		}
 		File file = new File(path);
-		float size = Float.parseFloat(info.getAppSize());
-		long apkSize = (long) (size * 1024 * 1024);
+		long size = Long.parseLong(info.getAppSize());
 		/** 如果本地文件大小大于数据库所记载的，则删除 **/
-		if (file.length() > apkSize) {
+		if (file.length() > size) {
 			info.setCurrentSize(0l);
 			file.delete();
 		}
@@ -68,7 +67,7 @@ public class Downloader implements Runnable {
 		HttpURLConnection connection = null;
 		InputStream in = null;
 		try {
-//			if (apkSize <= 0l) {
+			if (size <= 0l) {
 				URL url = new URL(info.getUrl());
 				connection = (HttpURLConnection) url.openConnection();
 				connection.setConnectTimeout(30 * 1000);
@@ -77,10 +76,10 @@ public class Downloader implements Runnable {
 				connection.setRequestMethod("GET");
 				int stateCode = connection.getResponseCode();
 				if (stateCode == 200) {
-					apkSize = connection.getContentLength();
-					info.setAppSize(String.valueOf(apkSize));
+					size = connection.getContentLength();
+					info.setAppSize(String.valueOf(size));
 					RandomAccessFile randomAccessFile = new RandomAccessFile(path, "rwd");
-					randomAccessFile.setLength(apkSize);
+					randomAccessFile.setLength(size);
 					randomAccessFile.close();
 					in = connection.getInputStream();
 					connection.disconnect();
@@ -91,17 +90,17 @@ public class Downloader implements Runnable {
 					downloading = false;
 					return;
 				}
-//			} else {
+			} else {
 				int threadCount = threads.length;
-				long specSize = apkSize / threadCount;
+				long specSize = size / threadCount;
 				for (int i = 0; i < threadCount - 1; i++) {
 					threads[i] = new DownloadThread(i, i * specSize, getCompelete(i), (i + 1) * specSize - 1);
 					threads[i].start();
 				}
 				threads[threadCount - 1] = new DownloadThread(threadCount - 1, (threadCount - 1) * specSize, 
-						getCompelete(threadCount - 1), apkSize - 1);
+						getCompelete(threadCount - 1), size - 1);
 				threads[threadCount - 1].start();
-//			}
+			}
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -189,6 +188,8 @@ public class Downloader implements Runnable {
 				observer.onRemoveFromTask(info);
 				observer.onStateChanged(info);
 				downloading = false;
+			}else if (msg.what == 2) {
+				observer.onUnZipProgressChanger(info,msg.arg1);
 			}
 		}
 	};
@@ -288,5 +289,7 @@ public class Downloader implements Runnable {
 		public void onProgressChanged(DownloadAppinfo info);
 
 		public void onRemoveFromTask(DownloadAppinfo info);
+		
+		public void onUnZipProgressChanger(DownloadAppinfo info,int progress);
 	}
 }

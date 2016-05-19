@@ -21,11 +21,16 @@ import com.jiqu.activity.SortActivity;
 import com.jiqu.activity.ThematicActivity;
 import com.jiqu.adapter.GameAdapter;
 import com.jiqu.application.StoreApplication;
+import com.jiqu.database.DownloadAppinfo;
+import com.jiqu.database.DownloadAppinfoDao.Properties;
+import com.jiqu.download.DownloadManager;
 import com.jiqu.object.GameInfo;
+import com.jiqu.object.InstalledApp;
 import com.jiqu.object.RecommendDataInfo;
 import com.jiqu.object.RecommendHeadlineInfo;
 import com.jiqu.object.TopRecommendtInfo;
 import com.vr.store.R;
+import com.jiqu.tools.InstalledAppTool;
 import com.jiqu.tools.MetricsTool;
 import com.jiqu.tools.RequestTool;
 import com.jiqu.tools.UIUtil;
@@ -36,13 +41,18 @@ import com.jiqu.view.PullableListView;
 import com.jiqu.view.RecommedGameView;
 import com.jiqu.view.ViewPagerLinView;
 
+import de.greenrobot.dao.query.QueryBuilder;
 
+
+import android.R.integer;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.graphics.Bitmap;
 import android.os.AsyncTask;
+import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -102,7 +112,7 @@ public class RecommendFragment extends BaseFragment implements OnRefreshListener
 		filter.addAction(Intent.ACTION_PACKAGE_ADDED);
 		filter.addAction(Intent.ACTION_PACKAGE_REMOVED);
 		filter.addDataScheme("package");
-//		getActivity().registerReceiver(appInstallReceiver, filter);
+		getActivity().registerReceiver(appInstallReceiver, filter);
 		
 		IntentFilter filter2 = new IntentFilter();
 		filter2.addAction("deleted_downloaded_files_action");
@@ -326,7 +336,7 @@ public class RecommendFragment extends BaseFragment implements OnRefreshListener
 		}
 	}
 	
-	public void initGame(RecommendDataInfo dataInfo){
+	public void initGame(RecommendDataInfo dataInfo) {
 		if (dataInfo.getData5() != null && dataInfo.getData5().length > 0) {
 			GameInfo info = new GameInfo();
 			info.setTitle(getResources().getString(R.string.newGameList));
@@ -351,7 +361,30 @@ public class RecommendFragment extends BaseFragment implements OnRefreshListener
 			resultList.add(info);
 			Collections.addAll(resultList, dataInfo.getData7());
 		}
+		
+		setState(resultList, resultList.size());
 		adapter.notifyDataSetChanged();
+	}
+	
+	private void setState(List<GameInfo> infos,int count){
+		List<InstalledApp> apps = InstalledAppTool.getPersonalApp(activity);
+		int size = count;
+		if (infos.size() < count) {
+			count = infos.size();
+		}
+		for (int i = infos.size() - size; i < infos.size(); i++) {
+			if (resultList.get(i).getAdapterType() == 0) {
+				DownloadAppinfo info = DownloadManager.getInstance().getDownloadInfo(Long.parseLong(infos.get(i).getId()));
+				int state = InstalledAppTool.contain(apps, resultList.get(i).getPackage_name(), Integer.parseInt(infos.get(i).getVersion()));
+				if (state != -1) {
+					infos.get(i).setState(state);
+				} else {
+					if (info != null && (info.getDownloadState() == DownloadManager.STATE_INSTALLED || info.getDownloadState() == DownloadManager.STATE_NEED_UPDATE)) {
+						DownloadManager.DBManager.delete(info);
+					}
+				}
+			}
+		}
 	}
 	
 	@Override
@@ -464,41 +497,43 @@ public class RecommendFragment extends BaseFragment implements OnRefreshListener
 		};
 	};
 
-//	private BroadcastReceiver appInstallReceiver = new BroadcastReceiver(){
-//
-//		@Override
-//		public void onReceive(Context context, Intent intent) {
-//			// TODO Auto-generated method stub
-//			String action = intent.getAction();
-//			if (Intent.ACTION_PACKAGE_ADDED.equals(action)) {
-//				String addPkg = intent.getDataString().split(":")[1];
-//				for(GameInfo info : resultList){
-//					if (info.getPackagename().equals(addPkg)) {
-//						info.setState(DownloadManager.STATE_INSTALLED);
-//						QueryBuilder<DownloadAppinfo> qb = StoreApplication.daoSession.getDownloadAppinfoDao().queryBuilder();
-//						DownloadAppinfo downloadAppinfo = qb.where(Properties.Id.eq(info.getP_id())).unique();
-//						if (downloadAppinfo != null) {
-//							downloadAppinfo.setDownloadState(DownloadManager.STATE_INSTALLED);
-//							DownloadManager.DBManager.getDownloadAppinfoDao().insertOrReplace(downloadAppinfo);
-//						}
-//					}
-//				}
-//			}else if (Intent.ACTION_PACKAGE_REMOVED.equals(action)) {
-//				String removePkg = intent.getDataString().split(":")[1];
-//				for(GameInfo info : resultList){
-//					if (info.getPackagename().equals(removePkg)) {
-//						info.setState(DownloadManager.STATE_NONE);
-//						QueryBuilder<DownloadAppinfo> qb = StoreApplication.daoSession.getDownloadAppinfoDao().queryBuilder();
-//						DownloadAppinfo downloadAppinfo = qb.where(Properties.Id.eq(info.getP_id())).unique();
-//						if (downloadAppinfo != null) {
-//							DownloadManager.DBManager.getDownloadAppinfoDao().delete(downloadAppinfo);
-//						}
-//					}
-//				}
-//			}
-//			adapter.notifyDataSetChanged();
-//		}
-//	};
+	private BroadcastReceiver appInstallReceiver = new BroadcastReceiver(){
+
+		@Override
+		public void onReceive(Context context, Intent intent) {
+			// TODO Auto-generated method stub
+			String action = intent.getAction();
+			if (Intent.ACTION_PACKAGE_ADDED.equals(action)) {
+				String addPkg = intent.getDataString().split(":")[1];
+				for(GameInfo info : resultList){
+					if (!TextUtils.isEmpty(info.getPackage_name()) 
+							&& info.getPackage_name().equals(addPkg)) {
+						info.setState(DownloadManager.STATE_INSTALLED);
+						QueryBuilder<DownloadAppinfo> qb = StoreApplication.daoSession.getDownloadAppinfoDao().queryBuilder();
+						DownloadAppinfo downloadAppinfo = qb.where(Properties.Id.eq(info.getId())).unique();
+						if (downloadAppinfo != null) {
+							downloadAppinfo.setDownloadState(DownloadManager.STATE_INSTALLED);
+							DownloadManager.DBManager.getDownloadAppinfoDao().insertOrReplace(downloadAppinfo);
+						}
+					}
+				}
+			}else if (Intent.ACTION_PACKAGE_REMOVED.equals(action)) {
+				String removePkg = intent.getDataString().split(":")[1];
+				for(GameInfo info : resultList){
+					if (!TextUtils.isEmpty(info.getPackage_name()) 
+							&& info.getPackage_name().equals(removePkg)) {
+						info.setState(DownloadManager.STATE_NONE);
+						QueryBuilder<DownloadAppinfo> qb = StoreApplication.daoSession.getDownloadAppinfoDao().queryBuilder();
+						DownloadAppinfo downloadAppinfo = qb.where(Properties.Id.eq(info.getId())).unique();
+						if (downloadAppinfo != null) {
+							DownloadManager.DBManager.getDownloadAppinfoDao().delete(downloadAppinfo);
+						}
+					}
+				}
+			}
+			adapter.notifyDataSetChanged();
+		}
+	};
 	
 	public void onDestroyView() {
 		super.onDestroyView();
@@ -507,7 +542,7 @@ public class RecommendFragment extends BaseFragment implements OnRefreshListener
 		}
 		viewPager.cancleTimer();
 		recommendGameInformationPager.cancleTimer();
-//		getActivity().unregisterReceiver(appInstallReceiver);
+		getActivity().unregisterReceiver(appInstallReceiver);
 		getActivity().unregisterReceiver(deleteReceiver);
 	};
 	

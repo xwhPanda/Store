@@ -137,6 +137,15 @@ public class DownloadManager implements ChangeObserver{
 			}
 		}
 	}
+	
+	/** 当解压进度发送改变的时候回调 */
+	public void notifyUnZipProgressed(DownloadAppinfo info,int progress) {
+		synchronized (mObservers) {
+			for (DownloadObserver observer : mObservers) {
+				observer.onUnZipProgressed(info, progress);
+			}
+		}
+	}
 
 	/** 下载，需要传入一个appInfo对象 */
 	public synchronized void download(DownloadAppinfo appInfo) {
@@ -696,7 +705,6 @@ public class DownloadManager implements ChangeObserver{
 					connection.setRequestProperty("Accept-Encoding", "identity");
 					connection.setRequestProperty("Range", "bytes=" + (compeleteSize + startPos) + "-" + endPos);
 //					Log.i("TAG", "threadId = " + threadId + " start = " + startPos + " complete + startPso =" + (compeleteSize + startPos) + " endPos = " + endPos + " size = " + info.getAppSize());
-					Log.i("TAG", threadId +"　code : " + connection.getResponseCode());
 					code = connection.getResponseCode();
 					is = connection.getInputStream();
 					int length = 0;
@@ -749,6 +757,8 @@ public class DownloadManager implements ChangeObserver{
 		public void onDownloadStateChanged(DownloadAppinfo info);
 
 		public void onDownloadProgressed(DownloadAppinfo info);
+		
+		public void onUnZipProgressed(DownloadAppinfo info,int progress);
 	}
 
 	/* 重写了Inpustream 中的skip(long n) 方法，将数据流中起始的n 个字节跳过 */
@@ -785,7 +795,6 @@ public class DownloadManager implements ChangeObserver{
 	public void onStateChanged(DownloadAppinfo info) {
 		// TODO Auto-generated method stub
 		notifyDownloadStateChanged(info);
-		Log.i("TAG", info.getAppName() + " : " + info.getDownloadState());
 	}
 
 	@Override
@@ -798,5 +807,11 @@ public class DownloadManager implements ChangeObserver{
 	public void onRemoveFromTask(DownloadAppinfo info) {
 		// TODO Auto-generated method stub
 		map.remove(info.getId());
+	}
+
+	@Override
+	public void onUnZipProgressChanger(DownloadAppinfo info,int progress) {
+		// TODO Auto-generated method stub
+		notifyUnZipProgressed(info, progress);
 	}
 }

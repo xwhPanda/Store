@@ -48,6 +48,7 @@ public class GameNewFragment extends BaseFragment implements MyPullUpListViewCal
 	private final String PAGER_REQUEST = "pagerRequest";
 	private final String LATSEST_REQUEST = "latestGameRequest";
 	private final String HOT_REQUEST = "hotGameRequest";
+	private final int DEFAULT_SIZE = 10;
 	private RequestTool requestTool;
 	
 	private LoadStateView loadView;
@@ -192,6 +193,28 @@ public class GameNewFragment extends BaseFragment implements MyPullUpListViewCal
 		};
 	};
 	
+	private void setState(List<GameInfo> infos,int count){
+		List<InstalledApp> apps = InstalledAppTool.getPersonalApp(activity);
+		int size = count;
+		if (infos.size() < count) {
+			count = infos.size();
+		}
+		for (int i = infos.size() - size; i < infos.size(); i++) {
+			if (infos.get(i).getAdapterType() == 0) {
+				DownloadAppinfo info = DownloadManager.getInstance().getDownloadInfo(Long.parseLong(infos.get(i).getId()));
+				int state = InstalledAppTool.contain(apps, infos.get(i).getPackage_name(), Integer.parseInt(infos.get(i).getVersion()));
+				if (state != -1) {
+					infos.get(i).setState(state);
+				} else {
+					if (info != null && (info.getDownloadState() == DownloadManager.STATE_INSTALLED 
+							|| info.getDownloadState() == DownloadManager.STATE_NEED_UPDATE)) {
+						DownloadManager.DBManager.delete(info);
+					}
+				}
+			}
+		}
+	}
+	
 	private void loadLastGameData(String url){
 		if (latestLoading) {
 			return;
@@ -211,24 +234,7 @@ public class GameNewFragment extends BaseFragment implements MyPullUpListViewCal
 				if (rankInfo != null && rankInfo.getStatus() == 1 && rankInfo.getData() != null) {
 					latestPageNum++;
 					Collections.addAll(lastGameInfos, rankInfo.getData());
-					int count = 10;
-					if (lastGameInfos.size() < 10) {
-						count = lastGameInfos.size();
-					}
-					List<InstalledApp> apps = InstalledAppTool.getPersonalApp(getActivity());
-					for(int i = lastGameInfos.size() - count;i<lastGameInfos.size();i++){
-						GameInfo gameInfo = lastGameInfos.get(i);
-						DownloadAppinfo info = DownloadManager.getInstance().getDownloadInfo(Long.parseLong(gameInfo.getId()));
-						int state = InstalledAppTool.contain(apps,gameInfo.getProduct_name());
-						if (state != -1) {
-							lastGameInfos.get(i).setState(state);
-						}else {
-							if (info != null 
-									&& (info.getDownloadState() == DownloadManager.STATE_INSTALLED)) {
-								DownloadManager.DBManager.delete(info);
-							}
-						}
-					}
+					setState(lastGameInfos, DEFAULT_SIZE);
 				}else if (rankInfo != null && rankInfo.getStatus() == 0) {
 					Toast.makeText(activity, R.string.notMore, Toast.LENGTH_SHORT).show();
 				}
@@ -272,24 +278,7 @@ public class GameNewFragment extends BaseFragment implements MyPullUpListViewCal
 				if (rankInfo != null && rankInfo.getStatus() == 1 && rankInfo.getData() != null) {
 					hotPageNum++;
 					Collections.addAll(hotGameInfos, rankInfo.getData());
-					int count = 10;
-					if (hotGameInfos.size() < 10) {
-						count = hotGameInfos.size();
-					}
-					List<InstalledApp> apps = InstalledAppTool.getPersonalApp(getActivity());
-					for(int i = hotGameInfos.size() - count;i<hotGameInfos.size();i++){
-						GameInfo gameInfo = hotGameInfos.get(i);
-						DownloadAppinfo info = DownloadManager.getInstance().getDownloadInfo(Long.parseLong(gameInfo.getId()));
-						int state = InstalledAppTool.contain(apps,gameInfo.getProduct_name());
-						if (state != -1) {
-							hotGameInfos.get(i).setState(state);
-						}else {
-							if (info != null 
-									&& (info.getDownloadState() == DownloadManager.STATE_INSTALLED)) {
-								DownloadManager.DBManager.delete(info);
-							}
-						}
-					}
+					setState(hotGameInfos, DEFAULT_SIZE);
 				}else if (rankInfo != null && rankInfo.getStatus() == 0) {
 					Toast.makeText(activity, R.string.notMore, Toast.LENGTH_SHORT).show();
 				}

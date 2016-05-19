@@ -27,7 +27,9 @@ import com.android.volley.Response.ErrorListener;
 import com.android.volley.Response.Listener;
 import com.android.volley.VolleyError;
 import com.jiqu.adapter.GameAdapter;
+import com.jiqu.application.StoreApplication;
 import com.jiqu.database.DownloadAppinfo;
+import com.jiqu.database.DownloadAppinfoDao.Properties;
 import com.jiqu.download.DownloadManager;
 import com.jiqu.object.CategoryAppsInfo;
 import com.jiqu.object.GameInfo;
@@ -44,6 +46,8 @@ import com.jiqu.view.LoadStateView;
 import com.jiqu.view.PullToRefreshLayout;
 import com.jiqu.view.TitleView;
 import com.jiqu.view.PullToRefreshLayout.OnRefreshListener;
+
+import de.greenrobot.dao.query.QueryBuilder;
 
 public class SortInfoActivity extends BaseActivity implements OnRefreshListener,OnClickListener{
 	private final int DEFAULT_PAGE_SIZE = 10;
@@ -214,6 +218,7 @@ public class SortInfoActivity extends BaseActivity implements OnRefreshListener,
 	
 	private void setThematicData(GameInfo[] infos){
 		Collections.addAll(gameInformations, infos);
+		setState(gameInformations, DEFAULT_PAGE_SIZE);
 		adapter.notifyDataSetChanged();
 	}
 	
@@ -310,5 +315,38 @@ public class SortInfoActivity extends BaseActivity implements OnRefreshListener,
 				thematicAppsRequest(RequestTool.SPECIAL_DETAIL_URL);
 			}
 		}
+	}
+	
+	@Override
+	protected void unInstallEvent(String uninstallPackageName) {
+		// TODO Auto-generated method stub
+		for(GameInfo info : gameInformations){
+			if (info.getPackage_name().equals(uninstallPackageName)) {
+				info.setState(DownloadManager.STATE_NONE);
+				QueryBuilder<DownloadAppinfo> qb = StoreApplication.daoSession.getDownloadAppinfoDao().queryBuilder();
+				DownloadAppinfo downloadAppinfo = qb.where(Properties.Id.eq(info.getId())).unique();
+				if (downloadAppinfo != null) {
+					DownloadManager.DBManager.getDownloadAppinfoDao().delete(downloadAppinfo);
+				}
+			}
+		}
+		adapter.notifyDataSetChanged();
+	}
+	
+	@Override
+	protected void installEvent(String installPackageName) {
+		// TODO Auto-generated method stub
+		for(GameInfo info : gameInformations){
+			if (info.getPackage_name().equals(installPackageName)) {
+				info.setState(DownloadManager.STATE_INSTALLED);
+				QueryBuilder<DownloadAppinfo> qb = StoreApplication.daoSession.getDownloadAppinfoDao().queryBuilder();
+				DownloadAppinfo downloadAppinfo = qb.where(Properties.Id.eq(info.getId())).unique();
+				if (downloadAppinfo != null) {
+					downloadAppinfo.setDownloadState(DownloadManager.STATE_INSTALLED);
+					DownloadManager.DBManager.getDownloadAppinfoDao().insertOrReplace(downloadAppinfo);
+				}
+			}
+		}
+		adapter.notifyDataSetChanged();
 	}
 }

@@ -25,7 +25,9 @@ import com.android.volley.Response.Listener;
 import com.android.volley.VolleyError;
 import com.jiqu.adapter.GameAdapter;
 import com.jiqu.adapter.RecommendGameAdapter;
+import com.jiqu.application.StoreApplication;
 import com.jiqu.database.DownloadAppinfo;
+import com.jiqu.database.DownloadAppinfoDao.Properties;
 import com.jiqu.download.DownloadManager;
 import com.jiqu.object.GameInfo;
 import com.jiqu.object.InstalledApp;
@@ -40,6 +42,8 @@ import com.jiqu.view.PullToRefreshLayout;
 import com.jiqu.view.PullableListView;
 import com.jiqu.view.TitleView;
 import com.jiqu.view.PullToRefreshLayout.OnRefreshListener;
+
+import de.greenrobot.dao.query.QueryBuilder;
 
 public class RankingActivity extends BaseActivity implements OnClickListener,OnRefreshListener{
 	private final int DEFAULT_PAGE_SIZE = 10;
@@ -91,6 +95,7 @@ public class RankingActivity extends BaseActivity implements OnClickListener,OnR
 				if (rankInfo != null) {
 					if (rankInfo.getStatus() == 1 && rankInfo.getData() != null) {
 						Collections.addAll(favorableGameInformations, rankInfo.getData());
+						setState(favorableGameInformations, DEFAULT_PAGE_SIZE);
 						favorableAdapter.notifyDataSetChanged();
 						praisePageNum++;
 					}else if (rankInfo.getStatus() == 0) {
@@ -129,6 +134,7 @@ public class RankingActivity extends BaseActivity implements OnClickListener,OnR
 				if (rankInfo != null) {
 					if (rankInfo.getStatus() == 1 && rankInfo.getData() != null) {
 						Collections.addAll(hotGameInformations, rankInfo.getData());
+						setState(hotGameInformations, DEFAULT_PAGE_SIZE);
 						hotAdapter.notifyDataSetChanged();
 						hotPageNum++;
 					}else if (rankInfo.getStatus() == 0) {
@@ -153,115 +159,6 @@ public class RankingActivity extends BaseActivity implements OnClickListener,OnR
 		}, requestTool.getMap(), PRAISE_REQUEST);
 	}
 	
-	private void favorableRequest(int start,int end){
-		requestTool.initParam();
-		requestTool.setParam("start_position", start);
-		requestTool.setParam("size", end);
-		requestTool.setParam("orderby", "3");
-		requestTool.startRankRequest(new Listener<JSONObject>() {
-
-			@Override
-			public void onResponse(JSONObject arg0) {
-				// TODO Auto-generated method stub
-				Log.i("TAG", "onResponse : " + arg0.toString());
-//				RankInfo rankInfo = JSON.parseObject(arg0.toString(), RankInfo.class);
-//				if (rankInfo != null) {
-//					Collections.addAll(favorableGameInformations, rankInfo.getItem());
-//					int count = DEFAULT_PAGE_SIZE;
-//					if (favorableGameInformations.size() < DEFAULT_PAGE_SIZE) {
-//						count = favorableGameInformations.size();
-//					}
-//					List<InstalledApp> apps = InstalledAppTool.getPersonalApp(RankingActivity.this);
-//					for(int i = favorableGameInformations.size() - count;i<favorableGameInformations.size();i++){
-//						GameInfo gameInfo = favorableGameInformations.get(i);
-//						DownloadAppinfo info = DownloadManager.getInstance().getDownloadInfo(Long.parseLong(gameInfo.getP_id()));
-//						gameInfo.setAdapterType(1);
-//						int state = InstalledAppTool.contain(apps,gameInfo.getPackagename(), Integer.parseInt(gameInfo.getVersion_code()));
-//						if (state != -1) {
-//							favorableGameInformations.get(i).setState(state);
-//						}else {
-//							if (info != null 
-//									&& (info.getDownloadState() == DownloadManager.STATE_INSTALLED
-//									|| info.getDownloadState() == DownloadManager.STATE_NEED_UPDATE)) {
-//								DownloadManager.DBManager.delete(info);
-//							}
-//						}
-//					}
-//					if (favorableRefreshViewShowing) {
-//						favorableRefreshView.refreshFinish(PullToRefreshLayout.SUCCEED);
-//						favorableRefreshViewShowing = false;
-//					}
-//					favorableAdapter.notifyDataSetChanged();
-//				}
-			}
-		}, new ErrorListener() {
-
-			@Override
-			public void onErrorResponse(VolleyError arg0) {
-				// TODO Auto-generated method stub
-				Log.i("TAG", "onErrorResponse");
-				favorableRefreshView.refreshFinish(PullToRefreshLayout.FAIL);
-				if (favorableRefreshViewShowing) {
-					favorableRefreshView.refreshFinish(PullToRefreshLayout.FAIL);
-					favorableRefreshViewShowing = false;
-				}
-			}
-		});
-	}
-	
-	private void hotRequest(int start , int end){
-		requestTool.initParam();
-		requestTool.setParam("start_position", start);
-		requestTool.setParam("size", end);
-		requestTool.setParam("orderby", "4");
-		requestTool.startRankRequest(new Listener<JSONObject>() {
-
-			@Override
-			public void onResponse(JSONObject arg0) {
-				// TODO Auto-generated method stub
-//				RankInfo rankInfo = JSON.parseObject(arg0.toString(), RankInfo.class);
-//				if (rankInfo != null) {
-//					Collections.addAll(hotGameInformations, rankInfo.getItem());
-//					int count = DEFAULT_PAGE_SIZE;
-//					if (hotGameInformations.size() < DEFAULT_PAGE_SIZE) {
-//						count = hotGameInformations.size();
-//					}
-//					List<InstalledApp> apps = InstalledAppTool.getPersonalApp(RankingActivity.this);
-//					for(int i = favorableGameInformations.size() - count;i<hotGameInformations.size();i++){
-//						GameInfo gameInfo = hotGameInformations.get(i);
-//						DownloadAppinfo info = DownloadManager.getInstance().getDownloadInfo(Long.parseLong(gameInfo.getP_id()));
-//						gameInfo.setAdapterType(1);
-//						int state = InstalledAppTool.contain(apps,gameInfo.getPackagename(), Integer.parseInt(gameInfo.getVersion_code()));
-//						if (state != -1) {
-//							hotGameInformations.get(i).setState(state);
-//						}else {
-//							if (info != null 
-//									&& (info.getDownloadState() == DownloadManager.STATE_INSTALLED
-//									|| info.getDownloadState() == DownloadManager.STATE_NEED_UPDATE)) {
-//								DownloadManager.DBManager.delete(info);
-//							}
-//						}
-//					}
-//					if (hotRefreshViewShowing) {
-//						hotRefreshView.refreshFinish(PullToRefreshLayout.SUCCEED);
-//						hotRefreshViewShowing = false;
-//					}
-//					hotAdapter.notifyDataSetChanged();
-//				}
-			}
-		}, new ErrorListener() {
-
-			@Override
-			public void onErrorResponse(VolleyError arg0) {
-				// TODO Auto-generated method stub
-				if (hotRefreshViewShowing) {
-					hotRefreshView.refreshFinish(PullToRefreshLayout.FAIL);
-					hotRefreshViewShowing = false;
-				}
-			}
-		});
-	}
-
 	@Override
 	public int getContentView() {
 		// TODO Auto-generated method stub
@@ -327,8 +224,6 @@ public class RankingActivity extends BaseActivity implements OnClickListener,OnR
 		hotAdapter.startObserver();
 	}
 	
-	
-	
 	private void initViewSize(){
 		UIUtil.setTextSize(favorableComment, 40);
 		UIUtil.setTextSize(hot, 40);
@@ -344,6 +239,7 @@ public class RankingActivity extends BaseActivity implements OnClickListener,OnR
 			changeBg(favorableComment);
 			praiseRel.setVisibility(View.VISIBLE);
 			hotRel.setVisibility(View.INVISIBLE);
+			favorableAdapter.notifyDataSetChanged();
 			break;
 
 		case R.id.hot:
@@ -352,6 +248,8 @@ public class RankingActivity extends BaseActivity implements OnClickListener,OnR
 			praiseRel.setVisibility(View.INVISIBLE);
 			if (hotGameInformations.size() == 0) {
 				loadHotData(RequestTool.HOT_URL);
+			}else {
+				hotAdapter.notifyDataSetChanged();
 			}
 			break;
 		}
@@ -392,5 +290,63 @@ public class RankingActivity extends BaseActivity implements OnClickListener,OnR
 		requestTool.stopRequest(PRAISE_REQUEST);
 		favorableAdapter.stopObserver();
 		hotAdapter.stopObserver();
+	}
+	
+	@Override
+	protected void unInstallEvent(String uninstallPackageName) {
+		// TODO Auto-generated method stub
+		for(GameInfo info : favorableGameInformations){
+			if (info.getPackage_name().equals(uninstallPackageName)) {
+				info.setState(DownloadManager.STATE_NONE);
+				QueryBuilder<DownloadAppinfo> qb = StoreApplication.daoSession.getDownloadAppinfoDao().queryBuilder();
+				DownloadAppinfo downloadAppinfo = qb.where(Properties.Id.eq(info.getId())).unique();
+				if (downloadAppinfo != null) {
+					DownloadManager.DBManager.getDownloadAppinfoDao().delete(downloadAppinfo);
+				}
+			}
+		}
+		favorableAdapter.notifyDataSetChanged();
+		
+		for(GameInfo info : hotGameInformations){
+			if (info.getPackage_name().equals(uninstallPackageName)) {
+				info.setState(DownloadManager.STATE_NONE);
+				QueryBuilder<DownloadAppinfo> qb = StoreApplication.daoSession.getDownloadAppinfoDao().queryBuilder();
+				DownloadAppinfo downloadAppinfo = qb.where(Properties.Id.eq(info.getId())).unique();
+				if (downloadAppinfo != null) {
+					DownloadManager.DBManager.getDownloadAppinfoDao().delete(downloadAppinfo);
+				}
+			}
+		}
+		hotAdapter.notifyDataSetChanged();
+	}
+	
+	@Override
+	protected void installEvent(String installPackageName) {
+		// TODO Auto-generated method stub
+		for(GameInfo info : favorableGameInformations){
+			if (info.getPackage_name().equals(installPackageName)) {
+				info.setState(DownloadManager.STATE_INSTALLED);
+				QueryBuilder<DownloadAppinfo> qb = StoreApplication.daoSession.getDownloadAppinfoDao().queryBuilder();
+				DownloadAppinfo downloadAppinfo = qb.where(Properties.Id.eq(info.getId())).unique();
+				if (downloadAppinfo != null) {
+					downloadAppinfo.setDownloadState(DownloadManager.STATE_INSTALLED);
+					DownloadManager.DBManager.getDownloadAppinfoDao().insertOrReplace(downloadAppinfo);
+				}
+			}
+		}
+		favorableAdapter.notifyDataSetChanged();
+		
+		for(GameInfo info : hotGameInformations){
+			if (info.getPackage_name().equals(installPackageName)) {
+				info.setState(DownloadManager.STATE_INSTALLED);
+				QueryBuilder<DownloadAppinfo> qb = StoreApplication.daoSession.getDownloadAppinfoDao().queryBuilder();
+				DownloadAppinfo downloadAppinfo = qb.where(Properties.Id.eq(info.getId())).unique();
+				if (downloadAppinfo != null) {
+					downloadAppinfo.setDownloadState(DownloadManager.STATE_INSTALLED);
+					DownloadManager.DBManager.getDownloadAppinfoDao().insertOrReplace(downloadAppinfo);
+				}
+			}
+		}
+		hotAdapter.notifyDataSetChanged();
 	}
 }

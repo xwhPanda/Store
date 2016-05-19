@@ -53,7 +53,7 @@ import com.jiqu.view.TitleView;
 
 import de.greenrobot.dao.query.QueryBuilder;
 
-public class DetailActivity extends BaseActivity implements Listener<String> , ErrorListener,OnPageChangeListener,OnClickListener,DownloadObserver{
+public class DetailActivity extends BaseActivity implements Listener<String>, ErrorListener, OnPageChangeListener, OnClickListener, DownloadObserver {
 	private final String GAME_DETAIL_REQUEST = "gameDetailRequest";
 	private TitleView titleView;
 	private LoadStateView loadView;
@@ -83,27 +83,27 @@ public class DetailActivity extends BaseActivity implements Listener<String> , E
 	private RelativeLayout pagerRel;
 	private LinearLayout viewGroup;
 	private Button download;
-	
+
 	private LinearLayout scoreLin;
-	private RatingBarView screenSenseBar,immersionBar,gameplayBar,difficultyBar;
-	private TextView screenSense,immersion,gameplay,difficultyNumber;
-	private RelativeLayout screenSenseRel,immersionRel,gameplayRel,difficultyNumberRel;
+	private RatingBarView screenSenseBar, immersionBar, gameplayBar, difficultyBar;
+	private TextView screenSense, immersion, gameplay, difficultyNumber;
+	private RelativeLayout screenSenseRel, immersionRel, gameplayRel, difficultyNumberRel;
 	private TextView comprehensiveEvaluation;
 	private TextView evaluationScore;
 	private RatingBarView comprehensiveBar;
-	
+
 	private int[] IDs = new int[3];
 	private int[] blueIDs = new int[3];
-	
+
 	private RequestTool requestTool;
-	//游戏ID
+	// 游戏ID
 	private String id;
 	private String name;
-	//0：根据id请求数据；1：不需要请求数据，数据是传过来的
+	// 0：根据id请求数据；1：不需要请求数据，数据是传过来的
 	private int requestType = 0;
 	private ImageView[] imgs;
 	private ImageView[] radioImgs;
-	
+
 	private int state = -1;
 	private DownloadAppinfo downloadAppinfo;
 
@@ -116,15 +116,15 @@ public class DetailActivity extends BaseActivity implements Listener<String> , E
 		requestType = getIntent().getIntExtra("requestType", 0);
 		name = getIntent().getStringExtra("name");
 		initView();
-		
+
 		if (requestType == 0) {
 			titleView.tip.setText(name);
 			loadDetailData(RequestTool.GAME_DETAIL_URL + "?id=" + id);
-		}else if (requestType == 1) {
+		} else if (requestType == 1) {
 		}
 	}
-	
-	private void loadDetailData(String url){
+
+	private void loadDetailData(String url) {
 		requestTool.getMap().clear();
 		requestTool.startStringRequest(Method.GET, this, url, this, requestTool.getMap(), GAME_DETAIL_REQUEST);
 	}
@@ -135,19 +135,19 @@ public class DetailActivity extends BaseActivity implements Listener<String> , E
 		return R.layout.detail_layout;
 	}
 
-	private void initStar(){
+	private void initStar() {
 		IDs[0] = R.drawable.ratingbg;
 		IDs[1] = R.drawable.rating_sencond_progress;
 		IDs[2] = R.drawable.rating_progress;
-		
+
 		blueIDs[0] = R.drawable.star3_blue;
 		blueIDs[1] = R.drawable.star2_blue;
 		blueIDs[2] = R.drawable.star1_blue;
 	}
-	
-	private void initView(){
+
+	private void initView() {
 		initStar();
-		
+
 		titleView = (TitleView) findViewById(R.id.titleView);
 		loadView = (LoadStateView) findViewById(R.id.loadView);
 		scrollView = (ScrollView) findViewById(R.id.scrollView);
@@ -176,58 +176,60 @@ public class DetailActivity extends BaseActivity implements Listener<String> , E
 		viewGroup = (LinearLayout) findViewById(R.id.viewGroup);
 		viewPager = (ViewPager) findViewById(R.id.viewPager);
 		download = (Button) findViewById(R.id.download);
-		
+
 		scoreLin = (LinearLayout) findViewById(R.id.scoreLin);
-		
+
 		screenSense = (TextView) findViewById(R.id.screenSense);
 		immersion = (TextView) findViewById(R.id.immersion);
 		gameplay = (TextView) findViewById(R.id.gameplay);
 		difficultyNumber = (TextView) findViewById(R.id.difficultyNumber);
-		
+
 		screenSenseBar = (RatingBarView) findViewById(R.id.screenSenseBar);
 		immersionBar = (RatingBarView) findViewById(R.id.immersionBar);
 		gameplayBar = (RatingBarView) findViewById(R.id.gameplayBar);
 		difficultyBar = (RatingBarView) findViewById(R.id.difficultyBar);
-		
+
 		screenSenseRel = (RelativeLayout) findViewById(R.id.screenSenseRel);
 		immersionRel = (RelativeLayout) findViewById(R.id.immersionRel);
 		gameplayRel = (RelativeLayout) findViewById(R.id.gameplayRel);
 		difficultyNumberRel = (RelativeLayout) findViewById(R.id.difficultyNumberRel);
-		
+
 		comprehensiveEvaluation = (TextView) findViewById(R.id.comprehensiveEvaluation);
 		evaluationScore = (TextView) findViewById(R.id.evaluationScore);
 		comprehensiveBar = (RatingBarView) findViewById(R.id.comprehensiveBar);
-		
+
 		titleView.setActivity(this);
 		titleView.back.setBackgroundResource(R.drawable.fanhui);
 		titleView.tip.setText("");
 		titleView.tip.setTextColor(getResources().getColor(R.color.blue));
 		titleView.editBtn.setVisibility(View.VISIBLE);
 		titleView.editBtn.setBackgroundResource(R.drawable.fenxiang_white);
-		
+
 		gameIcon.setScaleType(ScaleType.FIT_XY);
 		viewPager.setOnPageChangeListener(this);
 		download.setOnClickListener(this);
-		
+
+		loadView.loadAgain(this);
+
 		screenSenseBar.setResID(IDs);
 		immersionBar.setResID(IDs);
 		gameplayBar.setResID(IDs);
 		difficultyBar.setResID(IDs);
-		
+
 		comprehensiveBar.setResID(blueIDs);
-		comprehensiveBar.setStep(1.0f);
-		
+		comprehensiveBar.setStep(0.5f);
+
 		initViewSize();
 	}
-	
-	private void initViewSize(){
+
+	private void initViewSize() {
 		UIUtil.setTextSize(screenSense, 40);
 		UIUtil.setTextSize(immersion, 40);
 		UIUtil.setTextSize(gameplay, 40);
 		UIUtil.setTextSize(difficultyNumber, 40);
 		UIUtil.setTextSize(comprehensiveEvaluation, 70);
 		UIUtil.setTextSize(evaluationScore, 100);
-		
+
 		UIUtil.setTextSize(gameName, 40);
 		UIUtil.setTextSize(downloadCount, 35);
 		UIUtil.setTextSize(version, 35);
@@ -238,7 +240,7 @@ public class DetailActivity extends BaseActivity implements Listener<String> , E
 		UIUtil.setTextSize(vertigo, 35);
 		UIUtil.setTextSize(low, 25);
 		UIUtil.setTextSize(high, 25);
-		
+
 		UIUtil.setViewSize(gameIcon, 190 * Rx, 190 * Rx);
 		UIUtil.setViewSize(headControlImg, 110 * Rx, 60 * Rx);
 		UIUtil.setViewSize(handleImg, 110 * Rx, 60 * Rx);
@@ -247,13 +249,12 @@ public class DetailActivity extends BaseActivity implements Listener<String> , E
 		UIUtil.setViewSize(vertigoValue, 750 * Rx, 30 * Rx);
 		UIUtil.setViewSize(pagerRel, 1040 * Rx, 515 * Ry);
 		UIUtil.setViewSize(download, 805 * Rx, 95 * Ry);
-		
-		
+
 		UIUtil.setViewHeight(scoreLin, 350 * Ry);
 		UIUtil.setViewHeight(vertigoLin, 120 * Ry);
-		
+
 		comprehensiveBar.setStarSize(47, 47);
-		
+
 		try {
 			UIUtil.setViewSizeMargin(gameIcon, 50 * Rx, 0, 0, 0);
 			UIUtil.setViewSizeMargin(titleLine, 30 * Rx, 0, 0, 0);
@@ -294,141 +295,52 @@ public class DetailActivity extends BaseActivity implements Listener<String> , E
 			}
 		}
 	}
-	
-//	private void setData(SpecialResultsItem info){
-//		DownloadManager.getInstance().registerObserver(this);
-//		ImageListener listener = ImageLoader.getImageListener(gameIcon, R.drawable.ic_launcher, R.drawable.ic_launcher);
-//		StoreApplication.getInstance().getImageLoader().get(info.getPic_url(), listener);
-//		titleView.tip.setText(info.getName());
-//		gameName.setText(info.getName());
-//		downloadCount.setText(info.getDownloads() + "人下载");
-//		version.setText("版本:" + info.getVersion_name());
-//		type.setText("未知类型");
-//		size.setText(UIUtil.getDataSize(info.getFile_size()));
-//		
-//		List<String> screenshot = new ArrayList<String>();
-//		for (int i = 0; i < info.getImages().length; i++) {
-//			screenshot.add(info.getImages()[i].getPic_url());
-//		}
-//		int count = screenshot.size();
-//		if (count > 0) {
-//			imgs = new ImageView[count];
-//			radioImgs = new ImageView[count];
-//			for(int i = 0;i < count;i++){
-//				ImageView view = new ImageView(this);
-//				ImageListener imageListener = ImageLoader.getImageListener(view, R.drawable.ic_launcher, R.drawable.ic_launcher);
-//				StoreApplication.getInstance().getImageLoader().get(screenshot.get(i), imageListener);
-//				view.setScaleType(ScaleType.FIT_XY);
-//				LayoutParams lp = new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT);
-//				view.setLayoutParams(lp);
-//				imgs[i] = view;
-//				
-//				ImageView radio = new ImageView(this);
-//				if (i== 0) {
-//					radio.setBackgroundResource(R.drawable.dian_blue);
-//				}else {
-//					radio.setBackgroundResource(R.drawable.dian_white);
-//				}
-//				android.widget.LinearLayout.LayoutParams params  = new android.widget.LinearLayout.LayoutParams((int)(20 * Rx), (int)(20 * Rx));
-//				if (i != 0) {
-//					params.leftMargin = (int) (10 * Rx);
-//				}
-//				radio.setLayoutParams(params);
-//				radioImgs[i] = radio;
-//				viewGroup.addView(radio);
-//			}
-//			
-//			ViewPagerAdapter adapter = new ViewPagerAdapter(this, imgs);
-//			viewPager.setAdapter(adapter);
-//		}
-//		
-//		float vertigo = Float.parseFloat("1.2");
-//		if (vertigo == 0) {
-//			vertigoValue.setBackgroundResource(R.drawable.jindu1);
-//		}else if (vertigo > 0 && vertigo < 1.2) {
-//			vertigoValue.setBackgroundResource(R.drawable.jindu2);
-//		}else if (vertigo >= 1.4 && vertigo <= 2.0) {
-//			vertigoValue.setBackgroundResource(R.drawable.jindu3);
-//		}else if (vertigo > 2.0) {
-//			vertigoValue.setBackgroundResource(R.drawable.jindu4);
-//		}
-//		float frames = Float.parseFloat("1.2");
-//		float immersive = Float.parseFloat("1.2");
-//		float gameplay = Float.parseFloat("1.2");
-//		float difficulty = Float.parseFloat("1.2");
-//		
-//		screenSenseBar.setRating(frames);
-//		immersionBar.setRating(immersive);
-//		gameplayBar.setRating(gameplay);
-//		difficultyBar.setRating(difficulty);
-//		
-//		float rat = (frames + immersive + gameplay + difficulty + vertigo);
-//		evaluationScore.setText(rat + "");
-//		comprehensiveBar.setRating(rat);
-//		
-//		QueryBuilder<DownloadAppinfo> qb = StoreApplication.daoSession.getDownloadAppinfoDao().queryBuilder();
-//		downloadAppinfo = qb.where(Properties.Id.eq(info.getId())).unique();
-//		if (downloadAppinfo != null) {
-//			state = downloadAppinfo.getDownloadState();
-//		}else {
-//			downloadAppinfo = GameDetailInfo.toDownloadAppinfo(SpecialResultsItem.toDetailInfo(info));
-//			state = downloadAppinfo.getDownloadState();
-//			List<InstalledApp> apps = InstalledAppTool.getPersonalApp(this);
-//			int stateNum = InstalledAppTool.contain(apps, downloadAppinfo.getPackageName(), Integer.parseInt(downloadAppinfo.getVersionCode()));
-//			if (stateNum != -1) {
-//				state = stateNum;
-//				downloadAppinfo.setDownloadState(state);
-//				DownloadManager.DBManager.getDownloadAppinfoDao().insertOrReplace(downloadAppinfo);
-//			}
-//		}
-//		refreshState(state);
-//	}
-	
-	private void setData(GameDetailInfo info){
+
+	private void setData(GameDetailInfo info) {
 		DownloadManager.getInstance().registerObserver(this);
 		Bitmap bitmap = UIUtil.readBitmap(this, R.drawable.default_tubiao);
 		ImageListener listener = ImageLoader.getImageListener(gameIcon, bitmap, bitmap);
-		StoreApplication.getInstance().getImageLoader().get(info.getIcon(), listener,(int)(190 * Rx), (int)(190 * Rx));
+		StoreApplication.getInstance().getImageLoader().get(info.getIcon(), listener, (int) (190 * Rx), (int) (190 * Rx));
 		titleView.tip.setText(info.getApply_name());
 		gameName.setText(info.getApply_name());
 		downloadCount.setText(info.getDown() + "人下载");
 		version.setText("版本:" + info.getVersion_name());
 		type.setText(info.getColumn());
 		size.setText(UIUtil.getDataSize(Long.parseLong(info.getSize())));
-		
+
 		int support = Integer.parseInt(info.getDevice_support());
 		if (support == 1) {
 			headControlRel.setBackgroundColor(getResources().getColor(R.color.blue));
 			handleRel.setBackgroundColor(getResources().getColor(R.color.blue));
-		}else if (support == 2) {
+		} else if (support == 2) {
 			headControlRel.setBackgroundColor(getResources().getColor(R.color.blue));
 			handleRel.setBackgroundColor(getResources().getColor(R.color.detailControl));
-		}else if (support == 3) {
+		} else if (support == 3) {
 			headControlRel.setBackgroundColor(getResources().getColor(R.color.detailControl));
 			handleRel.setBackgroundColor(getResources().getColor(R.color.blue));
 		}
-		
+
 		int count = info.getPic().size();
 		if (count > 0) {
 			imgs = new ImageView[count];
 			radioImgs = new ImageView[count];
-			for(int i = 0;i < count;i++){
+			for (int i = 0; i < count; i++) {
 				ImageView view = new ImageView(this);
 				Bitmap bitmapPager = UIUtil.readBitmap(this, R.drawable.recommend_viewpager_default);
 				ImageListener imageListener = ImageLoader.getImageListener(view, bitmapPager, bitmapPager);
-				StoreApplication.getInstance().getImageLoader().get(info.getPic().get(i), imageListener,(int)(1040 * Rx), (int)(515 * Ry));
+				StoreApplication.getInstance().getImageLoader().get(info.getPic().get(i), imageListener, (int) (1040 * Rx), (int) (515 * Ry));
 				view.setScaleType(ScaleType.FIT_XY);
 				LayoutParams lp = new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT);
 				view.setLayoutParams(lp);
 				imgs[i] = view;
-				
+
 				ImageView radio = new ImageView(this);
-				if (i== 0) { 
+				if (i == 0) {
 					radio.setBackgroundResource(R.drawable.dian_blue);
-				}else {
+				} else {
 					radio.setBackgroundResource(R.drawable.dian_white);
 				}
-				android.widget.LinearLayout.LayoutParams params  = new android.widget.LinearLayout.LayoutParams((int)(20 * Rx), (int)(20 * Rx));
+				android.widget.LinearLayout.LayoutParams params = new android.widget.LinearLayout.LayoutParams((int) (20 * Rx), (int) (20 * Rx));
 				if (i != 0) {
 					params.leftMargin = (int) (10 * Rx);
 				}
@@ -436,35 +348,35 @@ public class DetailActivity extends BaseActivity implements Listener<String> , E
 				radioImgs[i] = radio;
 				viewGroup.addView(radio);
 			}
-			
+
 			ViewPagerAdapter adapter = new ViewPagerAdapter(this, imgs);
 			viewPager.setAdapter(adapter);
 		}
-		
+
 		float vertigo = info.getGame_feeling().getF5();
 		if (vertigo == 0) {
 			vertigoValue.setBackgroundResource(R.drawable.jindu1);
-		}else if (vertigo > 0 && vertigo < 1.2) {
+		} else if (vertigo > 0 && vertigo < 1.2) {
 			vertigoValue.setBackgroundResource(R.drawable.jindu2);
-		}else if (vertigo >= 1.4 && vertigo <= 2.0) {
+		} else if (vertigo >= 1.4 && vertigo <= 2.0) {
 			vertigoValue.setBackgroundResource(R.drawable.jindu3);
-		}else if (vertigo > 2.0) {
+		} else if (vertigo > 2.0) {
 			vertigoValue.setBackgroundResource(R.drawable.jindu4);
 		}
-		
+
 		screenSenseBar.setRating(info.getGame_feeling().getF1());
 		immersionBar.setRating(info.getGame_feeling().getF2());
 		gameplayBar.setRating(info.getGame_feeling().getF3());
 		difficultyBar.setRating(info.getGame_feeling().getF4());
-		
+
 		evaluationScore.setText(info.getScore());
 		comprehensiveBar.setRating(Float.parseFloat(info.getStar()));
-		
+
 		QueryBuilder<DownloadAppinfo> qb = StoreApplication.daoSession.getDownloadAppinfoDao().queryBuilder();
 		downloadAppinfo = qb.where(Properties.Id.eq(Long.parseLong(id))).unique();
 		if (downloadAppinfo != null) {
 			state = downloadAppinfo.getDownloadState();
-		}else {
+		} else {
 			downloadAppinfo = GameDetailInfo.toDownloadAppinfo(info);
 			state = downloadAppinfo.getDownloadState();
 			List<InstalledApp> apps = InstalledAppTool.getPersonalApp(this);
@@ -481,22 +393,22 @@ public class DetailActivity extends BaseActivity implements Listener<String> , E
 	@Override
 	public void onPageScrollStateChanged(int arg0) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public void onPageScrolled(int arg0, float arg1, int arg2) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public void onPageSelected(int arg0) {
 		// TODO Auto-generated method stub
-		for(int i = 0;i<radioImgs.length;i++){
+		for (int i = 0; i < radioImgs.length; i++) {
 			if (arg0 == i) {
 				radioImgs[i].setBackgroundResource(R.drawable.dian_blue);
-			}else {
+			} else {
 				radioImgs[i].setBackgroundResource(R.drawable.dian_white);
 			}
 		}
@@ -505,103 +417,107 @@ public class DetailActivity extends BaseActivity implements Listener<String> , E
 	@Override
 	public void onClick(View v) {
 		// TODO Auto-generated method stub
-		if (downloadAppinfo != null) {
-			if (state == DownloadManager.STATE_DOWNLOADING) {
-				DownloadManager.getInstance().pause(downloadAppinfo);
-			}else if (state == DownloadManager.STATE_UNZIP_FAILED) {
-				if (downloadAppinfo != null) {
-					UnZipManager.getInstance().unzip(downloadAppinfo, Constants.PASSWORD,null);
-				}
-			}else if (state == DownloadManager.STATE_UNZIPING) {
-				download.setEnabled(false);
-			}else if (state == DownloadManager.STATE_WAITING) {
-				DownloadManager.getInstance().cancel(downloadAppinfo);
-			}else if (state == DownloadManager.STATE_INSTALLED) {
-				DownloadManager.getInstance().open(downloadAppinfo.getPackageName());
-			}else if (state == DownloadManager.STATE_PAUSED) {
-				if (NetReceiver.NET_WIFI == NetReceiver.NET_TYPE) {
-					if (FileUtil.checkSDCard()) {
-						if (Long.parseLong(downloadAppinfo.getAppSize()) * 3 >= FileUtil.getSDcardAvailableSpace()) {
-							Toast.makeText(this, "可用空间不足", Toast.LENGTH_SHORT).show();
-							return;
-						}
-					}else {
-						if (Long.parseLong(downloadAppinfo.getAppSize()) * 3 >= FileUtil.getDataStorageAvailableSpace()) {
-							Toast.makeText(this, "可用空间不足", Toast.LENGTH_SHORT).show();
-							return;
-						}
+		if (v == loadView.getLoadBtn()) {
+			loadDetailData(RequestTool.GAME_DETAIL_URL + "?id=" + id);
+			loadView.showLoading();
+		} else if (v == download) {
+
+			if (downloadAppinfo != null) {
+				if (state == DownloadManager.STATE_DOWNLOADING) {
+					DownloadManager.getInstance().pause(downloadAppinfo);
+				} else if (state == DownloadManager.STATE_UNZIP_FAILED) {
+					if (downloadAppinfo != null) {
+						UnZipManager.getInstance().unzip(downloadAppinfo, Constants.PASSWORD, null);
 					}
-					DownloadManager.getInstance().download(downloadAppinfo);
-				}
-			}else if (state == DownloadManager.STATE_ERROR
-					|| state == DownloadManager.STATE_NONE
-					|| state == DownloadManager.STATE_NEED_UPDATE) {
-				if (NetReceiver.NET_WIFI == NetReceiver.NET_TYPE) {
-					if (FileUtil.checkSDCard()) {
-						if (Long.parseLong(downloadAppinfo.getAppSize()) * 3 >= FileUtil.getSDcardAvailableSpace()) {
-							Toast.makeText(this, "可用空间不足", Toast.LENGTH_SHORT).show();
-							return;
+				} else if (state == DownloadManager.STATE_UNZIPING) {
+					download.setEnabled(false);
+				} else if (state == DownloadManager.STATE_WAITING) {
+					DownloadManager.getInstance().cancel(downloadAppinfo);
+				} else if (state == DownloadManager.STATE_INSTALLED) {
+					DownloadManager.getInstance().open(downloadAppinfo.getPackageName());
+				} else if (state == DownloadManager.STATE_PAUSED) {
+					if (NetReceiver.NET_WIFI == NetReceiver.NET_TYPE) {
+						if (FileUtil.checkSDCard()) {
+							if (Long.parseLong(downloadAppinfo.getAppSize()) * 3 >= FileUtil.getSDcardAvailableSpace()) {
+								Toast.makeText(this, "可用空间不足", Toast.LENGTH_SHORT).show();
+								return;
+							}
+						} else {
+							if (Long.parseLong(downloadAppinfo.getAppSize()) * 3 >= FileUtil.getDataStorageAvailableSpace()) {
+								Toast.makeText(this, "可用空间不足", Toast.LENGTH_SHORT).show();
+								return;
+							}
 						}
-					}else {
-						if (Long.parseLong(downloadAppinfo.getAppSize()) * 3 >= FileUtil.getDataStorageAvailableSpace()) {
-							Toast.makeText(this, "可用空间不足", Toast.LENGTH_SHORT).show();
-							return;
+						DownloadManager.getInstance().download(downloadAppinfo);
+					}
+				} else if (state == DownloadManager.STATE_ERROR || state == DownloadManager.STATE_NONE || state == DownloadManager.STATE_NEED_UPDATE) {
+					if (NetReceiver.NET_WIFI == NetReceiver.NET_TYPE) {
+						if (FileUtil.checkSDCard()) {
+							if (Long.parseLong(downloadAppinfo.getAppSize()) * 3 >= FileUtil.getSDcardAvailableSpace()) {
+								Toast.makeText(this, "可用空间不足", Toast.LENGTH_SHORT).show();
+								return;
+							}
+						} else {
+							if (Long.parseLong(downloadAppinfo.getAppSize()) * 3 >= FileUtil.getDataStorageAvailableSpace()) {
+								Toast.makeText(this, "可用空间不足", Toast.LENGTH_SHORT).show();
+								return;
+							}
 						}
+						DownloadManager.getInstance().download(downloadAppinfo);
+					} else {
+						Toast.makeText(this, "没有连接wifi", Toast.LENGTH_SHORT).show();
 					}
-					DownloadManager.getInstance().download(downloadAppinfo);
-				}else {
-					Toast.makeText(this, "没有连接wifi", Toast.LENGTH_SHORT).show();
-				}
-			}else {
-				if (downloadAppinfo.getIsZip()) {
-					if (state == DownloadManager.STATE_UNZIPED) {
-						DownloadManager.getInstance().install(downloadAppinfo);
-					}
-				}else {
-					if (state == DownloadManager.STATE_INSTALLED) {
-						DownloadManager.getInstance().install(downloadAppinfo);
+				} else {
+					if (downloadAppinfo.getIsZip()) {
+						if (state == DownloadManager.STATE_UNZIPED) {
+							DownloadManager.getInstance().install(downloadAppinfo);
+						}
+					} else {
+						if (state == DownloadManager.STATE_INSTALLED) {
+							DownloadManager.getInstance().install(downloadAppinfo);
+						}
 					}
 				}
 			}
 		}
 	}
-	
-	private void refreshState(int state){
+
+	private void refreshState(int state) {
 		this.state = state;
 		if (state == DownloadManager.STATE_DOWNLOADING) {
 			download.setEnabled(true);
-			download.setText("暂停");
-		}else if (state == DownloadManager.STATE_UNZIP_FAILED) {
+			download.setText("正在下载");
+		} else if (state == DownloadManager.STATE_UNZIP_FAILED) {
 			download.setEnabled(true);
 			download.setText("解压失败");
-		}else if (state == DownloadManager.STATE_UNZIPING) {
+		} else if (state == DownloadManager.STATE_UNZIPING) {
 			download.setEnabled(false);
 			download.setText("正在解压");
-		}else if (state == DownloadManager.STATE_WAITING) {
+		} else if (state == DownloadManager.STATE_WAITING) {
 			download.setEnabled(true);
 			download.setText("等待下载");
-		}else if (state == DownloadManager.STATE_INSTALLED) {
+		} else if (state == DownloadManager.STATE_INSTALLED) {
 			download.setEnabled(true);
 			download.setText("打开");
-		}else if (state == DownloadManager.STATE_PAUSED) {
+		} else if (state == DownloadManager.STATE_PAUSED) {
 			download.setEnabled(true);
 			download.setText("继续下载");
-		}else if (state == DownloadManager.STATE_NONE) {
+		} else if (state == DownloadManager.STATE_NONE) {
 			download.setEnabled(true);
 			download.setText("下载");
-		}else if (state == DownloadManager.STATE_NEED_UPDATE) {
+		} else if (state == DownloadManager.STATE_NEED_UPDATE) {
 			download.setEnabled(true);
 			download.setText("升级");
-		}else if (state == DownloadManager.STATE_ERROR) {
+		} else if (state == DownloadManager.STATE_ERROR) {
 			download.setEnabled(true);
 			download.setText("下载失败");
-		}else {
+		} else {
 			download.setEnabled(true);
 			if (downloadAppinfo.getIsZip()) {
 				if (state == DownloadManager.STATE_UNZIPED) {
 					download.setText("安装");
 				}
-			}else {
+			} else {
 				if (state == DownloadManager.STATE_INSTALLED) {
 					download.setText("安装");
 				}
@@ -620,14 +536,13 @@ public class DetailActivity extends BaseActivity implements Listener<String> , E
 	public void onDownloadProgressed(DownloadAppinfo info) {
 		// TODO Auto-generated method stub
 		if (downloadAppinfo != null && downloadAppinfo.getPackageName().equals(info.getPackageName())) {
-			Log.i("TAG", "progress :" + info.getProgress());
 			Message msg = handler.obtainMessage();
-			msg.obj = info.getProgress() * 100+ "";
+			msg.obj = info.getProgress() * 100 + "";
 			msg.what = 1;
 			handler.sendMessage(msg);
 		}
 	}
-	
+
 	@Override
 	protected void onDestroy() {
 		// TODO Auto-generated method stub
@@ -635,7 +550,7 @@ public class DetailActivity extends BaseActivity implements Listener<String> , E
 		DownloadManager.getInstance().unRegisterObserver(this);
 		requestTool.stopRequest(GAME_DETAIL_REQUEST);
 	}
-	
+
 	@Override
 	protected void installEvent(String installPackageName) {
 		// TODO Auto-generated method stub
@@ -646,14 +561,20 @@ public class DetailActivity extends BaseActivity implements Listener<String> , E
 			refreshState(state);
 		}
 	}
-	
-	Handler handler = new Handler(){
+
+	Handler handler = new Handler() {
 		public void handleMessage(android.os.Message msg) {
 			if (msg.what == 1) {
-				download.setText((String)(msg.obj));
-			}else if (msg.what == 2) {
+//				download.setText((String) (msg.obj));
+			} else if (msg.what == 2) {
 				refreshState(downloadAppinfo.getDownloadState());
 			}
 		};
 	};
+
+	@Override
+	public void onUnZipProgressed(DownloadAppinfo info, int progress) {
+		// TODO Auto-generated method stub
+		
+	}
 }

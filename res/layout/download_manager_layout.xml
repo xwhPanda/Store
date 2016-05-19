@@ -100,6 +100,7 @@
         android:layout_above="@id/allStartRel"
         android:layout_below="@id/btnLin"
         android:divider="@drawable/xian"
+        android:listSelector="#00000000"
         android:dividerHeight="1dp"
         android:scrollbars="none" />
 
@@ -107,9 +108,10 @@
         android:id="@+id/downloadedList"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_above="@id/allStartRel"
+        android:layout_above="@id/allDeleteRel"
         android:layout_below="@id/btnLin"
         android:divider="@drawable/xian"
+        android:listSelector="#00000000"
         android:dividerHeight="1dp"
         android:scrollbars="none"
         android:visibility="invisible" />

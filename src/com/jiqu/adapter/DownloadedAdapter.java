@@ -44,6 +44,7 @@ import android.widget.AbsListView.LayoutParams;
 public class DownloadedAdapter extends BaseAdapter {
 	private Context context;
 	private List<DownloadAppinfo> downloadAppinfos;
+	private List<Holder> mDisplayedHolders;
 
 	private Map<String, Boolean> checkMap = new ConcurrentHashMap<String, Boolean>();
 
@@ -51,11 +52,29 @@ public class DownloadedAdapter extends BaseAdapter {
 		// TODO Auto-generated constructor stub
 		this.context = context;
 		this.downloadAppinfos = downloadAppinfos;
+		mDisplayedHolders = new ArrayList<Holder>();
 	}
 
 	public void putAllMap(boolean isChecked) {
 		for (DownloadAppinfo downloadAppinfo : downloadAppinfos) {
 			checkMap.put(downloadAppinfo.getId(), isChecked);
+		}
+	}
+	
+	public void showAllCheckbox(boolean visible){
+		ArrayList<Holder> holders = (ArrayList<Holder>) getDisplayedHolders();
+		for (int i = 0; i < holders.size(); i++) {
+			if (visible) {
+				holders.get(i).checkBox.setVisibility(View.VISIBLE);
+			}else {
+				holders.get(i).checkBox.setVisibility(View.INVISIBLE);
+			}
+		}
+	}
+	
+	public List<Holder> getDisplayedHolders() {
+		synchronized (mDisplayedHolders) {
+			return new ArrayList<Holder>(mDisplayedHolders);
 		}
 	}
 
@@ -87,6 +106,7 @@ public class DownloadedAdapter extends BaseAdapter {
 			holder = (Holder) convertView.getTag();
 		}
 		holder.setData(downloadAppinfos.get(position));
+		mDisplayedHolders.add(holder);
 		return holder.getRootView();
 	}
 
@@ -94,7 +114,6 @@ public class DownloadedAdapter extends BaseAdapter {
 		for (final DownloadAppinfo downloadAppinfo : downloadAppinfos) {
 			if (checkMap.get(downloadAppinfo.getId())) {
 				AppUtil.post(new Runnable() {
-
 					@Override
 					public void run() {
 						// TODO Auto-generated method stub
@@ -140,6 +159,7 @@ public class DownloadedAdapter extends BaseAdapter {
 								}
 							}
 						}
+						mDisplayedHolders.remove(this);
 						synchronized (downloadAppinfos) {
 							downloadAppinfos.remove(downloadAppinfo);
 						}
@@ -190,7 +210,7 @@ public class DownloadedAdapter extends BaseAdapter {
 			resIDs[1] = R.drawable.rating_sencond_progress;
 			resIDs[2] = R.drawable.rating_progress;
 			appScore.setResID(resIDs);
-			appScore.setStep(1.0f);
+			appScore.setStep(0.5f);
 
 			checkBox.setOnCheckedChangeListener(new OnCheckedChangeListener() {
 
@@ -239,7 +259,7 @@ public class DownloadedAdapter extends BaseAdapter {
 		private void initViewSize(View view) {
 			UIUtil.setViewSize(checkBox, 56 * MetricsTool.Rx, 56 * MetricsTool.Ry);
 			UIUtil.setViewSize(appIcon, 160 * MetricsTool.Rx, 160 * MetricsTool.Ry);
-			UIUtil.setViewSize(open, 60 * MetricsTool.Rx, 60 * MetricsTool.Rx);
+			UIUtil.setViewSize(open, 96 * MetricsTool.Rx, 76 * MetricsTool.Rx);
 
 			UIUtil.setTextSize(appName, 40);
 			UIUtil.setTextSize(appDes, 30);
@@ -273,10 +293,8 @@ public class DownloadedAdapter extends BaseAdapter {
 			}
 			appName.setText(info.getAppName());
 			appDes.setText(info.getDes());
-//			appScore.setRating(info.getScore());
+			appScore.setRating(Float.parseFloat(info.getScore()));
 			appSize.setText(FileUtil.getSize(Long.parseLong(info.getAppSize())));
-
 		}
 	}
-
 }
