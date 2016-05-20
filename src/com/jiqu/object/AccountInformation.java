@@ -7,7 +7,7 @@ import com.jiqu.database.Account;
 public class AccountInformation implements Serializable {
 	private static final long serialVersionUID = 1L;
 	
-	private int uid;
+	private String uid;
 	private String username;
 	private String nickname;
 	private int gender;
@@ -18,10 +18,10 @@ public class AccountInformation implements Serializable {
 	private String level;
 	private String email;
 	
-	public synchronized int getUid() {
+	public synchronized String getUid() {
 		return uid;
 	}
-	public synchronized void setUid(int uid) {
+	public synchronized void setUid(String uid) {
 		this.uid = uid;
 	}
 	public synchronized String getUsername() {
@@ -78,11 +78,8 @@ public class AccountInformation implements Serializable {
 	public synchronized void setEmail(String email) {
 		this.email = email;
 	}
-	public static synchronized long getSerialversionuid() {
-		return serialVersionUID;
-	}
 	
-	public static Account toAccount(AccountInformation info){
+	public static Account toAccount(AccountInformation info,String photoUrl){
 		Account account = new Account();
 		account.setBirthday(info.getBrithday());
 		account.setEmail(info.getEmail());
@@ -93,7 +90,7 @@ public class AccountInformation implements Serializable {
 		account.setQq(info.getQq());
 		account.setUid(info.getUid());
 		account.setUsername(info.username);
-		account.setPhoto(info.getPhoto());
+		account.setPhoto(photoUrl + info.getPhoto());
 		return account;
 	}
 	

@@ -36,6 +36,8 @@ public class Constants {
 	public static final String TIME = "time";
 	/** 是否将第一次的信息成功发送给服务器了 **/
 	public static final String SEND_SUCCESS = "sendSuccess";
+	/** 用户头像 **/
+	public static String ACCOUNT_ICON = "";
 	
 	public static String RECOMMEND_TAG = "recommend";
 	public static String INFORMATION_TAG = "information";

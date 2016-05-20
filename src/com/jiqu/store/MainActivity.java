@@ -1,20 +1,17 @@
 package com.jiqu.store;
 
-import java.io.InputStream;
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
+import com.android.volley.toolbox.ImageLoader;
+import com.android.volley.toolbox.ImageLoader.ImageListener;
 import com.jiqu.activity.DownloadManagerActivity;
 import com.jiqu.activity.MemberLoginActivity;
 import com.jiqu.activity.SearchActivity;
 import com.jiqu.activity.ShowAccountInformatiomActivity;
 import com.jiqu.application.StoreApplication;
 import com.jiqu.database.Account;
-import com.jiqu.download.AppInfo;
 import com.jiqu.download.DownloadManager;
 import com.jiqu.fragment.EvaluationFragment;
 import com.jiqu.fragment.GameFragment;
@@ -23,6 +20,8 @@ import com.jiqu.fragment.InformationFragment;
 import com.jiqu.fragment.InformationNewFragment;
 import com.jiqu.fragment.RecommendFragment;
 import com.jiqu.fragment.ToolFragment;
+import com.jiqu.interfaces.LoginOutObserver;
+import com.jiqu.tools.Constants;
 import com.jiqu.tools.MetricsTool;
 import com.jiqu.tools.NetReceiver;
 import com.jiqu.tools.NetReceiver.OnNetChangeListener;
@@ -32,19 +31,17 @@ import com.vr.store.R;
 
 import de.greenrobot.dao.query.QueryBuilder;
 
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.drawable.Drawable;
+import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
 import android.os.Process;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -56,7 +53,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-public class MainActivity extends FragmentActivity implements OnClickListener,OnNetChangeListener{
+public class MainActivity extends FragmentActivity implements OnClickListener,OnNetChangeListener,LoginOutObserver{
 	private float Rx,Ry;
 	private Button accountImg;
 	private EditText searchEd;
@@ -458,4 +455,24 @@ public class MainActivity extends FragmentActivity implements OnClickListener,On
 			}
 		}
 	}
+
+	@Override
+	public void onLoginOut() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void onRefresh(Account account) {
+		// TODO Auto-generated method stub
+		if (account != null) {
+			File file = new File(Constants.ACCOUNT_ICON);
+			if (file.exists()) {
+				Bitmap bitmap = BitmapFactory.decodeFile(Constants.ACCOUNT_ICON);
+				BitmapDrawable drawable = new BitmapDrawable(bitmap);
+				accountImg.setBackgroundDrawable(drawable);
+			}
+		}
+	}
+
 }

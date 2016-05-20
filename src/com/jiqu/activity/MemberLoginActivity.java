@@ -6,6 +6,8 @@ import com.android.volley.Request.Method;
 import com.android.volley.Response.ErrorListener;
 import com.android.volley.Response.Listener;
 import com.android.volley.VolleyError;
+import com.android.volley.toolbox.ImageLoader;
+import com.android.volley.toolbox.ImageLoader.ImageListener;
 import com.jiqu.application.StoreApplication;
 import com.jiqu.database.Account;
 import com.jiqu.object.AccountInformation;
@@ -172,8 +174,8 @@ public class MemberLoginActivity extends BaseActivity implements OnClickListener
 				}else if (accountResponeInfo.getStatus() == 1) {
 					/**登录成功**/
 					Toast.makeText(MemberLoginActivity.this, R.string.longinSuccess, Toast.LENGTH_SHORT).show();
-					StoreApplication.daoSession.getAccountDao().deleteAll();
-					Account account = AccountInformation.toAccount(accountResponeInfo.getData());
+//					StoreApplication.daoSession.getAccountDao().deleteAll();
+					Account account = AccountInformation.toAccount(accountResponeInfo.getData(),accountResponeInfo.getPhoto());
 					StoreApplication.daoSession.getAccountDao().insertOrReplace(account);
 					if (StoreApplication.loginOutObserver != null) {
 						StoreApplication.loginOutObserver.onRefresh(account);

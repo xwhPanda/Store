@@ -14,13 +14,17 @@ public class Account {
     private String phone;
     private String level;
     private String email;
-    private Integer uid;
+    private String uid;
     private String photo;
 
     public Account() {
     }
 
-    public Account(String nickname, String username, Integer gender, String birthday, String qq, String phone, String level, String email, Integer uid, String photo) {
+    public Account(String uid) {
+        this.uid = uid;
+    }
+
+    public Account(String nickname, String username, Integer gender, String birthday, String qq, String phone, String level, String email, String uid, String photo) {
         this.nickname = nickname;
         this.username = username;
         this.gender = gender;
@@ -97,11 +101,11 @@ public class Account {
         this.email = email;
     }
 
-    public Integer getUid() {
+    public String getUid() {
         return uid;
     }
 
-    public void setUid(Integer uid) {
+    public void setUid(String uid) {
         this.uid = uid;
     }
 

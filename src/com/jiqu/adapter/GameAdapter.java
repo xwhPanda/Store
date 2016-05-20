@@ -443,26 +443,8 @@ public class GameAdapter extends BaseAdapter implements DownloadObserver{
 			gameDes.setText(mData.getDes());
 			gameScore.setRating(Float.parseFloat(mData.getScore()));
 			gameSize.setText(FileUtil.getSize(Long.parseLong(mData.getAppSize())));
-				ImageListener listener = new ImageListener() {
-					
-					@Override
-					public void onErrorResponse(VolleyError arg0) {
-						// TODO Auto-generated method stub
-						icon.setImageResource(R.drawable.default_tubiao);
-					}
-					
-					@Override
-					public void onResponse(ImageContainer arg0, boolean arg1) {
-						// TODO Auto-generated method stub
-						if (arg0.getBitmap() != null) {
-							icon.setImageBitmap(arg0.getBitmap());
-							mData.setIconByte(UIUtil.Bitmap2Bytes(arg0.getBitmap()));
-						}else {
-							icon.setImageResource(R.drawable.default_tubiao);
-						}
-					}
-				};
-				StoreApplication.getInstance().getImageLoader().get(mData.getIconUrl(), listener);
+			ImageListener listener = ImageLoader.getImageListener(icon, R.drawable.default_tubiao, R.drawable.default_tubiao);
+			StoreApplication.getInstance().getImageLoader().get(mData.getIconUrl(), listener);
 			
 			refreshState(mState);
 		}

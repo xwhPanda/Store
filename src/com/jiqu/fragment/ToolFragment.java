@@ -1,8 +1,10 @@
 package com.jiqu.fragment;
 
-import java.io.IOException;
-import java.io.InputStream;
 
+import java.io.File;
+
+import com.android.volley.toolbox.ImageLoader;
+import com.android.volley.toolbox.ImageLoader.ImageListener;
 import com.jiqu.activity.AboutUsActivity;
 import com.jiqu.activity.AppUninstallActivity;
 import com.jiqu.activity.ClearCacheActivity;
@@ -16,6 +18,7 @@ import com.jiqu.application.StoreApplication;
 import com.jiqu.database.Account;
 import com.jiqu.interfaces.LoginOutObserver;
 import com.vr.store.R;
+import com.jiqu.tools.Constants;
 import com.jiqu.tools.MetricsTool;
 import com.jiqu.tools.UIUtil;
 import com.jiqu.view.ToolItemView;
@@ -23,25 +26,17 @@ import com.jiqu.view.ToolItemView;
 import de.greenrobot.dao.query.QueryBuilder;
 
 import android.content.Intent;
-import android.content.res.AssetManager;
-import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.drawable.BitmapDrawable;
-import android.os.Bundle;
-import android.support.v4.app.Fragment;
-import android.util.DisplayMetrics;
-import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-public class ToolFragment extends BaseFragment implements OnClickListener,LoginOutObserver{
+public class ToolFragment extends BaseFragment implements OnClickListener{
 	private float Rx,Ry;
 	private View view;
 	private ImageView accountIcon;
@@ -160,7 +155,7 @@ public class ToolFragment extends BaseFragment implements OnClickListener,LoginO
 		}
 		
 		toolView.setBackgroundResource(R.drawable.toolbg);
-		accountIcon.setImageBitmap(UIUtil.readBitmap(activity, R.drawable.yonghuicon));
+		
 		messageImg.setImageBitmap(UIUtil.readBitmap(activity, R.drawable.xinxi));
 		level.setBackgroundDrawable(UIUtil.readBitmapDrawable(activity, R.drawable.dengji));
 	}
@@ -229,11 +224,28 @@ public class ToolFragment extends BaseFragment implements OnClickListener,LoginO
 			level.setVisibility(View.INVISIBLE);
 			level.setText("LV " + "");
 		}
+		
+		File file = new File(Constants.ACCOUNT_ICON);
+		if (file.exists()) {
+			Bitmap bitmap = BitmapFactory.decodeFile(Constants.ACCOUNT_ICON);
+			if (account != null) {
+				ImageListener listener = ImageLoader.getImageListener(accountIcon, bitmap, bitmap);
+				StoreApplication.getInstance().getImageLoader().get(account.getPhoto(), listener);
+			}else {
+				accountIcon.setImageBitmap(bitmap);
+			}
+			
+		}else {
+			accountIcon.setImageBitmap(UIUtil.readBitmap(activity, R.drawable.yonghuicon));
+		}
 	}
 	@Override
 	public void onLoginOut() {
 		// TODO Auto-generated method stub
 		account = null;
+		accountName.setText(R.string.notLogin);
+		level.setVisibility(View.INVISIBLE);
+		level.setText("LV " + "");
 	}
 
 	@Override

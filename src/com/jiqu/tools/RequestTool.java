@@ -80,6 +80,8 @@ public class RequestTool {
 	public static final String SEARCHE_INDEX_URL = "http://ht.163zs.com/index.php/Api/Search/index";
 	/** 搜索URL **/
 	public static final String SEARCH_URL = "http://ht.163zs.com/index.php/Api/Search/getGameList";
+	/** 修改用户头像 **/
+	public static final String MODIFY_PHOTO_URL = "http://ht.163zs.com/index.php/Api/User/modifyPhoto";
 	
 	private Map<String, Object> paramMap = new HashMap<String, Object>();
 

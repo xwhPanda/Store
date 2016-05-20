@@ -1,5 +1,7 @@
 package com.jiqu.fragment;
 
+import com.jiqu.database.Account;
+import com.jiqu.interfaces.LoginOutObserver;
 import com.jiqu.tools.MetricsTool;
 
 import android.app.Activity;
@@ -10,7 +12,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-public abstract class BaseFragment extends Fragment {
+public abstract class BaseFragment extends Fragment implements LoginOutObserver{
 	public Activity activity;
 	public float Rx,Ry;
 
@@ -43,4 +45,16 @@ public abstract class BaseFragment extends Fragment {
 	public void initData(){};
 	
 	public void init(){};
+	
+	@Override
+	public void onLoginOut() {
+		// TODO Auto-generated method stub
+		
+	}
+	
+	@Override
+	public void onRefresh(Account account) {
+		// TODO Auto-generated method stub
+		
+	}
 }

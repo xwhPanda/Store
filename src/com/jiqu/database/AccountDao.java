@@ -14,7 +14,7 @@ import com.jiqu.database.Account;
 /** 
  * DAO for table "ACCOUNT".
 */
-public class AccountDao extends AbstractDao<Account, Void> {
+public class AccountDao extends AbstractDao<Account, String> {
 
     public static final String TABLENAME = "ACCOUNT";
 
@@ -31,7 +31,7 @@ public class AccountDao extends AbstractDao<Account, Void> {
         public final static Property Phone = new Property(5, String.class, "phone", false, "PHONE");
         public final static Property Level = new Property(6, String.class, "level", false, "LEVEL");
         public final static Property Email = new Property(7, String.class, "email", false, "EMAIL");
-        public final static Property Uid = new Property(8, Integer.class, "uid", false, "UID");
+        public final static Property Uid = new Property(8, String.class, "uid", true, "UID");
         public final static Property Photo = new Property(9, String.class, "photo", false, "PHOTO");
     };
 
@@ -56,7 +56,7 @@ public class AccountDao extends AbstractDao<Account, Void> {
                 "\"PHONE\" TEXT," + // 5: phone
                 "\"LEVEL\" TEXT," + // 6: level
                 "\"EMAIL\" TEXT," + // 7: email
-                "\"UID\" INTEGER," + // 8: uid
+                "\"UID\" TEXT PRIMARY KEY NOT NULL ," + // 8: uid
                 "\"PHOTO\" TEXT);"); // 9: photo
     }
 
@@ -111,9 +111,9 @@ public class AccountDao extends AbstractDao<Account, Void> {
             stmt.bindString(8, email);
         }
  
-        Integer uid = entity.getUid();
+        String uid = entity.getUid();
         if (uid != null) {
-            stmt.bindLong(9, uid);
+            stmt.bindString(9, uid);
         }
  
         String photo = entity.getPhoto();
@@ -124,8 +124,8 @@ public class AccountDao extends AbstractDao<Account, Void> {
 
     /** @inheritdoc */
     @Override
-    public Void readKey(Cursor cursor, int offset) {
-        return null;
+    public String readKey(Cursor cursor, int offset) {
+        return cursor.isNull(offset + 8) ? null : cursor.getString(offset + 8);
     }    
 
     /** @inheritdoc */
@@ -140,7 +140,7 @@ public class AccountDao extends AbstractDao<Account, Void> {
             cursor.isNull(offset + 5) ? null : cursor.getString(offset + 5), // phone
             cursor.isNull(offset + 6) ? null : cursor.getString(offset + 6), // level
             cursor.isNull(offset + 7) ? null : cursor.getString(offset + 7), // email
-            cursor.isNull(offset + 8) ? null : cursor.getInt(offset + 8), // uid
+            cursor.isNull(offset + 8) ? null : cursor.getString(offset + 8), // uid
             cursor.isNull(offset + 9) ? null : cursor.getString(offset + 9) // photo
         );
         return entity;
@@ -157,21 +157,24 @@ public class AccountDao extends AbstractDao<Account, Void> {
         entity.setPhone(cursor.isNull(offset + 5) ? null : cursor.getString(offset + 5));
         entity.setLevel(cursor.isNull(offset + 6) ? null : cursor.getString(offset + 6));
         entity.setEmail(cursor.isNull(offset + 7) ? null : cursor.getString(offset + 7));
-        entity.setUid(cursor.isNull(offset + 8) ? null : cursor.getInt(offset + 8));
+        entity.setUid(cursor.isNull(offset + 8) ? null : cursor.getString(offset + 8));
         entity.setPhoto(cursor.isNull(offset + 9) ? null : cursor.getString(offset + 9));
      }
     
     /** @inheritdoc */
     @Override
-    protected Void updateKeyAfterInsert(Account entity, long rowId) {
-        // Unsupported or missing PK type
-        return null;
+    protected String updateKeyAfterInsert(Account entity, long rowId) {
+        return entity.getUid();
     }
     
     /** @inheritdoc */
     @Override
-    public Void getKey(Account entity) {
-        return null;
+    public String getKey(Account entity) {
+        if(entity != null) {
+            return entity.getUid();
+        } else {
+            return null;
+        }
     }
 
     /** @inheritdoc */

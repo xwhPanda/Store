@@ -86,6 +86,7 @@ public class StoreApplication extends Application {
 	private void initConstant(){
 		PackageManager pm = getPackageManager();
 		Constants.MAC = getLocalMacAddressFromIp(context);
+		Constants.ACCOUNT_ICON = getCacheDir() + "/crop_icon"  + ".png";
 		Constants.PACKAGENAME = getPackageName();
 		try {
 			PackageInfo pi = pm.getPackageInfo(Constants.PACKAGENAME, 0);
