@@ -77,7 +77,6 @@ public class InformationAdapter extends BaseAdapter {
 			
 			UIUtil.setTextSize(holder.gameName, 35);
 			UIUtil.setTextSize(holder.gameDes, 30);
-			UIUtil.setTextSize(holder.time, 30);
 			UIUtil.setTextSize(holder.zhuanti, 30);
 			UIUtil.setTextSize(holder.time, 25);
 			
@@ -103,19 +102,6 @@ public class InformationAdapter extends BaseAdapter {
 		holder.gameDes.setText(item.getComments());
 		holder.time.setVisibility(View.INVISIBLE);
 		return convertView;
-	}
-	
-
-	@Override
-	public int getItemViewType(int position) {
-		// TODO Auto-generated method stub
-		return 1;
-	}
-
-	@Override
-	public int getViewTypeCount() {
-		// TODO Auto-generated method stub
-		return 2;
 	}
 
 	private class Holder {

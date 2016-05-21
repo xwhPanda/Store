@@ -3,6 +3,7 @@ package com.jiqu.application;
 import java.net.InetAddress;
 import java.net.NetworkInterface;
 import java.net.SocketException;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -54,7 +55,7 @@ public class StoreApplication extends Application {
 	public static Context context;
 	public static String DEVICE_ID;
 	public static String CHANNEL;
-	public static LoginOutObserver loginOutObserver;
+	public static List<LoginOutObserver> loginOutObservers;
 	
 	@Override
 	public void onCreate() {
@@ -63,6 +64,7 @@ public class StoreApplication extends Application {
 		CalligraphyConfig.initDefault("fonts/lantinghei.ttf", R.attr.fontPath);
 		instance = this;
 		mMainLooper = getMainLooper();
+		loginOutObservers = new ArrayList<LoginOutObserver>();
 		getDaoSession();
 		
 		PACKAGE_NAME = getPackageName();
@@ -75,12 +77,10 @@ public class StoreApplication extends Application {
 		initFiles();
 		initConstant();
 		
-		/** 微博注册 **/
-//		WeiboShare.getInstance().initialize();
 	}
 	
 	public static void setLoginOutObserver(LoginOutObserver observer){
-		loginOutObserver = observer;
+		loginOutObservers.add(observer);
 	}
 	
 	private void initConstant(){

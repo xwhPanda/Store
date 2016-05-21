@@ -146,6 +146,7 @@ public class UIUtil {
 	    return baos.toByteArray();  
 	   }  
 	
+	/** 时间转换 **/
 	public static String getFormatedDateTime(String pattern, long dateTime) {
         SimpleDateFormat sDateFormat = new SimpleDateFormat(pattern);
         return sDateFormat.format(new Date(dateTime + 0));

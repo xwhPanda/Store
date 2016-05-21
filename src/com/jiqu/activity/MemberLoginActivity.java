@@ -10,6 +10,7 @@ import com.android.volley.toolbox.ImageLoader;
 import com.android.volley.toolbox.ImageLoader.ImageListener;
 import com.jiqu.application.StoreApplication;
 import com.jiqu.database.Account;
+import com.jiqu.interfaces.LoginOutObserver;
 import com.jiqu.object.AccountInformation;
 import com.jiqu.object.AccountResponeInfo;
 import com.jiqu.store.BaseActivity;
@@ -177,8 +178,10 @@ public class MemberLoginActivity extends BaseActivity implements OnClickListener
 //					StoreApplication.daoSession.getAccountDao().deleteAll();
 					Account account = AccountInformation.toAccount(accountResponeInfo.getData(),accountResponeInfo.getPhoto());
 					StoreApplication.daoSession.getAccountDao().insertOrReplace(account);
-					if (StoreApplication.loginOutObserver != null) {
-						StoreApplication.loginOutObserver.onRefresh(account);
+					if (StoreApplication.loginOutObservers != null) {
+						for(LoginOutObserver observer : StoreApplication.loginOutObservers){
+							observer.onRefresh(account);
+						}
 					}
 					MemberLoginActivity.this.finish();
 				}else if (accountResponeInfo.getStatus() == -1) {

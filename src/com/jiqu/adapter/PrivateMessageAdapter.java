@@ -2,7 +2,10 @@ package com.jiqu.adapter;
 
 import java.util.List;
 
-import com.jiqu.object.PrivateMessage;
+import com.android.volley.toolbox.ImageLoader;
+import com.android.volley.toolbox.ImageLoader.ImageListener;
+import com.jiqu.application.StoreApplication;
+import com.jiqu.object.PrivateMessageDataInfo;
 import com.vr.store.R;
 import com.jiqu.tools.MetricsTool;
 import com.jiqu.tools.UIUtil;
@@ -25,9 +28,9 @@ import android.widget.TextView;
 
 public class PrivateMessageAdapter extends BaseAdapter {
 	private Context context;
-	private List<PrivateMessage> messages;
+	private List<PrivateMessageDataInfo> messages;
 
-	public PrivateMessageAdapter(Context context,List<PrivateMessage> messages) {
+	public PrivateMessageAdapter(Context context,List<PrivateMessageDataInfo> messages) {
 		// TODO Auto-generated constructor stub
 		this.context = context;
 		this.messages = messages;
@@ -61,6 +64,7 @@ public class PrivateMessageAdapter extends BaseAdapter {
 		}else {
 			holder = (Holder) convertView.getTag();
 		}
+		holder.setData(messages.get(position));
 		holder.setIndex(position);
 		
 		return holder.getRootView();
@@ -80,6 +84,7 @@ public class PrivateMessageAdapter extends BaseAdapter {
 		private Context context;
 		
 		private int index;
+		private PrivateMessageDataInfo info;
 		
 		public Holder(Context context){
 			this.context = context;
@@ -94,6 +99,15 @@ public class PrivateMessageAdapter extends BaseAdapter {
 		
 		public View getRootView(){
 			return rootView;
+		}
+		
+		public void setData(PrivateMessageDataInfo info){
+			this.info = info;
+			ImageListener listener = ImageLoader.getImageListener(icon, R.drawable.yonghuicon, R.drawable.yonghuicon);
+//			StoreApplication.getInstance().getImageLoader().get(info.get, listener);
+			message.setText(info.getContent());
+			time.setText(UIUtil.getFormatedDateTime("yyyy-mm-dd", Long.parseLong(info.getTime())));
+			nickName.setText(info.getTitle());
 		}
 		
 		private View initView(){
@@ -118,7 +132,6 @@ public class PrivateMessageAdapter extends BaseAdapter {
 					// TODO Auto-generated method stub
 					MsgPopWind popWind = new MsgPopWind(context);
 					popWind.showAsDropDown(operateBtn, (int)(-165 * Rx), 0);
-					Log.i("TAG", "index : " + index);
 				}
 			});
 			return view;

@@ -32,7 +32,8 @@
             android:id="@+id/messageImg"
             android:layout_width="@dimen/toolMessageImgW"
             android:layout_height="@dimen/toolMessageImgH"
-            android:layout_marginLeft="@dimen/toolTwoMargin"/>
+            android:layout_marginLeft="@dimen/toolTwoMargin"
+            android:clickable="true"/>
     </LinearLayout>
 
     <TextView

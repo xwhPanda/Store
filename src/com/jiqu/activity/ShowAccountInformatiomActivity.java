@@ -9,11 +9,13 @@ import com.android.volley.Request.Method;
 import com.android.volley.Response.ErrorListener;
 import com.android.volley.Response.Listener;
 import com.android.volley.toolbox.ImageLoader;
+import com.android.volley.toolbox.ImageLoader.ImageContainer;
 import com.android.volley.toolbox.ImageLoader.ImageListener;
 import com.android.volley.VolleyError;
 import com.jiqu.application.StoreApplication;
 import com.jiqu.database.Account;
 import com.jiqu.interfaces.DialogDismissObserver;
+import com.jiqu.interfaces.LoginOutObserver;
 import com.jiqu.store.BaseActivity;
 import com.vr.store.R;
 import com.jiqu.tools.Constants;
@@ -268,8 +270,10 @@ public class ShowAccountInformatiomActivity extends BaseActivity implements OnCl
 			break;
 
 		case R.id.loginOut:
-			if (StoreApplication.loginOutObserver != null) {
-				StoreApplication.loginOutObserver.onLoginOut();
+			if (StoreApplication.loginOutObservers != null) {
+				for(LoginOutObserver observer : StoreApplication.loginOutObservers){
+					observer.onLoginOut();
+				}
 			}
 			StoreApplication.daoSession.getAccountDao().deleteAll();
 			finish();
@@ -313,8 +317,10 @@ public class ShowAccountInformatiomActivity extends BaseActivity implements OnCl
 						info.setQq(qqStr);
 						StoreApplication.daoSession.getAccountDao().deleteAll();
 						StoreApplication.daoSession.getAccountDao().insertOrReplace(info);
-						if (StoreApplication.loginOutObserver != null) {
-							StoreApplication.loginOutObserver.onRefresh(info);
+						if (StoreApplication.loginOutObservers != null) {
+							for(LoginOutObserver observer : StoreApplication.loginOutObservers){
+								observer.onRefresh(info);
+							}
 						}
 						changeState(false);
 					} else if (status == 0) {
@@ -449,13 +455,13 @@ public class ShowAccountInformatiomActivity extends BaseActivity implements OnCl
 		Bundle extras = picdata.getExtras();
 		if (extras != null) {
 			Bitmap photo = extras.getParcelable("data");
-            UIUtil.saveBitmap(Constants.ACCOUNT_ICON, UIUtil.toRoundBitmap(photo));
-			postImage();
+			photo = UIUtil.toRoundBitmap(photo);
+            UIUtil.saveBitmap(Constants.ACCOUNT_ICON,photo);
+			postImage(photo);
 		}
 	}
 	
-	private void postImage(){
-		final Bitmap bitmap = BitmapFactory.decodeFile(Constants.ACCOUNT_ICON);
+	private void postImage(final Bitmap bitmap){
 		ByteArrayOutputStream baos = new ByteArrayOutputStream();
         bitmap.compress(Bitmap.CompressFormat.PNG, 100, baos);
         byte[] bytes = baos.toByteArray();
@@ -486,8 +492,10 @@ public class ShowAccountInformatiomActivity extends BaseActivity implements OnCl
 								StoreApplication.daoSession.getAccountDao().insertOrReplace(account);
 								ImageListener listener = ImageLoader.getImageListener(accountImg, bitmap, bitmap);
 								StoreApplication.getInstance().getImageLoader().get(url, listener);
-								if (StoreApplication.loginOutObserver != null) {
-									StoreApplication.loginOutObserver.onRefresh(account);
+								if (StoreApplication.loginOutObservers != null) {
+									for(LoginOutObserver observer : StoreApplication.loginOutObservers){
+										observer.onRefresh(account);
+									}
 								}
 							}
 						}
@@ -501,7 +509,6 @@ public class ShowAccountInformatiomActivity extends BaseActivity implements OnCl
 			@Override
 			public void onErrorResponse(VolleyError arg0) {
 				// TODO Auto-generated method stub
-				Log.i("TAG", "onErrorResponse");
 			}
 		}, requestTool.getMap(), "sss");
 	}
@@ -519,6 +526,8 @@ public class ShowAccountInformatiomActivity extends BaseActivity implements OnCl
 		intent.putExtra("return-data", true);
 		intent.putExtra("circleCrop","true");
 		intent.putExtra("noFaceDetection", true);
+		intent.putExtra("scale",true);
+		intent.putExtra("scaleUpIfNeeded", true);
 		startActivityForResult(intent, CUT_REQUEST_KITKAT_CODE);
 	}
 
@@ -547,7 +556,11 @@ public class ShowAccountInformatiomActivity extends BaseActivity implements OnCl
 		intent.putExtra("aspectY", 1);
 		intent.putExtra("outputX", 100);
 		intent.putExtra("outputY", 100);
+		intent.putExtra("circleCrop","true");
 		intent.putExtra("return-data", true);
+		intent.putExtra("noFaceDetection", true);
+		intent.putExtra("scale",true);
+		intent.putExtra("scaleUpIfNeeded", true);
 		startActivityForResult(intent, RESIZE_REQUEST_CODE);
 	}
 

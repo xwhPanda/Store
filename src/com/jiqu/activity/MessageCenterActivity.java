@@ -1,7 +1,10 @@
 package com.jiqu.activity;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import android.os.Bundle;
 import android.util.Log;
@@ -11,30 +14,51 @@ import android.widget.Button;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
 
-import com.jiqu.adapter.InformationAdapter;
+import com.alibaba.fastjson.JSON;
+import com.android.volley.Request.Method;
+import com.android.volley.Response.ErrorListener;
+import com.android.volley.Response.Listener;
+import com.android.volley.VolleyError;
+import com.jiqu.adapter.MessageAdapter;
 import com.jiqu.adapter.PrivateMessageAdapter;
-import com.jiqu.object.GameInformation;
-import com.jiqu.object.PrivateMessage;
+import com.jiqu.object.MessageDataInfo;
+import com.jiqu.object.MessageInfo;
+import com.jiqu.object.PrivateMessageDataInfo;
+import com.jiqu.object.PrivateMessageInfo;
 import com.jiqu.store.BaseActivity;
 import com.vr.store.R;
+import com.jiqu.tools.RequestTool;
 import com.jiqu.tools.UIUtil;
 import com.jiqu.view.PullToRefreshLayout;
 import com.jiqu.view.TitleView;
 
 public class MessageCenterActivity extends BaseActivity implements OnClickListener{
+	private final String MESSAGE_REQUEST = "messageRequest";
+	private final String PRIVATE_REQUEST = "privateReuqest";
 	private TitleView titleView;
 	private Button notice;
 	private Button privateLetter;
 	private ListView contentView,messageContentView;
 	private PullToRefreshLayout refreshView,messageRefreshView;
 	private RelativeLayout btnLayout;
+	private RequestTool requestTool;
+	private Map<String, Object> messageMap = new HashMap<String, Object>();
+	private Map<String, Object> privateMap = new HashMap<String, Object>();
+	private List<MessageDataInfo> messageDataInfos = new ArrayList<MessageDataInfo>();
+	private List<PrivateMessageDataInfo> privateMessageDataInfos = new ArrayList<PrivateMessageDataInfo>();
+	private MessageAdapter messageAdapter;
+	private PrivateMessageAdapter privateMessageAdapter;
+	private int messagePageNum = 1;
+	private int privatePageNum = 1;
+	private boolean isPrivateFirst = true;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
 		super.onCreate(savedInstanceState);
-		
+		requestTool = RequestTool.getInstance();
 		initView();
+		loadMessageData(RequestTool.MESSAGE_LIST_URL);
 	}
 	
 	@Override
@@ -65,25 +89,11 @@ public class MessageCenterActivity extends BaseActivity implements OnClickListen
 		
 		changeButtonState(notice);
 		
-		List<GameInformation> gameInformations = new ArrayList<GameInformation>();
+		messageAdapter = new MessageAdapter(this, messageDataInfos);
+		contentView.setAdapter(messageAdapter);
 		
-		for (int i = 0; i < 30; i++)
-		{
-			GameInformation game = new GameInformation();
-			gameInformations.add(game);
-		}
-//		InformationAdapter adapter = new InformationAdapter(this, gameInformations,1);
-//		contentView.setAdapter(adapter);
-		
-		List<PrivateMessage> messages = new ArrayList<PrivateMessage>();
-		
-		for (int i = 0; i < 30; i++)
-		{
-			PrivateMessage message = new PrivateMessage();
-			messages.add(message);
-		}
-		PrivateMessageAdapter adapter1 = new PrivateMessageAdapter(this, messages);
-		messageContentView.setAdapter(adapter1);
+		privateMessageAdapter = new PrivateMessageAdapter(this, privateMessageDataInfos);
+		messageContentView.setAdapter(privateMessageAdapter);
 	}
 	
 	private void initViewSize(){
@@ -127,7 +137,68 @@ public class MessageCenterActivity extends BaseActivity implements OnClickListen
 			changeButtonState(privateLetter);
 			refreshView.setVisibility(View.INVISIBLE);
 			messageRefreshView.setVisibility(View.VISIBLE);
+			if (isPrivateFirst) {
+				isPrivateFirst = false;
+				loadPrivateMessageData(RequestTool.PRIVATE_LIST_URL);
+			}
 			
 		}
+	}
+	
+	private void loadMessageData(String url){
+		requestTool.startStringRequest(Method.GET, new Listener<String>() {
+
+			@Override
+			public void onResponse(String arg0) {
+				// TODO Auto-generated method stub
+				MessageInfo messageInfo = JSON.parseObject(arg0, MessageInfo.class);
+				if (messageInfo != null) {
+					if (messageInfo.getStatus() == 1) {
+						Collections.addAll(messageDataInfos, messageInfo.getData());
+						messageAdapter.notifyDataSetChanged();
+					}
+				}
+			}
+		}, url, new ErrorListener(){
+
+			@Override
+			public void onErrorResponse(VolleyError arg0) {
+				// TODO Auto-generated method stub
+				
+			}
+			
+		}, messageMap, MESSAGE_REQUEST);
+	}
+	
+	private void loadPrivateMessageData(String url){
+		requestTool.startStringRequest(Method.GET, new Listener<String>() {
+
+			@Override
+			public void onResponse(String arg0) {
+				// TODO Auto-generated method stub
+				PrivateMessageInfo privateMessageInfo = JSON.parseObject(arg0, PrivateMessageInfo.class);
+				if (privateMessageInfo != null) {
+					if (privateMessageInfo.getStatus() == 1) {
+						Collections.addAll(privateMessageDataInfos, privateMessageInfo.getData());
+						privateMessageAdapter.notifyDataSetChanged();
+					}
+				}
+			}
+		}, url, new ErrorListener() {
+
+			@Override
+			public void onErrorResponse(VolleyError arg0) {
+				// TODO Auto-generated method stub
+				
+			}
+		}, privateMap, PRIVATE_REQUEST);
+	}
+	
+	@Override
+	protected void onDestroy() {
+		// TODO Auto-generated method stub
+		super.onDestroy();
+		requestTool.stopRequest(MESSAGE_REQUEST);
+		requestTool.stopRequest(PRIVATE_REQUEST);
 	}
 }

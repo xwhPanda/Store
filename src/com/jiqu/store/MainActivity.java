@@ -4,7 +4,9 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.android.volley.VolleyError;
 import com.android.volley.toolbox.ImageLoader;
+import com.android.volley.toolbox.ImageLoader.ImageContainer;
 import com.android.volley.toolbox.ImageLoader.ImageListener;
 import com.jiqu.activity.DownloadManagerActivity;
 import com.jiqu.activity.MemberLoginActivity;
@@ -42,6 +44,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -55,7 +58,7 @@ import android.widget.Toast;
 
 public class MainActivity extends FragmentActivity implements OnClickListener,OnNetChangeListener,LoginOutObserver{
 	private float Rx,Ry;
-	private Button accountImg;
+	private ImageView accountImg;
 	private EditText searchEd;
 	private Button searchBtn;
 	private Button download;
@@ -102,6 +105,8 @@ public class MainActivity extends FragmentActivity implements OnClickListener,On
 		netReceiver.setNetChangeListener(this);
 		netReceiver.registerReceive(StoreApplication.context);
 		
+		StoreApplication.setLoginOutObserver(this);
+		
 		dialog = new CustomDialog(this)
 				.setNegativeButton(new DialogInterface.OnClickListener() {
 					
@@ -145,7 +150,7 @@ public class MainActivity extends FragmentActivity implements OnClickListener,On
 		toolTopImg = (ImageView) findViewById(R.id.toolTopImg);
 		bottomPanel = (LinearLayout) findViewById(R.id.bottomPanel);
 		
-		accountImg = (Button) findViewById(R.id.accountImg);
+		accountImg = (ImageView) findViewById(R.id.accountImg);
 		searchEd = (EditText) findViewById(R.id.searchEd);
 		searchBtn = (Button) findViewById(R.id.searchBtn);
 		download = (Button) findViewById(R.id.download);
@@ -244,7 +249,6 @@ public class MainActivity extends FragmentActivity implements OnClickListener,On
 		toolTop.setBackgroundDrawable(UIUtil.readBitmapDrawable(this, R.drawable.tool_top_bg));
 		
 		toolTopImg.setImageBitmap(UIUtil.readBitmap(this, R.drawable.shezhi_icon));
-		accountImg.setBackgroundDrawable(UIUtil.readBitmapDrawable(this, R.drawable.yonghuicon));
 		searchRel.setBackgroundDrawable(UIUtil.readBitmapDrawable(this, R.drawable.sousuobg));
 		searchBtn.setBackgroundDrawable(UIUtil.readBitmapDrawable(this, R.drawable.sousuoicon));
 		download.setBackgroundDrawable(UIUtil.readBitmapDrawable(this, R.drawable.top_xiazai_icon));
@@ -254,6 +258,29 @@ public class MainActivity extends FragmentActivity implements OnClickListener,On
 		gameImg.setImageBitmap(UIUtil.readBitmap(this, R.drawable.youxi));
 		evaluationImg.setImageBitmap(UIUtil.readBitmap(this, R.drawable.ceping));
 		toolImg.setImageBitmap(UIUtil.readBitmap(this, R.drawable.gongju));
+		
+		initIconData();
+	}
+	
+	private void initIconData(){
+		File file = new File(Constants.ACCOUNT_ICON);
+		Account account = StoreApplication.getInstance().daoSession.getAccountDao().queryBuilder().unique();
+		if (file.exists()) {
+			Bitmap bitmap = BitmapFactory.decodeFile(Constants.ACCOUNT_ICON);
+			if (account != null) {
+				ImageListener listener = ImageLoader.getImageListener(accountImg, bitmap, bitmap);
+				StoreApplication.getInstance().getImageLoader().get(account.getPhoto(), listener);
+			}else {
+				accountImg.setBackgroundResource(R.drawable.yonghuicon);
+			}
+		}else {
+			if (account != null) {
+				ImageListener listener = ImageLoader.getImageListener(accountImg, R.drawable.yonghuicon, R.drawable.yonghuicon);
+				StoreApplication.getInstance().getImageLoader().get(account.getPhoto(), listener);
+			}else {
+				accountImg.setBackgroundResource(R.drawable.yonghuicon);
+			}
+		}
 	}
 	
 	private void setOnclick(){
@@ -469,8 +496,7 @@ public class MainActivity extends FragmentActivity implements OnClickListener,On
 			File file = new File(Constants.ACCOUNT_ICON);
 			if (file.exists()) {
 				Bitmap bitmap = BitmapFactory.decodeFile(Constants.ACCOUNT_ICON);
-				BitmapDrawable drawable = new BitmapDrawable(bitmap);
-				accountImg.setBackgroundDrawable(drawable);
+				accountImg.setImageBitmap(bitmap);
 			}
 		}
 	}

@@ -82,6 +82,12 @@ public class RequestTool {
 	public static final String SEARCH_URL = "http://ht.163zs.com/index.php/Api/Search/getGameList";
 	/** 修改用户头像 **/
 	public static final String MODIFY_PHOTO_URL = "http://ht.163zs.com/index.php/Api/User/modifyPhoto";
+	/** 私信URL **/
+	public static final String PRIVATE_LIST_URL = "http://ht.163zs.com/index.php/Api/User/getPrivateList";
+	/** 通知接口 **/
+	public static final String MESSAGE_LIST_URL = "http://ht.163zs.com/index.php/Api/User/getMessageaList";
+	/** 用户反馈URL **/
+	public static final String FEEDBACK_URL = "http://ht.163zs.com/index.php/Api/User/feedback";
 	
 	private Map<String, Object> paramMap = new HashMap<String, Object>();
 

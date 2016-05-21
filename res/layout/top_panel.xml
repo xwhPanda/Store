@@ -47,12 +47,12 @@
             android:layout_gravity="center_vertical"
             android:layout_weight="1" >
 
-            <Button
+            <ImageView
                 android:id="@+id/accountImg"
                 android:layout_width="@dimen/topAccountIconSize"
                 android:layout_height="@dimen/topAccountIconSize"
                 android:layout_centerInParent="true"
-                fontPath="fonts/lantinghei.ttf"/>
+                android:clickable="true"/>
         </RelativeLayout>
 
         <RelativeLayout

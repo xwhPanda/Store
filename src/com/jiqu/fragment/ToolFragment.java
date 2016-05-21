@@ -11,6 +11,7 @@ import com.jiqu.activity.ClearCacheActivity;
 import com.jiqu.activity.CommomProblemActivity;
 import com.jiqu.activity.DeepClearActivity;
 import com.jiqu.activity.DownloadManagerActivity;
+import com.jiqu.activity.MessageCenterActivity;
 import com.jiqu.activity.PowerManagerActivity;
 import com.jiqu.activity.ResourceManagementActivity;
 import com.jiqu.activity.ShareActivity;
@@ -161,6 +162,7 @@ public class ToolFragment extends BaseFragment implements OnClickListener{
 	}
 	
 	private void registerClick(){
+		messageImg.setOnClickListener(this);
 		downloadItem.setOnClickListener(this);
 		resourcesItem.setOnClickListener(this);
 		uninstallItem.setOnClickListener(this);
@@ -176,6 +178,9 @@ public class ToolFragment extends BaseFragment implements OnClickListener{
 	public void onClick(View v) {
 		// TODO Auto-generated method stub
 		switch (v.getId()) {
+		case R.id.messageImg:
+			startActivity(new Intent(getActivity(), MessageCenterActivity.class));
+			break;
 		case R.id.downloadItem:
 			startActivity(new Intent(getActivity(), DownloadManagerActivity.class));
 			break;

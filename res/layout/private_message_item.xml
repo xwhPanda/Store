@@ -51,7 +51,6 @@
             android:layout_height="wrap_content"
             android:singleLine="true"
             android:textColor="@color/blue"
-            android:text="小毛驴"
             fontPath="fonts/lantinghei.ttf"/>
         
         <TextView 
@@ -61,7 +60,6 @@
             android:singleLine="true"
             android:ellipsize="end"
             android:textColor="@color/itemDesColor"
-            android:text="我有一头小毛驴从来都不骑和方法和考核啊短发放松反而愈发我而"
             fontPath="fonts/lantinghei.ttf"/>
     </LinearLayout>
     
