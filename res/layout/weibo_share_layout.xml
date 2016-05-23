@@ -1,18 +1,57 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="@drawable/toolbg">
     
-    <EditText 
-        android:id="@+id/shareText"
-        android:layout_width="match_parent"
-        android:layout_height="150dp"/>
-
+    <com.jiqu.view.TitleView
+        android:id="@+id/titleView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+    
+    <RelativeLayout 
+        android:id="@+id/contentRel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_below="@id/titleView"
+        android:background="@drawable/edit_bg">
+	    <EditText 
+	        android:id="@+id/content"
+	        android:layout_width="match_parent"
+	        android:layout_height="match_parent"
+	        android:gravity="top"
+	        android:textColor="@color/itemDesColor"
+	        android:background="@color/transparent"/>
+	    
+	    <TextView 
+	        android:id="@+id/contentTip"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:text="4-200字"
+	        android:layout_alignParentBottom="true"
+	        android:layout_alignParentRight="true"
+	        android:textColor="@color/itemDesColor"
+	        android:layout_marginRight="4dp"
+	        android:layout_marginBottom="2dp"/>
+    </RelativeLayout>
+    
+    <ImageView 
+        android:id="@+id/img"
+        android:clickable="true"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/contentRel"
+        android:layout_alignLeft="@id/contentRel"
+        android:background="@drawable/tianjia"/>
     
     <Button 
-        android:id="@+id/share"
-        android:layout_width="300dp"
-        android:layout_height="110dp"
+        android:id="@+id/commit"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
-        android:layout_alignParentBottom="true"/>
+        android:background="@drawable/tijiao"
+        android:text="@string/commit"
+        android:textColor="@color/white"/>
 </RelativeLayout>

@@ -1,31 +1,31 @@
 package com.jiqu.activity;
 
 
+import java.util.Map;
+
 import com.alibaba.fastjson.JSON;
 import com.android.volley.Request.Method;
 import com.android.volley.Response.ErrorListener;
 import com.android.volley.Response.Listener;
 import com.android.volley.VolleyError;
-import com.android.volley.toolbox.ImageLoader;
-import com.android.volley.toolbox.ImageLoader.ImageListener;
 import com.jiqu.application.StoreApplication;
 import com.jiqu.database.Account;
 import com.jiqu.interfaces.LoginOutObserver;
 import com.jiqu.object.AccountInformation;
 import com.jiqu.object.AccountResponeInfo;
 import com.jiqu.store.BaseActivity;
+import com.umeng.socialize.UMAuthListener;
+import com.umeng.socialize.bean.SHARE_MEDIA;
 import com.vr.store.R;
-import com.jiqu.tools.Constants;
 import com.jiqu.tools.MD5;
 import com.jiqu.tools.RequestTool;
-import com.jiqu.tools.SharePreferenceTool;
 import com.jiqu.tools.UIUtil;
+import com.jiqu.umeng.UMengManager;
 import com.jiqu.view.PasswordView;
 import com.jiqu.view.QuickLoginView;
 import com.jiqu.view.TitleView;
 
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.text.InputType;
 import android.text.TextUtils;
@@ -50,6 +50,8 @@ public class MemberLoginActivity extends BaseActivity implements OnClickListener
 	private RequestTool requestTool;
 	private boolean loging = false;
 	
+	private UMengManager mUMengManager;
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
@@ -61,6 +63,7 @@ public class MemberLoginActivity extends BaseActivity implements OnClickListener
 	}
 	
 	private void init(){
+		mUMengManager = UMengManager.getInstance();
 		titleView = (TitleView) findViewById(R.id.titleView);
 		accountIcon = (ImageView) findViewById(R.id.accountIcon);
 		forgetPassword = (Button) findViewById(R.id.forgetPassword);
@@ -79,6 +82,11 @@ public class MemberLoginActivity extends BaseActivity implements OnClickListener
 		
 		titleView.setActivity(this);
 		titleView.tip.setText(R.string.loginTopTip);
+		
+		quickLoginView.setQqClickListener(this);
+		quickLoginView.setWeiXinClickListener(this);
+		quickLoginView.setSinaClickListener(this);
+		
 		initSize();
 	}
 	
@@ -141,7 +149,38 @@ public class MemberLoginActivity extends BaseActivity implements OnClickListener
 		case R.id.register:
 			startActivity(new Intent(this, RegisterActivity.class));
 			break;
+		
+		case R.id.sinaLogin:
+			mUMengManager.sinaAuth(this, new UMAuthListener() {
+				
+				@Override
+				public void onError(SHARE_MEDIA arg0, int arg1, Throwable arg2) {
+					// TODO Auto-generated method stub
+					Log.i("TAG", "onError");
+				}
+				
+				@Override
+				public void onComplete(SHARE_MEDIA arg0, int arg1, Map<String, String> arg2) {
+					// TODO Auto-generated method stub
+					Log.i("TAG", "onComplete");
+				}
+				
+				@Override
+				public void onCancel(SHARE_MEDIA arg0, int arg1) {
+					// TODO Auto-generated method stub
+					Log.i("TAG", "onCancel");
+				}
+			});
+			
+			break;
 		}
+	}
+	
+	@Override
+	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+		// TODO Auto-generated method stub
+		super.onActivityResult(requestCode, resultCode, data);
+		mUMengManager.onActivityResult(requestCode, resultCode, data);
 	}
 	
 	private boolean checkValue(String account,String password){
@@ -175,7 +214,6 @@ public class MemberLoginActivity extends BaseActivity implements OnClickListener
 				}else if (accountResponeInfo.getStatus() == 1) {
 					/**登录成功**/
 					Toast.makeText(MemberLoginActivity.this, R.string.longinSuccess, Toast.LENGTH_SHORT).show();
-//					StoreApplication.daoSession.getAccountDao().deleteAll();
 					Account account = AccountInformation.toAccount(accountResponeInfo.getData(),accountResponeInfo.getPhoto());
 					StoreApplication.daoSession.getAccountDao().insertOrReplace(account);
 					if (StoreApplication.loginOutObservers != null) {

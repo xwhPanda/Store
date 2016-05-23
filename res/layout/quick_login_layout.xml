@@ -60,7 +60,7 @@
 	        android:background="@drawable/weixin"
             fontPath="fonts/lantinghei.ttf"/>
 	    
-	    <Button 
+	    <Button
 	        android:id="@+id/sinaLogin"
 	        android:layout_width="wrap_content"
 	        android:layout_height="wrap_content"

@@ -7,8 +7,19 @@
         android:minSdkVersion="11"
         android:targetSdkVersion="17" />
 
+    <!-- 友盟权限 -->
+    <uses-permission android:name="android.permission.READ_LOGS" />
+    <uses-permission android:name="android.permission.CALL_PHONE" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-permission android:name="android.permission.GET_TASKS" />
+    <uses-permission android:name="android.permission.SET_DEBUG_APP" />
+    <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
+    <uses-permission android:name="android.permission.GET_ACCOUNTS" />
+    <uses-permission android:name="android.permission.USE_CREDENTIALS" />
+    <uses-permission android:name="android.permission.MANAGE_ACCOUNTS" />
     <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="android.permission.CAMERA"/>
+    <uses-permission android:name="android.permission.CAMERA" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.RESTART_PACKAGES" />
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
@@ -23,7 +34,7 @@
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.READ_PHONE_STATE" />
     <!-- 用于调用 JNI -->
-    <uses-permission android:name="android.permission.READ_PHONE_STATE" /> 
+    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
 
     <application
         android:name="com.jiqu.application.StoreApplication"
@@ -31,28 +42,23 @@
         android:icon="@drawable/ic_launcher"
         android:label="@string/app_name"
         android:theme="@style/FullScreen" >
-        
         <meta-data
             android:name="channel"
             android:value="test" />
 
+        <!-- 友盟 -->
+        <meta-data
+            android:name="UMENG_APPKEY"
+            android:value="574297f8e0f55a3bb100060e" >
+        </meta-data>
+
         <!-- 微博分享 -->
-        <activity
-            android:name="com.sina.weibo.sdk.demo.WBShareActivity"
-            android:configChanges="keyboardHidden|orientation"
-            android:screenOrientation="portrait" >
-            <intent-filter>
-                <action android:name="com.sina.weibo.sdk.action.ACTION_SDK_REQ_ACTIVITY" />
-                <category android:name="android.intent.category.DEFAULT" />
-            </intent-filter>
-        </activity>
         <activity
             android:name="com.sina.weibo.sdk.component.WeiboSdkBrowser"
             android:configChanges="keyboardHidden|orientation"
             android:exported="false"
             android:windowSoftInputMode="adjustResize" >
         </activity>
-        
         <activity
             android:name="com.jiqu.store.SplashActivity"
             android:screenOrientation="portrait" >
@@ -136,7 +142,12 @@
         </activity>
         <activity
             android:name="com.jiqu.activity.ShareActivity"
+            android:configChanges="keyboardHidden|orientation"
             android:screenOrientation="portrait" >
+            <intent-filter>
+                <action android:name="com.sina.weibo.sdk.action.ACTION_SDK_REQ_ACTIVITY" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
         </activity>
         <activity
             android:name="com.jiqu.activity.SortInfoActivity"
@@ -166,18 +177,65 @@
             android:name="com.jiqu.activity.DetailActivity"
             android:screenOrientation="portrait" >
         </activity>
-        <activity 
+        <activity
             android:name="com.jiqu.activity.GameEvaluationWebInfoActivity"
-            android:screenOrientation="portrait">
+            android:screenOrientation="portrait" >
         </activity>
-        <activity android:name="com.jiqu.activity.WeiboShareActivity"
+        <activity
+            android:name="com.jiqu.activity.FeedbackActivity"
+            android:screenOrientation="portrait" >
+        </activity>
+        <!-- 
+        <activity
+            android:name="com.jiqu.activity.WeiboShareActivity"
             android:configChanges="keyboardHidden|orientation"
             android:screenOrientation="portrait" >
             <intent-filter>
                 <action android:name="com.sina.weibo.sdk.action.ACTION_SDK_REQ_ACTIVITY" />
+
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
+         -->
+
+        <!-- 友盟 -->
+        <activity
+            android:name="com.umeng.socialize.editorpage.ShareActivity"
+            android:excludeFromRecents="true"
+            android:theme="@style/Theme.UMDefault" />
+
+        <!-- 友盟微信 -->
+        <activity
+            android:name="com.umeng.soexample.wxapi.WXEntryActivity"
+            android:configChanges="keyboardHidden|orientation|screenSize"
+            android:exported="true"
+            android:screenOrientation="portrait"
+            android:theme="@android:style/Theme.Translucent.NoTitleBar" />
+
+        <!-- 友盟微博 -->
+        <service
+            android:name="com.sina.weibo.sdk.net.DownloadService"
+            android:exported="false" >
+        </service>
+		
+        <!-- 友盟QQ，QQ空间 -->
+        <activity
+            android:name="com.tencent.tauth.AuthActivity"
+            android:launchMode="singleTask"
+            android:noHistory="true" >
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data android:scheme="tencent100424468" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name="com.tencent.connect.common.AssistActivity"
+            android:screenOrientation="portrait"
+            android:theme="@android:style/Theme.Translucent.NoTitleBar" />
     </application>
 
 </manifest>

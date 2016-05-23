@@ -78,7 +78,6 @@ public class MessageCenterActivity extends BaseActivity implements OnClickListen
 		btnLayout = (RelativeLayout) findViewById(R.id.btnLayout);
 		
 		titleView.setActivity(this);
-		titleView.editBtn.setVisibility(View.VISIBLE);
 		titleView.tip.setText(R.string.messageCenter);
 		titleView.back.setBackgroundResource(R.drawable.fanhui);
 		

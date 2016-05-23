@@ -88,6 +88,8 @@ public class RequestTool {
 	public static final String MESSAGE_LIST_URL = "http://ht.163zs.com/index.php/Api/User/getMessageaList";
 	/** 用户反馈URL **/
 	public static final String FEEDBACK_URL = "http://ht.163zs.com/index.php/Api/User/feedback";
+	/** 常见问题URL **/
+	public static final String PROBLEM_URL = "http://ht.163zs.com/index.php/Api/App/problem";
 	
 	private Map<String, Object> paramMap = new HashMap<String, Object>();
 

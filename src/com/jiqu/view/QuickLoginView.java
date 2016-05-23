@@ -1,26 +1,35 @@
 package com.jiqu.view;
 
+import java.util.Map;
+
+import com.umeng.socialize.UMAuthListener;
+import com.umeng.socialize.UMShareAPI;
+import com.umeng.socialize.bean.SHARE_MEDIA;
 import com.vr.store.R;
 import com.jiqu.tools.MetricsTool;
 import com.jiqu.tools.UIUtil;
+import com.jiqu.umeng.UMengManager;
 
 import android.content.Context;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-public class QuickLoginView extends RelativeLayout {
+public class QuickLoginView extends RelativeLayout{
+	private Context context;
 	private RelativeLayout titleRel;
 	private ImageView leftLine;
 	private ImageView rightLine;
 	private TextView title;
 	private RelativeLayout iconRel;
-	private Button qqLogin,weixinLogin,sinaLogin;
-
+	private Button qqLogin,weixinLogin;
+	private Button sinaLogin;
+	
 	public QuickLoginView(Context context) {
 		super(context);
 		// TODO Auto-generated constructor stub
@@ -40,6 +49,7 @@ public class QuickLoginView extends RelativeLayout {
 	}
 	
 	private void initView(Context context){
+		this.context = context;
 		LayoutInflater inflater = LayoutInflater.from(context);
 		View view = inflater.inflate(R.layout.quick_login_layout, this);
 		
@@ -53,6 +63,18 @@ public class QuickLoginView extends RelativeLayout {
 		sinaLogin = (Button) view.findViewById(R.id.sinaLogin);
 		
 		initViewSize(view);
+	}
+	
+	public void setQqClickListener(OnClickListener listener){
+		qqLogin.setOnClickListener(listener);
+	}
+	
+	public void setWeiXinClickListener(OnClickListener listener){
+		weixinLogin.setOnClickListener(listener);
+	}
+	
+	public void setSinaClickListener(OnClickListener listener){
+		sinaLogin.setOnClickListener(listener);
 	}
 	
 	private void initViewSize(View view){
@@ -76,5 +98,5 @@ public class QuickLoginView extends RelativeLayout {
 			e.printStackTrace();
 		}
 	}
-
+	
 }

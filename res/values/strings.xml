@@ -1,6 +1,6 @@
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
 
-    <string name="app_name">Store</string>
+    <string name="app_name">极趣VR助手</string>
     
     <!-- 首页底部五个文字 -->
     <string name="recomendTx">推荐</string>

@@ -8,6 +8,7 @@ import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.webkit.WebSettings.LayoutAlgorithm;
 
+import com.jiqu.object.CommonProblemItem;
 import com.jiqu.object.EvaluationItemInfo;
 import com.jiqu.store.BaseActivity;
 import com.jiqu.view.LoadStateView;
@@ -19,12 +20,14 @@ public class GameEvaluationWebInfoActivity extends BaseActivity {
 	private WebView webView;
 	private LoadStateView loadView;
 	private EvaluationItemInfo info;
+	private CommonProblemItem item;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
 		super.onCreate(savedInstanceState);
 		info = (EvaluationItemInfo) getIntent().getSerializableExtra("info");
+		item = (CommonProblemItem) getIntent().getSerializableExtra("item");
 		initView();
 	}
 	
@@ -49,13 +52,16 @@ public class GameEvaluationWebInfoActivity extends BaseActivity {
 		webView.getSettings().setLayoutAlgorithm(LayoutAlgorithm.SINGLE_COLUMN);
 		
 		if (info != null) {
-			loadData();
+			loadData(info.getUrl());
+			titleView.tip.setText(info.getTitle());
+		}else if (item != null) {
+			loadData(item.getContent());
+			titleView.tip.setText(item.getTitle());
 		}
 	}
 	
-	private void loadData(){
-		webView.loadUrl(info.getUrl());
-		titleView.tip.setText(info.getTitle());
+	private void loadData(String url){
+		webView.loadUrl(url);
 		webView.setWebChromeClient(new WebChromeClient() {
 			@Override
 			public void onProgressChanged(WebView view, int newProgress) {

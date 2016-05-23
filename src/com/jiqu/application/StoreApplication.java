@@ -20,6 +20,7 @@ import com.jiqu.database.DaoMaster.DevOpenHelper;
 import com.jiqu.database.DaoSession;
 import com.jiqu.download.FileUtil;
 import com.jiqu.interfaces.LoginOutObserver;
+import com.umeng.socialize.PlatformConfig;
 import com.vr.store.R;
 import com.jiqu.tools.Constants;
 import com.jiqu.tools.LruBitmapCache;
@@ -77,12 +78,14 @@ public class StoreApplication extends Application {
 		initFiles();
 		initConstant();
 		
+		initUMeng();
 	}
 	
 	public static void setLoginOutObserver(LoginOutObserver observer){
 		loginOutObservers.add(observer);
 	}
 	
+	/** 初始化常量 **/
 	private void initConstant(){
 		PackageManager pm = getPackageManager();
 		Constants.MAC = getLocalMacAddressFromIp(context);
@@ -100,6 +103,16 @@ public class StoreApplication extends Application {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+	}
+	
+	/** 友盟 **/
+	private void initUMeng(){
+		//微信 appid appsecret
+		PlatformConfig.setWeixin("wx967daebe835fbeac", "5bb696d9ccd75a38c8a0bfe0675559b3");
+		//新浪微博 appkey appsecret
+		PlatformConfig.setSinaWeibo("4171998531","cdaaf47bda171bdf9546478720b7eef2");
+		// QQ和Qzone appid appkey     
+		PlatformConfig.setQQZone("100424468", "c7394704798a158208a74ab60104f0ba"); 
 	}
 	
 	private String getMetaDataValue(String name){

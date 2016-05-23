@@ -2,7 +2,7 @@ package com.jiqu.adapter;
 
 import java.util.List;
 
-import com.jiqu.object.CommomProblemItem;
+import com.jiqu.object.CommonProblemItem;
 import com.vr.store.R;
 import com.jiqu.tools.MetricsTool;
 import com.jiqu.tools.UIUtil;
@@ -13,13 +13,14 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.AbsListView.LayoutParams;
 
 public class CommomProblemAdapter extends BaseAdapter {
 	private Context context;
-	private List<CommomProblemItem> problemItems;
-	public CommomProblemAdapter(Context context,List<CommomProblemItem> items) {
+	private List<CommonProblemItem> problemItems;
+	public CommomProblemAdapter(Context context,List<CommonProblemItem> items) {
 		// TODO Auto-generated constructor stub
 		this.context = context;
 		this.problemItems = items;
@@ -52,7 +53,7 @@ public class CommomProblemAdapter extends BaseAdapter {
 			LayoutInflater inflater = LayoutInflater.from(context);
 			convertView = inflater.inflate(R.layout.commom_problem_item_layout, null);
 			holder.problem = (TextView) convertView.findViewById(R.id.problem);
-			holder.infoBtn = (Button) convertView.findViewById(R.id.infoBtn);
+			holder.infoBtn = (ImageView) convertView.findViewById(R.id.infoBtn);
 			
 			UIUtil.setTextSize(holder.problem, 35);
 			UIUtil.setViewSize(holder.infoBtn, 36 * MetricsTool.Rx, 36 * MetricsTool.Rx);
@@ -72,12 +73,12 @@ public class CommomProblemAdapter extends BaseAdapter {
 			holder = (Holder) convertView.getTag();
 		}
 		
-		holder.problem.setText("房价是否健康积极哦");
+		holder.problem.setText(problemItems.get(position).getTitle());
 		return convertView;
 	}
 	
 	class Holder{
 		private TextView problem;
-		private Button infoBtn;
+		private ImageView infoBtn;
 	}
 }

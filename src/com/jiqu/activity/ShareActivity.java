@@ -5,6 +5,7 @@ import java.util.List;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.ListView;
@@ -13,6 +14,10 @@ import android.widget.TextView;
 import com.jiqu.adapter.ShareAddFriendAdapter;
 import com.jiqu.object.FriendItem;
 import com.jiqu.store.BaseActivity;
+import com.umeng.socialize.ShareAction;
+import com.umeng.socialize.UMShareAPI;
+import com.umeng.socialize.UMShareListener;
+import com.umeng.socialize.bean.SHARE_MEDIA;
 import com.vr.store.R;
 import com.jiqu.tools.UIUtil;
 import com.jiqu.view.FriendShareItem;
@@ -73,10 +78,37 @@ public class ShareActivity extends BaseActivity {
 			@Override
 			public void onClick(View v) {
 				// TODO Auto-generated method stub
-				startActivity(new Intent(ShareActivity.this, WeiboShareActivity.class));
+				new ShareAction(ShareActivity.this)
+				.setPlatform(SHARE_MEDIA.SINA)
+				.setCallback(new UMShareListener() {
+					
+					@Override
+					public void onResult(SHARE_MEDIA arg0) {
+						// TODO Auto-generated method stub
+					}
+					
+					@Override
+					public void onError(SHARE_MEDIA arg0, Throwable arg1) {
+						// TODO Auto-generated method stub
+					}
+					
+					@Override
+					public void onCancel(SHARE_MEDIA arg0) {
+						// TODO Auto-generated method stub
+					}
+				})
+				.withText("")
+				.share();
 			}
 		});
 	}
+	
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+//        super.onActivityResult(requestCode, resultCode, data);
+        UMShareAPI.get(this).onActivityResult( requestCode, resultCode, data);
+    }
+
 	
 	private void initViewSize(){
 		UIUtil.setViewHeight(contacts, 180 * Ry);
