@@ -12,7 +12,8 @@
     <com.jiqu.view.PullToRefreshLayout
         android:id="@+id/refreshView"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:layout_below="@id/titleView">
 
         <include layout="@layout/refresh_head" />
 

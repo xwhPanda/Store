@@ -34,6 +34,7 @@
         fontPath="fonts/lantinghei.ttf"
         android:background="@color/transparent"
         android:text="@string/intoBlacklist"
-        android:textColor="@drawable/msg_pop_item_sel" />
+        android:textColor="@drawable/msg_pop_item_sel" 
+        android:visibility="gone"/>
 
 </RelativeLayout>

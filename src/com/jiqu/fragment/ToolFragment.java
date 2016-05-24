@@ -1,8 +1,5 @@
 package com.jiqu.fragment;
 
-
-import java.io.File;
-
 import com.android.volley.toolbox.ImageLoader;
 import com.android.volley.toolbox.ImageLoader.ImageListener;
 import com.jiqu.activity.AboutUsActivity;
@@ -17,9 +14,7 @@ import com.jiqu.activity.ResourceManagementActivity;
 import com.jiqu.activity.ShareActivity;
 import com.jiqu.application.StoreApplication;
 import com.jiqu.database.Account;
-import com.jiqu.interfaces.LoginOutObserver;
 import com.vr.store.R;
-import com.jiqu.tools.Constants;
 import com.jiqu.tools.MetricsTool;
 import com.jiqu.tools.UIUtil;
 import com.jiqu.view.ToolItemView;
@@ -27,8 +22,6 @@ import com.jiqu.view.ToolItemView;
 import de.greenrobot.dao.query.QueryBuilder;
 
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -221,27 +214,18 @@ public class ToolFragment extends BaseFragment implements OnClickListener{
 	
 	private void setData(Account account){
 		if (account != null) {
+			ImageListener listener = ImageLoader.getImageListener(accountIcon, R.drawable.yonghuicon, R.drawable.yonghuicon);
+			StoreApplication.getInstance().getImageLoader().get(account.getPhoto(), listener);
 			accountName.setText(account.getUsername());
+			messageImg.setVisibility(View.VISIBLE);
 			level.setVisibility(View.VISIBLE);
 			level.setText("LV " + account.getLevel());
 		}else {
+			accountIcon.setBackgroundResource(R.drawable.yonghuicon);
 			accountName.setText(R.string.notLogin);
+			messageImg.setVisibility(View.GONE);
 			level.setVisibility(View.INVISIBLE);
 			level.setText("LV " + "");
-		}
-		
-		File file = new File(Constants.ACCOUNT_ICON);
-		if (file.exists()) {
-			Bitmap bitmap = BitmapFactory.decodeFile(Constants.ACCOUNT_ICON);
-			if (account != null) {
-				ImageListener listener = ImageLoader.getImageListener(accountIcon, bitmap, bitmap);
-				StoreApplication.getInstance().getImageLoader().get(account.getPhoto(), listener);
-			}else {
-				accountIcon.setImageBitmap(bitmap);
-			}
-			
-		}else {
-			accountIcon.setImageBitmap(UIUtil.readBitmap(activity, R.drawable.yonghuicon));
 		}
 	}
 	@Override
@@ -249,8 +233,12 @@ public class ToolFragment extends BaseFragment implements OnClickListener{
 		// TODO Auto-generated method stub
 		account = null;
 		accountName.setText(R.string.notLogin);
+		messageImg.setVisibility(View.GONE);
 		level.setVisibility(View.INVISIBLE);
 		level.setText("LV " + "");
+		
+		accountIcon.setImageBitmap(null);
+		accountIcon.setBackgroundResource(R.drawable.yonghuicon);
 	}
 
 	@Override

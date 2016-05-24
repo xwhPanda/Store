@@ -28,7 +28,7 @@
 	        android:id="@+id/contentTip"
 	        android:layout_width="wrap_content"
 	        android:layout_height="wrap_content"
-	        android:text="4-200字"
+	        android:text="4-250字"
 	        android:layout_alignParentBottom="true"
 	        android:layout_alignParentRight="true"
 	        android:textColor="@color/itemDesColor"
@@ -43,7 +43,8 @@
         android:layout_height="wrap_content"
         android:layout_below="@id/contentRel"
         android:layout_alignLeft="@id/contentRel"
-        android:background="@drawable/tianjia"/>
+        android:background="@drawable/tianjia"
+        android:visibility="gone"/>
     
     <Button 
         android:id="@+id/commit"

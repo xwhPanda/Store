@@ -83,13 +83,19 @@ public class RequestTool {
 	/** 修改用户头像 **/
 	public static final String MODIFY_PHOTO_URL = "http://ht.163zs.com/index.php/Api/User/modifyPhoto";
 	/** 私信URL **/
-	public static final String PRIVATE_LIST_URL = "http://ht.163zs.com/index.php/Api/User/getPrivateList";
+	public static final String PRIVATE_LIST_URL = "http://ht.163zs.com/index.php/Api/User/getPrivateByUid";
 	/** 通知接口 **/
-	public static final String MESSAGE_LIST_URL = "http://ht.163zs.com/index.php/Api/User/getMessageaList";
+	public static final String MESSAGE_LIST_URL = "http://ht.163zs.com/index.php/Api/User/getMessageList";
 	/** 用户反馈URL **/
 	public static final String FEEDBACK_URL = "http://ht.163zs.com/index.php/Api/User/feedback";
 	/** 常见问题URL **/
 	public static final String PROBLEM_URL = "http://ht.163zs.com/index.php/Api/App/problem";
+	/** 屏蔽私信URL **/
+	public static final String SHIELD_URL = "http://ht.163zs.com/index.php/Api/User/shieldPrivate";
+	/** 第三方应用升级 **/
+	public static final String OTHER_UPGRADE_URL = "http://ht.163zs.com/index.php/Api/Game/upgrade";
+	/** VR助手升级 **/
+	public static final String VR_HELPER_UPGRADE_URL = "http://ht.163zs.com/index.php/Api/App/upgrade";
 	
 	private Map<String, Object> paramMap = new HashMap<String, Object>();
 

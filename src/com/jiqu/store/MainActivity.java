@@ -26,6 +26,7 @@ import com.jiqu.interfaces.LoginOutObserver;
 import com.jiqu.tools.Constants;
 import com.jiqu.tools.MetricsTool;
 import com.jiqu.tools.NetReceiver;
+import com.jiqu.tools.RequestTool;
 import com.jiqu.tools.NetReceiver.OnNetChangeListener;
 import com.jiqu.tools.UIUtil;
 import com.jiqu.view.CustomDialog;
@@ -96,10 +97,13 @@ public class MainActivity extends FragmentActivity implements OnClickListener,On
 	
 	private boolean firstIn = true;
 	
+	private RequestTool requestTool;
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
 		super.onCreate(savedInstanceState);
+		requestTool = RequestTool.getInstance();
 		MetricsTool.initMetrics(getWindowManager());
 		netReceiver = NetReceiver.getInstance();
 		netReceiver.setNetChangeListener(this);
@@ -486,18 +490,22 @@ public class MainActivity extends FragmentActivity implements OnClickListener,On
 	@Override
 	public void onLoginOut() {
 		// TODO Auto-generated method stub
-		
+		accountImg.setImageBitmap(null);
+		accountImg.setBackgroundResource(R.drawable.yonghuicon);
 	}
 
 	@Override
 	public void onRefresh(Account account) {
 		// TODO Auto-generated method stub
 		if (account != null) {
-			File file = new File(Constants.ACCOUNT_ICON);
-			if (file.exists()) {
-				Bitmap bitmap = BitmapFactory.decodeFile(Constants.ACCOUNT_ICON);
-				accountImg.setImageBitmap(bitmap);
-			}
+//			File file = new File(Constants.ACCOUNT_ICON);
+//			if (file.exists()) {
+//				Bitmap bitmap = BitmapFactory.decodeFile(Constants.ACCOUNT_ICON);
+//				accountImg.setImageBitmap(bitmap);
+//			}
+			
+			ImageListener listener = ImageLoader.getImageListener(accountImg, R.drawable.yonghuicon, R.drawable.yonghuicon);
+			StoreApplication.getInstance().getImageLoader().get(account.getPhoto(), listener);
 		}
 	}
 

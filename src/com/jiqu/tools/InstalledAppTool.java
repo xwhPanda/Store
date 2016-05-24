@@ -53,10 +53,12 @@ public class InstalledAppTool {
 		}
 	}
 
+	/** 获取所有安装的应用 **/
 	private static List<PackageInfo> getInstallAppsPkg(Context context){
 		return context.getPackageManager().getInstalledPackages(0);
 	}
 
+	/** 获取第三方应用 **/
 	public static List<InstalledApp> getPersonalApp(Context context) {
 		List<InstalledApp> apps = new ArrayList<InstalledApp>();
 		List<PackageInfo> packageInfos = getInstallAppsPkg(context);
@@ -79,6 +81,7 @@ public class InstalledAppTool {
 		return apps;
 	}
 
+	/** 获取系统应用  **/
 	public static List<InstalledApp> getSystemApp(Context context) {
 		List<InstalledApp> apps = new ArrayList<InstalledApp>();
 		PackageManager pm = context.getPackageManager();

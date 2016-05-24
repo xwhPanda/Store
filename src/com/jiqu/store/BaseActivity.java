@@ -17,6 +17,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
+import android.util.Log;
 
 public abstract class BaseActivity extends Activity {
 	protected float Rx;
@@ -73,7 +74,7 @@ public abstract class BaseActivity extends Activity {
 		List<InstalledApp> apps = InstalledAppTool.getPersonalApp(this);
 		int size = count;
 		if (infos.size() < count) {
-			count = infos.size();
+			size = infos.size();
 		}
 		for (int i = infos.size() - size; i < infos.size(); i++) {
 			if (infos.get(i).getAdapterType() == 0) {

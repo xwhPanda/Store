@@ -1,12 +1,14 @@
 package com.jiqu.activity;
 
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.webkit.WebChromeClient;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.webkit.WebSettings.LayoutAlgorithm;
+import android.widget.TextView;
 
 import com.jiqu.object.CommonProblemItem;
 import com.jiqu.object.EvaluationItemInfo;
@@ -21,6 +23,9 @@ public class GameEvaluationWebInfoActivity extends BaseActivity {
 	private LoadStateView loadView;
 	private EvaluationItemInfo info;
 	private CommonProblemItem item;
+	
+	private String url;
+	private String title;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -28,6 +33,8 @@ public class GameEvaluationWebInfoActivity extends BaseActivity {
 		super.onCreate(savedInstanceState);
 		info = (EvaluationItemInfo) getIntent().getSerializableExtra("info");
 		item = (CommonProblemItem) getIntent().getSerializableExtra("item");
+		url = getIntent().getStringExtra("url");
+		title = getIntent().getStringExtra("title");
 		initView();
 	}
 	
@@ -55,8 +62,12 @@ public class GameEvaluationWebInfoActivity extends BaseActivity {
 			loadData(info.getUrl());
 			titleView.tip.setText(info.getTitle());
 		}else if (item != null) {
+			titleView.editBtn.setVisibility(View.GONE);
 			loadData(item.getContent());
 			titleView.tip.setText(item.getTitle());
+		}else if(!TextUtils.isEmpty(url)){
+			loadData(url);
+			titleView.tip.setText(title);
 		}
 	}
 	

@@ -9,6 +9,7 @@ public class PrivateMessageDataInfo implements Serializable {
 	private String time;
 	private String content;
 	private String userids;
+	private String url;
 	public synchronized String getId() {
 		return id;
 	}
@@ -38,6 +39,12 @@ public class PrivateMessageDataInfo implements Serializable {
 	}
 	public synchronized void setUserids(String userids) {
 		this.userids = userids;
+	}
+	public synchronized String getUrl() {
+		return url;
+	}
+	public synchronized void setUrl(String url) {
+		this.url = url;
 	}
 	
 }

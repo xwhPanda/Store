@@ -1,14 +1,24 @@
 package com.jiqu.adapter;
 
+import java.util.HashMap;
 import java.util.List;
 
+import com.android.volley.Request.Method;
+import com.android.volley.Response.ErrorListener;
+import com.android.volley.Response.Listener;
+import com.android.volley.VolleyError;
+import com.jiqu.application.StoreApplication;
+import com.jiqu.database.Account;
 import com.jiqu.object.PrivateMessageDataInfo;
 import com.vr.store.R;
+import com.jiqu.tools.MD5;
 import com.jiqu.tools.MetricsTool;
+import com.jiqu.tools.RequestTool;
 import com.jiqu.tools.UIUtil;
 import com.jiqu.view.MsgPopWind;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -78,10 +88,11 @@ public class PrivateMessageAdapter extends BaseAdapter {
 		
 		private int index;
 		private PrivateMessageDataInfo info;
+		private MsgPopWind popWind;
 		
 		public Holder(Context context){
 			this.context = context;
-			
+			popWind = new MsgPopWind(context);
 			rootView = initView();
 			rootView.setTag(this);
 		}
@@ -120,11 +131,57 @@ public class PrivateMessageAdapter extends BaseAdapter {
 				@Override
 				public void onClick(View v) {
 					// TODO Auto-generated method stub
-					MsgPopWind popWind = new MsgPopWind(context);
 					popWind.showAsDropDown(operateBtn, (int)(-165 * Rx), 0);
 				}
 			});
+			
+			popWind.setDeleteListener(new OnClickListener() {
+				
+				@Override
+				public void onClick(View v) {
+					// TODO Auto-generated method stub
+					messages.remove(info);
+					popWind.dismiss();
+					notifyDataSetChanged();
+				}
+			});
+			
+			popWind.setShieldListener(new OnClickListener() {
+				
+				@Override
+				public void onClick(View v) {
+					// TODO Auto-generated method stub
+					popWind.dismiss();
+					shield();
+				}
+			});
 			return view;
+		}
+		
+		private void shield(){
+			RequestTool requestTool = RequestTool.getInstance();
+			HashMap<String, Object> map = new HashMap<String, Object>();
+			Account account = StoreApplication.daoSession.getAccountDao().queryBuilder().unique();
+			if (account != null) {
+				map.put("id", account.getUid());
+				map.put("token", MD5.GetMD5Code(account.getUid() + RequestTool.PRIKEY));
+				requestTool.startStringRequest(Method.POST, new Listener<String>() {
+					
+					@Override
+					public void onResponse(String arg0) {
+						// TODO Auto-generated method stub
+						Log.i("TAG", arg0);
+					}
+				}, RequestTool.SHIELD_URL, new ErrorListener(){
+					
+					@Override
+					public void onErrorResponse(VolleyError arg0) {
+						// TODO Auto-generated method stub
+						Log.i("TAG", "onErrorResponse");
+					}
+					
+				}, map, "shield");
+			}
 		}
 		
 		private void initViewSize(View view){
@@ -139,7 +196,7 @@ public class PrivateMessageAdapter extends BaseAdapter {
 			
 			try {
 				UIUtil.setViewSizeMargin(timeLin, 0, 70 * Ry, 50 * Rx, 0);
-				UIUtil.setViewSizeMargin(messageLin, 0, 0, 50 * Rx, 0);
+				UIUtil.setViewSizeMargin(messageLin, 50 * Rx, 0, 50 * Rx, 0);
 				UIUtil.setViewSizeMargin(operateBtn, 20 * Rx, 0, 0, 0);
 			} catch (Exception e) {
 				e.printStackTrace();

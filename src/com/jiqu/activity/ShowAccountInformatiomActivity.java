@@ -270,12 +270,16 @@ public class ShowAccountInformatiomActivity extends BaseActivity implements OnCl
 			break;
 
 		case R.id.loginOut:
+			File file = new File(Constants.ACCOUNT_ICON);
+			if (file.exists()) {
+				file.delete();
+			}
+			StoreApplication.daoSession.getAccountDao().deleteAll();
 			if (StoreApplication.loginOutObservers != null) {
 				for(LoginOutObserver observer : StoreApplication.loginOutObservers){
 					observer.onLoginOut();
 				}
 			}
-			StoreApplication.daoSession.getAccountDao().deleteAll();
 			finish();
 			break;
 		}

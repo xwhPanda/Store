@@ -17,14 +17,16 @@
         share:imgBg="@drawable/tongxinlu_share"
         share:titleText="@string/contacts"
         android:clickable="true"
-        share:shareBg="@drawable/commom_problem_info_btn"/>
+        share:shareBg="@drawable/commom_problem_info_btn"
+        android:visibility="gone"/>
     
     <ImageView 
         android:id="@+id/view1"
         android:layout_width="match_parent"
         android:layout_height="1dp"
         android:background="@drawable/xian"
-        android:layout_below="@id/contacts"/>
+        android:layout_below="@id/contacts"
+        android:visibility="gone"/>
     
     <com.jiqu.view.FriendShareItem
         android:id="@+id/qq"
@@ -32,9 +34,9 @@
         android:layout_height="wrap_content"
         share:imgBg="@drawable/qq_share"
         share:titleText="@string/qqShare"
+        android:layout_below="@id/titleView"
         android:clickable="true"
-        share:shareBg="@drawable/commom_problem_info_btn"
-        android:layout_below="@id/view1"/>
+        share:shareBg="@drawable/commom_problem_info_btn"/>
     
     <ImageView 
         android:id="@+id/view2"
@@ -85,20 +87,23 @@
         android:layout_below="@id/view4"
         android:gravity="center_vertical"
         android:text="@string/inviteTip"
-        android:background="@drawable/ziliao"/>
+        android:background="@drawable/ziliao"
+        android:visibility="gone"/>
     
     <ImageView 
         android:id="@+id/view5"
         android:layout_width="match_parent"
         android:layout_height="1dp"
         android:background="@drawable/xian"
-        android:layout_below="@id/inviteTip"/>
+        android:layout_below="@id/inviteTip"
+        android:visibility="gone"/>
     
     <com.jiqu.view.PullToRefreshLayout 
         android:id="@+id/refreshView" 
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/view5">
+        android:layout_below="@id/view5"
+        android:visibility="gone">
         
         <include layout="@layout/refresh_head"/>
         
