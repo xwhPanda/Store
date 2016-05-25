@@ -255,9 +255,9 @@ public class GameInfo implements Serializable{
 		downloadInfo.setPackageName(info.package_name);
 		downloadInfo.setVersionCode(info.version);
 		downloadInfo.setVersionName(info.version_name);
-		downloadInfo.setApkPath(FileUtil.getApkDownloadDir(AppUtil.getContext()) + File.separator + info.product_name + ".apk");
-		downloadInfo.setZipPath(FileUtil.getZipDownloadDir(AppUtil.getContext()) + File.separator + info.product_name + ".zip");
-		downloadInfo.setUnzipPath(FileUtil.getZipDownloadDir(AppUtil.getContext()) + File.separator + info.product_name);
+		downloadInfo.setApkPath(FileUtil.getApkDownloadDir(AppUtil.getContext()) + File.separator + info.apply_name + ".apk");
+		downloadInfo.setZipPath(FileUtil.getZipDownloadDir(AppUtil.getContext()) + File.separator + info.apply_name + ".zip");
+		downloadInfo.setUnzipPath(FileUtil.getZipDownloadDir(AppUtil.getContext()) + File.separator + info.apply_name);
 		downloadInfo.setThread1(0l);
 		downloadInfo.setThread2(0l);
 		downloadInfo.setThread3(0l);

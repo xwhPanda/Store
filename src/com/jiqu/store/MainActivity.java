@@ -34,13 +34,17 @@ import com.vr.store.R;
 
 import de.greenrobot.dao.query.QueryBuilder;
 
+import android.Manifest;
+import android.app.Activity;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
 import android.os.Process;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
@@ -135,6 +139,7 @@ public class MainActivity extends FragmentActivity implements OnClickListener,On
 		setContentView(R.layout.main);
 		init();
 		setOnclick();
+		
 	}
 	
 	@Override
@@ -498,12 +503,6 @@ public class MainActivity extends FragmentActivity implements OnClickListener,On
 	public void onRefresh(Account account) {
 		// TODO Auto-generated method stub
 		if (account != null) {
-//			File file = new File(Constants.ACCOUNT_ICON);
-//			if (file.exists()) {
-//				Bitmap bitmap = BitmapFactory.decodeFile(Constants.ACCOUNT_ICON);
-//				accountImg.setImageBitmap(bitmap);
-//			}
-			
 			ImageListener listener = ImageLoader.getImageListener(accountImg, R.drawable.yonghuicon, R.drawable.yonghuicon);
 			StoreApplication.getInstance().getImageLoader().get(account.getPhoto(), listener);
 		}

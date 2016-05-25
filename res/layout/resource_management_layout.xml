@@ -23,7 +23,7 @@
             android:layout_height="match_parent"
             android:divider="@drawable/xian"
             android:dividerHeight="2dp"
-            android:listSelector="@null"
+            android:listSelector="@color/transparent"
             android:scrollbars="none" />
 
         <include layout="@layout/load_more" />

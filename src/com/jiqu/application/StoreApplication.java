@@ -112,7 +112,7 @@ public class StoreApplication extends Application {
 		//新浪微博 appkey appsecret
 		PlatformConfig.setSinaWeibo("4171998531","cdaaf47bda171bdf9546478720b7eef2");
 		// QQ和Qzone appid appkey     
-		PlatformConfig.setQQZone("100424468", "c7394704798a158208a74ab60104f0ba"); 
+		PlatformConfig.setQQZone("1105350501", "Vf0AIR29nXTx1XV5"); 
 	}
 	
 	private String getMetaDataValue(String name){

@@ -288,6 +288,7 @@ public class GameAdapter extends BaseAdapter implements DownloadObserver{
 							|| mState == DownloadManager.STATE_PAUSED
 							|| mState == DownloadManager.STATE_ERROR
 							|| mState == DownloadManager.STATE_NEED_UPDATE) {
+						Log.i("TAG", "mState : " + mState);
 						if (NetReceiver.NET_TYPE == NetReceiver.NET_WIFI) {
 							if (FileUtil.checkSDCard()) {
 								if (Float.parseFloat(mData.getAppSize()) * 3 >= FileUtil.getSDcardAvailableSpace()) {
@@ -506,6 +507,7 @@ public class GameAdapter extends BaseAdapter implements DownloadObserver{
 				break;
 			case DownloadManager.STATE_NEED_UPDATE:
 				downloadBtn.setText("");
+				downloadBtn.setBackgroundResource(R.drawable.shengji);
 				stateText.setText("升级");
 				break;
 			case DownloadManager.STATE_UNZIP_FAILED:

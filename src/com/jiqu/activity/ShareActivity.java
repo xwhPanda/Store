@@ -80,6 +80,7 @@ public class ShareActivity extends BaseActivity {
 				// TODO Auto-generated method stub
 				new ShareAction(ShareActivity.this)
 				.setPlatform(SHARE_MEDIA.SINA)
+				.withTitle("aaaa")
 				.setCallback(new UMShareListener() {
 					
 					@Override
@@ -97,7 +98,36 @@ public class ShareActivity extends BaseActivity {
 						// TODO Auto-generated method stub
 					}
 				})
-				.withText("")
+				.withText("ss")
+				.share();
+			}
+		});
+		
+		qq.getShareBtn().setOnClickListener(new OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				// TODO Auto-generated method stub
+				new ShareAction(ShareActivity.this)
+				.setPlatform(SHARE_MEDIA.QQ)
+				.setCallback(new UMShareListener() {
+					
+					@Override
+					public void onResult(SHARE_MEDIA arg0) {
+						// TODO Auto-generated method stub
+					}
+					
+					@Override
+					public void onError(SHARE_MEDIA arg0, Throwable arg1) {
+						// TODO Auto-generated method stub
+					}
+					
+					@Override
+					public void onCancel(SHARE_MEDIA arg0) {
+						// TODO Auto-generated method stub
+					}
+				})
+				.withText("ce shi")
 				.share();
 			}
 		});

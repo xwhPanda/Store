@@ -195,8 +195,11 @@ public class DownloadManager implements ChangeObserver{
 			}
 			setDownloadInfo(info.getId(), info);
 		}
-		// 判断状态是否为STATE_NONE、STATE_PAUSED、STATE_ERROR。只有这3种状态才能进行下载，其他状态不予处理
-		if (info.getDownloadState() == STATE_NONE || info.getDownloadState() == STATE_PAUSED || info.getDownloadState() == STATE_ERROR) {
+		// 判断状态是否为STATE_NONE、STATE_PAUSED、STATE_ERROR、STATE_NEED_UPDATE。只有这4种状态才能进行下载，其他状态不予处理
+		if (info.getDownloadState() == STATE_NONE 
+				|| info.getDownloadState() == STATE_PAUSED 
+				|| info.getDownloadState() == STATE_ERROR
+				|| info.getDownloadState() == STATE_NEED_UPDATE) {
 			// 下载之前，把状态设置为STATE_WAITING，因为此时并没有产开始下载，只是把任务放入了线程池中，当任务真正开始执行时，才会改为STATE_DOWNLOADING
 			info.setDownloadState(STATE_WAITING);
 			notifyDownloadStateChanged(info);// 每次状态发生改变，都需要回调该方法通知所有观察者

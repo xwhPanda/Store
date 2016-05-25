@@ -4,8 +4,13 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
@@ -17,6 +22,7 @@ import com.android.volley.Response.Listener;
 import com.android.volley.VolleyError;
 import com.jiqu.adapter.GameAdapter;
 import com.jiqu.adapter.ResourcesManagmentAdapter;
+import com.jiqu.download.DownloadManager;
 import com.jiqu.object.GameInfo;
 import com.jiqu.object.InstalledApp;
 import com.jiqu.object.ResourceInfo;
@@ -28,19 +34,21 @@ import com.jiqu.tools.InstalledAppTool;
 import com.jiqu.tools.RequestTool;
 import com.jiqu.tools.UIUtil;
 import com.jiqu.view.PullToRefreshLayout;
+import com.jiqu.view.PullToRefreshLayout.OnRefreshListener;
 import com.jiqu.view.PullableListView;
 import com.jiqu.view.TitleView;
 
-public class ResourceManagementActivity extends BaseActivity {
+public class ResourceManagementActivity extends BaseActivity{
 	private final String RESOURECE_REQUEST = "resourceRequest";
 	private TitleView titleView;
 	private PullToRefreshLayout refreshView;
-	private ListView resourceListView;
+	private PullableListView resourceListView;
 	private GameAdapter adapter;
 	private List<GameInfo> upgradeGameInfos = new ArrayList<GameInfo>();
 	private RequestTool requestTool;
 	private HashMap<String, Object> map = new HashMap<String, Object>();
 	private String json = "";
+	private boolean isShowing = false;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -50,6 +58,16 @@ public class ResourceManagementActivity extends BaseActivity {
 		json = initInstallAppJson();
 		initView();
 		loadData(RequestTool.OTHER_UPGRADE_URL,json);
+		
+		adapter.startObserver();
+	}
+	
+	@Override
+	protected void onDestroy() {
+		// TODO Auto-generated method stub
+		super.onDestroy();
+		adapter.stopObserver();
+		requestTool.stopRequest(RESOURECE_REQUEST);
 	}
 	
 	@Override
@@ -63,6 +81,8 @@ public class ResourceManagementActivity extends BaseActivity {
 		refreshView = (PullToRefreshLayout) findViewById(R.id.refreshView);
 		resourceListView = (PullableListView) findViewById(R.id.resourceListView);
 		
+		resourceListView.setCanPullUp(false);
+		
 		titleView.setActivity(this);
 		titleView.back.setBackgroundResource(R.drawable.fanhui);
 		titleView.tip.setText(R.string.resourceManagement);
@@ -70,6 +90,15 @@ public class ResourceManagementActivity extends BaseActivity {
 		adapter = new GameAdapter(this, upgradeGameInfos,false,false);
 		resourceListView.setAdapter(adapter);
 		
+		resourceListView.setOnItemClickListener(new OnItemClickListener() {
+
+			@Override
+			public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+				// TODO Auto-generated method stub
+				startActivity(new Intent(ResourceManagementActivity.this, DetailActivity.class)
+				.putExtra("id", upgradeGameInfos.get(position).getId()));
+			}
+		});
 	}
 	
 	private String initInstallAppJson(){
@@ -78,7 +107,7 @@ public class ResourceManagementActivity extends BaseActivity {
 		for(InstalledApp app : apps){
 			JSONObject object = new JSONObject();
 			object.put("package_name", app.packageName);
-			object.put("version", 1);
+			object.put("version", app.versionCode);
 			array.add(object);
 		}
 		return array.toString();
@@ -95,11 +124,19 @@ public class ResourceManagementActivity extends BaseActivity {
 				ResourceInfo resourceInfo = JSON.parseObject(arg0, ResourceInfo.class);
 				if (resourceInfo != null) {
 					if (resourceInfo.getStatus() == 1 && resourceInfo.getData() != null) {
-						upgradeGameInfos.addAll(resourceInfo.getData());
+						for (GameInfo info : resourceInfo.getData()) {
+							info.setState(DownloadManager.STATE_NEED_UPDATE);
+							upgradeGameInfos.add(info);
+						}
 						adapter.notifyDataSetChanged();
 					}else if (resourceInfo.getStatus() == 0) {
-						
+						Toast.makeText(ResourceManagementActivity.this, "没有可更新的应用", Toast.LENGTH_SHORT).show();
 					}
+				}
+				
+				if (isShowing) {
+					isShowing = false;
+					refreshView.refreshFinish(PullToRefreshLayout.SUCCEED);
 				}
 			}
 		}, url, new ErrorListener(){
@@ -107,6 +144,10 @@ public class ResourceManagementActivity extends BaseActivity {
 			@Override
 			public void onErrorResponse(VolleyError arg0) {
 				// TODO Auto-generated method stub
+				if (isShowing) {
+					isShowing = false;
+					refreshView.refreshFinish(PullToRefreshLayout.FAIL);
+				}
 			}
 			
 		}, map, RESOURECE_REQUEST);
