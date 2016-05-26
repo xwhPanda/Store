@@ -74,7 +74,6 @@ public class NetReceiver extends BroadcastReceiver {
 	}
 	
 	public void setNetChangeListener(OnNetChangeListener onNetChangeListener){
-		Log.i("TAG", onNetChangeListener.toString());
 		this.onNetChangeListener = onNetChangeListener;
 	}
 	

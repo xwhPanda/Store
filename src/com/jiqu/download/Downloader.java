@@ -153,9 +153,8 @@ public class Downloader implements Runnable {
 			};
 		}.start();
 		
-		while (downloading) {
-			
-		}
+		//这个不能删，删了线程池不起作用，不知道什么鬼原因
+		while (downloading) {}
 	}
 	
 	private long getCompelete(int i) {
@@ -254,6 +253,7 @@ public class Downloader implements Runnable {
 				} catch (Exception e) {
 					e.printStackTrace();
 					info.setDownloadState(DownloadManager.STATE_ERROR);
+					observer.onRemoveFromTask(info);
 				} finally {
 					if (is != null) {
 						try {
@@ -274,8 +274,6 @@ public class Downloader implements Runnable {
 					}
 					synchronized (this) {
 						setComplete();
-//						observer.onStateChanged(info);
-						observer.onRemoveFromTask(info);
 						DownloadManager.DBManager.getDownloadAppinfoDao().insertOrReplace(info);
 					}
 				}

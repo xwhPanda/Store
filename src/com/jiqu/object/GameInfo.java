@@ -6,6 +6,7 @@ import java.io.Serializable;
 import android.text.TextUtils;
 import android.util.Log;
 
+import com.jiqu.application.StoreApplication;
 import com.jiqu.database.DownloadAppinfo;
 import com.jiqu.download.AppUtil;
 import com.jiqu.download.DownloadManager;
@@ -255,9 +256,9 @@ public class GameInfo implements Serializable{
 		downloadInfo.setPackageName(info.package_name);
 		downloadInfo.setVersionCode(info.version);
 		downloadInfo.setVersionName(info.version_name);
-		downloadInfo.setApkPath(FileUtil.getApkDownloadDir(AppUtil.getContext()) + File.separator + info.apply_name + ".apk");
-		downloadInfo.setZipPath(FileUtil.getZipDownloadDir(AppUtil.getContext()) + File.separator + info.apply_name + ".zip");
-		downloadInfo.setUnzipPath(FileUtil.getZipDownloadDir(AppUtil.getContext()) + File.separator + info.apply_name);
+		downloadInfo.setApkPath(StoreApplication.APK_DOWNLOAD_PATH + File.separator + info.apply_name + ".apk");
+		downloadInfo.setZipPath(StoreApplication.ZIP_DOWNLOAD_PATH + File.separator + info.apply_name + ".zip");
+		downloadInfo.setUnzipPath(StoreApplication.ZIP_DOWNLOAD_PATH + File.separator + info.apply_name);
 		downloadInfo.setThread1(0l);
 		downloadInfo.setThread2(0l);
 		downloadInfo.setThread3(0l);

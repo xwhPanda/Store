@@ -2,11 +2,15 @@ package com.jiqu.store;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
+import com.alibaba.fastjson.JSON;
+import com.android.volley.Response.ErrorListener;
+import com.android.volley.Response.Listener;
 import com.android.volley.VolleyError;
+import com.android.volley.Request.Method;
 import com.android.volley.toolbox.ImageLoader;
-import com.android.volley.toolbox.ImageLoader.ImageContainer;
 import com.android.volley.toolbox.ImageLoader.ImageListener;
 import com.jiqu.activity.DownloadManagerActivity;
 import com.jiqu.activity.MemberLoginActivity;
@@ -23,6 +27,7 @@ import com.jiqu.fragment.InformationNewFragment;
 import com.jiqu.fragment.RecommendFragment;
 import com.jiqu.fragment.ToolFragment;
 import com.jiqu.interfaces.LoginOutObserver;
+import com.jiqu.object.UpgradeVersionInfo;
 import com.jiqu.tools.Constants;
 import com.jiqu.tools.MetricsTool;
 import com.jiqu.tools.NetReceiver;
@@ -30,21 +35,17 @@ import com.jiqu.tools.RequestTool;
 import com.jiqu.tools.NetReceiver.OnNetChangeListener;
 import com.jiqu.tools.UIUtil;
 import com.jiqu.view.CustomDialog;
+import com.jiqu.view.NetChangeDialog;
 import com.vr.store.R;
 
 import de.greenrobot.dao.query.QueryBuilder;
 
-import android.Manifest;
-import android.app.Activity;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
 import android.os.Process;
-import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
@@ -62,6 +63,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 public class MainActivity extends FragmentActivity implements OnClickListener,OnNetChangeListener,LoginOutObserver{
+	private final String CHECKNE_WVERSION_REQUEST = "checkNewversionRequest";
 	private float Rx,Ry;
 	private ImageView accountImg;
 	private EditText searchEd;
@@ -102,6 +104,7 @@ public class MainActivity extends FragmentActivity implements OnClickListener,On
 	private boolean firstIn = true;
 	
 	private RequestTool requestTool;
+	private HashMap<String, Object> map = new HashMap<String, Object>();
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -114,6 +117,8 @@ public class MainActivity extends FragmentActivity implements OnClickListener,On
 		netReceiver.registerReceive(StoreApplication.context);
 		
 		StoreApplication.setLoginOutObserver(this);
+		
+		new NetChangeDialog(this).show();
 		
 		dialog = new CustomDialog(this)
 				.setNegativeButton(new DialogInterface.OnClickListener() {
@@ -140,6 +145,35 @@ public class MainActivity extends FragmentActivity implements OnClickListener,On
 		init();
 		setOnclick();
 		
+		checkNewVersion();
+	}
+	
+	private void checkNewVersion(){
+		map.put("version", Constants.VERSION_CODE);
+		map.put("package", Constants.PACKAGENAME);
+		map.put("channel", StoreApplication.CHANNEL);
+		requestTool.startStringRequest(Method.POST, new Listener<String>() {
+
+			@Override
+			public void onResponse(String arg0) {
+				// TODO Auto-generated method stub
+				UpgradeVersionInfo upgradeVersionInfo = JSON.parseObject(arg0, UpgradeVersionInfo.class);
+				if (upgradeVersionInfo != null) {
+					if (upgradeVersionInfo.getStatus() == 1) {
+					}else if (upgradeVersionInfo.getStatus() == 0) {
+						Log.i("UpgradeVersion", "latest version !");
+					}
+				}
+			}
+		}, RequestTool.VR_HELPER_UPGRADE_URL, new ErrorListener(){
+
+			@Override
+			public void onErrorResponse(VolleyError arg0) {
+				// TODO Auto-generated method stub
+				Log.i("TAG", "onErrorResponse");
+			}
+			
+		}, map, CHECKNE_WVERSION_REQUEST);
 	}
 	
 	@Override
@@ -147,6 +181,7 @@ public class MainActivity extends FragmentActivity implements OnClickListener,On
 		// TODO Auto-generated method stub
 		super.onDestroy();
 		netReceiver.unregisterReceive(StoreApplication.context);
+		requestTool.stopRequest(CHECKNE_WVERSION_REQUEST);
 	}
 	
 	/**
@@ -482,14 +517,17 @@ public class MainActivity extends FragmentActivity implements OnClickListener,On
 	@Override
 	public void onNetChange(int netType) {
 		// TODO Auto-generated method stub
-		if ((netType == NetReceiver.NET_NOBILE || netType == NetReceiver.NET_NONE)
-				&& !firstIn) {
-			firstIn = false;
-			if (!dialog.isShowing()) {
-				DownloadManager.getInstance().pauseAllExit();
-				dialog.show();
-			}
-		}
+//		if ((netType == NetReceiver.NET_NOBILE || netType == NetReceiver.NET_NONE)
+//				&& !firstIn) {
+//			if (!dialog.isShowing()) {
+//				DownloadManager.getInstance().pauseAllExit();
+//				dialog.show();
+//			}
+//		}else {
+//			if (firstIn) {
+//				firstIn = false;
+//			}
+//		}
 	}
 
 	@Override

@@ -26,6 +26,7 @@ import com.jiqu.tools.Constants;
 import com.jiqu.tools.LruBitmapCache;
 import com.jiqu.tools.MetricsTool;
 import com.jiqu.tools.NetReceiver;
+import com.jiqu.view.NetChangeDialog;
 import com.jiqu.weibo.WeiboShare;
 
 import android.app.Application;
@@ -56,6 +57,8 @@ public class StoreApplication extends Application {
 	public static Context context;
 	public static String DEVICE_ID;
 	public static String CHANNEL;
+	public static String APK_DOWNLOAD_PATH = "";
+	public static String ZIP_DOWNLOAD_PATH = "";
 	public static List<LoginOutObserver> loginOutObservers;
 	
 	@Override
@@ -79,6 +82,9 @@ public class StoreApplication extends Application {
 		initConstant();
 		
 		initUMeng();
+		
+		APK_DOWNLOAD_PATH = FileUtil.getApkDownloadDir(context);
+		ZIP_DOWNLOAD_PATH = FileUtil.getZipDownloadDir(context);
 	}
 	
 	public static void setLoginOutObserver(LoginOutObserver observer){

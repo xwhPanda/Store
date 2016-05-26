@@ -10,12 +10,9 @@ import android.graphics.BitmapFactory;
 import android.graphics.Bitmap.CompressFormat;
 import android.os.Environment;
 import android.support.v4.util.LruCache;
-import android.util.Log;
 
-import com.android.volley.toolbox.DiskBasedCache;
 import com.android.volley.toolbox.ImageLoader.ImageCache;
 import com.jiqu.application.StoreApplication;
-import com.jiqu.download.FileUtil;
 import com.jiqu.tools.DiskLruCache.Snapshot;
 
 public class LruBitmapCache implements ImageCache {

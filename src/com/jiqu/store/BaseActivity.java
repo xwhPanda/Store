@@ -10,6 +10,9 @@ import com.jiqu.object.GameInfo;
 import com.jiqu.object.InstalledApp;
 import com.jiqu.tools.InstalledAppTool;
 import com.jiqu.tools.MetricsTool;
+import com.jiqu.tools.NetReceiver;
+import com.jiqu.tools.NetReceiver.OnNetChangeListener;
+import com.jiqu.view.NetChangeDialog;
 
 import android.app.Activity;
 import android.content.BroadcastReceiver;
@@ -19,9 +22,10 @@ import android.content.IntentFilter;
 import android.os.Bundle;
 import android.util.Log;
 
-public abstract class BaseActivity extends Activity {
+public abstract class BaseActivity extends Activity implements OnNetChangeListener{
 	protected float Rx;
 	protected float Ry;
+	protected NetChangeDialog netChangeDialog;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -36,6 +40,8 @@ public abstract class BaseActivity extends Activity {
 		filter.addAction(Intent.ACTION_PACKAGE_REMOVED);
 		filter.addDataScheme("package");
 		registerReceiver(appInstallReceiver, filter);
+		
+		netChangeDialog = new NetChangeDialog(this);
 	}
 	
 	@Override
@@ -88,6 +94,16 @@ public abstract class BaseActivity extends Activity {
 						DownloadManager.DBManager.delete(info);
 					}
 				}
+			}
+		}
+	}
+	
+	@Override
+	public void onNetChange(int netType) {
+		// TODO Auto-generated method stub
+		if (netType != NetReceiver.NET_WIFI && DownloadManager.getInstance().hasDownloading()) {
+			if (!netChangeDialog.isShowing()) {
+				netChangeDialog.show();
 			}
 		}
 	}

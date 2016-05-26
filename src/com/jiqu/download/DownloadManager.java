@@ -82,7 +82,6 @@ public class DownloadManager implements ChangeObserver{
 	/** 用于记录观察者，当信息发送了改变，需要通知他们 */
 	private List<DownloadObserver> mObservers = new ArrayList<DownloadObserver>();
 	/** 用于记录所有下载的任务，方便在取消下载时，通过id能找到该任务进行删除 */
-	private Map<Long, DownloadTask> mTaskMap = new ConcurrentHashMap<Long, DownloadTask>();
 	private Map<String, Downloader> map = new ConcurrentHashMap<String, Downloader>();
 
 	public static synchronized DownloadManager getInstance() {
@@ -93,13 +92,15 @@ public class DownloadManager implements ChangeObserver{
 	}
 
 	public boolean isDownloading(Long id){
-//		return mTaskMap.get(id) == null?false:true;
 		return map.get(id) == null?false:true;
 	}
 	
 	public boolean isDownloading(String id){
-//		return mTaskMap.get(id) == null?false:true;
 		return map.get(id) == null?false:true;
+	}
+	
+	public boolean hasDownloading(){
+		return map.keySet().size() == 0?false:true;
 	}
 	
 	/** 注册观察者 */
@@ -203,10 +204,6 @@ public class DownloadManager implements ChangeObserver{
 			// 下载之前，把状态设置为STATE_WAITING，因为此时并没有产开始下载，只是把任务放入了线程池中，当任务真正开始执行时，才会改为STATE_DOWNLOADING
 			info.setDownloadState(STATE_WAITING);
 			notifyDownloadStateChanged(info);// 每次状态发生改变，都需要回调该方法通知所有观察者
-//			DownloadTask task = new DownloadTask(info);// 创建一个下载任务，放入线程池
-//			mTaskMap.put(info.getId(), task);
-//			ThreadManager.getDownloadPool().execute(task);
-			
 			Downloader downloader = new Downloader(info);
 			downloader.registerObserver(this);
 			map.put(info.getId(), downloader);
@@ -229,7 +226,7 @@ public class DownloadManager implements ChangeObserver{
 
 	/** 退出应用时调用 */
 	public synchronized void pauseExit() {
-		for (Map.Entry<Long, DownloadTask> entry : mTaskMap.entrySet()) {
+		for (Map.Entry<String, Downloader> entry : map.entrySet()) {
 			DownloadAppinfo info = DBManager.getDownloadAppinfoDao().queryBuilder().where(Properties.Id.eq(entry.getKey())).unique();
 			if (info != null) {
 				stopDownload(info);
@@ -310,8 +307,6 @@ public class DownloadManager implements ChangeObserver{
 		try {
 			// 安装apk命令
 			install = Runtime.getRuntime().exec("adb install " + appInfo.getPath());
-			// install =
-			// Runtime.getRuntime().exec("pm install -r   +  /storage/sdcard0/cccfile/ccc.apk");
 
 			BufferedReader reader = new BufferedReader(new InputStreamReader(install.getInputStream()));
 			int read;
@@ -383,11 +378,6 @@ public class DownloadManager implements ChangeObserver{
 
 	/** 如果该下载任务还处于线程池中，且没有执行，先从线程池中移除 */
 	private void stopDownload(DownloadAppinfo appInfo) {
-//		DownloadTask task = mTaskMap.remove(appInfo.getId());// 先从集合中找出下载任务
-//		if (task != null) {
-//			task.setPause();
-//			ThreadManager.getDownloadPool().cancel(task);// 然后从线程池中移除
-//		}
 		Downloader downloader = map.remove(appInfo.getId());
 		if (downloader != null) {
 			downloader.setPause();
@@ -397,11 +387,6 @@ public class DownloadManager implements ChangeObserver{
 	
 	/** 如果该下载任务还处于线程池中，且没有执行，先从线程池中移除 */
 	private void pauseDownload(DownloadAppinfo appInfo) {
-//		DownloadTask task = mTaskMap.get(appInfo.getId());// 先从集合中找出下载任务
-//		if (task != null) {
-//			task.setPause();
-//			ThreadManager.getDownloadPool().cancel(task);// 然后从线程池中移除
-//		}
 		Downloader task = map.get(appInfo.getId());// 先从集合中找出下载任务
 		if (task != null) {
 			task.setPause();
@@ -420,19 +405,16 @@ public class DownloadManager implements ChangeObserver{
 	
 	/** 获取下载信息 */
 	public synchronized DownloadAppinfo getDownloadInfo(String id) {
-		// return mDownloadMap.get(id);
 		QueryBuilder qb = DBManager.getDownloadAppinfoDao().queryBuilder();
 		DownloadAppinfo appinfo = (DownloadAppinfo) qb.where(Properties.Id.eq(id)).unique();
 		return appinfo;
 	}
 
 	public synchronized void setDownloadInfo(long id, DownloadAppinfo info) {
-		// mDownloadMap.put(id, info);
 		DBManager.getDownloadAppinfoDao().insertOrReplace(info);
 	}
 	
 	public synchronized void setDownloadInfo(String id, DownloadAppinfo info) {
-		// mDownloadMap.put(id, info);
 		DBManager.getDownloadAppinfoDao().insertOrReplace(info);
 	}
 
@@ -588,7 +570,7 @@ public class DownloadManager implements ChangeObserver{
 									info.setProgress(1.0f);
 									info.setHasFinished(true);
 //									notifyDownloadProgressed(info);
-									mTaskMap.remove(info.getId());
+									map.remove(info.getId());
 									if (!info.getIsZip()) {
 										info.setDownloadState(STATE_DOWNLOADED);
 										install(info);
@@ -723,7 +705,7 @@ public class DownloadManager implements ChangeObserver{
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 					info.setDownloadState(STATE_ERROR);
-					mTaskMap.remove(info.getId());
+					map.remove(info.getId());
 				} finally{
 					if (is != null) {
 						try {

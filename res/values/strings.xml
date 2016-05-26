@@ -117,6 +117,9 @@
     <string name="allDelete">全部删除</string>
     <string name="downloadManager">下载管理</string>
     <string name="loginTip">嬷嬷哒~要登录才能查看信息的哟~</string>
+    <string name="downloadWithNotWifiTip">wifi已断开，是否继续下载</string>
+    <string name="continueDownload">继续</string>
+    <string name="stopDownload">不了</string>
     <string name="cancle">取消</string>
     <string name="quickLogin">快捷登录</string>
     <string name="appCache">软件缓存</string>
