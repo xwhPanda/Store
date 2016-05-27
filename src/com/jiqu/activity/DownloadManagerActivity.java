@@ -3,11 +3,9 @@ package com.jiqu.activity;
 import java.util.ArrayList;
 import java.util.List;
 
-import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -26,9 +24,9 @@ import com.jiqu.adapter.DownloadingAdapter;
 import com.jiqu.application.StoreApplication;
 import com.jiqu.database.DownloadAppinfo;
 import com.jiqu.database.DownloadAppinfoDao.Properties;
+import com.jiqu.download.AppUtil;
 import com.jiqu.download.DownloadManager;
 import com.jiqu.download.UnZipManager;
-import com.jiqu.interfaces.UninstallStateObserver;
 import com.jiqu.object.InstalledApp;
 import com.jiqu.store.BaseActivity;
 import com.vr.store.R;
@@ -81,6 +79,9 @@ public class DownloadManagerActivity extends BaseActivity implements OnClickList
 		super.onDestroy();
 		if (downloadingAdapter != null) {
 			downloadingAdapter.stopObserver();
+		}
+		if (downloadedAdapter != null) {
+			downloadedAdapter.stopObserver();
 		}
 	}
 	
@@ -174,6 +175,7 @@ public class DownloadManagerActivity extends BaseActivity implements OnClickList
 			// TODO Auto-generated method stub
 			
 			downloadingAdapter.startObserver();
+			downloadedAdapter.startObserver();
 		}
 		
 	}
@@ -228,55 +230,75 @@ public class DownloadManagerActivity extends BaseActivity implements OnClickList
 		handler.sendEmptyMessage(3);
 	}
 	
+	class DataRefresh extends AsyncTask<String, String, String>{
+
+		@Override
+		protected String doInBackground(String... params) {
+			// TODO Auto-generated method stub
+			refreshData();
+			return null;
+		}
+		
+		@Override
+		protected void onPostExecute(String result) {
+			// TODO Auto-generated method stub
+		}
+		
+	}
+	
+	private void refreshData(){
+		List<InstalledApp> installedApps = InstalledAppTool.getPersonalApp(DownloadManagerActivity.this);
+		QueryBuilder<DownloadAppinfo> qb = StoreApplication.daoSession.getDownloadAppinfoDao().queryBuilder();
+		List<DownloadAppinfo> apps = qb.where(Properties.HasFinished.eq(false)).list();
+		for(DownloadAppinfo info : apps){
+			if (info.getDownloadState() == DownloadManager.STATE_DOWNLOADING
+					|| info.getDownloadState() == DownloadManager.STATE_WAITING) {
+				if (!DownloadManager.getInstance().isDownloading(info.getId())) {
+					info.setDownloadState(DownloadManager.STATE_PAUSED);
+					DownloadManager.DBManager.insertOrReplace(info);
+				}
+			}
+		}
+		downloadingAdapter.clearHolders();
+		downloadingApps.clear();
+		downloadingApps.addAll(apps);
+//		handler.sendEmptyMessage(2);
+		
+		List<DownloadAppinfo> apps2 = StoreApplication.daoSession.getDownloadAppinfoDao()
+				.queryBuilder().where(Properties.HasFinished.eq(true)).list();
+		for (DownloadAppinfo info : apps2) {
+			if (info.getDownloadState() != DownloadManager.STATE_INSTALLED && info.getVersionCode() != null) {
+				int state = InstalledAppTool.contain(installedApps,info.getPackageName(), Integer.parseInt(info.getVersionCode()));
+				if (state == DownloadManager.STATE_INSTALLED) {
+					info.setDownloadState(state);
+					DownloadManager.DBManager.insertOrReplace(info);
+				}
+			}else if (info.getDownloadState() == DownloadManager.STATE_INSTALLED) {
+				int state = InstalledAppTool.contain(installedApps,info.getPackageName(), Integer.parseInt(info.getVersionCode()));
+				if (state != DownloadManager.STATE_INSTALLED) {
+					if (info.getIsZip()) {
+						info.setDownloadState(DownloadManager.STATE_UNZIPED);
+					}else {
+						info.setDownloadState(DownloadManager.STATE_DOWNLOADED);
+					}
+					DownloadManager.DBManager.insertOrReplace(info);
+				}
+			}
+			if (info.getDownloadState() == DownloadManager.STATE_UNZIPING 
+					&& !UnZipManager.getInstance().isUnZiping(info.getPackageName())) {
+				info.setDownloadState(DownloadManager.STATE_UNZIP_FAILED);
+				DownloadManager.DBManager.insertOrReplace(info);
+			}
+		}
+		downloadedApps.clear();
+		downloadedApps.addAll(apps2);
+		handler.sendEmptyMessage(3);
+	}
+	
 	private Handler handler = new Handler(){
 		public void handleMessage(android.os.Message msg) {
 			if (msg.what == 1) {//有应用下载完成
-				List<InstalledApp> installedApps = InstalledAppTool.getPersonalApp(DownloadManagerActivity.this);
-				QueryBuilder<DownloadAppinfo> qb = StoreApplication.daoSession.getDownloadAppinfoDao().queryBuilder();
-				List<DownloadAppinfo> apps = qb.where(Properties.HasFinished.eq(false)).list();
-				for(DownloadAppinfo info : apps){
-					if (info.getDownloadState() == DownloadManager.STATE_DOWNLOADING
-							|| info.getDownloadState() == DownloadManager.STATE_WAITING) {
-						if (!DownloadManager.getInstance().isDownloading(info.getId())) {
-							info.setDownloadState(DownloadManager.STATE_PAUSED);
-							DownloadManager.DBManager.insertOrReplace(info);
-						}
-					}
-				}
-				downloadingAdapter.clearHolders();
-				downloadingApps.clear();
-				downloadingApps.addAll(apps);
-				downloadingAdapter.notifyDataSetChanged();
-				
-				List<DownloadAppinfo> apps2 = StoreApplication.daoSession.getDownloadAppinfoDao()
-						.queryBuilder().where(Properties.HasFinished.eq(true)).list();
-				for (DownloadAppinfo info : apps2) {
-					if (info.getDownloadState() != DownloadManager.STATE_INSTALLED && info.getVersionCode() != null) {
-						int state = InstalledAppTool.contain(installedApps,info.getPackageName(), Integer.parseInt(info.getVersionCode()));
-						if (state == DownloadManager.STATE_INSTALLED) {
-							info.setDownloadState(state);
-							DownloadManager.DBManager.insertOrReplace(info);
-						}
-					}else if (info.getDownloadState() == DownloadManager.STATE_INSTALLED) {
-						int state = InstalledAppTool.contain(installedApps,info.getPackageName(), Integer.parseInt(info.getVersionCode()));
-						if (state != DownloadManager.STATE_INSTALLED) {
-							if (info.getIsZip()) {
-								info.setDownloadState(DownloadManager.STATE_UNZIPED);
-							}else {
-								info.setDownloadState(DownloadManager.STATE_DOWNLOADED);
-							}
-							DownloadManager.DBManager.insertOrReplace(info);
-						}
-					}
-					if (info.getDownloadState() == DownloadManager.STATE_UNZIPING 
-							&& !UnZipManager.getInstance().isUnZiping(info.getPackageName())) {
-						info.setDownloadState(DownloadManager.STATE_UNZIP_FAILED);
-						DownloadManager.DBManager.insertOrReplace(info);
-					}
-				}
-				downloadedApps.clear();
-				downloadedApps.addAll(apps2);
-				downloadedAdapter.notifyDataSetChanged();
+				new DataRefresh().execute("");
 			}else if (msg.what == 2) {
 				downloadingAdapter.notifyDataSetChanged();
 			}else if (msg.what == 3) {
@@ -304,20 +326,18 @@ public class DownloadManagerActivity extends BaseActivity implements OnClickList
 		case R.id.downloading:
 			downloadedListShowing = false;
 			changeButtonState(downloading);
-			downloadedList.setVisibility(View.INVISIBLE);
+			downloadedList.setVisibility(View.GONE);
 			downloadedAdapter.showAllCheckbox(false);
 			allDeleteRel.setVisibility(View.GONE);
-//			allStartRel.setVisibility(View.VISIBLE);
 			downloadingList.setVisibility(View.VISIBLE);
 			break;
 
 		case R.id.downloaded:
 			downloadingListShowing = false;
 			changeButtonState(downloaded);
-			downloadingList.setVisibility(View.INVISIBLE);
+			downloadingList.setVisibility(View.GONE);
 			downloadingAdapter.showAllCheckbox(false);
 			allStartRel.setVisibility(View.GONE);
-//			allDeleteRel.setVisibility(View.VISIBLE);
 			downloadedList.setVisibility(View.VISIBLE);
 			break;
 			
@@ -387,9 +407,12 @@ public class DownloadManagerActivity extends BaseActivity implements OnClickList
 				downloadingAdapter.notifyDataSetChanged();
 				allStartRel.setVisibility(View.GONE);
 				return true;
-			}else {
+			}else if (downloadedListShowing) {
 				downloadedListShowing = false;
+				downloadedAdapter.showAllCheckbox(false);
+				downloadedAdapter.notifyDataSetChanged();
 				allDeleteRel.setVisibility(View.GONE);
+				return true;
 			}
 		}
 		return super.onKeyDown(keyCode, event);

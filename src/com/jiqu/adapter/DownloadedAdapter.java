@@ -13,6 +13,7 @@ import com.jiqu.database.DownloadAppinfo;
 import com.jiqu.database.DownloadAppinfoDao.Properties;
 import com.jiqu.download.AppUtil;
 import com.jiqu.download.DownloadManager;
+import com.jiqu.download.DownloadManager.DownloadObserver;
 import com.jiqu.download.FileUtil;
 import com.jiqu.download.UnZipManager;
 import com.vr.store.R;
@@ -27,6 +28,7 @@ import android.R.integer;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.BitmapFactory;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -38,10 +40,11 @@ import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.AbsListView.LayoutParams;
 
-public class DownloadedAdapter extends BaseAdapter {
+public class DownloadedAdapter extends BaseAdapter implements DownloadObserver{
 	private Context context;
 	private List<DownloadAppinfo> downloadAppinfos;
 	private List<Holder> mDisplayedHolders;
@@ -59,6 +62,14 @@ public class DownloadedAdapter extends BaseAdapter {
 		for (DownloadAppinfo downloadAppinfo : downloadAppinfos) {
 			checkMap.put(downloadAppinfo.getId(), isChecked);
 		}
+	}
+	
+	public void startObserver() {
+		DownloadManager.getInstance().registerObserver(this);
+	}
+
+	public void stopObserver() {
+		DownloadManager.getInstance().unRegisterObserver(this);
 	}
 	
 	public void showAllCheckbox(boolean visible){
@@ -179,8 +190,11 @@ public class DownloadedAdapter extends BaseAdapter {
 		private TextView appName;
 		private TextView appDes;
 		private RatingBarView appScore;
+		private RelativeLayout openRel;
 		private TextView appSize;
 		private Button open;
+		private Button delete;
+		private TextView state;
 
 		private DownloadAppinfo info;
 		private int[] resIDs = new int[3];
@@ -205,6 +219,9 @@ public class DownloadedAdapter extends BaseAdapter {
 			appScore = (RatingBarView) view.findViewById(R.id.appScore);
 			appSize = (TextView) view.findViewById(R.id.appSize);
 			open = (Button) view.findViewById(R.id.open);
+			delete = (Button) view.findViewById(R.id.delete);
+			state = (TextView) view.findViewById(R.id.state);
+			openRel = (RelativeLayout) view.findViewById(R.id.openRel);
 
 			resIDs[0] = R.drawable.ratingbg;
 			resIDs[1] = R.drawable.rating_sencond_progress;
@@ -251,6 +268,18 @@ public class DownloadedAdapter extends BaseAdapter {
 					}
 				}
 			});
+			
+			delete.setOnClickListener(new OnClickListener() {
+				
+				@Override
+				public void onClick(View v) {
+					// TODO Auto-generated method stub
+					mDisplayedHolders.remove(this);
+					downloadAppinfos.remove(info);
+					DownloadManager.DBManager.getDownloadAppinfoDao().deleteByKey(info.getId());
+					notifyDataSetChanged();
+				}
+			});
 
 			initViewSize(view);
 			return view;
@@ -260,10 +289,14 @@ public class DownloadedAdapter extends BaseAdapter {
 			UIUtil.setViewSize(checkBox, 56 * MetricsTool.Rx, 56 * MetricsTool.Ry);
 			UIUtil.setViewSize(appIcon, 160 * MetricsTool.Rx, 160 * MetricsTool.Ry);
 			UIUtil.setViewSize(open, 96 * MetricsTool.Rx, 76 * MetricsTool.Rx);
+			UIUtil.setViewSize(delete, 76 * MetricsTool.Rx, 76 * MetricsTool.Rx);
+			UIUtil.setViewWidth(openRel, 120 * MetricsTool.Rx);
 
 			UIUtil.setTextSize(appName, 40);
+			UIUtil.setTextSize(open, 35);
 			UIUtil.setTextSize(appDes, 30);
 			UIUtil.setTextSize(appSize, 30);
+			UIUtil.setTextSize(state, 30);
 
 			AbsListView.LayoutParams lp = new LayoutParams(LayoutParams.MATCH_PARENT, (int) (255 * MetricsTool.Ry));
 			view.setLayoutParams(lp);
@@ -273,8 +306,10 @@ public class DownloadedAdapter extends BaseAdapter {
 				UIUtil.setViewSizeMargin(appName, 20 * MetricsTool.Rx, 60 * MetricsTool.Ry, 0, 0);
 				UIUtil.setViewSizeMargin(appDes, 0, 10 * MetricsTool.Ry, 20 * MetricsTool.Rx, 0);
 				UIUtil.setViewSizeMargin(appScore, 0, 10 * MetricsTool.Ry, 0, 0);
-				UIUtil.setViewSizeMargin(open, 0, 0, 60 * MetricsTool.Rx, 0);
+				UIUtil.setViewSizeMargin(openRel, 0, 0, 20 * MetricsTool.Rx, 0);
+				UIUtil.setViewSizeMargin(delete, 0, 0, 20 * MetricsTool.Rx, 0);
 				UIUtil.setViewSizeMargin(appSize, 30 * MetricsTool.Rx, 0, 0, 0);
+				UIUtil.setViewSizeMargin(state,0, 10 * MetricsTool.Ry, 0, 0);
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
@@ -295,6 +330,83 @@ public class DownloadedAdapter extends BaseAdapter {
 			appDes.setText(info.getDes());
 			appScore.setRating(Float.parseFloat(info.getScore()));
 			appSize.setText(FileUtil.getSize(Long.parseLong(info.getAppSize())));
+			
+			setState();
 		}
+		
+		private void setState(){
+			switch (info.getDownloadState()) {
+			case DownloadManager.STATE_DOWNLOADED:
+				open.setText("");
+				open.setBackgroundResource(R.drawable.runing_selector);
+				if (info.getIsZip()) {
+					state.setText("解压");
+				}else {
+					state.setText("安装");
+				}
+				break;
+
+			case DownloadManager.STATE_INSTALLED:
+				open.setText("");
+				open.setBackgroundResource(R.drawable.runing_selector);
+				state.setText("打开");
+				break;
+			case DownloadManager.STATE_UNZIP_FAILED:
+				open.setText("");
+				open.setBackgroundResource(R.drawable.xiazai_failed);
+				state.setText("解压失败");
+				break;
+			case DownloadManager.STATE_UNZIPING:
+				open.setBackgroundResource(R.drawable.jieya);
+				state.setText("正在解压");
+				break;
+			case DownloadManager.STATE_UNZIPED:
+				open.setText("");
+				open.setBackgroundResource(R.drawable.runing_selector);
+				state.setText("安装");
+				break;
+			}
+		}
+		
+		public void setUnZipProgress(int progress){
+			open.setText(progress + "%");
+		}
+	}
+	
+	private void refresh(DownloadAppinfo info,final int progress){
+		List<Holder> displayedHolders = getDisplayedHolders();
+		for (int i = 0; i < displayedHolders.size(); i++) {
+			final Holder holder = displayedHolders.get(i);
+			if (holder != null) {
+				final DownloadAppinfo appInfo = holder.getData();
+				if (appInfo.getId().equals(info.getId())) {
+					AppUtil.post(new Runnable() {
+
+						@Override
+						public void run() {
+							// TODO Auto-generated method stub
+							holder.setUnZipProgress(progress);
+						}
+					});
+				}
+			}
+		}
+	}
+
+	@Override
+	public void onDownloadStateChanged(DownloadAppinfo info) {
+		// TODO Auto-generated method stub
+	}
+
+	@Override
+	public void onDownloadProgressed(DownloadAppinfo info) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void onUnZipProgressed(DownloadAppinfo info, int progress) {
+		// TODO Auto-generated method stub
+		refresh(info, progress);
 	}
 }

@@ -331,7 +331,6 @@ public class DownloadManager implements ChangeObserver{
 
 	public synchronized void installByPM(DownloadInfo appInfo) {
 		String result = execCommand("pm", "install", "-f", appInfo.getPath());
-		Log.i("installByPM", result + " ： result");
 	}
 
 	public static String execCommand(String... command) {

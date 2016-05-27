@@ -105,6 +105,7 @@ public class MainActivity extends FragmentActivity implements OnClickListener,On
 	
 	private RequestTool requestTool;
 	private HashMap<String, Object> map = new HashMap<String, Object>();
+	private NetChangeDialog netChangeDialog;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -118,7 +119,7 @@ public class MainActivity extends FragmentActivity implements OnClickListener,On
 		
 		StoreApplication.setLoginOutObserver(this);
 		
-		new NetChangeDialog(this).show();
+		netChangeDialog = new NetChangeDialog(this);
 		
 		dialog = new CustomDialog(this)
 				.setNegativeButton(new DialogInterface.OnClickListener() {
@@ -148,6 +149,13 @@ public class MainActivity extends FragmentActivity implements OnClickListener,On
 		checkNewVersion();
 	}
 	
+	@Override
+	protected void onRestart() {
+		// TODO Auto-generated method stub
+		super.onRestart();
+		netReceiver.setNetChangeListener(this);
+	}
+	
 	private void checkNewVersion(){
 		map.put("version", Constants.VERSION_CODE);
 		map.put("package", Constants.PACKAGENAME);
@@ -170,7 +178,6 @@ public class MainActivity extends FragmentActivity implements OnClickListener,On
 			@Override
 			public void onErrorResponse(VolleyError arg0) {
 				// TODO Auto-generated method stub
-				Log.i("TAG", "onErrorResponse");
 			}
 			
 		}, map, CHECKNE_WVERSION_REQUEST);
@@ -265,6 +272,25 @@ public class MainActivity extends FragmentActivity implements OnClickListener,On
 		changeFocusState(currentIndex, true);
 		
 		setViewSize();
+		
+		netChangeDialog.setPositiveListener(new OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				// TODO Auto-generated method stub
+				netChangeDialog.dismiss();
+			}
+		});
+		
+		netChangeDialog.setNegativeListener(new OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				// TODO Auto-generated method stub
+				DownloadManager.getInstance().startAll();
+				netChangeDialog.dismiss();
+			}
+		});
 	}
 	
 	private void setViewSize(){
@@ -493,6 +519,7 @@ public class MainActivity extends FragmentActivity implements OnClickListener,On
 			
 		case R.id.download:
 			startActivity(new Intent(this, DownloadManagerActivity.class));
+			break;
 		}
 		mFragmentTransaction.commit();
 	}
@@ -517,17 +544,18 @@ public class MainActivity extends FragmentActivity implements OnClickListener,On
 	@Override
 	public void onNetChange(int netType) {
 		// TODO Auto-generated method stub
-//		if ((netType == NetReceiver.NET_NOBILE || netType == NetReceiver.NET_NONE)
-//				&& !firstIn) {
-//			if (!dialog.isShowing()) {
-//				DownloadManager.getInstance().pauseAllExit();
-//				dialog.show();
-//			}
-//		}else {
-//			if (firstIn) {
-//				firstIn = false;
-//			}
-//		}
+		if (netType != NetReceiver.NET_WIFI 
+				&& DownloadManager.getInstance().hasDownloading()
+				&& !firstIn) {
+			if (!netChangeDialog.isShowing()) {
+				DownloadManager.getInstance().pauseAllExit();
+				netChangeDialog.show();
+			}
+		}else {
+			if (firstIn) {
+				firstIn = false;
+			}
+		}
 	}
 
 	@Override

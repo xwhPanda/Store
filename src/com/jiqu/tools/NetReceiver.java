@@ -8,6 +8,11 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.util.Log;
 
+/**
+ * 网络变化监听
+ * @author XWH
+ *
+ */
 public class NetReceiver extends BroadcastReceiver {
 	public static final int NET_WIFI = 1;
 	public static final int NET_NOBILE = 0;
@@ -63,6 +68,7 @@ public class NetReceiver extends BroadcastReceiver {
 		}
 	}
 	
+	/** 这个方法调用一次就好 **/
 	public void registerReceive(Context context){
 		IntentFilter filter = new IntentFilter();
 		filter.addAction(ConnectivityManager.CONNECTIVITY_ACTION);

@@ -9,6 +9,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.text.DecimalFormat;
 import android.content.Context;
@@ -341,19 +342,18 @@ public class FileUtil {
 	}
 	
 	public static String getFileSize(long size){
-		DecimalFormat formater = new DecimalFormat("####.0");
 		if (size >= 0) {
 			if(size < 1024){
 				return size+"B";
 			}else if(size<1024*1024){
 				float kbsize = size/1024f;  
-				return formater.format(kbsize)+"KB";
+				return new BigDecimal(kbsize).setScale(1, BigDecimal.ROUND_UP).toString() + "KB";
 			}else if(size<1024*1024*1024){
 				float mbsize = size/1024f/1024f;  
-				return formater.format(mbsize)+"M";
+				return new BigDecimal(mbsize).setScale(1, BigDecimal.ROUND_UP).toString() + "M";
 			}else if(size<1024*1024*1024*1024){
 				float gbsize = size/1024f/1024f/1024f;  
-				return formater.format(gbsize)+"G";
+				return new BigDecimal(gbsize).setScale(1, BigDecimal.ROUND_UP).toString() + "G";
 			}else{
 				return 0 + "KB";
 			}

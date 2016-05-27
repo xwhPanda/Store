@@ -15,14 +15,40 @@
         android:button="@null"
         android:visibility="invisible" />
 
+    <RelativeLayout
+        android:id="@+id/openRel"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent" 
+        android:layout_alignParentRight="true">
+
+        <Button
+            android:id="@+id/open"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            fontPath="fonts/lantinghei.ttf"
+            android:textColor="@color/white"
+            android:background="@drawable/runing_selector" />
+
+        <TextView
+            android:id="@+id/state"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/open"
+            android:layout_centerHorizontal="true"
+        	fontPath="fonts/lantinghei.ttf"
+            android:textColor="@color/white"
+            android:text="正在解压" />
+    </RelativeLayout>
+
     <Button
-        android:id="@+id/open"
+        android:id="@+id/delete"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentRight="true"
         android:layout_centerVertical="true"
+        android:layout_toLeftOf="@id/openRel"
         fontPath="fonts/lantinghei.ttf"
-        android:background="@drawable/runing_selector" />
+        android:background="@drawable/xiezai_focus" />
 
     <ImageView
         android:id="@+id/appIcon"
@@ -45,7 +71,7 @@
         android:layout_height="wrap_content"
         android:layout_alignLeft="@id/appName"
         android:layout_below="@id/appName"
-        android:layout_toLeftOf="@id/open"
+        android:layout_toLeftOf="@id/delete"
         fontPath="fonts/lantinghei.ttf"
         android:ellipsize="end"
         android:singleLine="true"
@@ -70,8 +96,8 @@
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
             android:layout_toRightOf="@id/appScore"
-            android:clickable="true"
-            fontPath="fonts/lantinghei.ttf" />
+            fontPath="fonts/lantinghei.ttf"
+            android:clickable="true" />
     </RelativeLayout>
 
 </RelativeLayout>

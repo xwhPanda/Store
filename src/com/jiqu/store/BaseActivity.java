@@ -21,11 +21,14 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
+import android.view.View.OnClickListener;
 
 public abstract class BaseActivity extends Activity implements OnNetChangeListener{
 	protected float Rx;
 	protected float Ry;
 	protected NetChangeDialog netChangeDialog;
+	private NetReceiver netReceiver;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -41,7 +44,29 @@ public abstract class BaseActivity extends Activity implements OnNetChangeListen
 		filter.addDataScheme("package");
 		registerReceiver(appInstallReceiver, filter);
 		
+		netReceiver = NetReceiver.getInstance();
+		netReceiver.setNetChangeListener(this);
+		
 		netChangeDialog = new NetChangeDialog(this);
+		
+		netChangeDialog.setNegativeListener(new OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				// TODO Auto-generated method stub
+				DownloadManager.getInstance().startAll();
+				netChangeDialog.dismiss();
+			}
+		});
+		
+		netChangeDialog.setPositiveListener(new OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				// TODO Auto-generated method stub
+				netChangeDialog.dismiss();
+			}
+		});
 	}
 	
 	@Override
@@ -101,12 +126,18 @@ public abstract class BaseActivity extends Activity implements OnNetChangeListen
 	@Override
 	public void onNetChange(int netType) {
 		// TODO Auto-generated method stub
+		Log.i("TAG", "----------1");
 		if (netType != NetReceiver.NET_WIFI && DownloadManager.getInstance().hasDownloading()) {
+			Log.i("TAG", "----------2");
 			if (!netChangeDialog.isShowing()) {
+				Log.i("TAG", "----------3");
+				DownloadManager.getInstance().pauseAllExit();
 				netChangeDialog.show();
 			}
 		}
 	}
+	
+	
 	
 	@Override
 	protected void onDestroy() {

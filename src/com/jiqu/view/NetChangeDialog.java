@@ -25,6 +25,7 @@ public class NetChangeDialog extends Dialog {
 		super(context,R.style.NetChangeDialog);
 		// TODO Auto-generated constructor stub
 		this.context = context;
+		initView(context);
 	}
 	
 	public NetChangeDialog(Context context,int theme){
@@ -37,7 +38,7 @@ public class NetChangeDialog extends Dialog {
 	protected void onCreate(Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
 		super.onCreate(savedInstanceState);
-		initView(context);
+//		initView(context);
 	}
 
 	private void initView(Context context){

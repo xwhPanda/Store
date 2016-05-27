@@ -20,6 +20,7 @@ import com.vr.store.R;
 import com.jiqu.tools.MetricsTool;
 import com.jiqu.tools.NetReceiver;
 import com.jiqu.tools.UIUtil;
+import com.jiqu.view.NetChangeDialog;
 
 import de.greenrobot.dao.query.QueryBuilder;
 
@@ -138,6 +139,8 @@ public class DownloadingAdapter extends BaseAdapter implements DownloadObserver 
 		private View rootView;
 		private DownloadAppinfo info;
 		private int position;
+		private String appSize;
+		private NetChangeDialog netChangeDialog;
 
 		public Holder(Context context) {
 			this.context = context;
@@ -154,6 +157,7 @@ public class DownloadingAdapter extends BaseAdapter implements DownloadObserver 
 		}
 
 		private View initView() {
+			netChangeDialog = new NetChangeDialog(context);
 			LayoutInflater inflater = LayoutInflater.from(context);
 			View view = inflater.inflate(R.layout.downloading_item_layout, null);
 
@@ -164,6 +168,23 @@ public class DownloadingAdapter extends BaseAdapter implements DownloadObserver 
 			progressTx = (TextView) view.findViewById(R.id.progressTx);
 			pause = (Button) view.findViewById(R.id.pause);
 			deleted = (Button) view.findViewById(R.id.deleted);
+			netChangeDialog.setPositiveListener(new OnClickListener() {
+				
+				@Override
+				public void onClick(View v) {
+					// TODO Auto-generated method stub
+					netChangeDialog.dismiss();
+				}
+			});
+			netChangeDialog.setNegativeListener(new OnClickListener() {
+				
+				@Override
+				public void onClick(View v) {
+					// TODO Auto-generated method stub
+					DownloadManager.getInstance().download(info);
+					netChangeDialog.dismiss();
+				}
+			});
 			pause.setOnClickListener(new OnClickListener() {
 
 				@Override
@@ -189,7 +210,7 @@ public class DownloadingAdapter extends BaseAdapter implements DownloadObserver 
 							DownloadManager.getInstance().download(info);
 							pause.setBackgroundResource(R.drawable.jixu);
 						} else {
-							Toast.makeText(context, "没有连接wifi", Toast.LENGTH_SHORT).show();
+							netChangeDialog.show();
 						}
 					}
 				}
@@ -250,6 +271,7 @@ public class DownloadingAdapter extends BaseAdapter implements DownloadObserver 
 		private void setData(DownloadAppinfo appinfo,int position) {
 			this.info = appinfo;
 			this.position = position;
+			appSize = FileUtil.getFileSize(Long.parseLong(appinfo.getAppSize()));
 			if (appinfo.getIconByte() != null) {
 				appIcon.setImageBitmap(UIUtil.bytesToBitmap(appinfo.getIconByte()));
 			}else {
@@ -284,9 +306,9 @@ public class DownloadingAdapter extends BaseAdapter implements DownloadObserver 
 		}
 
 		public void refreshView(DownloadAppinfo appinfo) {
-			pause.clearAnimation();
+//			pause.clearAnimation();
 			downloadPrg.setProgress((int) (appinfo.getProgress() * 100));
-			progressTx.setText(FileUtil.getFileSize(appinfo.getCurrentSize()) + "/" + FileUtil.getFileSize(Long.parseLong(appinfo.getAppSize())) + "M");
+			progressTx.setText(FileUtil.getFileSize(appinfo.getCurrentSize()) + "/" + appSize);
 			switch (appinfo.getDownloadState()) {
 			case DownloadManager.STATE_NONE:
 				pause.setBackgroundResource(R.drawable.download_selector);
@@ -296,13 +318,13 @@ public class DownloadingAdapter extends BaseAdapter implements DownloadObserver 
 				pause.setBackgroundResource(R.drawable.zanting);
 				break;
 			case DownloadManager.STATE_ERROR:
-				pause.setBackgroundResource(R.drawable.download_selector);
+				pause.setBackgroundResource(R.drawable.xiazai_failed);
 				break;
 			case DownloadManager.STATE_WAITING:
 				pause.setBackgroundResource(R.drawable.dengdai);
-				Animation animation = AnimationUtils.loadAnimation(context, R.anim.wating_rorating);
-				pause.setAnimation(animation);
-				pause.startAnimation(animation);
+//				Animation animation = AnimationUtils.loadAnimation(context, R.anim.wating_rorating);
+//				pause.setAnimation(animation);
+//				pause.startAnimation(animation);
 				break;
 			case DownloadManager.STATE_DOWNLOADING:
 				pause.setBackgroundResource(R.drawable.jixu);
@@ -317,7 +339,7 @@ public class DownloadingAdapter extends BaseAdapter implements DownloadObserver 
 				synchronized (handler) {
 					handler.sendEmptyMessage(1);
 				}
-				pause.setBackgroundResource(R.drawable.runing_selector);
+				pause.setBackgroundResource(R.drawable.jieya);
 				break;
 			}
 		}

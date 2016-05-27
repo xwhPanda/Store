@@ -21,6 +21,7 @@ import com.jiqu.tools.Constants;
 import com.jiqu.tools.MetricsTool;
 import com.jiqu.tools.NetReceiver;
 import com.jiqu.tools.UIUtil;
+import com.jiqu.view.NetChangeDialog;
 import com.jiqu.view.RatingBarView;
 
 import android.content.Context;
@@ -230,6 +231,8 @@ public class GameAdapter extends BaseAdapter implements DownloadObserver{
 		
 		private boolean installDialogShowed = false;
 		
+		private NetChangeDialog netChangeDialog;
+		
 		private int mState;
 		public DownloadAppinfo mData;
 		private DownloadManager mDownloadManager;
@@ -257,6 +260,7 @@ public class GameAdapter extends BaseAdapter implements DownloadObserver{
 		}
 		
 		private View initView(){
+			netChangeDialog = new NetChangeDialog(context);
 			View view = AppUtil.inflate(R.layout.recommend_game_item);
 			parentView = (RelativeLayout) view.findViewById(R.id.parentView);
 			icon = (ImageView) view.findViewById(R.id.icon);
@@ -279,6 +283,25 @@ public class GameAdapter extends BaseAdapter implements DownloadObserver{
 			subscriptLin = (LinearLayout) view.findViewById(R.id.subscriptLin);
 			subscriptLin.setBackgroundDrawable(UIUtil.readBitmapDrawable(context, R.drawable.subscript_red));
 			
+			netChangeDialog.setPositiveListener(new OnClickListener() {
+				
+				@Override
+				public void onClick(View v) {
+					// TODO Auto-generated method stub
+					netChangeDialog.dismiss();
+				}
+			});
+			
+			netChangeDialog.setNegativeListener(new OnClickListener() {
+				
+				@Override
+				public void onClick(View v) {
+					// TODO Auto-generated method stub
+					mDownloadManager.download(mData);
+					netChangeDialog.dismiss();
+				}
+			});
+			
 			downloadBtn.setOnClickListener(new OnClickListener() {
 				
 				@Override
@@ -288,7 +311,6 @@ public class GameAdapter extends BaseAdapter implements DownloadObserver{
 							|| mState == DownloadManager.STATE_PAUSED
 							|| mState == DownloadManager.STATE_ERROR
 							|| mState == DownloadManager.STATE_NEED_UPDATE) {
-						Log.i("TAG", "mState : " + mState);
 						if (NetReceiver.NET_TYPE == NetReceiver.NET_WIFI) {
 							if (FileUtil.checkSDCard()) {
 								if (Float.parseFloat(mData.getAppSize()) * 3 >= FileUtil.getSDcardAvailableSpace()) {
@@ -303,7 +325,7 @@ public class GameAdapter extends BaseAdapter implements DownloadObserver{
 							}
 							mDownloadManager.download(mData);
 						}else {
-							Toast.makeText(context, "没有连接wifi", Toast.LENGTH_SHORT).show();
+							netChangeDialog.show();
 						}
 					}else if (mState == DownloadManager.STATE_DOWNLOADING
 							|| mState == DownloadManager.STATE_WAITING) {
@@ -374,6 +396,9 @@ public class GameAdapter extends BaseAdapter implements DownloadObserver{
 		}
 		
 		private void setData(DownloadAppinfo data){
+			if (data.getIsZip()) {
+				Log.i("TAG", data.getAppName());
+			}
 			if (mDownloadManager == null) {
 				mDownloadManager = DownloadManager.getInstance();
 			}
@@ -428,7 +453,7 @@ public class GameAdapter extends BaseAdapter implements DownloadObserver{
 					mDownloadManager.DBManager.getDownloadAppinfoDao().insertOrReplace(downloadInfo);
 				}else {
 					data.setHasFinished(true);
-					mDownloadManager.DBManager.getDownloadAppinfoDao().insertOrReplace(data);
+//					mDownloadManager.DBManager.getDownloadAppinfoDao().insertOrReplace(data);
 				}
 			}
 			this.mData = data;
