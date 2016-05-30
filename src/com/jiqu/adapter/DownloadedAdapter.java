@@ -10,7 +10,6 @@ import com.android.volley.toolbox.ImageLoader;
 import com.android.volley.toolbox.ImageLoader.ImageListener;
 import com.jiqu.application.StoreApplication;
 import com.jiqu.database.DownloadAppinfo;
-import com.jiqu.database.DownloadAppinfoDao.Properties;
 import com.jiqu.download.AppUtil;
 import com.jiqu.download.DownloadManager;
 import com.jiqu.download.DownloadManager.DownloadObserver;
@@ -22,17 +21,19 @@ import com.jiqu.tools.MetricsTool;
 import com.jiqu.tools.UIUtil;
 import com.jiqu.view.RatingBarView;
 
-import de.greenrobot.dao.query.QueryBuilder;
-
-import android.R.integer;
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.BitmapFactory;
+import android.os.Handler;
+import android.os.Message;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.TranslateAnimation;
+import android.view.animation.Animation.AnimationListener;
+import android.view.animation.AnimationUtils;
 import android.widget.AbsListView;
 import android.widget.BaseAdapter;
 import android.widget.Button;
@@ -44,7 +45,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.AbsListView.LayoutParams;
 
-public class DownloadedAdapter extends BaseAdapter implements DownloadObserver{
+public class DownloadedAdapter extends BaseAdapter implements DownloadObserver {
 	private Context context;
 	private List<DownloadAppinfo> downloadAppinfos;
 	private List<Holder> mDisplayedHolders;
@@ -63,7 +64,7 @@ public class DownloadedAdapter extends BaseAdapter implements DownloadObserver{
 			checkMap.put(downloadAppinfo.getId(), isChecked);
 		}
 	}
-	
+
 	public void startObserver() {
 		DownloadManager.getInstance().registerObserver(this);
 	}
@@ -71,18 +72,22 @@ public class DownloadedAdapter extends BaseAdapter implements DownloadObserver{
 	public void stopObserver() {
 		DownloadManager.getInstance().unRegisterObserver(this);
 	}
-	
-	public void showAllCheckbox(boolean visible){
+
+	public List<DownloadAppinfo> getList() {
+		return downloadAppinfos;
+	}
+
+	public void showAllCheckbox(boolean visible) {
 		ArrayList<Holder> holders = (ArrayList<Holder>) getDisplayedHolders();
 		for (int i = 0; i < holders.size(); i++) {
 			if (visible) {
 				holders.get(i).checkBox.setVisibility(View.VISIBLE);
-			}else {
+			} else {
 				holders.get(i).checkBox.setVisibility(View.INVISIBLE);
 			}
 		}
 	}
-	
+
 	public List<Holder> getDisplayedHolders() {
 		synchronized (mDisplayedHolders) {
 			return new ArrayList<Holder>(mDisplayedHolders);
@@ -118,66 +123,60 @@ public class DownloadedAdapter extends BaseAdapter implements DownloadObserver{
 		}
 		holder.setData(downloadAppinfos.get(position));
 		mDisplayedHolders.add(holder);
-		return holder.getRootView();
+		convertView = holder.getRootView();
+		return convertView;
 	}
 
 	public void deleteAll() {
-		for (final DownloadAppinfo downloadAppinfo : downloadAppinfos) {
+		List<DownloadAppinfo> infos = new ArrayList<DownloadAppinfo>(downloadAppinfos);
+		for (int i = 0;i < infos.size();i++) {
+			DownloadAppinfo downloadAppinfo = infos.get(i);
 			if (checkMap.get(downloadAppinfo.getId())) {
-				AppUtil.post(new Runnable() {
-					@Override
-					public void run() {
-						// TODO Auto-generated method stub
-						QueryBuilder qb = DownloadManager.DBManager.getDownloadAppinfoDao().queryBuilder();
-						Intent intent = new Intent();
-						intent.setAction("deleted_downloaded_files_action");
-						intent.putExtra("pkg", downloadAppinfo.getPackageName());
-						context.sendBroadcast(intent);
-						if (downloadAppinfo != null) {
-							DownloadAppinfo info = (DownloadAppinfo) qb.where(Properties.Id.eq(downloadAppinfo.getId())).unique();
-							if (info != null) {
-								if (info.getIsZip()) {
-									File file1 = new File(info.getZipPath());
-									if (file1.exists()) {
-										file1.delete();
-									}
-									File file2 = new File(info.getUnzipPath());
-									if (file2.exists()) {
-										file2.delete();
-									}
-								} else {
-									File file = new File(info.getApkPath());
-									if (file.exists()) {
-										file.delete();
-									}
-								}
-								DownloadManager.DBManager.getDownloadAppinfoDao().delete(info);
-							} else {
-								if (downloadAppinfo.getIsZip()) {
-									File file1 = new File(downloadAppinfo.getZipPath());
-									if (file1.exists()) {
-										file1.delete();
-									}
-									File file2 = new File(downloadAppinfo.getUnzipPath());
-									if (file2.exists()) {
-										file2.delete();
-									}
-								} else {
-									File file = new File(downloadAppinfo.getApkPath());
-									if (file.exists()) {
-										file.delete();
-									}
-								}
-							}
-						}
-						mDisplayedHolders.remove(this);
-						synchronized (downloadAppinfos) {
-							downloadAppinfos.remove(downloadAppinfo);
-						}
-						notifyDataSetChanged();
-					}
-				});
+				Intent intent = new Intent();
+				intent.setAction("deleted_downloaded_files_action");
+				intent.putExtra("pkg", downloadAppinfo.getPackageName());
+				context.sendBroadcast(intent);
+				deleteFile(downloadAppinfo);
+				mDisplayedHolders.remove(this);
+				Message msg = handler.obtainMessage();
+				msg.obj = downloadAppinfo;
+				msg.what = 1;
+				msg.arg1 = i;
+				handler.sendMessage(msg);
 			}
+		}
+	}
+	
+	Handler handler = new Handler(){
+		public void handleMessage(android.os.Message msg) {
+			if (msg.what == 1) {
+				DownloadAppinfo downloadAppinfo = (DownloadAppinfo) msg.obj;
+				downloadAppinfos.remove(downloadAppinfo);
+				notifyDataSetChanged();
+//				Log.i("TAG", mDisplayedHolders.get(msg.arg1).toString());
+//				UIUtil.removeListItem(mDisplayedHolders.get(msg.arg1).getParentView());
+			}
+		};
+	};
+
+	public void deleteFile(DownloadAppinfo downloadAppinfo) {
+		if (downloadAppinfo != null) {
+			if (downloadAppinfo.getIsZip()) {
+				File file1 = new File(downloadAppinfo.getZipPath());
+				if (file1.exists()) {
+					file1.delete();
+				}
+				File file2 = new File(downloadAppinfo.getUnzipPath());
+				if (file2.exists()) {
+					file2.delete();
+				}
+			} else {
+				File file = new File(downloadAppinfo.getApkPath());
+				if (file.exists()) {
+					file.delete();
+				}
+			}
+			DownloadManager.DBManager.getDownloadAppinfoDao().delete(downloadAppinfo);
 		}
 	}
 
@@ -185,6 +184,7 @@ public class DownloadedAdapter extends BaseAdapter implements DownloadObserver{
 		private Context context;
 		private View rootView;
 
+		private RelativeLayout parent;
 		private CheckBox checkBox;
 		private ImageView appIcon;
 		private TextView appName;
@@ -208,10 +208,15 @@ public class DownloadedAdapter extends BaseAdapter implements DownloadObserver{
 		public DownloadAppinfo getData() {
 			return info;
 		}
+		
+		public View getParentView(){
+			return parent;
+		}
 
 		private View initView() {
 			LayoutInflater inflater = LayoutInflater.from(context);
 			View view = inflater.inflate(R.layout.downloaded_item_layout, null);
+			parent = (RelativeLayout) view.findViewById(R.id.parent);
 			checkBox = (CheckBox) view.findViewById(R.id.checkBox);
 			appIcon = (ImageView) view.findViewById(R.id.appIcon);
 			appName = (TextView) view.findViewById(R.id.appName);
@@ -268,16 +273,18 @@ public class DownloadedAdapter extends BaseAdapter implements DownloadObserver{
 					}
 				}
 			});
-			
+
 			delete.setOnClickListener(new OnClickListener() {
-				
+
 				@Override
 				public void onClick(View v) {
 					// TODO Auto-generated method stub
+					DownloadManager.getInstance().cancel(info);
+					DownloadManager.DBManager.getDownloadAppinfoDao().deleteByKey(info.getId());
 					mDisplayedHolders.remove(this);
 					downloadAppinfos.remove(info);
-					DownloadManager.DBManager.getDownloadAppinfoDao().deleteByKey(info.getId());
 					notifyDataSetChanged();
+					UIUtil.removeListItem(rootView);
 				}
 			});
 
@@ -309,7 +316,7 @@ public class DownloadedAdapter extends BaseAdapter implements DownloadObserver{
 				UIUtil.setViewSizeMargin(openRel, 0, 0, 20 * MetricsTool.Rx, 0);
 				UIUtil.setViewSizeMargin(delete, 0, 0, 20 * MetricsTool.Rx, 0);
 				UIUtil.setViewSizeMargin(appSize, 30 * MetricsTool.Rx, 0, 0, 0);
-				UIUtil.setViewSizeMargin(state,0, 10 * MetricsTool.Ry, 0, 0);
+				UIUtil.setViewSizeMargin(state, 0, 10 * MetricsTool.Ry, 0, 0);
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
@@ -330,18 +337,18 @@ public class DownloadedAdapter extends BaseAdapter implements DownloadObserver{
 			appDes.setText(info.getDes());
 			appScore.setRating(Float.parseFloat(info.getScore()));
 			appSize.setText(FileUtil.getSize(Long.parseLong(info.getAppSize())));
-			
+
 			setState();
 		}
-		
-		private void setState(){
+
+		private void setState() {
 			switch (info.getDownloadState()) {
 			case DownloadManager.STATE_DOWNLOADED:
 				open.setText("");
 				open.setBackgroundResource(R.drawable.runing_selector);
 				if (info.getIsZip()) {
 					state.setText("解压");
-				}else {
+				} else {
 					state.setText("安装");
 				}
 				break;
@@ -367,13 +374,13 @@ public class DownloadedAdapter extends BaseAdapter implements DownloadObserver{
 				break;
 			}
 		}
-		
-		public void setUnZipProgress(int progress){
+
+		public void setUnZipProgress(int progress) {
 			open.setText(progress + "%");
 		}
 	}
-	
-	private void refresh(DownloadAppinfo info,final int progress){
+
+	private void refresh(DownloadAppinfo info, final int progress) {
 		List<Holder> displayedHolders = getDisplayedHolders();
 		for (int i = 0; i < displayedHolders.size(); i++) {
 			final Holder holder = displayedHolders.get(i);
@@ -401,7 +408,7 @@ public class DownloadedAdapter extends BaseAdapter implements DownloadObserver{
 	@Override
 	public void onDownloadProgressed(DownloadAppinfo info) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override

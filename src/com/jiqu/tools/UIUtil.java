@@ -43,6 +43,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewGroup.LayoutParams;
 import android.view.ViewGroup.MarginLayoutParams;
+import android.view.animation.Animation;
+import android.view.animation.TranslateAnimation;
+import android.view.animation.Animation.AnimationListener;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -354,5 +357,24 @@ public class UIUtil {
 
 	private static boolean isGooglePhotosUri(Uri uri) {
 		return "com.google.android.apps.photos.content".equals(uri.getAuthority());
+	}
+	
+	public static void removeListItem(final View view) {
+		final Animation animation = new TranslateAnimation(0, -MetricsTool.width, 0, 0);
+		animation.setDuration(500);
+		animation.setFillEnabled(true);
+		animation.setFillBefore(false);
+		animation.setFillAfter(false);
+		animation.setAnimationListener(new AnimationListener() {
+			public void onAnimationStart(Animation animation) {
+			}
+
+			public void onAnimationRepeat(Animation animation) {
+			}
+
+			public void onAnimationEnd(Animation animation) {
+			}
+		});
+		view.startAnimation(animation);
 	}
 }

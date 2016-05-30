@@ -31,14 +31,12 @@ public class NetChangeDialog extends Dialog {
 	public NetChangeDialog(Context context,int theme){
 		super(context, theme);
 		this.context = context;
-//		initView(context);
 	}
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
 		super.onCreate(savedInstanceState);
-//		initView(context);
 	}
 
 	private void initView(Context context){
@@ -74,6 +72,18 @@ public class NetChangeDialog extends Dialog {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+	}
+	
+	public void setContent(String content){
+		tip.setText(content);
+	}
+	
+	public void setNegativeText(String negativeText){
+		cancle.setText(negativeText);
+	}
+	
+	public void setPositiveText(String positiveText){
+		confirm.setText(positiveText);
 	}
 	
 	public void setPositiveListener(android.view.View.OnClickListener onClickListener){

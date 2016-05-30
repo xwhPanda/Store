@@ -19,6 +19,7 @@ import com.jiqu.activity.ShowAccountInformatiomActivity;
 import com.jiqu.application.StoreApplication;
 import com.jiqu.database.Account;
 import com.jiqu.download.DownloadManager;
+import com.jiqu.download.Upgrade;
 import com.jiqu.fragment.EvaluationFragment;
 import com.jiqu.fragment.GameFragment;
 import com.jiqu.fragment.GameNewFragment;
@@ -28,6 +29,7 @@ import com.jiqu.fragment.RecommendFragment;
 import com.jiqu.fragment.ToolFragment;
 import com.jiqu.interfaces.LoginOutObserver;
 import com.jiqu.object.UpgradeVersionInfo;
+import com.jiqu.object.UpgradeVersionInfo.VersionInfo;
 import com.jiqu.tools.Constants;
 import com.jiqu.tools.MetricsTool;
 import com.jiqu.tools.NetReceiver;
@@ -106,6 +108,8 @@ public class MainActivity extends FragmentActivity implements OnClickListener,On
 	private RequestTool requestTool;
 	private HashMap<String, Object> map = new HashMap<String, Object>();
 	private NetChangeDialog netChangeDialog;
+	private NetChangeDialog upgradeDialog;
+	private VersionInfo versionInfo;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -120,6 +124,7 @@ public class MainActivity extends FragmentActivity implements OnClickListener,On
 		StoreApplication.setLoginOutObserver(this);
 		
 		netChangeDialog = new NetChangeDialog(this);
+		upgradeDialog = new NetChangeDialog(this);
 		
 		dialog = new CustomDialog(this)
 				.setNegativeButton(new DialogInterface.OnClickListener() {
@@ -168,6 +173,11 @@ public class MainActivity extends FragmentActivity implements OnClickListener,On
 				UpgradeVersionInfo upgradeVersionInfo = JSON.parseObject(arg0, UpgradeVersionInfo.class);
 				if (upgradeVersionInfo != null) {
 					if (upgradeVersionInfo.getStatus() == 1) {
+						versionInfo = upgradeVersionInfo.getData();
+						upgradeDialog.setContent("发现新版本 ： " + versionInfo.getVersion_name());
+						upgradeDialog.setNegativeText("下次再说");
+						upgradeDialog.setPositiveText("立即更新");
+						upgradeDialog.show();
 					}else if (upgradeVersionInfo.getStatus() == 0) {
 						Log.i("UpgradeVersion", "latest version !");
 					}
@@ -289,6 +299,26 @@ public class MainActivity extends FragmentActivity implements OnClickListener,On
 				// TODO Auto-generated method stub
 				DownloadManager.getInstance().startAll();
 				netChangeDialog.dismiss();
+			}
+		});
+		
+		upgradeDialog.setNegativeListener(new OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				// TODO Auto-generated method stub
+				upgradeDialog.dismiss();
+			}
+		});
+		
+		upgradeDialog.setPositiveListener(new OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				// TODO Auto-generated method stub
+				new Upgrade(versionInfo.getDown_url(), StoreApplication.UPGRADE_DOWNLOAD_PATH, StoreApplication.PACKAGE_NAME + ".apk")
+				.startDownload();
+				upgradeDialog.dismiss();
 			}
 		});
 	}

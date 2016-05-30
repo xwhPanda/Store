@@ -265,7 +265,6 @@ public class DownloadManager implements ChangeObserver{
 	/** 取消下载，逻辑和暂停类似，只是需要删除已下载的文件 */
 	public synchronized void cancel(DownloadAppinfo appInfo) {
 		stopDownload(appInfo);
-		// DownloadInfo info = mDownloadMap.get(appInfo.getId());// 找出下载信息
 		DownloadAppinfo info = DBManager.getDownloadAppinfoDao().queryBuilder().where(Properties.Id.eq(appInfo.getId())).unique();
 		if (info != null) {// 修改下载状态并删除文件
 			info.setDownloadState(STATE_NONE);
@@ -376,7 +375,7 @@ public class DownloadManager implements ChangeObserver{
 	}
 
 	/** 如果该下载任务还处于线程池中，且没有执行，先从线程池中移除 */
-	private void stopDownload(DownloadAppinfo appInfo) {
+	public void stopDownload(DownloadAppinfo appInfo) {
 		Downloader downloader = map.remove(appInfo.getId());
 		if (downloader != null) {
 			downloader.setPause();

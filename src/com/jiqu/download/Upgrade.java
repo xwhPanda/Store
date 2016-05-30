@@ -58,6 +58,7 @@ public class Upgrade {
 					publishProgress(new Integer((int) (complete  * 100 / size)));
 				}
 				if (size == complete) {
+					DownloadManager.getInstance().pauseExit();
 					Intent installIntent = new Intent(Intent.ACTION_VIEW);
 					installIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 					String path = savePath;

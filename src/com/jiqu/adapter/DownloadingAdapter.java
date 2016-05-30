@@ -105,6 +105,10 @@ public class DownloadingAdapter extends BaseAdapter implements DownloadObserver 
 	public void stopObserver() {
 		DownloadManager.getInstance().unRegisterObserver(this);
 	}
+	
+	public List<DownloadAppinfo> getList(){
+		return downloadAppinfos;
+	}
 
 	@Override
 	public View getView(int position, View convertView, ViewGroup parent) {
@@ -221,10 +225,12 @@ public class DownloadingAdapter extends BaseAdapter implements DownloadObserver 
 				@Override
 				public void onClick(View v) {
 					// TODO Auto-generated method stub
+					DownloadManager.getInstance().pause(info);
+					DownloadManager.DBManager.getDownloadAppinfoDao().delete(info);
 					mDisplayedHolders.remove(this);
-					downloadAppinfos.remove(position);
-					DownloadManager.DBManager.getDownloadAppinfoDao().deleteByKey(info.getId());
+					downloadAppinfos.remove(info);
 					notifyDataSetChanged();
+					UIUtil.removeListItem(rootView);
 				}
 			});
 
@@ -331,7 +337,10 @@ public class DownloadingAdapter extends BaseAdapter implements DownloadObserver 
 				break;
 			case DownloadManager.STATE_DOWNLOADED:
 				synchronized (handler) {
-					handler.sendEmptyMessage(1);
+					Message msg = handler.obtainMessage();
+					msg.obj = info;
+					msg.what = 1;
+					handler.sendMessage(msg);
 				}
 				pause.setBackgroundResource(R.drawable.runing_selector);
 				break;

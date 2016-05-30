@@ -20,10 +20,10 @@ public class UpgradeVersionInfo implements Serializable{
 		this.data = data;
 	}
 
-	class VersionInfo implements Serializable{
+	public class VersionInfo implements Serializable{
 		private static final long serialVersionUID = 1L;
 		private String channel_key;
-		private String down_urlString;
+		private String down_url;
 		private int id;
 		private String package_name;
 		private String upgrade_content;
@@ -35,11 +35,11 @@ public class UpgradeVersionInfo implements Serializable{
 		public synchronized void setChannel_key(String channel_key) {
 			this.channel_key = channel_key;
 		}
-		public synchronized String getDown_urlString() {
-			return down_urlString;
+		public synchronized String getDown_url() {
+			return down_url;
 		}
-		public synchronized void setDown_urlString(String down_urlString) {
-			this.down_urlString = down_urlString;
+		public synchronized void setDown_url(String down_url) {
+			this.down_url = down_url;
 		}
 		public synchronized int getId() {
 			return id;

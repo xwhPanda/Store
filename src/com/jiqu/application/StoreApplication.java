@@ -22,6 +22,7 @@ import com.jiqu.download.FileUtil;
 import com.jiqu.interfaces.LoginOutObserver;
 import com.umeng.socialize.PlatformConfig;
 import com.vr.store.R;
+import com.jiqu.tools.ChannelUtil;
 import com.jiqu.tools.Constants;
 import com.jiqu.tools.LruBitmapCache;
 import com.jiqu.tools.MetricsTool;
@@ -59,6 +60,7 @@ public class StoreApplication extends Application {
 	public static String CHANNEL;
 	public static String APK_DOWNLOAD_PATH = "";
 	public static String ZIP_DOWNLOAD_PATH = "";
+	public static String UPGRADE_DOWNLOAD_PATH = "";
 	public static List<LoginOutObserver> loginOutObservers;
 	
 	@Override
@@ -85,6 +87,8 @@ public class StoreApplication extends Application {
 		
 		APK_DOWNLOAD_PATH = FileUtil.getApkDownloadDir(context);
 		ZIP_DOWNLOAD_PATH = FileUtil.getZipDownloadDir(context);
+		UPGRADE_DOWNLOAD_PATH = FileUtil.getUpgradeDownloadDir(context);
+		
 	}
 	
 	public static void setLoginOutObserver(LoginOutObserver observer){
@@ -104,7 +108,8 @@ public class StoreApplication extends Application {
 			Constants.DEVICE_ID = Secure.getString(getContentResolver(), Secure.ANDROID_ID);
 			Constants.SERIAL_NUMBER = android.os.Build.SERIAL;
 			DEVICE_ID = ((TelephonyManager)context.getSystemService(TELEPHONY_SERVICE)).getDeviceId();
-			CHANNEL = getMetaDataValue("channel");
+//			CHANNEL = getMetaDataValue("channel");
+			CHANNEL = ChannelUtil.getChannel(this);
 		} catch (NameNotFoundException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -121,6 +126,7 @@ public class StoreApplication extends Application {
 		PlatformConfig.setQQZone("1105350501", "Vf0AIR29nXTx1XV5"); 
 	}
 	
+	/** 获取AndroidManifest.xml中的mete节点 **/
 	private String getMetaDataValue(String name){
 		Object value = null;
 		PackageManager packageManager = context.getPackageManager();
@@ -223,7 +229,7 @@ public class StoreApplication extends Application {
         String mac_s= "";
        try {
             byte[] mac;
-            NetworkInterface ne=NetworkInterface.getByInetAddress(InetAddress.getByName(getLocalIpAddress()));
+            NetworkInterface ne = NetworkInterface.getByInetAddress(InetAddress.getByName(getLocalIpAddress()));
             mac = ne.getHardwareAddress();
             mac_s = byte2hex(mac);
        } catch (Exception e) {
