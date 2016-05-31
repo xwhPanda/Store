@@ -27,6 +27,7 @@ import com.jiqu.view.RatingBarView;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.drawable.AnimationDrawable;
 import android.os.Handler;
 import android.text.Html;
 import android.util.Log;
@@ -396,9 +397,6 @@ public class GameAdapter extends BaseAdapter implements DownloadObserver{
 		}
 		
 		private void setData(DownloadAppinfo data){
-			if (data.getIsZip()) {
-				Log.i("TAG", data.getAppName());
-			}
 			if (mDownloadManager == null) {
 				mDownloadManager = DownloadManager.getInstance();
 			}
@@ -477,7 +475,7 @@ public class GameAdapter extends BaseAdapter implements DownloadObserver{
 		
 		public void refreshState(int state){
 			mState = state;
-//			downloadBtn.clearAnimation();
+			downloadBtn.clearAnimation();
 			switch (mState) {
 			case DownloadManager.STATE_NONE:
 				downloadBtn.setText("");
@@ -496,7 +494,9 @@ public class GameAdapter extends BaseAdapter implements DownloadObserver{
 				break;
 			case DownloadManager.STATE_WAITING:
 				downloadBtn.setText("");
-				downloadBtn.setBackgroundResource(R.drawable.dengdai);
+				downloadBtn.setBackgroundResource(R.drawable.wait_anim);
+				AnimationDrawable animationDrawable = (AnimationDrawable) downloadBtn.getBackground();
+				animationDrawable.start();
 //				Animation animation = AnimationUtils.loadAnimation(context, R.anim.wating_rorating);
 //				downloadBtn.setAnimation(animation);
 //				downloadBtn.startAnimation(animation);

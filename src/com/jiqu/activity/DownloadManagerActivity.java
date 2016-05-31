@@ -6,6 +6,7 @@ import java.util.List;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -63,14 +64,10 @@ public class DownloadManagerActivity extends BaseActivity implements OnClickList
 		downloadingList.setAdapter(downloadingAdapter);
 		downloadedAdapter = new DownloadedAdapter(this, downloadedApps);
 		downloadedList.setAdapter(downloadedAdapter);
-	}
-	
-	@Override
-	protected void onStart() {
-		// TODO Auto-generated method stub
-		super.onStart();
+		
 		new DataTask().execute("");
 	}
+	
 	
 	@Override
 	protected void onDestroy() {
@@ -78,6 +75,7 @@ public class DownloadManagerActivity extends BaseActivity implements OnClickList
 		super.onDestroy();
 		if (downloadingAdapter != null) {
 			downloadingAdapter.stopObserver();
+			downloadingAdapter.deleteFromDb();
 		}
 		if (downloadedAdapter != null) {
 			downloadedAdapter.stopObserver();
@@ -233,7 +231,8 @@ public class DownloadManagerActivity extends BaseActivity implements OnClickList
 		public void handleMessage(android.os.Message msg) {
 			if (msg.what == 1) {//有应用下载完成
 				DownloadAppinfo info = (DownloadAppinfo) msg.obj;
-				downloadingAdapter.getList().remove(info);
+				downloadingApps.remove(info);
+				downloadedApps.remove(info);
 				downloadedAdapter.getList().add(info);
 				downloadedAdapter.notifyDataSetChanged();
 			}else if (msg.what == 2) {
@@ -354,4 +353,6 @@ public class DownloadManagerActivity extends BaseActivity implements OnClickList
 		}
 		return super.onKeyDown(keyCode, event);
 	}
+	
+	
 }

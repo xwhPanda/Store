@@ -28,15 +28,21 @@ public class SplashActivity extends BaseActivity {
 	private SharedPreferences preferences;
 	private Bitmap bitmap;
 	private ImageView img;
+	private ImageView bgRel;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
 		super.onCreate(savedInstanceState);
 		requestTool = RequestTool.getInstance();
+		
 		img = (ImageView) findViewById(R.id.img);
-		bitmap = UIUtil.readBitmap(this, R.drawable.welcome);
-		img.setImageBitmap(bitmap);
+		bgRel = (ImageView) findViewById(R.id.bgRel);
+		
+		bitmap = UIUtil.readBitmap(this, R.drawable.splash_bg);
+		bgRel.setImageBitmap(bitmap);
+		
+		img.setBackgroundResource(R.drawable.welcome);
 		preferences = getSharedPreferences(Constants.STATISTICS_SHARE_PREFERENCE_NAME, MODE_PRIVATE);
 		initFirst();
 		active();

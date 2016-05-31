@@ -3,6 +3,7 @@ package com.jiqu.activity;
 import java.util.ArrayList;
 import java.util.List;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -14,6 +15,7 @@ import android.widget.TextView;
 import com.jiqu.adapter.ShareAddFriendAdapter;
 import com.jiqu.object.FriendItem;
 import com.jiqu.store.BaseActivity;
+import com.umeng.socialize.Config;
 import com.umeng.socialize.ShareAction;
 import com.umeng.socialize.UMShareAPI;
 import com.umeng.socialize.UMShareListener;
@@ -127,6 +129,7 @@ public class ShareActivity extends BaseActivity {
 						// TODO Auto-generated method stub
 					}
 				})
+				.withTitle("sss")
 				.withText("ce shi")
 				.share();
 			}

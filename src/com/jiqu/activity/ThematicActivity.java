@@ -151,7 +151,7 @@ public class ThematicActivity extends BaseActivity implements Listener<JSONObjec
 			img.setScaleType(ScaleType.FIT_XY);
 			LayoutParams params = new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT);
 			img.setLayoutParams(params);
-			ImageListener listener = ImageLoader.getImageListener(img, R.drawable.ic_launcher, R.drawable.ic_launcher);
+			ImageListener listener = ImageLoader.getImageListener(img, R.drawable.recommend_viewpager_default, R.drawable.recommend_viewpager_default);
 			StoreApplication.getInstance().getImageLoader().get(thematicItem.getPic(), listener);
 			topImgs[i] = img;
 		}

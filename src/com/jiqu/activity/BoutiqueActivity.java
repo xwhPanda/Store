@@ -182,7 +182,7 @@ public class BoutiqueActivity extends BaseActivity implements OnPageChangeListen
 		totalGameTx = (TextView) headView.findViewById(R.id.totalGameTx);
 		addedTime = (TextView) headView.findViewById(R.id.addedTiem);
 		
-		pagerView.setClass(BoutiqueActivity.class);
+		pagerView.setClass(DetailActivity.class);
 		pagerView.setDefaultImgId(R.drawable.recommend_viewpager_default);
 	}
 	

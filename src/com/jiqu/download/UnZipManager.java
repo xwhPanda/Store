@@ -101,9 +101,11 @@ public class UnZipManager {
 								 sleep(1000);
 						        	percent = monitor.getPercentDone();
 						        	Log.i("TAG", "解压进度 ： " + percent);
-						        	Message msg = handler.obtainMessage(2);
-						        	msg.arg1 = percent;
-						        	handler.sendMessage(msg);
+						        	if (handler != null) {
+						        		Message msg = handler.obtainMessage(2);
+						        		msg.arg1 = percent;
+						        		handler.sendMessage(msg);
+									}
 						        	if (percent >= 100) {
 						        		unziping = false;
 						        		map.remove(downloadAppinfo.getPackageName());
@@ -112,7 +114,9 @@ public class UnZipManager {
 						        		DownloadManager.getInstance().install(downloadAppinfo);
 						        		downloadAppinfo.setDownloadState(DownloadManager.STATE_UNZIPED);
 						        		DownloadManager.DBManager.insertOrReplace(downloadAppinfo);
-						        		handler.sendEmptyMessage(1);
+						        		if (handler != null) {
+						        			handler.sendEmptyMessage(1);
+										}
 						        		break;
 						        	}
 								}
@@ -130,7 +134,9 @@ public class UnZipManager {
 				unziping = false;
 				downloadAppinfo.setDownloadState(DownloadManager.STATE_UNZIP_FAILED);
         		DownloadManager.DBManager.insertOrReplace(downloadAppinfo);
-        		handler.sendEmptyMessage(1);
+        		if (handler != null) {
+        			handler.sendEmptyMessage(1);
+				}
 				e.printStackTrace();
 			}
 		}

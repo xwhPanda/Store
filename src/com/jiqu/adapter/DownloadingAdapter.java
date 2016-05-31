@@ -33,6 +33,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.animation.Animation;
+import android.view.animation.Animation.AnimationListener;
 import android.view.animation.AnimationUtils;
 import android.view.ViewGroup;
 import android.widget.AbsListView;
@@ -54,6 +55,8 @@ public class DownloadingAdapter extends BaseAdapter implements DownloadObserver 
 	private Handler handler;
 
 	private Map<String, Boolean> checkMap = new ConcurrentHashMap<String, Boolean>();
+	
+	private List<DownloadAppinfo> deleteAppinfos = new ArrayList<DownloadAppinfo>();
 
 	public DownloadingAdapter(Context context, List<DownloadAppinfo> downloadAppinfos, Handler handler) {
 		// TODO Auto-generated constructor stub
@@ -128,6 +131,12 @@ public class DownloadingAdapter extends BaseAdapter implements DownloadObserver 
 
 	public void clearHolders() {
 		mDisplayedHolders.clear();
+	}
+	
+	public void deleteFromDb(){
+		for (DownloadAppinfo info : deleteAppinfos) {
+			DownloadManager.DBManager.getDownloadAppinfoDao().delete(info);
+		}
 	}
 
 	private class Holder {
@@ -225,12 +234,32 @@ public class DownloadingAdapter extends BaseAdapter implements DownloadObserver 
 				@Override
 				public void onClick(View v) {
 					// TODO Auto-generated method stub
-					DownloadManager.getInstance().pause(info);
-					DownloadManager.DBManager.getDownloadAppinfoDao().delete(info);
+					DownloadManager.getInstance().cancel(info);
+					deleteAppinfos.add(info);
+//					DownloadManager.DBManager.getDownloadAppinfoDao().delete(info);
 					mDisplayedHolders.remove(this);
 					downloadAppinfos.remove(info);
 					notifyDataSetChanged();
-					UIUtil.removeListItem(rootView);
+					UIUtil.removeListItem(rootView,new AnimationListener() {
+						
+						@Override
+						public void onAnimationStart(Animation animation) {
+							// TODO Auto-generated method stub
+							
+						}
+						
+						@Override
+						public void onAnimationRepeat(Animation animation) {
+							// TODO Auto-generated method stub
+							
+						}
+						
+						@Override
+						public void onAnimationEnd(Animation animation) {
+							// TODO Auto-generated method stub
+							
+						}
+					});
 				}
 			});
 

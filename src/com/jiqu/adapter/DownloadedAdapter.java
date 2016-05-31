@@ -153,7 +153,6 @@ public class DownloadedAdapter extends BaseAdapter implements DownloadObserver {
 				DownloadAppinfo downloadAppinfo = (DownloadAppinfo) msg.obj;
 				downloadAppinfos.remove(downloadAppinfo);
 				notifyDataSetChanged();
-//				Log.i("TAG", mDisplayedHolders.get(msg.arg1).toString());
 //				UIUtil.removeListItem(mDisplayedHolders.get(msg.arg1).getParentView());
 			}
 		};
@@ -279,12 +278,30 @@ public class DownloadedAdapter extends BaseAdapter implements DownloadObserver {
 				@Override
 				public void onClick(View v) {
 					// TODO Auto-generated method stub
-					DownloadManager.getInstance().cancel(info);
-					DownloadManager.DBManager.getDownloadAppinfoDao().deleteByKey(info.getId());
+//					DownloadManager.getInstance().cancel(info);
+//					DownloadManager.DBManager.getDownloadAppinfoDao().deleteByKey(info.getId());
 					mDisplayedHolders.remove(this);
-					downloadAppinfos.remove(info);
-					notifyDataSetChanged();
-					UIUtil.removeListItem(rootView);
+					UIUtil.removeListItem(rootView,new AnimationListener() {
+						
+						@Override
+						public void onAnimationStart(Animation animation) {
+							// TODO Auto-generated method stub
+							
+						}
+						
+						@Override
+						public void onAnimationRepeat(Animation animation) {
+							// TODO Auto-generated method stub
+							
+						}
+						
+						@Override
+						public void onAnimationEnd(Animation animation) {
+							// TODO Auto-generated method stub
+							downloadAppinfos.remove(info);
+							notifyDataSetChanged();
+						}
+					});
 				}
 			});
 
@@ -416,4 +433,5 @@ public class DownloadedAdapter extends BaseAdapter implements DownloadObserver {
 		// TODO Auto-generated method stub
 		refresh(info, progress);
 	}
+	
 }
