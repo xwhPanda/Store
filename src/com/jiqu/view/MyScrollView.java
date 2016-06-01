@@ -104,6 +104,7 @@ public class MyScrollView extends ScrollView {
 				}
 				pullDownY = 0;
 				requestLayout();
+				return true;
 			}else if (canPullUp && y < 0) {
 				if (-pullUpY >= hegihtDist / 2) {
 					pullUpY = -hegihtDist;
@@ -114,6 +115,7 @@ public class MyScrollView extends ScrollView {
 					pullUpY = 0;
 				}
 				requestLayout();
+				return true;
 			}
 			y = 0;
 			break;

@@ -90,6 +90,7 @@ public class InformationNewFragment extends BaseFragment implements OnClickListe
 		contentScroll = (MyScrollView) view.findViewById(R.id.contentScroll);
 		pagerView = (ViewPagerLinView) view.findViewById(R.id.pagerView);
 		pagerView.setDefaultImgId(R.drawable.recommend_viewpager_default);
+		pagerView.setClass(HeadlineActivity.class);
 		explosiveHeadlinesLin = (LinearLayout) view.findViewById(R.id.explosiveHeadlinesLin);
 		allHeadlinesLin = (LinearLayout) view.findViewById(R.id.allHeadlinesLin);
 		headlineLin = (LinearLayout) view.findViewById(R.id.headlineLin);
@@ -304,12 +305,14 @@ public class InformationNewFragment extends BaseFragment implements OnClickListe
 		if (parent.getId() == R.id.hotHeadlineListView) {
 			if (position < hotInformations.size()) {
 				startActivity(new Intent(getActivity(), HeadlineActivity.class)
+				.putExtra("info", hotInformations.get(position))
 				.putExtra("isWeb", true)
 				.putExtra("url", hotInformations.get(position).getUrl()));
 			}
 		}else if (parent.getId() == R.id.allHeadlineListView) {
 			if (position < allInformations.size()) {
 				startActivity(new Intent(getActivity(), HeadlineActivity.class)
+				.putExtra("info", hotInformations.get(position))
 				.putExtra("isWeb", true)
 				.putExtra("url", allInformations.get(position).getUrl()));
 			}

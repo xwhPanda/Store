@@ -194,8 +194,6 @@ public class ThematicActivity extends BaseActivity implements Listener<JSONObjec
 		titleView.tip.setText(getResources().getString(R.string.thematic));
 		titleView.setActivity(this);
 		titleView.back.setBackgroundResource(R.drawable.fanhui);
-		titleView.editBtn.setBackgroundResource(R.drawable.fenxiang_white);
-		titleView.editBtn.setVisibility(View.VISIBLE);
 		titleView.parentView.setBackgroundColor(getResources().getColor(R.color.bottomBgColor));
 		
 		adapter = new ThematicAdapter(this, thematicInfos);

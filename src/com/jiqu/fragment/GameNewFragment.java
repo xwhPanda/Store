@@ -31,19 +31,22 @@ import com.jiqu.view.PullUpListView.MyPullUpListViewCallBack;
 import com.jiqu.view.ViewPagerLinView;
 import com.vr.store.R;
 
+import android.content.Intent;
 import android.os.Handler;
 import android.support.v4.view.ViewPager;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-public class GameNewFragment extends BaseFragment implements MyPullUpListViewCallBack,OnClickListener{
+public class GameNewFragment extends BaseFragment implements MyPullUpListViewCallBack,OnClickListener,OnItemClickListener{
 	private View view;
 	private final String PAGER_REQUEST = "pagerRequest";
 	private final String LATSEST_REQUEST = "latestGameRequest";
@@ -115,8 +118,11 @@ public class GameNewFragment extends BaseFragment implements MyPullUpListViewCal
 		
 		latestListView.initBottomView();
 		latestListView.setMyPullUpListViewCallBack(this);
+		latestListView.setOnItemClickListener(this);
 		hotListView.initBottomView();
 		hotListView.setMyPullUpListViewCallBack(this);
+		hotListView.setOnItemClickListener(this);
+		
 		
 		explosiveHeadlinesLin.setOnClickListener(this);
 		allHeadlinesLin.setOnClickListener(this);
@@ -128,8 +134,10 @@ public class GameNewFragment extends BaseFragment implements MyPullUpListViewCal
 		latestListView.setAdapter(lastGameAdapter);
 		hotListView.setAdapter(hotGameAdapter);
 		
-		initViewSize();
+		lastGameAdapter.startObserver();
+		hotGameAdapter.startObserver();
 		
+		initViewSize();
 		return view;
 	}
 	
@@ -347,5 +355,22 @@ public class GameNewFragment extends BaseFragment implements MyPullUpListViewCal
 		super.onDestroyView();
 		StoreApplication.getInstance().getRequestQueue().cancelAll(LATSEST_REQUEST);
 		StoreApplication.getInstance().getRequestQueue().cancelAll(HOT_REQUEST);
+		
+		lastGameAdapter.stopObserver();
+		hotGameAdapter.stopObserver();
+	}
+
+	@Override
+	public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+		// TODO Auto-generated method stub
+		if (parent == latestListView) {
+			startActivity(new Intent(activity, DetailActivity.class)
+			.putExtra("id", lastGameInfos.get(position).getId())
+			.putExtra("name", lastGameInfos.get(position).getApply_name()));
+		}else if (parent == hotListView) {
+			startActivity(new Intent(activity, DetailActivity.class)
+			.putExtra("id", hotGameInfos.get(position).getId())
+			.putExtra("name", hotGameInfos.get(position).getApply_name()));
+		}
 	}
 }

@@ -5,6 +5,7 @@ import java.util.List;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -20,6 +21,7 @@ import com.umeng.socialize.ShareAction;
 import com.umeng.socialize.UMShareAPI;
 import com.umeng.socialize.UMShareListener;
 import com.umeng.socialize.bean.SHARE_MEDIA;
+import com.umeng.socialize.media.UMImage;
 import com.vr.store.R;
 import com.jiqu.tools.UIUtil;
 import com.jiqu.view.FriendShareItem;
@@ -36,11 +38,32 @@ public class ShareActivity extends BaseActivity {
 	
 	private ShareAddFriendAdapter adapter;
 	private List<FriendItem> friendItems = new ArrayList<FriendItem>();
+	
+	private String url = "http://www.baidu.com";
+	private UMImage image;
+	private String content;
+	private String title;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
 		super.onCreate(savedInstanceState);
+		
+		image = new UMImage(this, BitmapFactory.decodeResource(getResources(), R.drawable.ic_launcher));
+		content = "极趣VR助手是国内领先的虚拟现实平台" +
+				"，拥有最新最全的VR游戏和最权威、全面的VR行业资讯" +
+				"，专业游戏评测,，致力于为用户提供最好的精品VR游戏。";
+		title = "极趣VR助手";
+		
+		Bundle bundle = getIntent().getBundleExtra("bundle");
+		if (bundle != null) {
+			content = bundle.getString("content");
+			url = bundle.getString("url");
+			title = bundle.getString("title");
+			if (bundle.containsKey("image")) {
+				image = new UMImage(this, bundle.getString("image"));
+			}
+		}
 		
 		initView();
 	}
@@ -80,9 +103,10 @@ public class ShareActivity extends BaseActivity {
 			@Override
 			public void onClick(View v) {
 				// TODO Auto-generated method stub
+				Config.OpenEditor = false;
+				com.umeng.socialize.utils.Log.LOG = false;
 				new ShareAction(ShareActivity.this)
 				.setPlatform(SHARE_MEDIA.SINA)
-				.withTitle("aaaa")
 				.setCallback(new UMShareListener() {
 					
 					@Override
@@ -100,7 +124,10 @@ public class ShareActivity extends BaseActivity {
 						// TODO Auto-generated method stub
 					}
 				})
-				.withText("ss")
+				.withTargetUrl(url)
+				.withTitle(title)
+				.withMedia(image)
+				.withText(content)
 				.share();
 			}
 		});
@@ -110,6 +137,8 @@ public class ShareActivity extends BaseActivity {
 			@Override
 			public void onClick(View v) {
 				// TODO Auto-generated method stub
+				UMImage image = new UMImage(ShareActivity.this
+						, BitmapFactory.decodeResource(getResources(), R.drawable.ic_launcher));
 				new ShareAction(ShareActivity.this)
 				.setPlatform(SHARE_MEDIA.QQ)
 				.setCallback(new UMShareListener() {
@@ -129,8 +158,10 @@ public class ShareActivity extends BaseActivity {
 						// TODO Auto-generated method stub
 					}
 				})
-				.withTitle("sss")
-				.withText("ce shi")
+				.withMedia(image)
+				.withTargetUrl(url)
+				.withTitle(title)
+				.withText(content)
 				.share();
 			}
 		});

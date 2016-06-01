@@ -71,18 +71,9 @@ public class SortActivity extends BaseActivity implements Listener<String> , Err
 		titleView.setActivity(this);
 		titleView.tip.setText(getResources().getString(R.string.sort));
 		titleView.back.setBackgroundResource(R.drawable.fanhui);
-		titleView.editBtn.setBackgroundResource(R.drawable.fenxiang_white);
-		titleView.editBtn.setVisibility(View.VISIBLE);
 		
 		sortGridView.setVerticalSpacing((int)(75 * MetricsTool.Rx));
 		
-		titleView.editBtn.setOnClickListener(new OnClickListener() {
-			
-			@Override
-			public void onClick(View v) {
-				
-			}
-		});
 		
 		adapter = new SortAdapter(this, sortItems);
 		sortGridView.setAdapter(adapter);

@@ -65,6 +65,10 @@ public class TitleView extends RelativeLayout implements OnClickListener{
 		this.activity = activity;
 	}
 	
+	public void setShareListener(OnClickListener listener){
+		editBtn.setOnClickListener(listener);
+	}
+	
 	public void setSize(){
 		UIUtil.setViewSize(back, 40 * MetricsTool.Rx, 40 * MetricsTool.Rx);
 		UIUtil.setViewSize(backLin, 70 * MetricsTool.Rx, 70 * MetricsTool.Rx);

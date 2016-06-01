@@ -1,9 +1,12 @@
 package com.jiqu.activity;
 
+import android.content.Intent;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.webkit.WebChromeClient;
 import android.webkit.WebSettings;
 import android.webkit.WebSettings.LayoutAlgorithm;
@@ -20,7 +23,9 @@ import com.android.volley.Response.ErrorListener;
 import com.android.volley.Response.Listener;
 import com.android.volley.VolleyError;
 import com.jiqu.object.InformationGallaryItem;
+import com.jiqu.object.InformationItemInfo;
 import com.jiqu.store.BaseActivity;
+import com.umeng.socialize.media.UMImage;
 import com.vr.store.R;
 import com.jiqu.tools.MetricsTool;
 import com.jiqu.tools.RequestTool;
@@ -46,6 +51,7 @@ public class HeadlineActivity extends BaseActivity {
 
 	private RequestTool requestTool;
 	private InformationGallaryItem item;
+	private InformationItemInfo info;
 	/** 是否是网页 **/
 	private boolean isWeb = false;
 	private String url = "";
@@ -56,6 +62,7 @@ public class HeadlineActivity extends BaseActivity {
 		super.onCreate(savedInstanceState);
 		requestTool = RequestTool.getInstance();
 		item = (InformationGallaryItem) getIntent().getSerializableExtra("data");
+		info = (InformationItemInfo) getIntent().getSerializableExtra("info");
 		isWeb = getIntent().getBooleanExtra("isWeb", false);
 		initView();
 
@@ -148,21 +155,31 @@ public class HeadlineActivity extends BaseActivity {
 		titleView.editBtn.setBackgroundResource(R.drawable.fenxiang);
 		titleView.editBtn.setVisibility(View.VISIBLE);
 
-		// for(int i = 0 ; i < 5 ; i++){
-		// EvaluationItemView itemView = new EvaluationItemView(this);
-		//
-		// ImageView view = new ImageView(this);
-		// view.setBackgroundResource(R.drawable.xian);
-		// LayoutParams lp = new LayoutParams(LayoutParams.MATCH_PARENT, (int)(2
-		// * Ry));
-		// lp.topMargin = (int) (25 * MetricsTool.Ry);
-		// view.setLayoutParams(lp);
-		//
-		// detailedEvaLin.addView(itemView);
-		// if (i < 4) {
-		// detailedEvaLin.addView(view);
-		// }
-		// }
+		titleView.setShareListener(new OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				// TODO Auto-generated method stub
+				if (info == null) {
+					return;
+				}
+				Bundle bundle = new Bundle();
+				if (info.getTitle() != null) {
+					bundle.putString("title", info.getTitle());
+				}
+				if (info.getComments() != null) {
+					bundle.putString("content", info.getComments());
+				}
+				if (url != null) {
+					bundle.putString("url", url);
+				}
+				if (info.getPic() != null && !TextUtils.isEmpty(info.getPic())) {
+					bundle.putString("image", info.getPic());
+				}
+				startActivity(new Intent(HeadlineActivity.this, ShareActivity.class)
+				.putExtra("bundle", bundle));
+			}
+		});
 
 		initViewSize();
 	}

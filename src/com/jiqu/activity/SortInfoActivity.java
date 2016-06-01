@@ -238,8 +238,6 @@ public class SortInfoActivity extends BaseActivity implements OnRefreshListener,
 		titleView.parentView.setBackgroundResource(R.drawable.zhuanti_bg);
 		titleView.back.setBackgroundResource(R.drawable.fanhui);
 		titleView.tip.setText(categoryTitle);
-		titleView.editBtn.setBackgroundResource(R.drawable.fenxiang_white);
-		titleView.editBtn.setVisibility(View.VISIBLE);
 		
 		
 		//根据分类的不同加载不同的头部

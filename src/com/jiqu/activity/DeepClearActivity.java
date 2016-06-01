@@ -212,7 +212,7 @@ public class DeepClearActivity extends BaseActivity implements OnClickListener {
 	/**
 	 * 开始清理缓存文件
 	 * 
-	 * @param v
+	 * @param
 	 */
 	public void start() {
 		db = SQLiteDatabase.openDatabase("/data/data/com.jiqu.store/files/clearpath.db", null, SQLiteDatabase.OPEN_READONLY);

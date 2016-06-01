@@ -3,6 +3,7 @@ package com.jiqu.view;
 import com.android.volley.toolbox.ImageLoader;
 import com.android.volley.toolbox.ImageLoader.ImageListener;
 import com.jiqu.activity.DetailActivity;
+import com.jiqu.activity.HeadlineActivity;
 import com.jiqu.adapter.ViewPagerAdapter;
 import com.jiqu.application.StoreApplication;
 import com.jiqu.object.GameInfo;
@@ -117,7 +118,11 @@ public class ViewPagerLinView extends RelativeLayout implements OnPageChangeList
 				public void onClick(View v) {
 					// TODO Auto-generated method stub
 					if (intentClass != null) {
-						context.startActivity(new Intent(context, intentClass).putExtra("id", item.getId()));
+						if (intentClass == HeadlineActivity.class) {
+							context.startActivity(new Intent(context, HeadlineActivity.class)
+							.putExtra("isWeb", true)
+							.putExtra("url", item.getUrl()));
+						}
 					}
 				}
 			});

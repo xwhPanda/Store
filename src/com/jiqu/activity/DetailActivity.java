@@ -2,14 +2,13 @@ package com.jiqu.activity;
 
 import java.util.List;
 
-import android.R.integer;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.support.v4.view.ViewPager;
 import android.support.v4.view.ViewPager.OnPageChangeListener;
-import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
@@ -219,6 +218,8 @@ public class DetailActivity extends BaseActivity implements Listener<String>, Er
 		comprehensiveBar.setResID(blueIDs);
 		comprehensiveBar.setStep(0.5f);
 
+		titleView.setShareListener(this);
+		
 		initViewSize();
 	}
 
@@ -479,6 +480,16 @@ public class DetailActivity extends BaseActivity implements Listener<String>, Er
 					}
 				}
 			}
+		}else if (v == titleView.editBtn) {
+			if (downloadAppinfo != null) {
+				Bundle bundle = new Bundle();
+				bundle.putString("title", downloadAppinfo.getAppName());
+				bundle.putString("content", downloadAppinfo.getDes());
+				bundle.putString("url", downloadAppinfo.getUrl());
+				bundle.putString("image", downloadAppinfo.getIconUrl());
+				startActivity(new Intent(DetailActivity.this, ShareActivity.class)
+				.putExtra("bundle", bundle));
+			}
 		}
 	}
 
@@ -575,6 +586,5 @@ public class DetailActivity extends BaseActivity implements Listener<String>, Er
 	@Override
 	public void onUnZipProgressed(DownloadAppinfo info, int progress) {
 		// TODO Auto-generated method stub
-		
 	}
 }

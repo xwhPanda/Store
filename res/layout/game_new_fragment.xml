@@ -99,6 +99,7 @@
 	                android:fastScrollEnabled="false"
 					android:smoothScrollbar="true"
                     android:dividerHeight="1dp"
+                    android:listSelector="@color/transparent"
                     android:scrollbars="none" />
 
                 <RelativeLayout
@@ -120,6 +121,7 @@
 	                    android:divider="@drawable/divider"
 	                    android:fastScrollEnabled="false"
 						android:smoothScrollbar="true"
+                    	android:listSelector="@color/transparent"
 	                    android:dividerHeight="1dp"
 	                    android:scrollbars="none"
 	                    android:visibility="gone" />

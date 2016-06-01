@@ -158,8 +158,6 @@ public class BoutiqueActivity extends BaseActivity implements OnPageChangeListen
 		titleView.setActivity(this);
 		titleView.back.setBackgroundResource(R.drawable.fanhui);
 		titleView.tip.setText(getResources().getString(R.string.boutiqueTitle));
-		titleView.editBtn.setBackgroundResource(R.drawable.fenxiang_white);
-		titleView.editBtn.setVisibility(View.VISIBLE);
 		titleView.parentView.setBackgroundColor(getResources().getColor(R.color.bottomBgColor));
 		
 		initViewSize();

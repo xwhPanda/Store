@@ -185,8 +185,6 @@ public class RankingActivity extends BaseActivity implements OnClickListener,OnR
 		titleView.setActivity(this);
 		titleView.tip.setText(getResources().getString(R.string.rank));
 		titleView.back.setBackgroundResource(R.drawable.fanhui);
-		titleView.editBtn.setBackgroundResource(R.drawable.fenxiang_white);
-		titleView.editBtn.setVisibility(View.VISIBLE);
 		titleView.parentView.setBackgroundColor(getResources().getColor(R.color.bottomBgColor));
 		
 		favorableComment.setOnClickListener(this);
