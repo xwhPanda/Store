@@ -108,12 +108,6 @@ public class RequestTool {
 
 	public void initParam() {
 		paramMap.clear();
-		paramMap.put("android_id", "a9f7234301030848");
-		paramMap.put("imei", "000000000000000");
-		paramMap.put("versionCode", "127");
-		paramMap.put("versionName", "0.1.27");
-		paramMap.put("device_id", "000000000000000");
-		paramMap.put("mac", "08:00:27:d3:53:ef");
 	}
 
 	public void setParam(String key, String value) {

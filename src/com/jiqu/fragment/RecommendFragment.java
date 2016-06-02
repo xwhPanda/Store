@@ -6,6 +6,7 @@ import java.util.List;
 
 
 import com.alibaba.fastjson.JSON;
+import com.android.internal.telephony.cdma.sms.BearerData;
 import com.android.volley.Request.Method;
 import com.android.volley.Response.ErrorListener;
 import com.android.volley.Response.Listener;
@@ -57,8 +58,10 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.widget.AbsListView.OnScrollListener;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
+import android.widget.AbsListView;
 import android.widget.HorizontalScrollView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -175,6 +178,7 @@ public class RecommendFragment extends BaseFragment implements OnRefreshListener
 				.putExtra("name", resultList.get(position - 1).getApply_name()));
 			}
 		});
+		
 		initViewSize();
 		
 		initAdapter();

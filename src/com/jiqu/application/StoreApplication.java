@@ -61,6 +61,7 @@ public class StoreApplication extends Application {
 	public static String APK_DOWNLOAD_PATH = "";
 	public static String ZIP_DOWNLOAD_PATH = "";
 	public static String UPGRADE_DOWNLOAD_PATH = "";
+	public static String DATA_FILE_PATH ="";
 	public static List<LoginOutObserver> loginOutObservers;
 	
 	@Override
@@ -75,6 +76,7 @@ public class StoreApplication extends Application {
 		
 		PACKAGE_NAME = getPackageName();
 		DATA_CACHE_PATH = getCacheDir().getAbsolutePath();
+		DATA_FILE_PATH = getFilesDir().getAbsolutePath();
 		
 		getRequestQueue();
 		
@@ -123,7 +125,7 @@ public class StoreApplication extends Application {
 		//新浪微博 appkey appsecret
 		PlatformConfig.setSinaWeibo("4171998531","cdaaf47bda171bdf9546478720b7eef2");
 		// QQ和Qzone appid appkey     
-		PlatformConfig.setQQZone("1105362613", "QRLndvk5tBzZxK9R");
+		PlatformConfig.setQQZone("1105444730", "TOqwncUiOjr6aoVl");
 	}
 	
 	/** 获取AndroidManifest.xml中的mete节点 **/

@@ -36,6 +36,22 @@ public class UMengManager {
 		umShareAPI.deleteOauth(activity, SHARE_MEDIA.SINA, umAuthListener);
 	}
 	
+	/** QQ授权 **/
+	public void qqAuth(Activity activity,UMAuthListener umAuthListener){
+		SHARE_MEDIA media = SHARE_MEDIA.QQ;
+		umShareAPI.doOauthVerify(activity, media, umAuthListener);
+	}
+	
+	public void getQqInfo(Activity activity,UMAuthListener umAuthListener){
+		SHARE_MEDIA media = SHARE_MEDIA.QQ;
+		umShareAPI.getPlatformInfo(activity, media, umAuthListener);
+	}
+	
+	/** 取消QQ授权 **/
+	public void cancleQqAuth(Activity activity,UMAuthListener umAuthListener){
+		umShareAPI.deleteOauth(activity, SHARE_MEDIA.QQ, umAuthListener);
+	}
+	
 	public void onActivityResult(int requestCode, int resultCode, Intent data){
 		umShareAPI.onActivityResult(requestCode, resultCode, data);
 	}

@@ -171,7 +171,48 @@ public class MemberLoginActivity extends BaseActivity implements OnClickListener
 					Log.i("TAG", "onCancel");
 				}
 			});
-			
+			break;
+		case R.id.qqLogin:
+			mUMengManager.qqAuth(this, new UMAuthListener() {
+				
+				@Override
+				public void onError(SHARE_MEDIA arg0, int arg1, Throwable arg2) {
+					// TODO Auto-generated method stub
+					Log.i("TAG", "onError");
+				}
+				
+				@Override
+				public void onComplete(SHARE_MEDIA arg0, int arg1, Map<String, String> data) {
+					// TODO Auto-generated method stub
+					Log.i("TAG", "onComplete : " + data.toString());
+					mUMengManager.getQqInfo(MemberLoginActivity.this, new UMAuthListener() {
+						
+						@Override
+						public void onError(SHARE_MEDIA arg0, int arg1, Throwable arg2) {
+							// TODO Auto-generated method stub
+							
+						}
+						
+						@Override
+						public void onComplete(SHARE_MEDIA arg0, int arg1, Map<String, String> data) {
+							// TODO Auto-generated method stub
+							Log.i("TAG", data.toString());
+						}
+						
+						@Override
+						public void onCancel(SHARE_MEDIA arg0, int arg1) {
+							// TODO Auto-generated method stub
+							
+						}
+					});
+				}
+				
+				@Override
+				public void onCancel(SHARE_MEDIA arg0, int arg1) {
+					// TODO Auto-generated method stub
+					Log.i("TAG", "onCancel");
+				}
+			});
 			break;
 		}
 	}

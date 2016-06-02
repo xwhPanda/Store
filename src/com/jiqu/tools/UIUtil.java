@@ -7,7 +7,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
@@ -32,7 +31,6 @@ import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.StateListDrawable;
 import android.net.Uri;
-import android.net.http.SslCertificate;
 import android.os.Build;
 import android.os.Environment;
 import android.provider.DocumentsContract;
@@ -45,7 +43,6 @@ import android.view.ViewGroup.LayoutParams;
 import android.view.ViewGroup.MarginLayoutParams;
 import android.view.animation.AlphaAnimation;
 import android.view.animation.Animation;
-import android.view.animation.TranslateAnimation;
 import android.view.animation.Animation.AnimationListener;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -279,6 +276,7 @@ public class UIUtil {
   
     }  
 	
+	/** 获取图片路径 **/
 	public static String getPath(final Context context, final Uri uri) {
 		//Build.VERSION_CODES.KITKAT = 19
 		final boolean isKitKat = Build.VERSION.SDK_INT >= 19;

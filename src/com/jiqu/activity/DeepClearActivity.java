@@ -34,6 +34,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.jiqu.application.StoreApplication;
 import com.jiqu.store.BaseActivity;
 import com.vr.store.R;
 import com.jiqu.tools.ClearTool;
@@ -70,6 +71,8 @@ public class DeepClearActivity extends BaseActivity implements OnClickListener {
 	private boolean runing = true;
 	private int score = 100;
 	private int memoryPre = 100;
+	
+	private boolean quit = false;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -77,7 +80,6 @@ public class DeepClearActivity extends BaseActivity implements OnClickListener {
 		super.onCreate(savedInstanceState);
 
 		initView();
-
 		initClearDB();
 	}
 
@@ -88,7 +90,7 @@ public class DeepClearActivity extends BaseActivity implements OnClickListener {
 	}
 
 	private void initClearDB() {
-		File file = new File("/data/data/com.jiqu.store/files/clearpath.db");
+		File file = new File(StoreApplication.DATA_FILE_PATH + File.separator + "clearpath.db");
 		if (!file.exists()) {
 			copyfile();
 		}
@@ -105,6 +107,7 @@ public class DeepClearActivity extends BaseActivity implements OnClickListener {
 			}
 			fos.flush();
 			fos.close();
+			is.close();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -215,7 +218,7 @@ public class DeepClearActivity extends BaseActivity implements OnClickListener {
 	 * @param
 	 */
 	public void start() {
-		db = SQLiteDatabase.openDatabase("/data/data/com.jiqu.store/files/clearpath.db", null, SQLiteDatabase.OPEN_READONLY);
+		db = SQLiteDatabase.openDatabase(StoreApplication.DATA_FILE_PATH + File.separator + "clearpath.db", null, SQLiteDatabase.OPEN_READONLY);
 		// 获取所有的安装包信息
 		new Thread() {
 
@@ -236,8 +239,14 @@ public class DeepClearActivity extends BaseActivity implements OnClickListener {
 							e.printStackTrace();
 						}
 						files.add(file);
+						if (quit) {
+							break;
+						}
 					}
 					cursor.close();
+					if (quit) {
+						return;
+					}
 				}
 				Message msg = Message.obtain();
 				msg.what = SCAN_RUBISH_COMPLETE;
@@ -402,6 +411,7 @@ public class DeepClearActivity extends BaseActivity implements OnClickListener {
 	}
 	protected void onDestroy() {
 		super.onDestroy();
+		quit = true;
 		if (db != null) {
 			db.close();
 		}

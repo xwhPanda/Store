@@ -35,6 +35,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
+import android.view.animation.AlphaAnimation;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.BaseAdapter;
@@ -169,6 +170,7 @@ public class GameAdapter extends BaseAdapter implements DownloadObserver{
 			if (convertView == null) {
 				holder2 = new Holder2(context,hotIconVisible,subscriptVisible);
 				convertView = holder2.getRootView();
+				
 			}else {
 				holder2 = (Holder2) convertView.getTag();
 			}

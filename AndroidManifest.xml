@@ -42,7 +42,7 @@
         android:allowBackup="true"
         android:icon="@drawable/ic_launcher"
         android:label="@string/app_name"
-        android:theme="@style/AnimationActivity" >
+        android:theme="@style/FullScreen" >
         
         <meta-data
             android:name="channel"
@@ -63,89 +63,108 @@
         </activity>
         <activity
             android:name="com.jiqu.store.SplashActivity"
-            android:screenOrientation="portrait" >
+            android:screenOrientation="portrait" 
+        	android:theme="@style/AnimationActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
         <activity
             android:name="com.jiqu.store.MainActivity"
-            android:screenOrientation="portrait" >
+            android:screenOrientation="portrait" 
+        	android:theme="@style/AnimationActivity">
         </activity>
         <activity
             android:name="com.jiqu.activity.MemberLoginActivity"
-            android:screenOrientation="portrait" >
+            android:screenOrientation="portrait" 
+        	android:theme="@style/AnimationActivity">
         </activity>
         <activity
             android:name="com.jiqu.activity.ShowAccountInformatiomActivity"
-            android:screenOrientation="portrait" >
+            android:screenOrientation="portrait" 
+        	android:theme="@style/AnimationActivity">
         </activity>
         <activity
             android:name="com.jiqu.activity.ForgetPasswordActivity"
-            android:screenOrientation="portrait" >
+            android:screenOrientation="portrait" 
+        	android:theme="@style/AnimationActivity">
         </activity>
         <activity
             android:name="com.jiqu.activity.RegisterActivity"
-            android:screenOrientation="portrait" >
+            android:screenOrientation="portrait" 
+        	android:theme="@style/AnimationActivity">
         </activity>
         <activity
             android:name="com.jiqu.activity.SearchActivity"
-            android:screenOrientation="portrait" >
+            android:screenOrientation="portrait" 
+        	android:theme="@style/AnimationActivity">
         </activity>
         <activity
             android:name="com.jiqu.activity.SettingActivity"
-            android:screenOrientation="portrait" >
+            android:screenOrientation="portrait" 
+        	android:theme="@style/AnimationActivity">
         </activity>
         <activity
             android:name="com.jiqu.activity.ModifyPasswordActivity"
-            android:screenOrientation="portrait" >
+            android:screenOrientation="portrait" 
+        	android:theme="@style/AnimationActivity">
         </activity>
         <activity
             android:name="com.jiqu.activity.MessageCenterActivity"
-            android:screenOrientation="portrait" >
+            android:screenOrientation="portrait" 
+        	android:theme="@style/AnimationActivity">
         </activity>
         <activity
             android:name="com.jiqu.activity.GameEvaluationInformationActivity"
-            android:screenOrientation="portrait" >
+            android:screenOrientation="portrait" 
+        	android:theme="@style/AnimationActivity">
         </activity>
         <activity
             android:name="com.jiqu.activity.AppUninstallActivity"
-            android:screenOrientation="portrait" >
+            android:screenOrientation="portrait" 
+        	android:theme="@style/AnimationActivity">
         </activity>
         <activity
             android:name="com.jiqu.activity.DownloadManagerActivity"
-            android:screenOrientation="portrait" >
+            android:screenOrientation="portrait" 
+        	android:theme="@style/AnimationActivity">
         </activity>
         <activity
             android:name="com.jiqu.activity.ClearCacheActivity"
-            android:screenOrientation="portrait" >
+            android:screenOrientation="portrait" 
+        	android:theme="@style/AnimationActivity">
         </activity>
         <activity
             android:name="com.jiqu.activity.DeepClearActivity"
-            android:screenOrientation="portrait" >
+            android:screenOrientation="portrait" 
+        	android:theme="@style/AnimationActivity">
         </activity>
         <activity
             android:name="com.jiqu.activity.PowerManagerActivity"
-            android:screenOrientation="portrait" >
+            android:screenOrientation="portrait" 
+        	android:theme="@style/AnimationActivity">
         </activity>
         <activity
             android:name="com.jiqu.activity.CommomProblemActivity"
-            android:screenOrientation="portrait" >
+            android:screenOrientation="portrait" 
+        	android:theme="@style/AnimationActivity">
         </activity>
         <activity
             android:name="com.jiqu.activity.AboutUsActivity"
-            android:screenOrientation="portrait" >
+            android:screenOrientation="portrait" 
+        	android:theme="@style/AnimationActivity">
         </activity>
         <activity
             android:name="com.jiqu.activity.ResourceManagementActivity"
-            android:screenOrientation="portrait" >
+            android:screenOrientation="portrait" 
+        	android:theme="@style/AnimationActivity">
         </activity>
         <activity
             android:name="com.jiqu.activity.ShareActivity"
             android:configChanges="keyboardHidden|orientation"
-            android:screenOrientation="portrait" >
+            android:screenOrientation="portrait" 
+        	android:theme="@style/AnimationActivity">
             <intent-filter>
                 <action android:name="com.sina.weibo.sdk.action.ACTION_SDK_REQ_ACTIVITY" />
                 <category android:name="android.intent.category.DEFAULT" />
@@ -154,39 +173,48 @@
         </activity>
         <activity
             android:name="com.jiqu.activity.SortInfoActivity"
-            android:screenOrientation="portrait" >
+            android:screenOrientation="portrait" 
+        	android:theme="@style/AnimationActivity">
         </activity>
         <activity
             android:name="com.jiqu.activity.SortActivity"
-            android:screenOrientation="portrait" >
+            android:screenOrientation="portrait" 
+        	android:theme="@style/AnimationActivity">
         </activity>
         <activity
             android:name="com.jiqu.activity.RankingActivity"
-            android:screenOrientation="portrait" >
+            android:screenOrientation="portrait" 
+        	android:theme="@style/AnimationActivity">
         </activity>
         <activity
             android:name="com.jiqu.activity.BoutiqueActivity"
-            android:screenOrientation="portrait" >
+            android:screenOrientation="portrait" 
+        	android:theme="@style/AnimationActivity">
         </activity>
         <activity
             android:name="com.jiqu.activity.ThematicActivity"
-            android:screenOrientation="portrait" >
+            android:screenOrientation="portrait" 
+        	android:theme="@style/AnimationActivity">
         </activity>
         <activity
             android:name="com.jiqu.activity.HeadlineActivity"
-            android:screenOrientation="portrait" >
+            android:screenOrientation="portrait" 
+        	android:theme="@style/AnimationActivity">
         </activity>
         <activity
             android:name="com.jiqu.activity.DetailActivity"
-            android:screenOrientation="portrait" >
+            android:screenOrientation="portrait" 
+        	android:theme="@style/AnimationActivity">
         </activity>
         <activity
             android:name="com.jiqu.activity.GameEvaluationWebInfoActivity"
-            android:screenOrientation="portrait" >
+            android:screenOrientation="portrait" 
+        	android:theme="@style/AnimationActivity">
         </activity>
         <activity
             android:name="com.jiqu.activity.FeedbackActivity"
-            android:screenOrientation="portrait" >
+            android:screenOrientation="portrait" 
+        	android:theme="@style/AnimationActivity">
         </activity>
 
         <!-- 友盟 -->
@@ -222,7 +250,7 @@
                 <action android:name="android.intent.action.VIEW" />
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
-                <data android:scheme="tencent1105362613" />
+                <data android:scheme="tencent1105444730" />
             </intent-filter>
         </activity>
     </application>
