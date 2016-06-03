@@ -2,6 +2,7 @@ package com.jiqu.activity;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.util.Map;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
@@ -17,12 +18,15 @@ import com.jiqu.database.Account;
 import com.jiqu.interfaces.DialogDismissObserver;
 import com.jiqu.interfaces.LoginOutObserver;
 import com.jiqu.store.BaseActivity;
+import com.umeng.socialize.UMAuthListener;
+import com.umeng.socialize.bean.SHARE_MEDIA;
 import com.vr.store.R;
 import com.jiqu.tools.Constants;
 import com.jiqu.tools.MD5;
 import com.jiqu.tools.MetricsTool;
 import com.jiqu.tools.RequestTool;
 import com.jiqu.tools.UIUtil;
+import com.jiqu.umeng.UMengManager;
 import com.jiqu.view.InformationBrithDialog;
 import com.jiqu.view.InformationGenderDialog;
 import com.jiqu.view.TitleView;
@@ -58,7 +62,7 @@ import android.widget.RelativeLayout;
 import android.widget.RelativeLayout.LayoutParams;
 import android.widget.TextView;
 
-public class ShowAccountInformatiomActivity extends BaseActivity implements OnClickListener, DialogDismissObserver {
+public class ShowAccountInformatiomActivity extends BaseActivity implements OnClickListener, DialogDismissObserver,UMAuthListener{
 	private final int IMAGE_REQUEST_CODE = 0;
 	private final int CUT_REQUEST_KITKAT_CODE = 1;
 	private final int RESIZE_REQUEST_CODE = 2;
@@ -88,6 +92,8 @@ public class ShowAccountInformatiomActivity extends BaseActivity implements OnCl
 	private boolean modifing = false;
 
 	private RequestTool requestTool;
+	
+	private String loginType = "";
 
 	private static enum BTN_STATE {
 		MODIFY, COMMIT;
@@ -98,8 +104,13 @@ public class ShowAccountInformatiomActivity extends BaseActivity implements OnCl
 		// TODO Auto-generated method stub
 		super.onCreate(savedInstanceState);
 		requestTool = RequestTool.getInstance();
+		loginType = getIntent().getStringExtra("loginType");
 		initView();
-		initData();
+		if (loginType.equals("")) {
+			initData();
+		}else {
+			loadDataFromOther();
+		}
 	}
 
 	@Override
@@ -180,6 +191,39 @@ public class ShowAccountInformatiomActivity extends BaseActivity implements OnCl
 				birthBtn.setBackgroundResource(0);
 			}
 			level.setText("LV " + info.getLevel());
+		}
+	}
+	
+	private void loadDataFromOther(){
+		if ("qq".equals(loginType)) {
+			UMengManager.getInstance().getQqInfo(this, this);
+		}else if (modifing) {
+			
+		}
+	}
+	
+	private void cancleAuth(){
+		if ("qq".equals(loginType)) {
+			UMengManager.getInstance().cancleQqAuth(this, new UMAuthListener() {
+				
+				@Override
+				public void onError(SHARE_MEDIA arg0, int arg1, Throwable arg2) {
+					// TODO Auto-generated method stub
+					
+				}
+				
+				@Override
+				public void onComplete(SHARE_MEDIA arg0, int arg1, Map<String, String> arg2) {
+					// TODO Auto-generated method stub
+					
+				}
+				
+				@Override
+				public void onCancel(SHARE_MEDIA arg0, int arg1) {
+					// TODO Auto-generated method stub
+					
+				}
+			});
 		}
 	}
 
@@ -270,14 +314,18 @@ public class ShowAccountInformatiomActivity extends BaseActivity implements OnCl
 			break;
 
 		case R.id.loginOut:
-			File file = new File(Constants.ACCOUNT_ICON);
-			if (file.exists()) {
-				file.delete();
-			}
-			StoreApplication.daoSession.getAccountDao().deleteAll();
-			if (StoreApplication.loginOutObservers != null) {
-				for(LoginOutObserver observer : StoreApplication.loginOutObservers){
-					observer.onLoginOut();
+			if (!"".equals(loginType)) {
+				cancleAuth();
+			}else {
+				File file = new File(Constants.ACCOUNT_ICON);
+				if (file.exists()) {
+					file.delete();
+				}
+				StoreApplication.daoSession.getAccountDao().deleteAll();
+				if (StoreApplication.loginOutObservers != null) {
+					for(LoginOutObserver observer : StoreApplication.loginOutObservers){
+						observer.onLoginOut();
+					}
 				}
 			}
 			finish();
@@ -573,5 +621,24 @@ public class ShowAccountInformatiomActivity extends BaseActivity implements OnCl
 		// TODO Auto-generated method stub
 		super.onDestroy();
 		requestTool.stopRequest(REQUEST_TAG);
+	}
+
+	@Override
+	public void onCancel(SHARE_MEDIA arg0, int arg1) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void onComplete(SHARE_MEDIA arg0, int arg1, Map<String, String> data) {
+		// TODO Auto-generated method stub
+//		Log.i("TAG", "data : " + data);
+		Log.i("TAG", "name : " + data.get("screen_name"));
+	}
+
+	@Override
+	public void onError(SHARE_MEDIA arg0, int arg1, Throwable arg2) {
+		// TODO Auto-generated method stub
+		
 	}
 }

@@ -36,8 +36,10 @@ import com.jiqu.tools.NetReceiver;
 import com.jiqu.tools.RequestTool;
 import com.jiqu.tools.NetReceiver.OnNetChangeListener;
 import com.jiqu.tools.UIUtil;
+import com.jiqu.umeng.UMengManager;
 import com.jiqu.view.CustomDialog;
 import com.jiqu.view.NetChangeDialog;
+import com.umeng.socialize.bean.SHARE_MEDIA;
 import com.vr.store.R;
 
 import de.greenrobot.dao.query.QueryBuilder;
@@ -538,10 +540,16 @@ public class MainActivity extends FragmentActivity implements OnClickListener,On
 			break;
 		
 		case R.id.accountImg:
+			boolean isQQLogin = UMengManager.getInstance().isAuth(this, SHARE_MEDIA.QQ);
 			QueryBuilder qb = StoreApplication.daoSession.getAccountDao().queryBuilder();
 			Account account = (Account) qb.unique();
-			if (account != null) {
-				startActivity(new Intent(this, ShowAccountInformatiomActivity.class));
+			if (account != null || isQQLogin) {
+				String loginType = "";
+				if (isQQLogin) {
+					loginType = "qq";
+				}
+				startActivity(new Intent(this, ShowAccountInformatiomActivity.class)
+				.putExtra("loginType", loginType));
 			}else {
 				startActivity(new Intent(this, MemberLoginActivity.class));
 			}

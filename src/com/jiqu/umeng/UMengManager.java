@@ -11,7 +11,6 @@ import com.umeng.socialize.bean.SHARE_MEDIA;
 
 public class UMengManager {
 	private static UMengManager uMengManager;
-	private Context context;
 	private UMShareAPI umShareAPI;
 	
 	private UMengManager(Context context){
@@ -35,7 +34,7 @@ public class UMengManager {
 	public void cancleSinaAuth(Activity activity,UMAuthListener umAuthListener){
 		umShareAPI.deleteOauth(activity, SHARE_MEDIA.SINA, umAuthListener);
 	}
-	
+									
 	/** QQ授权 **/
 	public void qqAuth(Activity activity,UMAuthListener umAuthListener){
 		SHARE_MEDIA media = SHARE_MEDIA.QQ;
@@ -50,6 +49,11 @@ public class UMengManager {
 	/** 取消QQ授权 **/
 	public void cancleQqAuth(Activity activity,UMAuthListener umAuthListener){
 		umShareAPI.deleteOauth(activity, SHARE_MEDIA.QQ, umAuthListener);
+	}
+	
+	/** 是否已经授权 **/
+	public boolean isAuth(Activity activity , SHARE_MEDIA media){
+		return umShareAPI.isAuthorize(activity, media);
 	}
 	
 	public void onActivityResult(int requestCode, int resultCode, Intent data){

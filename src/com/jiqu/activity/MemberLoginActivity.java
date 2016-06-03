@@ -38,7 +38,8 @@ import android.widget.LinearLayout;
 import android.widget.Toast;
 
 public class MemberLoginActivity extends BaseActivity implements OnClickListener{
-	private static final String LOGIN_TAG = "login";
+	private final String LOGIN_TAG = "login";
+	private final String OTHER_REGISTER = "otherRegisterRequest";
 	private TitleView titleView;
 	private ImageView accountIcon;
 	private Button forgetPassword,register;
@@ -178,31 +179,38 @@ public class MemberLoginActivity extends BaseActivity implements OnClickListener
 				@Override
 				public void onError(SHARE_MEDIA arg0, int arg1, Throwable arg2) {
 					// TODO Auto-generated method stub
-					Log.i("TAG", "onError");
+					Toast.makeText(getApplicationContext(), "登录失败", Toast.LENGTH_SHORT).show();
 				}
 				
 				@Override
 				public void onComplete(SHARE_MEDIA arg0, int arg1, Map<String, String> data) {
 					// TODO Auto-generated method stub
-					Log.i("TAG", "onComplete : " + data.toString());
+					final String uid = data.get("uid");
 					mUMengManager.getQqInfo(MemberLoginActivity.this, new UMAuthListener() {
 						
 						@Override
 						public void onError(SHARE_MEDIA arg0, int arg1, Throwable arg2) {
 							// TODO Auto-generated method stub
-							
+							arg2.printStackTrace();
+							Toast.makeText(getApplicationContext(), "登录失败", Toast.LENGTH_SHORT).show();
 						}
 						
 						@Override
 						public void onComplete(SHARE_MEDIA arg0, int arg1, Map<String, String> data) {
 							// TODO Auto-generated method stub
-							Log.i("TAG", data.toString());
+							String nickname = data.get("screen_name");
+							int gender = 1;
+							if (data.get("gender").equals("女")) {
+								gender = 2;
+							}
+							String image = data.get("profile_image_url");
+							qqLogin(nickname, gender, uid, MD5.GetMD5Code(uid + String.valueOf(gender) + RequestTool.PRIKEY),image);
 						}
 						
 						@Override
 						public void onCancel(SHARE_MEDIA arg0, int arg1) {
 							// TODO Auto-generated method stub
-							
+							Toast.makeText(getApplicationContext(), "取消登录", Toast.LENGTH_SHORT).show();
 						}
 					});
 				}
@@ -210,7 +218,7 @@ public class MemberLoginActivity extends BaseActivity implements OnClickListener
 				@Override
 				public void onCancel(SHARE_MEDIA arg0, int arg1) {
 					// TODO Auto-generated method stub
-					Log.i("TAG", "onCancel");
+					Toast.makeText(getApplicationContext(), "取消登录", Toast.LENGTH_SHORT).show();
 				}
 			});
 			break;
@@ -235,6 +243,29 @@ public class MemberLoginActivity extends BaseActivity implements OnClickListener
 		}else {
 			return true;
 		}
+	}
+	
+	private void qqLogin(String nickname,int gender,String uid,String token,final String image){
+		requestTool.getMap().clear();
+		requestTool.setParam("nickname", nickname);
+		requestTool.setParam("gender", gender);
+		requestTool.setParam("uid", uid);
+		requestTool.setParam("token", token);
+		requestTool.startStringRequest(Method.POST, new Listener<String>() {
+
+			@Override
+			public void onResponse(String arg0) {
+				// TODO Auto-generated method stub
+				AccountResponeInfo responeInfo = JSON.parseObject(arg0, AccountResponeInfo.class);
+				Account account = AccountInformation.toAccount(responeInfo.getData(), image);
+			}
+		}, RequestTool.OTHER_REGISTER_URL, new ErrorListener() {
+
+			@Override
+			public void onErrorResponse(VolleyError arg0) {
+				// TODO Auto-generated method stub
+			}
+		}, requestTool.getMap(), OTHER_REGISTER);
 	}
 	
 	private void login(String account,String password){

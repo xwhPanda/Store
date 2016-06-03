@@ -96,6 +96,8 @@ public class RequestTool {
 	public static final String OTHER_UPGRADE_URL = "http://ht.163zs.com/index.php/Api/Game/upgrade";
 	/** VR助手升级 **/
 	public static final String VR_HELPER_UPGRADE_URL = "http://ht.163zs.com/index.php/Api/App/upgrade";
+	/** 第三方注册 **/
+	public static final String OTHER_REGISTER_URL = "http://ht.163zs.com/index.php/Api/User/reg";
 	
 	private Map<String, Object> paramMap = new HashMap<String, Object>();
 
