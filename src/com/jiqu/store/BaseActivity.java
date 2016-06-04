@@ -29,6 +29,7 @@ public abstract class BaseActivity extends Activity implements OnNetChangeListen
 	protected float Ry;
 	protected NetChangeDialog netChangeDialog;
 	private NetReceiver netReceiver;
+	private InstalledAppTool installedAppTool;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -36,7 +37,10 @@ public abstract class BaseActivity extends Activity implements OnNetChangeListen
 		super.onCreate(savedInstanceState);
 		Rx = MetricsTool.Rx;
 		Ry = MetricsTool.Ry;
-		setContentView(getContentView());
+		installedAppTool = new InstalledAppTool();
+		if (getContentView() != 0) {
+			setContentView(getContentView());
+		}
 		
 		IntentFilter filter = new IntentFilter();
 		filter.addAction(Intent.ACTION_PACKAGE_ADDED);
@@ -102,7 +106,7 @@ public abstract class BaseActivity extends Activity implements OnNetChangeListen
 	}
 	
 	protected void setState(List<GameInfo> infos,int count){
-		List<InstalledApp> apps = InstalledAppTool.getPersonalApp(this);
+		List<InstalledApp> apps = installedAppTool.getPersonalApp(this);
 		int size = count;
 		if (infos.size() < count) {
 			size = infos.size();
@@ -126,11 +130,8 @@ public abstract class BaseActivity extends Activity implements OnNetChangeListen
 	@Override
 	public void onNetChange(int netType) {
 		// TODO Auto-generated method stub
-		Log.i("TAG", "----------1");
 		if (netType != NetReceiver.NET_WIFI && DownloadManager.getInstance().hasDownloading()) {
-			Log.i("TAG", "----------2");
 			if (!netChangeDialog.isShowing()) {
-				Log.i("TAG", "----------3");
 				DownloadManager.getInstance().pauseAllExit();
 				netChangeDialog.show();
 			}

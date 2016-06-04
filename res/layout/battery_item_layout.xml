@@ -9,7 +9,7 @@
         android:id="@+id/parent"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" 
-        android:background="@drawable/battery_item_bg">
+        android:background="@color/battery_item_bg_color">
 
         <ImageView
             android:id="@+id/icon"

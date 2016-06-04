@@ -121,7 +121,7 @@ public class WaveView extends View {
         mPaintText.setTextAlign(Align.CENTER);
         mPaintText.setColor(DEFAULT_TEXT_COLOR);
         mPaintText.setShadowLayer(2, 0, 0, 0xee666666);
-		mPaintText.setTypeface(Typeface.createFromAsset(context.getAssets(), "fonts/lantinghei.ttf"));
+//		mPaintText.setTypeface(Typeface.createFromAsset(context.getAssets(), "fonts/lantinghei.ttf"));
 		
 		mFontMetrics = mPaintText.getFontMetrics();
 		mTextHeight = mFontMetrics.bottom - mFontMetrics.top;

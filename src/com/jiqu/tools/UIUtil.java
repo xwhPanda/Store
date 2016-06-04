@@ -220,6 +220,7 @@ public class UIUtil {
 		return bg;
 	}
 	
+	/** 将图片转为圆型 **/
 	public static Bitmap toRoundBitmap(Bitmap bitmap) {  
         //圆形图片宽高  
         int width = bitmap.getWidth();  

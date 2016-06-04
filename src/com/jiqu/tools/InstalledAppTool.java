@@ -25,17 +25,9 @@ import android.net.Uri;
 import android.util.Log;
 
 public class InstalledAppTool {
-	private static InstalledAppTool instance;
 	private Map<String, InstalledApp> uninstallMap = new ConcurrentHashMap<String, InstalledApp>();
 	private List<UninstallStateObserver> mObservers = new ArrayList<UninstallStateObserver>();
 	private Map<String, UninstallTask> taskMap = new ConcurrentHashMap<String, InstalledAppTool.UninstallTask>();
-
-	public static synchronized InstalledAppTool getInstance() {
-		if (instance == null) {
-			instance = new InstalledAppTool();
-		}
-		return instance;
-	}
 
 	public void registerObsverver(UninstallStateObserver observer) {
 		synchronized (mObservers) {
@@ -54,12 +46,12 @@ public class InstalledAppTool {
 	}
 
 	/** 获取所有安装的应用 **/
-	private static List<PackageInfo> getInstallAppsPkg(Context context){
+	private List<PackageInfo> getInstallAppsPkg(Context context){
 		return context.getPackageManager().getInstalledPackages(0);
 	}
 
 	/** 获取第三方应用 **/
-	public static List<InstalledApp> getPersonalApp(Context context) {
+	public List<InstalledApp> getPersonalApp(Context context) {
 		List<InstalledApp> apps = new ArrayList<InstalledApp>();
 		List<PackageInfo> packageInfos = getInstallAppsPkg(context);
 		PackageManager pm = context.getPackageManager();
@@ -82,7 +74,7 @@ public class InstalledAppTool {
 	}
 
 	/** 获取系统应用  **/
-	public static List<InstalledApp> getSystemApp(Context context) {
+	public List<InstalledApp> getSystemApp(Context context) {
 		List<InstalledApp> apps = new ArrayList<InstalledApp>();
 		PackageManager pm = context.getPackageManager();
 		List<PackageInfo> packageInfos = getInstallAppsPkg(context);
@@ -103,12 +95,13 @@ public class InstalledAppTool {
 		return apps;
 	}
 	
-	public static InstalledApp getInstallApp(Context context,String pkgName) {
+	public InstalledApp getInstallApp(Context context,String pkgName) {
 		List<PackageInfo> packageInfos = getInstallAppsPkg(context);
 		InstalledApp app = new InstalledApp();
 		PackageManager pm = context.getPackageManager();
 		for (PackageInfo packageInfo:packageInfos) {
-			if ((packageInfo.applicationInfo.flags & ApplicationInfo.FLAG_SYSTEM) <= 0) {
+			if ((packageInfo.applicationInfo.flags & ApplicationInfo.FLAG_SYSTEM) <= 0
+					&& packageInfo.packageName.equals(pkgName)) {
 				app.name = (String) packageInfo.applicationInfo.loadLabel(pm);
 				app.packageName = packageInfo.packageName;
 				app.appIcon = packageInfo.applicationInfo.loadIcon(pm);
@@ -169,7 +162,7 @@ public class InstalledAppTool {
 		return true;
 	}
 
-	public static void uninstallApp(Context context, String pkgName) {
+	public void uninstallApp(Context context, String pkgName) {
 		String uriStr = "package:" + pkgName;
 		Uri packageURI = Uri.parse(uriStr);
 		Intent uninstallIntent = new Intent(Intent.ACTION_DELETE, packageURI);
@@ -180,7 +173,6 @@ public class InstalledAppTool {
 		InstalledApp installedApp = uninstallMap.get(app.packageName);
 		if (installedApp == null) {
 			uninstallMap.put(app.packageName, app);
-			Log.i("TAG", "addUninstall : " + app.packageName + "/" + app.name);
 		}
 	}
 	
@@ -188,7 +180,6 @@ public class InstalledAppTool {
 		InstalledApp installedApp = uninstallMap.get(app.packageName);
 		if (installedApp != null) {
 			uninstallMap.remove(app.packageName);
-			Log.i("TAG", "removeUninstall : " + app.packageName + "/" + app.name);
 		}
 	}
 	
@@ -251,7 +242,7 @@ public class InstalledAppTool {
 		@Override
 		public void run() {
 			app.state = InstalledApp.UNINSTALLING;
-			InstalledAppTool.uninstallApp(context, app.packageName);
+			uninstallApp(context, app.packageName);
 		}
 
 	}

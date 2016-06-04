@@ -90,6 +90,7 @@ public class DetailActivity extends BaseActivity implements Listener<String>, Er
 	private TextView comprehensiveEvaluation;
 	private TextView evaluationScore;
 	private RatingBarView comprehensiveBar;
+	private InstalledAppTool installedAppTool;
 
 	private int[] IDs = new int[3];
 	private int[] blueIDs = new int[3];
@@ -145,6 +146,7 @@ public class DetailActivity extends BaseActivity implements Listener<String>, Er
 	}
 
 	private void initView() {
+		installedAppTool = new InstalledAppTool();
 		initStar();
 
 		titleView = (TitleView) findViewById(R.id.titleView);
@@ -380,7 +382,7 @@ public class DetailActivity extends BaseActivity implements Listener<String>, Er
 		} else {
 			downloadAppinfo = GameDetailInfo.toDownloadAppinfo(info);
 			state = downloadAppinfo.getDownloadState();
-			List<InstalledApp> apps = InstalledAppTool.getPersonalApp(this);
+			List<InstalledApp> apps = installedAppTool.getPersonalApp(this);
 			int stateNum = InstalledAppTool.contain(apps, downloadAppinfo.getPackageName(), Integer.parseInt(downloadAppinfo.getVersionCode()));
 			if (stateNum != -1) {
 				state = stateNum;

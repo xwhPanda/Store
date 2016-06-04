@@ -71,6 +71,7 @@ public class GameFragment extends Fragment implements OnClickListener,OnRefreshL
 	private int type = 1;
 	private int latestPageNum = 1;
 	private int hotPageNum = 1;
+	private InstalledAppTool installedAppTool;
 	
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -78,6 +79,7 @@ public class GameFragment extends Fragment implements OnClickListener,OnRefreshL
 		view = inflater.inflate(R.layout.game, null);
 		headView = inflater.inflate(R.layout.information_head, null);
 		requestTool = RequestTool.getInstance();
+		installedAppTool = new InstalledAppTool();
 		initView();
 		
 		loadNew(RequestTool.LATEST_GAME_URL);
@@ -100,7 +102,7 @@ public class GameFragment extends Fragment implements OnClickListener,OnRefreshL
 					if (newGameList.size() < DEFAULT_PAGE_SIZE) {
 						count = newGameList.size();
 					}
-					List<InstalledApp> apps = InstalledAppTool.getPersonalApp(getActivity());
+					List<InstalledApp> apps = installedAppTool.getPersonalApp(getActivity());
 					for(int i = newGameList.size() - count;i<newGameList.size();i++){
 						GameInfo gameInfo = newGameList.get(i);
 						DownloadAppinfo info = DownloadManager.getInstance().getDownloadInfo(Long.parseLong(gameInfo.getId()));
@@ -144,7 +146,7 @@ public class GameFragment extends Fragment implements OnClickListener,OnRefreshL
 					if (newGameList.size() < DEFAULT_PAGE_SIZE) {
 						count = hotGameList.size();
 					}
-					List<InstalledApp> apps = InstalledAppTool.getPersonalApp(getActivity());
+					List<InstalledApp> apps = installedAppTool.getPersonalApp(getActivity());
 					for(int i = hotGameList.size() - count;i<hotGameList.size();i++){
 						GameInfo gameInfo = hotGameList.get(i);
 						DownloadAppinfo info = DownloadManager.getInstance().getDownloadInfo(Long.parseLong(gameInfo.getId()));

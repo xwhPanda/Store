@@ -12,6 +12,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.RelativeLayout.LayoutParams;
 
+import com.jiqu.application.StoreApplication;
 import com.jiqu.object.BatterySipper;
 import com.vr.store.R;
 import com.jiqu.tools.MetricsTool;
@@ -50,7 +51,7 @@ public class BatteryAdapter extends BaseAdapter {
 		// TODO Auto-generated method stub
 		Holder holder = null;
 		if (convertView == null) {
-			LayoutInflater inflater = LayoutInflater.from(context);
+			LayoutInflater inflater = LayoutInflater.from(StoreApplication.context);
 			holder = new Holder();
 			convertView = inflater.inflate(R.layout.battery_item_layout, null);
 			holder.parentView = (RelativeLayout) convertView.findViewById(R.id.parent);

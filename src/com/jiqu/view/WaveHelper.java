@@ -33,8 +33,7 @@ public class WaveHelper {
 
         // horizontal animation.
         // wave waves infinitely.
-        ObjectAnimator waveShiftAnim = ObjectAnimator.ofFloat(
-                mWaveView, "waveShiftRatio", 0f, 1f);
+        ObjectAnimator waveShiftAnim = ObjectAnimator.ofFloat(mWaveView, "waveShiftRatio", 0f, 1f);
         waveShiftAnim.setRepeatCount(ValueAnimator.INFINITE);
         waveShiftAnim.setDuration(1000);
         waveShiftAnim.setInterpolator(new LinearInterpolator());
@@ -64,7 +63,7 @@ public class WaveHelper {
 
     public void cancel() {
         if (mAnimatorSet != null) {
-//            mAnimatorSet.cancel();
+            mAnimatorSet.cancel();
             mAnimatorSet.end();
         }
     }

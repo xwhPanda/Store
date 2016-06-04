@@ -27,6 +27,7 @@ import com.jiqu.tools.MetricsTool;
 import com.jiqu.tools.RequestTool;
 import com.jiqu.tools.UIUtil;
 import com.jiqu.umeng.UMengManager;
+import com.jiqu.view.CircleImageView;
 import com.jiqu.view.InformationBrithDialog;
 import com.jiqu.view.InformationGenderDialog;
 import com.jiqu.view.TitleView;
@@ -46,6 +47,7 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
+import android.os.Handler;
 import android.provider.DocumentsContract;
 import android.provider.MediaStore;
 import android.text.TextUtils;
@@ -69,7 +71,7 @@ public class ShowAccountInformatiomActivity extends BaseActivity implements OnCl
 	private final int SELECT_PIC_KITKAT = 4;
 	private final String REQUEST_TAG = "modifyInformaiontRequest";
 	private TitleView titleView;
-	private ImageView accountImg;
+	private CircleImageView accountImg;
 	private TextView nickName;
 	private TextView level;
 	private Button modiftBtn;
@@ -106,11 +108,11 @@ public class ShowAccountInformatiomActivity extends BaseActivity implements OnCl
 		requestTool = RequestTool.getInstance();
 		loginType = getIntent().getStringExtra("loginType");
 		initView();
-		if (loginType.equals("")) {
-			initData();
-		}else {
-			loadDataFromOther();
-		}
+//		if (loginType.equals("")) {
+		initData();
+//		}else {
+//			loadDataFromOther();
+//		}
 	}
 
 	@Override
@@ -121,7 +123,7 @@ public class ShowAccountInformatiomActivity extends BaseActivity implements OnCl
 
 	private void initView() {
 		titleView = (TitleView) findViewById(R.id.titleView);
-		accountImg = (ImageView) findViewById(R.id.accountImg);
+		accountImg = (CircleImageView) findViewById(R.id.accountImg);
 		nickName = (TextView) findViewById(R.id.nickName);
 		level = (TextView) findViewById(R.id.level);
 		modiftBtn = (Button) findViewById(R.id.modifyBtn);
@@ -167,14 +169,19 @@ public class ShowAccountInformatiomActivity extends BaseActivity implements OnCl
 		if (info != null) {
 			File file = new File(Constants.ACCOUNT_ICON);
 			ImageListener listener;
-			if (file.exists()) {
-				Bitmap bitmap = BitmapFactory.decodeFile(Constants.ACCOUNT_ICON);
-				listener = ImageLoader.getImageListener(accountImg, bitmap, bitmap);
-			}else {
+//			if (file.exists()) {
+//				Bitmap bitmap = BitmapFactory.decodeFile(Constants.ACCOUNT_ICON);
+//				listener = ImageLoader.getImageListener(accountImg, bitmap, bitmap);
+//			}else {
 				listener = ImageLoader.getImageListener(accountImg, R.drawable.yonghuicon, R.drawable.yonghuicon);
-			}
+//			}
+			Log.i("TAG", info.getPhoto());
 			StoreApplication.getInstance().getImageLoader().get(info.getPhoto(), listener);
-			nickName.setText(info.getUsername());
+			if (info.getUsername() != null && !TextUtils.isEmpty(info.getUsername())) {
+				nickName.setText(info.getUsername());
+			}else {
+				nickName.setText(info.getNickname());
+			}
 			genderStr = String.valueOf(info.getGender());
 			if (info.getGender() == 1) {
 				genderTx.setText(getResources().getString(R.string.man));
@@ -215,7 +222,7 @@ public class ShowAccountInformatiomActivity extends BaseActivity implements OnCl
 				@Override
 				public void onComplete(SHARE_MEDIA arg0, int arg1, Map<String, String> arg2) {
 					// TODO Auto-generated method stub
-					
+					handler.sendEmptyMessage(1);
 				}
 				
 				@Override
@@ -317,21 +324,33 @@ public class ShowAccountInformatiomActivity extends BaseActivity implements OnCl
 			if (!"".equals(loginType)) {
 				cancleAuth();
 			}else {
-				File file = new File(Constants.ACCOUNT_ICON);
-				if (file.exists()) {
-					file.delete();
-				}
-				StoreApplication.daoSession.getAccountDao().deleteAll();
-				if (StoreApplication.loginOutObservers != null) {
-					for(LoginOutObserver observer : StoreApplication.loginOutObservers){
-						observer.onLoginOut();
-					}
-				}
+				deleteLoginInfo();
 			}
-			finish();
 			break;
 		}
 	}
+	
+	private void deleteLoginInfo(){
+		File file = new File(Constants.ACCOUNT_ICON);
+		if (file.exists()) {
+			file.delete();
+		}
+		StoreApplication.daoSession.getAccountDao().deleteAll();
+		if (StoreApplication.loginOutObservers != null) {
+			for(LoginOutObserver observer : StoreApplication.loginOutObservers){
+				observer.onLoginOut();
+			}
+		}
+		finish();
+	}
+	
+	Handler handler = new Handler(){
+		public void handleMessage(android.os.Message msg) {
+			if (msg.what == 1) {
+				deleteLoginInfo();
+			}
+		};
+	};
 
 	private void modifyRequest() {
 		if (info == null) {
@@ -392,7 +411,6 @@ public class ShowAccountInformatiomActivity extends BaseActivity implements OnCl
 			@Override
 			public void onErrorResponse(VolleyError arg0) {
 				// TODO Auto-generated method stub
-				Log.i("TAG", arg0.toString());
 				modiftBtn.setText(R.string.modify);
 				modifing = false;
 				UIUtil.showToast(R.string.modifyFailed);
@@ -507,7 +525,7 @@ public class ShowAccountInformatiomActivity extends BaseActivity implements OnCl
 		Bundle extras = picdata.getExtras();
 		if (extras != null) {
 			Bitmap photo = extras.getParcelable("data");
-			photo = UIUtil.toRoundBitmap(photo);
+//			photo = UIUtil.toRoundBitmap(photo);
             UIUtil.saveBitmap(Constants.ACCOUNT_ICON,photo);
 			postImage(photo);
 		}
@@ -632,8 +650,6 @@ public class ShowAccountInformatiomActivity extends BaseActivity implements OnCl
 	@Override
 	public void onComplete(SHARE_MEDIA arg0, int arg1, Map<String, String> data) {
 		// TODO Auto-generated method stub
-//		Log.i("TAG", "data : " + data);
-		Log.i("TAG", "name : " + data.get("screen_name"));
 	}
 
 	@Override

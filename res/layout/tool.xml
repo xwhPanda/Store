@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     tools:ignore="MissingPrefix" >
 
-    <ImageView
+    <com.jiqu.view.CircleImageView
         android:id="@+id/accountIcon"
         android:layout_width="@dimen/toolAccountIconSize"
         android:layout_height="@dimen/toolAccountIconSize"

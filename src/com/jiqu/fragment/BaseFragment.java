@@ -2,6 +2,7 @@ package com.jiqu.fragment;
 
 import com.jiqu.database.Account;
 import com.jiqu.interfaces.LoginOutObserver;
+import com.jiqu.tools.InstalledAppTool;
 import com.jiqu.tools.MetricsTool;
 
 import android.app.Activity;
@@ -15,12 +16,14 @@ import android.view.ViewGroup;
 public abstract class BaseFragment extends Fragment implements LoginOutObserver{
 	public Activity activity;
 	public float Rx,Ry;
+	public InstalledAppTool installedAppTool;
 
 	@Override
 	public void onCreate(@Nullable Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
 		super.onCreate(savedInstanceState);
 		activity = getActivity();
+		installedAppTool = new InstalledAppTool();
 		Rx = MetricsTool.Rx;
 		Ry = MetricsTool.Ry;
 		init();

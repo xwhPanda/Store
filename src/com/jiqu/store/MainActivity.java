@@ -37,6 +37,7 @@ import com.jiqu.tools.RequestTool;
 import com.jiqu.tools.NetReceiver.OnNetChangeListener;
 import com.jiqu.tools.UIUtil;
 import com.jiqu.umeng.UMengManager;
+import com.jiqu.view.CircleImageView;
 import com.jiqu.view.CustomDialog;
 import com.jiqu.view.NetChangeDialog;
 import com.umeng.socialize.bean.SHARE_MEDIA;
@@ -46,8 +47,6 @@ import de.greenrobot.dao.query.QueryBuilder;
 
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.os.Process;
 import android.support.v4.app.Fragment;
@@ -69,7 +68,7 @@ import android.widget.Toast;
 public class MainActivity extends FragmentActivity implements OnClickListener,OnNetChangeListener,LoginOutObserver{
 	private final String CHECKNE_WVERSION_REQUEST = "checkNewversionRequest";
 	private float Rx,Ry;
-	private ImageView accountImg;
+	private CircleImageView accountImg;
 	private EditText searchEd;
 	private Button searchBtn;
 	private Button download;
@@ -213,7 +212,7 @@ public class MainActivity extends FragmentActivity implements OnClickListener,On
 		toolTopImg = (ImageView) findViewById(R.id.toolTopImg);
 		bottomPanel = (LinearLayout) findViewById(R.id.bottomPanel);
 		
-		accountImg = (ImageView) findViewById(R.id.accountImg);
+		accountImg = (CircleImageView) findViewById(R.id.accountImg);
 		searchEd = (EditText) findViewById(R.id.searchEd);
 		searchBtn = (Button) findViewById(R.id.searchBtn);
 		download = (Button) findViewById(R.id.download);
@@ -367,22 +366,22 @@ public class MainActivity extends FragmentActivity implements OnClickListener,On
 	private void initIconData(){
 		File file = new File(Constants.ACCOUNT_ICON);
 		Account account = StoreApplication.getInstance().daoSession.getAccountDao().queryBuilder().unique();
-		if (file.exists()) {
-			Bitmap bitmap = BitmapFactory.decodeFile(Constants.ACCOUNT_ICON);
-			if (account != null) {
-				ImageListener listener = ImageLoader.getImageListener(accountImg, bitmap, bitmap);
-				StoreApplication.getInstance().getImageLoader().get(account.getPhoto(), listener);
-			}else {
-				accountImg.setBackgroundResource(R.drawable.yonghuicon);
-			}
-		}else {
+//		if (file.exists()) {
+//			Bitmap bitmap = BitmapFactory.decodeFile(Constants.ACCOUNT_ICON);
+//			if (account != null) {
+//				ImageListener listener = ImageLoader.getImageListener(accountImg, bitmap, bitmap);
+//				StoreApplication.getInstance().getImageLoader().get(account.getPhoto(), listener);
+//			}else {
+//				accountImg.setBackgroundResource(R.drawable.yonghuicon);
+//			}
+//		}else {
 			if (account != null) {
 				ImageListener listener = ImageLoader.getImageListener(accountImg, R.drawable.yonghuicon, R.drawable.yonghuicon);
 				StoreApplication.getInstance().getImageLoader().get(account.getPhoto(), listener);
 			}else {
 				accountImg.setBackgroundResource(R.drawable.yonghuicon);
 			}
-		}
+//		}
 	}
 	
 	private void setOnclick(){
@@ -599,8 +598,7 @@ public class MainActivity extends FragmentActivity implements OnClickListener,On
 	@Override
 	public void onLoginOut() {
 		// TODO Auto-generated method stub
-		accountImg.setImageBitmap(null);
-		accountImg.setBackgroundResource(R.drawable.yonghuicon);
+		accountImg.setImageBitmap(UIUtil.readBitmap(this, R.drawable.yonghuicon));
 	}
 
 	@Override

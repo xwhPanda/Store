@@ -20,17 +20,17 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.jiqu.download.AppUtil;
-import com.jiqu.interfaces.UninstallStateObserver;
 import com.jiqu.object.InstalledApp;
 import com.vr.store.R;
 import com.jiqu.tools.InstalledAppTool;
 import com.jiqu.tools.MetricsTool;
 import com.jiqu.tools.UIUtil;
 
-public class UninstallAppAdatpter extends BaseAdapter implements UninstallStateObserver{
+public class UninstallAppAdatpter extends BaseAdapter{
 	private Context context;
 	private List<InstalledApp> installedApps;
 	private List<Holder> displayHolders;
+	private InstalledAppTool installedAppTool;
 	//0 安装；1 卸载
 	private int action = -1;
 	
@@ -38,6 +38,7 @@ public class UninstallAppAdatpter extends BaseAdapter implements UninstallStateO
 		// TODO Auto-generated constructor stub
 		this.context = context;
 		this.installedApps = installedApps;
+		installedAppTool = new InstalledAppTool();
 		displayHolders = new ArrayList<UninstallAppAdatpter.Holder>();
 	}
 
@@ -57,14 +58,6 @@ public class UninstallAppAdatpter extends BaseAdapter implements UninstallStateO
 	public long getItemId(int position) {
 		// TODO Auto-generated method stub
 		return position;
-	}
-	
-	public void startObserver() {
-		InstalledAppTool.getInstance().registerObsverver(this);
-	}
-
-	public void stopObserver() {
-		InstalledAppTool.getInstance().registerObsverver(this);
 	}
 
 	@Override
@@ -92,7 +85,6 @@ public class UninstallAppAdatpter extends BaseAdapter implements UninstallStateO
 		private Button uninstall;
 		
 		private InstalledApp appData;
-		private InstalledAppTool installedAppTool;
 		
 		public Holder(Context context){
 			this.context = context;
@@ -109,9 +101,6 @@ public class UninstallAppAdatpter extends BaseAdapter implements UninstallStateO
 		}
 		
 		public void setData(InstalledApp app){
-			if (installedAppTool == null) {
-				installedAppTool = InstalledAppTool.getInstance();
-			}
 			appData = app;
 			refreshView(app);
 		}
@@ -151,8 +140,7 @@ public class UninstallAppAdatpter extends BaseAdapter implements UninstallStateO
 				@Override
 				public void onClick(View v) {
 					// TODO Auto-generated method stub
-					installedAppTool.addUninstall(appData);
-					installedAppTool.uninstall(context, appData);
+					installedAppTool.uninstallApp(context, appData.packageName);
 				}
 			});
 			
@@ -205,12 +193,6 @@ public class UninstallAppAdatpter extends BaseAdapter implements UninstallStateO
 			}
 		}
 	}
-
-	@Override
-	public void onUninstallStateChanged(InstalledApp app) {
-		// TODO Auto-generated method stub
-//		refreshHolder(app);
-	}
 	
 	private void refreshHolder(final String pkg){
 		List<Holder> holders = getDisplayedHolder();
@@ -221,7 +203,6 @@ public class UninstallAppAdatpter extends BaseAdapter implements UninstallStateO
 					@Override
 					public void run() {
 						// TODO Auto-generated method stub
-						holder.installedAppTool.removeUninstallTask(pkg);
 						synchronized (installedApps) {
 							installedApps.remove(holder.appData);
 						}
@@ -238,7 +219,7 @@ public class UninstallAppAdatpter extends BaseAdapter implements UninstallStateO
 	public void changeAppPkg(String pkg,int action){
 		this.action = action;
 		if (action == 0) {//install
-			final InstalledApp app = InstalledAppTool.getInstallApp(context, pkg);
+			final InstalledApp app = new InstalledAppTool().getInstallApp(context, pkg);
 			if (app != null) {
 				AppUtil.post(new Runnable() {
 					

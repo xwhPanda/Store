@@ -21,10 +21,13 @@ import com.jiqu.tools.MD5;
 import com.jiqu.tools.RequestTool;
 import com.jiqu.tools.UIUtil;
 import com.jiqu.umeng.UMengManager;
+import com.jiqu.view.NetChangeDialog;
 import com.jiqu.view.PasswordView;
 import com.jiqu.view.QuickLoginView;
 import com.jiqu.view.TitleView;
 
+import android.app.Dialog;
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.InputType;
@@ -52,6 +55,7 @@ public class MemberLoginActivity extends BaseActivity implements OnClickListener
 	private boolean loging = false;
 	
 	private UMengManager mUMengManager;
+	private ProgressDialog loginDialog;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -65,6 +69,7 @@ public class MemberLoginActivity extends BaseActivity implements OnClickListener
 	
 	private void init(){
 		mUMengManager = UMengManager.getInstance();
+		loginDialog = new ProgressDialog(this);
 		titleView = (TitleView) findViewById(R.id.titleView);
 		accountIcon = (ImageView) findViewById(R.id.accountIcon);
 		forgetPassword = (Button) findViewById(R.id.forgetPassword);
@@ -204,6 +209,7 @@ public class MemberLoginActivity extends BaseActivity implements OnClickListener
 								gender = 2;
 							}
 							String image = data.get("profile_image_url");
+							loginDialog.show();
 							qqLogin(nickname, gender, uid, MD5.GetMD5Code(uid + String.valueOf(gender) + RequestTool.PRIKEY),image);
 						}
 						
@@ -257,13 +263,25 @@ public class MemberLoginActivity extends BaseActivity implements OnClickListener
 			public void onResponse(String arg0) {
 				// TODO Auto-generated method stub
 				AccountResponeInfo responeInfo = JSON.parseObject(arg0, AccountResponeInfo.class);
-				Account account = AccountInformation.toAccount(responeInfo.getData(), image);
+				Account account = null;
+				if (responeInfo.getPhoto() == null) {
+					account = AccountInformation.toAccount(responeInfo.getData(), image);
+				}
+				StoreApplication.daoSession.getAccountDao().insertOrReplace(account);
+				if (StoreApplication.loginOutObservers != null) {
+					for(LoginOutObserver observer : StoreApplication.loginOutObservers){
+						observer.onRefresh(account);
+					}
+				}
+				loginDialog.dismiss();
+				MemberLoginActivity.this.finish();
 			}
 		}, RequestTool.OTHER_REGISTER_URL, new ErrorListener() {
 
 			@Override
 			public void onErrorResponse(VolleyError arg0) {
 				// TODO Auto-generated method stub
+				loginDialog.dismiss();
 			}
 		}, requestTool.getMap(), OTHER_REGISTER);
 	}

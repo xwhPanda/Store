@@ -36,4 +36,5 @@
     <color name="detailControl">#efefef</color>
     
     <color name="gray">#aaaaaa</color>
+    <color name="battery_item_bg_color">#31333a</color>
 </resources>

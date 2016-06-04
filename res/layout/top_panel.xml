@@ -47,7 +47,7 @@
             android:layout_gravity="center_vertical"
             android:layout_weight="1" >
 
-            <ImageView
+            <com.jiqu.view.CircleImageView
                 android:id="@+id/accountImg"
                 android:layout_width="@dimen/topAccountIconSize"
                 android:layout_height="@dimen/topAccountIconSize"

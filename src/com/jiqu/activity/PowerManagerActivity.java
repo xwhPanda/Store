@@ -4,22 +4,17 @@ import java.util.ArrayList;
 import java.util.List;
 
 import android.R.integer;
-import android.app.PendingIntent;
-import android.app.PendingIntent.CanceledException;
-import android.app.ProgressDialog;
 import android.bluetooth.BluetoothAdapter;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
-import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.BatteryManager;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.provider.Settings.SettingNotFoundException;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.Window;
@@ -30,10 +25,10 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 import android.widget.ToggleButton;
 
 import com.jiqu.adapter.BatteryAdapter;
+import com.jiqu.application.StoreApplication;
 import com.jiqu.object.BatteryInfo;
 import com.jiqu.object.BatterySipper;
 import com.jiqu.store.BaseActivity;
@@ -49,6 +44,7 @@ import com.jiqu.view.WaveView;
 public class PowerManagerActivity extends BaseActivity implements OnCheckedChangeListener{
 	private TitleView titleView;
 	private ListView appUseBatteryListView;
+	private RelativeLayout parent;
 	
 	//headview
 	private View headView;
@@ -66,6 +62,7 @@ public class PowerManagerActivity extends BaseActivity implements OnCheckedChang
 	
 	private BluetoothAdapter bluetoothAdapter;
 	private SharedPreferences preferences;
+	private GetProcessTask task;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -88,8 +85,11 @@ public class PowerManagerActivity extends BaseActivity implements OnCheckedChang
 	
 	private void initView(){
 		initHeadView();
+		parent = (RelativeLayout) findViewById(R.id.parent);
 		titleView = (TitleView) findViewById(R.id.titleView);
 		appUseBatteryListView = (ListView) findViewById(R.id.appUseBatteryListView);
+		
+		parent.setBackgroundDrawable(StoreApplication.BG_IMG);
 		
 		appUseBatteryListView.addHeaderView(headView);
 		
@@ -106,9 +106,10 @@ public class PowerManagerActivity extends BaseActivity implements OnCheckedChang
 		batteryInfo = new BatteryInfo(this);
 		sippers = new ArrayList<BatterySipper>();
 		adapter = new BatteryAdapter(this, sippers);
-		appUseBatteryListView.setAdapter(adapter); 
+		appUseBatteryListView.setAdapter(adapter);
 		
-		new GetProcessTask().execute();
+		task = new GetProcessTask();
+		task.execute();
 		initData();
 	}
 	
@@ -133,7 +134,7 @@ public class PowerManagerActivity extends BaseActivity implements OnCheckedChang
 	
 	private void initData(){
 		bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
-		preferences = getSharedPreferences(Constants.BATTERY_SHARE_PREFERENCE_NAME, MODE_PRIVATE);
+		preferences = StoreApplication.context.getSharedPreferences(Constants.BATTERY_SHARE_PREFERENCE_NAME, MODE_PRIVATE);
 		showPreBatteryTog.setChecked(SharePreferenceTool.getBooleanFromPreferences(preferences, Constants.DISPLAY_BATTERY_PERCENT, true));
 		saveBatteryTog.setChecked(SharePreferenceTool.getBooleanFromPreferences(preferences, Constants.POWER_SAVING_MODE, false));
 	}
@@ -200,6 +201,9 @@ public class PowerManagerActivity extends BaseActivity implements OnCheckedChang
 	protected void onDestroy() {
 		super.onDestroy();
 		unregisterReceiver(receiver);
+		if (task != null) {
+			task.cancel(true);
+		}
 	};
 	
 	BroadcastReceiver receiver = new BroadcastReceiver(){
@@ -235,7 +239,9 @@ public class PowerManagerActivity extends BaseActivity implements OnCheckedChang
 			SharePreferenceTool.setValuePreferences(preferences, Constants.DISPLAY_BATTERY_PERCENT, isChecked);
 		}else if (buttonView == saveBatteryTog) {
 			SharePreferenceTool.setValuePreferences(preferences, Constants.POWER_SAVING_MODE, isChecked);
-			bluetoothAdapter.disable();
+			if (bluetoothAdapter != null) {
+				bluetoothAdapter.disable();
+			}
 			if (isChecked) {
 				try {
 					int screenMode = Settings.System.getInt(getContentResolver(), Settings.System.SCREEN_BRIGHTNESS_MODE);
@@ -246,7 +252,6 @@ public class PowerManagerActivity extends BaseActivity implements OnCheckedChang
 						}
 						setScreenBrightness(50.0F);
 					}
-
 				} catch (SettingNotFoundException e) {
 					e.printStackTrace();
 				}

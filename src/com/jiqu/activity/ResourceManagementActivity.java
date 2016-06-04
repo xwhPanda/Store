@@ -49,12 +49,14 @@ public class ResourceManagementActivity extends BaseActivity{
 	private HashMap<String, Object> map = new HashMap<String, Object>();
 	private String json = "";
 	private boolean isShowing = false;
+	private InstalledAppTool installedAppTool;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
 		super.onCreate(savedInstanceState);
 		requestTool = RequestTool.getInstance();
+		installedAppTool = new InstalledAppTool();
 		json = initInstallAppJson();
 		initView();
 		loadData(RequestTool.OTHER_UPGRADE_URL,json);
@@ -102,7 +104,7 @@ public class ResourceManagementActivity extends BaseActivity{
 	}
 	
 	private String initInstallAppJson(){
-		List<InstalledApp> apps = InstalledAppTool.getPersonalApp(this);
+		List<InstalledApp> apps = installedAppTool.getPersonalApp(ResourceManagementActivity.this);
 		JSONArray array = new JSONArray();
 		for(InstalledApp app : apps){
 			JSONObject object = new JSONObject();

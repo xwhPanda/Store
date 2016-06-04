@@ -17,11 +17,13 @@ import com.jiqu.database.Account;
 import com.vr.store.R;
 import com.jiqu.tools.MetricsTool;
 import com.jiqu.tools.UIUtil;
+import com.jiqu.view.CircleImageView;
 import com.jiqu.view.ToolItemView;
 
 import de.greenrobot.dao.query.QueryBuilder;
 
 import android.content.Intent;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -33,7 +35,7 @@ import android.widget.TextView;
 public class ToolFragment extends BaseFragment implements OnClickListener{
 	private float Rx,Ry;
 	private View view;
-	private ImageView accountIcon;
+	private CircleImageView accountIcon;
 	private LinearLayout accountLin;
 	private TextView accountName;
 	private ImageView messageImg;
@@ -67,7 +69,7 @@ public class ToolFragment extends BaseFragment implements OnClickListener{
 		Ry = MetricsTool.Ry;
 		view = LayoutInflater.from(activity).inflate(R.layout.tool, null, false);
 		toolView = (RelativeLayout) view.findViewById(R.id.toolView);
-		accountIcon = (ImageView) view.findViewById(R.id.accountIcon);
+		accountIcon = (CircleImageView) view.findViewById(R.id.accountIcon);
 		accountLin = (LinearLayout) view.findViewById(R.id.accountLin);
 		accountName = (TextView) view.findViewById(R.id.accountName);
 		messageImg = (ImageView) view.findViewById(R.id.messageImg);
@@ -148,7 +150,7 @@ public class ToolFragment extends BaseFragment implements OnClickListener{
 			e.printStackTrace();
 		}
 		
-		toolView.setBackgroundResource(R.drawable.toolbg);
+		toolView.setBackgroundDrawable(StoreApplication.BG_IMG);
 		
 		messageImg.setImageBitmap(UIUtil.readBitmap(activity, R.drawable.xinxi));
 		level.setBackgroundDrawable(UIUtil.readBitmapDrawable(activity, R.drawable.dengji));
@@ -216,7 +218,11 @@ public class ToolFragment extends BaseFragment implements OnClickListener{
 		if (account != null) {
 			ImageListener listener = ImageLoader.getImageListener(accountIcon, R.drawable.yonghuicon, R.drawable.yonghuicon);
 			StoreApplication.getInstance().getImageLoader().get(account.getPhoto(), listener);
-			accountName.setText(account.getUsername());
+			if (account.getUsername() != null && !TextUtils.isEmpty(account.getUsername())) {
+				accountName.setText(account.getUsername());
+			}else {
+				accountName.setText(account.getNickname());
+			}
 			messageImg.setVisibility(View.VISIBLE);
 			level.setVisibility(View.VISIBLE);
 			level.setText("LV " + account.getLevel());
@@ -228,6 +234,7 @@ public class ToolFragment extends BaseFragment implements OnClickListener{
 			level.setText("LV " + "");
 		}
 	}
+	
 	@Override
 	public void onLoginOut() {
 		// TODO Auto-generated method stub

@@ -23,6 +23,7 @@ import com.android.volley.Response.ErrorListener;
 import com.android.volley.Response.Listener;
 import com.android.volley.VolleyError;
 import com.jiqu.adapter.CommomProblemAdapter;
+import com.jiqu.application.StoreApplication;
 import com.jiqu.object.CommonProblemInfo;
 import com.jiqu.object.CommonProblemItem;
 import com.jiqu.store.BaseActivity;
@@ -34,6 +35,7 @@ import com.jiqu.view.TitleView;
 
 public class CommomProblemActivity extends BaseActivity implements OnClickListener{
 	private final String PROBLEM_REQUEST = "problemRequest";
+	private RelativeLayout parent;
 	private TitleView titleView;
 	private Button feedback;
 	private ListView problemListView;
@@ -65,6 +67,9 @@ public class CommomProblemActivity extends BaseActivity implements OnClickListen
 		problemListView = (ListView) findViewById(R.id.problemListView);
 		loadView = (LoadStateView) findViewById(R.id.loadView);
 		contentRel = (RelativeLayout) findViewById(R.id.contentRel);
+		parent = (RelativeLayout) findViewById(R.id.parent);
+		
+		parent.setBackgroundDrawable(StoreApplication.BG_IMG);
 		
 		titleView.setActivity(this);
 		titleView.back.setBackgroundResource(R.drawable.fanhui);

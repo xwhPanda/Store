@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/parent"
     android:layout_width="match_parent"
-    android:layout_height="match_parent" 
-    android:background="@drawable/toolbg">
+    android:layout_height="match_parent">
     
     <com.jiqu.view.TitleView
         android:id="@+id/titleView"
@@ -16,6 +16,6 @@
         android:scrollbars="none"
         android:dividerHeight="2dp"
         android:divider="@drawable/divider"
-        android:listSelector="@null"/>
+        android:listSelector="@color/transparent"/>
     
 </RelativeLayout>

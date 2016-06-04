@@ -1,11 +1,6 @@
 package com.jiqu.activity;
 
-import android.content.BroadcastReceiver;
-import android.content.Context;
-import android.content.Intent;
-import android.content.IntentFilter;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
@@ -35,6 +30,7 @@ public class AppUninstallActivity extends BaseActivity implements OnClickListene
 	private ListView appList,systemAppList;
 	private UninstallAppAdatpter adapter;
 	private UninstallSystemAppAdapter uninstallSystemAppAdapter;
+	private InstalledAppTool installedAppTool;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -42,8 +38,6 @@ public class AppUninstallActivity extends BaseActivity implements OnClickListene
 		super.onCreate(savedInstanceState);
 		
 		initView();
-		
-		adapter.startObserver();
 	}
 	
 	@Override
@@ -53,6 +47,7 @@ public class AppUninstallActivity extends BaseActivity implements OnClickListene
 	}
 	
 	private void initView(){
+		installedAppTool = new InstalledAppTool();
 		titleView = (TitleView) findViewById(R.id.titleView);
 		btnLin = (LinearLayout) findViewById(R.id.btnLin);
 		personalAPP = (Button) findViewById(R.id.personalAPP);
@@ -77,10 +72,10 @@ public class AppUninstallActivity extends BaseActivity implements OnClickListene
 	}
 	
 	private void initData(){
-		adapter = new UninstallAppAdatpter(this, InstalledAppTool.getPersonalApp(this));
+		adapter = new UninstallAppAdatpter(this, installedAppTool.getPersonalApp(this));
 		appList.setAdapter(adapter);
 		
-		uninstallSystemAppAdapter = new UninstallSystemAppAdapter(this,InstalledAppTool.getSystemApp(this));
+		uninstallSystemAppAdapter = new UninstallSystemAppAdapter(this,installedAppTool.getSystemApp(this));
 		systemAppList.setAdapter(uninstallSystemAppAdapter);
 	}
 	
@@ -125,21 +120,20 @@ public class AppUninstallActivity extends BaseActivity implements OnClickListene
 			changeButtonState(personalAPP);
 			systemAppList.setVisibility(View.INVISIBLE);
 			appList.setVisibility(View.VISIBLE);
-			allUninstallRel.setVisibility(View.VISIBLE);
+//			allUninstallRel.setVisibility(View.VISIBLE);
 		}else if (v.getId() == R.id.systemAPP) {
 			changeButtonState(systemAPP);
 			appList.setVisibility(View.INVISIBLE);
 			systemAppList.setVisibility(View.VISIBLE);
-			allUninstallRel.setVisibility(View.GONE);
+//			allUninstallRel.setVisibility(View.GONE);
 		}else if (v.getId() == R.id.allUninstallBtn) {
-			InstalledAppTool.getInstance().uninstallAll(this);
+//			InstalledAppTool.getInstance().uninstallAll(this);
 		}
 	}
 	
 	
 	protected void onDestroy() {
 		super.onDestroy();
-		adapter.stopObserver();
 	}
 
 	@Override

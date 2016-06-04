@@ -202,7 +202,7 @@ public class GameNewFragment extends BaseFragment implements MyPullUpListViewCal
 	};
 	
 	private void setState(List<GameInfo> infos,int count){
-		List<InstalledApp> apps = InstalledAppTool.getPersonalApp(activity);
+		List<InstalledApp> apps = installedAppTool.getPersonalApp(activity);
 		int size = count;
 		if (infos.size() < count) {
 			count = infos.size();

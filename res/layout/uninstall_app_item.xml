@@ -11,7 +11,8 @@
         android:layout_height="wrap_content"
         android:layout_centerVertical="true"
         android:button="@null"
-        android:background="@drawable/checkbox_yellow_sel"/>
+        android:background="@drawable/checkbox_yellow_sel"
+        android:visibility="invisible"/>
     
     <ImageView 
         android:id="@+id/appIcon"

@@ -37,6 +37,9 @@ import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.database.sqlite.SQLiteDatabase;
+import android.graphics.BitmapFactory;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Looper;
@@ -63,6 +66,7 @@ public class StoreApplication extends Application {
 	public static String UPGRADE_DOWNLOAD_PATH = "";
 	public static String DATA_FILE_PATH ="";
 	public static List<LoginOutObserver> loginOutObservers;
+	public static Drawable BG_IMG;
 	
 	@Override
 	public void onCreate() {
@@ -87,6 +91,7 @@ public class StoreApplication extends Application {
 		
 		initUMeng();
 		
+		BG_IMG = new BitmapDrawable(BitmapFactory.decodeResource(getResources(), R.drawable.toolbg));
 		APK_DOWNLOAD_PATH = FileUtil.getApkDownloadDir(context);
 		ZIP_DOWNLOAD_PATH = FileUtil.getZipDownloadDir(context);
 		UPGRADE_DOWNLOAD_PATH = FileUtil.getUpgradeDownloadDir(context);

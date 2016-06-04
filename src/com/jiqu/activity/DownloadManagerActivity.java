@@ -53,6 +53,7 @@ public class DownloadManagerActivity extends BaseActivity implements OnClickList
 	
 	private boolean downloadingListShowing = false;
 	private boolean downloadedListShowing = false;
+	private InstalledAppTool installedAppTool;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -89,6 +90,7 @@ public class DownloadManagerActivity extends BaseActivity implements OnClickList
 	}
 	
 	private void initView(){
+		installedAppTool = new InstalledAppTool();
 		titleView = (TitleView) findViewById(R.id.titleView);
 		btnLin = (LinearLayout) findViewById(R.id.btnLin);
 		downloading = (Button) findViewById(R.id.downloading);
@@ -196,7 +198,7 @@ public class DownloadManagerActivity extends BaseActivity implements OnClickList
 		
 		QueryBuilder<DownloadAppinfo> qb1 = StoreApplication.daoSession.getDownloadAppinfoDao().queryBuilder();
 		List<DownloadAppinfo> infos2 = qb1.where(Properties.HasFinished.eq(true)).list();
-		List<InstalledApp> apps = InstalledAppTool.getPersonalApp(this);
+		List<InstalledApp> apps = installedAppTool.getPersonalApp(this);
 		for (DownloadAppinfo info : infos2) {
 				if (info.getDownloadState() != DownloadManager.STATE_INSTALLED) {
 					int state = InstalledAppTool.contain(apps,info.getPackageName());
