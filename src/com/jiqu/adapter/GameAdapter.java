@@ -3,9 +3,7 @@ package com.jiqu.adapter;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.android.volley.VolleyError;
 import com.android.volley.toolbox.ImageLoader;
-import com.android.volley.toolbox.ImageLoader.ImageContainer;
 import com.android.volley.toolbox.ImageLoader.ImageListener;
 import com.jiqu.activity.SortInfoActivity;
 import com.jiqu.application.StoreApplication;
@@ -26,11 +24,8 @@ import com.jiqu.view.RatingBarView;
 
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Bitmap;
 import android.graphics.drawable.AnimationDrawable;
 import android.os.Handler;
-import android.text.Html;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;

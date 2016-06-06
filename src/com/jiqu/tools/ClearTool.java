@@ -239,7 +239,8 @@ public class ClearTool {
         long beforeMem = getAvailMemory(context);
         int count = 0;
         Message msg = handler.obtainMessage();
-        msg.what = DeepClearActivity.SCAN_PROCESS_COMPLETED;
+        //DeepClearActivity.SCAN_PROCESS_COMPLETED
+        msg.what = 5;
         msg.arg1 = infoList.size();
         handler.sendMessageDelayed(msg, 2 * 1000);
         if (infoList != null) {
@@ -280,7 +281,8 @@ public class ClearTool {
 
             }
         }
-        handler.sendEmptyMessageDelayed(DeepClearActivity.KILL_PROCESS_COMPLETED, 2 * 1000);
+        //DeepClearActivity.KILL_PROCESS_COMPLETED
+        handler.sendEmptyMessageDelayed(8, 2 * 1000);
     }
 	
 	   //获取可用内存大小

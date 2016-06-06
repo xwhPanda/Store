@@ -11,9 +11,11 @@ import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.ListView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.jiqu.adapter.ShareAddFriendAdapter;
+import com.jiqu.application.StoreApplication;
 import com.jiqu.object.FriendItem;
 import com.jiqu.store.BaseActivity;
 import com.umeng.socialize.Config;
@@ -30,6 +32,7 @@ import com.jiqu.view.PullableListView;
 import com.jiqu.view.TitleView;
 
 public class ShareActivity extends BaseActivity {
+	private RelativeLayout parent;
 	private TitleView titleView;
 	private FriendShareItem contacts,qq,weixin,weibo;
 	private PullToRefreshLayout refreshView;
@@ -75,6 +78,8 @@ public class ShareActivity extends BaseActivity {
 	}
 	
 	private void initView(){
+		parent = (RelativeLayout) findViewById(R.id.parent);
+		parent.setBackgroundDrawable(StoreApplication.BG_IMG);
 		titleView = (TitleView) findViewById(R.id.titleView);
 		contacts = (FriendShareItem) findViewById(R.id.contacts);
 		qq = (FriendShareItem) findViewById(R.id.qq);

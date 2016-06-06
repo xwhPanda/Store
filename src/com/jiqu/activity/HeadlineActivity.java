@@ -22,6 +22,7 @@ import com.android.volley.Request.Method;
 import com.android.volley.Response.ErrorListener;
 import com.android.volley.Response.Listener;
 import com.android.volley.VolleyError;
+import com.jiqu.application.StoreApplication;
 import com.jiqu.object.InformationGallaryItem;
 import com.jiqu.object.InformationItemInfo;
 import com.jiqu.store.BaseActivity;
@@ -35,6 +36,7 @@ import com.jiqu.view.EvaluationItemView;
 import com.jiqu.view.TitleView;
 
 public class HeadlineActivity extends BaseActivity {
+	private RelativeLayout parentView;
 	private TitleView titleView;
 	private TextView evaluationTitle;
 	private LinearLayout informationLin;
@@ -121,20 +123,20 @@ public class HeadlineActivity extends BaseActivity {
 			@Override
 			public void onResponse(String arg0) {
 				// TODO Auto-generated method stub
-				Log.i("TAG", arg0);
 			}
 		}, url, new ErrorListener() {
 
 			@Override
 			public void onErrorResponse(VolleyError arg0) {
 				// TODO Auto-generated method stub
-				Log.i("TAG", arg0.toString());
 			}
 
 		}, requestTool.getMap(), "informationDetail");
 	}
 
 	private void initView() {
+		parentView = (RelativeLayout) findViewById(R.id.parentView);
+		parentView.setBackgroundDrawable(StoreApplication.BG_IMG);
 		titleView = (TitleView) findViewById(R.id.titleView);
 		evaluationTitle = (TextView) findViewById(R.id.evaluationTitle);
 		informationLin = (LinearLayout) findViewById(R.id.informationLin);

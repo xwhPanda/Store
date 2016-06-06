@@ -70,6 +70,7 @@ public class ShowAccountInformatiomActivity extends BaseActivity implements OnCl
 	private final int RESIZE_REQUEST_CODE = 2;
 	private final int SELECT_PIC_KITKAT = 4;
 	private final String REQUEST_TAG = "modifyInformaiontRequest";
+	private RelativeLayout parent;
 	private TitleView titleView;
 	private CircleImageView accountImg;
 	private TextView nickName;
@@ -122,6 +123,8 @@ public class ShowAccountInformatiomActivity extends BaseActivity implements OnCl
 	}
 
 	private void initView() {
+		parent = (RelativeLayout) findViewById(R.id.parent);
+		parent.setBackgroundDrawable(StoreApplication.BG_IMG);
 		titleView = (TitleView) findViewById(R.id.titleView);
 		accountImg = (CircleImageView) findViewById(R.id.accountImg);
 		nickName = (TextView) findViewById(R.id.nickName);

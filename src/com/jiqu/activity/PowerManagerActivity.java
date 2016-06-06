@@ -86,6 +86,7 @@ public class PowerManagerActivity extends BaseActivity implements OnCheckedChang
 	private void initView(){
 		initHeadView();
 		parent = (RelativeLayout) findViewById(R.id.parent);
+		parent.setBackgroundDrawable(StoreApplication.BG_IMG);
 		titleView = (TitleView) findViewById(R.id.titleView);
 		appUseBatteryListView = (ListView) findViewById(R.id.appUseBatteryListView);
 		

@@ -174,41 +174,51 @@ public class ToolFragment extends BaseFragment implements OnClickListener{
 		// TODO Auto-generated method stub
 		switch (v.getId()) {
 		case R.id.messageImg:
+			/** 消息中心 **/
 			startActivity(new Intent(getActivity(), MessageCenterActivity.class));
 			break;
 		case R.id.downloadItem:
+			/** 下载管理 **/
 			startActivity(new Intent(getActivity(), DownloadManagerActivity.class));
 			break;
 
 		case R.id.resourcesItem:
+			/** 资源管理 **/
 			startActivity(new Intent(getActivity(), ResourceManagementActivity.class));
 			break;
 			
 		case R.id.uninstallItem:
+			/** 应用卸载 **/
 			startActivity(new Intent(getActivity(), AppUninstallActivity.class));
 			break;
 
 		case R.id.clearCacheItem:
+			/** 清理缓存 **/
 			startActivity(new Intent(getActivity(), ClearCacheActivity.class));
 			break;
 			
 		case R.id.clearUpItem:
+			/** 深度清理 **/
 			startActivity(new Intent(getActivity(), DeepClearActivity.class));
 			break;
 
 		case R.id.powerItem:
+			/** 电量管理 **/
 			startActivity(new Intent(getActivity(), PowerManagerActivity.class));
 			break;
 			
 		case R.id.commomProblemItem:
+			/** 常见问题 **/
 			startActivity(new Intent(getActivity(), CommomProblemActivity.class));
 			break;
 
 		case R.id.shareItem:
+			/** 好友分享 **/
 			startActivity(new Intent(getActivity(), ShareActivity.class));
 			break;
 			
 		case R.id.aboutUsItem:
+			/** 关于我们 **/
 			startActivity(new Intent(getActivity(), AboutUsActivity.class));
 			break;
 		}

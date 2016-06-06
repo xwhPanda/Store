@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:button ="http://schemas.android.com/apk/res/com.vr.store"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/parent"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:ignore="MissingPrefix" 
-    android:background="@drawable/toolbg">
+    tools:ignore="MissingPrefix">
 
     <com.jiqu.view.TitleView
         android:id="@+id/titleView"
@@ -239,7 +240,7 @@
 	            </LinearLayout>
             </RelativeLayout>
             
-            <Button 
+            <com.jiqu.view.ProgressButton 
                 android:id="@+id/download"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -247,7 +248,10 @@
                 android:layout_below="@id/pagerRel"
                 android:textColor="@color/white"
                 android:text="@string/download"
-                android:background="@drawable/tijiao"/>
+                button:textcolor="@color/white"
+                button:max="100"
+                button:foreground="#09df38"
+                button:background="#00bb29"/>
         </RelativeLayout>
     </ScrollView>
 

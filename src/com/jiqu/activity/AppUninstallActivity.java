@@ -13,6 +13,7 @@ import android.widget.RelativeLayout;
 
 import com.jiqu.adapter.UninstallAppAdatpter;
 import com.jiqu.adapter.UninstallSystemAppAdapter;
+import com.jiqu.application.StoreApplication;
 import com.jiqu.store.BaseActivity;
 import com.vr.store.R;
 import com.jiqu.tools.InstalledAppTool;
@@ -21,6 +22,7 @@ import com.jiqu.view.TitleView;
 
 
 public class AppUninstallActivity extends BaseActivity implements OnClickListener,OnCheckedChangeListener{
+	private RelativeLayout parent;
 	private TitleView titleView;
 	private LinearLayout btnLin;
 	private Button personalAPP,systemAPP;
@@ -48,6 +50,8 @@ public class AppUninstallActivity extends BaseActivity implements OnClickListene
 	
 	private void initView(){
 		installedAppTool = new InstalledAppTool();
+		parent = (RelativeLayout) findViewById(R.id.parent);
+		parent.setBackgroundDrawable(StoreApplication.BG_IMG);
 		titleView = (TitleView) findViewById(R.id.titleView);
 		btnLin = (LinearLayout) findViewById(R.id.btnLin);
 		personalAPP = (Button) findViewById(R.id.personalAPP);

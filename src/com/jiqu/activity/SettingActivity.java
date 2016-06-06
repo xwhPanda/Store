@@ -7,8 +7,10 @@ import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.CompoundButton;
+import android.widget.RelativeLayout;
 import android.widget.CompoundButton.OnCheckedChangeListener;
 
+import com.jiqu.application.StoreApplication;
 import com.jiqu.store.BaseActivity;
 import com.vr.store.R;
 import com.jiqu.tools.Constants;
@@ -18,6 +20,7 @@ import com.jiqu.view.SettingsItem;
 import com.jiqu.view.TitleView;
 
 public class SettingActivity extends BaseActivity implements OnCheckedChangeListener,OnClickListener{
+	private RelativeLayout parent;
 	private TitleView titleView;
 	private SettingsItem threadItem,loadLargImg,autoCheckVersion,checkVersion,modifyPassword,loginOut;
 	private SharedPreferences preferences;
@@ -38,6 +41,8 @@ public class SettingActivity extends BaseActivity implements OnCheckedChangeList
 	}
 
 	private void initView(){
+		parent = (RelativeLayout) findViewById(R.id.parent);
+		parent.setBackgroundDrawable(StoreApplication.BG_IMG);
 		titleView = (TitleView) findViewById(R.id.titleView);
 		threadItem = (SettingsItem) findViewById(R.id.threadItem);
 		loadLargImg = (SettingsItem) findViewById(R.id.loadLargImg);

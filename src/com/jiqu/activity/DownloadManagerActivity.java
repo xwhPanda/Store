@@ -38,6 +38,7 @@ import de.greenrobot.dao.query.QueryBuilder;
 
 public class DownloadManagerActivity extends BaseActivity implements OnClickListener
 	,OnCheckedChangeListener,OnItemLongClickListener{
+	private RelativeLayout parent;
 	private TitleView titleView;
 	private LinearLayout btnLin;
 	private Button downloading,downloaded;
@@ -92,6 +93,8 @@ public class DownloadManagerActivity extends BaseActivity implements OnClickList
 	private void initView(){
 		installedAppTool = new InstalledAppTool();
 		titleView = (TitleView) findViewById(R.id.titleView);
+		parent = (RelativeLayout) findViewById(R.id.parent);
+		parent.setBackgroundDrawable(StoreApplication.BG_IMG);
 		btnLin = (LinearLayout) findViewById(R.id.btnLin);
 		downloading = (Button) findViewById(R.id.downloading);
 		downloaded = (Button) findViewById(R.id.downloaded);

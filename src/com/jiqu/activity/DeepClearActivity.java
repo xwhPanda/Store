@@ -42,17 +42,18 @@ import com.jiqu.tools.UIUtil;
 import com.jiqu.view.TitleView;
 
 public class DeepClearActivity extends BaseActivity implements OnClickListener {
-	private static final int START_CLEAR_RUBISH = 0;
-	private static final int CLEAR_RUBISH_COMPLETED = 1;
-	private static final int START_SCAN = 2;
-	private static final int SCAN_COMPELTED = 3;
-	private static final int START_SCAN_PROGRESS = 4;
-	public static final int SCAN_PROCESS_COMPLETED = 5;
-	private static final int START_SCAN_RUBISH = 6;
-	private static final int SCAN_RUBISH_COMPLETE = 7;
-	public static final int KILL_PROCESS_COMPLETED = 8;
-	private static final int START_KILL_PROCESS = 9;
-	private static final int REFRESH_SCORE = 10;
+	private final int START_CLEAR_RUBISH = 0;
+	private final int CLEAR_RUBISH_COMPLETED = 1;
+	private final int START_SCAN = 2;
+	private final int SCAN_COMPELTED = 3;
+	private final int START_SCAN_PROGRESS = 4;
+	public final int SCAN_PROCESS_COMPLETED = 5;
+	private final int START_SCAN_RUBISH = 6;
+	private final int SCAN_RUBISH_COMPLETE = 7;
+	public final int KILL_PROCESS_COMPLETED = 8;
+	private final int START_KILL_PROCESS = 9;
+	private final int REFRESH_SCORE = 10;
+	private RelativeLayout parent;
 	private TitleView titleView;
 	private RelativeLayout scanRel;
 	private ImageView scanBg;
@@ -114,10 +115,12 @@ public class DeepClearActivity extends BaseActivity implements OnClickListener {
 	}
 
 	private void initView() {
-		memoryPre = ClearTool.getInstance().getScore(DeepClearActivity.this);
-		beforeMemory = ClearTool.getInstance().getAvailMemory(this);
-		animation_1 = AnimationUtils.loadAnimation(DeepClearActivity.this, R.anim.clear_img_anim);
-		animation_2 = AnimationUtils.loadAnimation(DeepClearActivity.this, R.anim.clear_small_img_anim);
+		memoryPre = ClearTool.getInstance().getScore(StoreApplication.context);
+		beforeMemory = ClearTool.getInstance().getAvailMemory(StoreApplication.context);
+		animation_1 = AnimationUtils.loadAnimation(StoreApplication.context, R.anim.clear_img_anim);
+		animation_2 = AnimationUtils.loadAnimation(StoreApplication.context, R.anim.clear_small_img_anim);
+		parent = (RelativeLayout) findViewById(R.id.parent);
+		parent.setBackgroundDrawable(StoreApplication.BG_IMG);
 		titleView = (TitleView) findViewById(R.id.titleView);
 		scanRel = (RelativeLayout) findViewById(R.id.scanRel);
 		scanBg = (ImageView) findViewById(R.id.scanBg);

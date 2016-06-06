@@ -15,6 +15,7 @@ import com.android.volley.Request.Method;
 import com.android.volley.Response.ErrorListener;
 import com.android.volley.Response.Listener;
 import com.android.volley.VolleyError;
+import com.jiqu.application.StoreApplication;
 import com.jiqu.download.StringUtil;
 import com.jiqu.store.BaseActivity;
 import com.vr.store.R;
@@ -28,6 +29,7 @@ import com.jiqu.view.TitleView;
 public class ForgetPasswordActivity extends BaseActivity implements OnClickListener{
 	private static final String GETCODE_TAG = "getcode";
 	private static final String RESET_TAG = "resetPassword";
+	private RelativeLayout parent;
 	private EditText accountEd;
 	private EditText codesEd;
 	private Button getCodes;
@@ -58,6 +60,8 @@ public class ForgetPasswordActivity extends BaseActivity implements OnClickListe
 	}
 
 	private void init(){
+		parent = (RelativeLayout) findViewById(R.id.parent);
+		parent.setBackgroundDrawable(StoreApplication.BG_IMG);
 		codesLin = (RelativeLayout) findViewById(R.id.codesLin);
 		accountEd = (EditText) findViewById(R.id.account);
 		codesEd = (EditText) findViewById(R.id.codesEd);

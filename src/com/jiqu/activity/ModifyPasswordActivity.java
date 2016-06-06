@@ -3,7 +3,9 @@ package com.jiqu.activity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.RelativeLayout;
 
+import com.jiqu.application.StoreApplication;
 import com.jiqu.store.BaseActivity;
 import com.vr.store.R;
 import com.jiqu.tools.UIUtil;
@@ -11,6 +13,7 @@ import com.jiqu.view.PasswordView;
 import com.jiqu.view.TitleView;
 
 public class ModifyPasswordActivity extends BaseActivity {
+	private RelativeLayout parent;
 	private TitleView titleView;
 	private PasswordView passwordView,confirmPasswordView;
 	private Button commit;
@@ -30,6 +33,8 @@ public class ModifyPasswordActivity extends BaseActivity {
 	}
 	
 	private void initView(){
+		parent = (RelativeLayout) findViewById(R.id.parent);
+		parent.setBackgroundDrawable(StoreApplication.BG_IMG);
 		titleView = (TitleView) findViewById(R.id.titleView);
 		passwordView = (PasswordView) findViewById(R.id.passwordView);
 		confirmPasswordView = (PasswordView) findViewById(R.id.confirmPasswordView);

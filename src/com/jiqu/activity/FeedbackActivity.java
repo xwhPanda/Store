@@ -19,6 +19,7 @@ import com.android.volley.Request.Method;
 import com.android.volley.Response.ErrorListener;
 import com.android.volley.Response.Listener;
 import com.android.volley.VolleyError;
+import com.jiqu.application.StoreApplication;
 import com.jiqu.store.BaseActivity;
 import com.jiqu.tools.Constants;
 import com.jiqu.tools.MD5;
@@ -29,6 +30,7 @@ import com.vr.store.R;
 
 public class FeedbackActivity extends BaseActivity implements OnClickListener{
 	private final String FEEDBACK_REQUEST = "feedbackRequest";
+	private RelativeLayout parent;
 	private TitleView titleView;
 	private RelativeLayout contentRel;
 	private EditText content;
@@ -51,6 +53,8 @@ public class FeedbackActivity extends BaseActivity implements OnClickListener{
 	}
 	
 	private void initView(){
+		parent = (RelativeLayout) findViewById(R.id.parent);
+		parent.setBackgroundDrawable(StoreApplication.BG_IMG);
 		titleView = (TitleView) findViewById(R.id.titleView);
 		contentRel = (RelativeLayout) findViewById(R.id.contentRel);
 		content = (EditText) findViewById(R.id.content);

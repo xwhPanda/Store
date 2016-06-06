@@ -10,6 +10,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListView;
+import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import com.alibaba.fastjson.JSON;
@@ -22,6 +23,7 @@ import com.android.volley.Response.Listener;
 import com.android.volley.VolleyError;
 import com.jiqu.adapter.GameAdapter;
 import com.jiqu.adapter.ResourcesManagmentAdapter;
+import com.jiqu.application.StoreApplication;
 import com.jiqu.download.DownloadManager;
 import com.jiqu.object.GameInfo;
 import com.jiqu.object.InstalledApp;
@@ -40,6 +42,7 @@ import com.jiqu.view.TitleView;
 
 public class ResourceManagementActivity extends BaseActivity{
 	private final String RESOURECE_REQUEST = "resourceRequest";
+	private RelativeLayout parent;
 	private TitleView titleView;
 	private PullToRefreshLayout refreshView;
 	private PullableListView resourceListView;
@@ -79,6 +82,8 @@ public class ResourceManagementActivity extends BaseActivity{
 	}
 
 	private void initView(){
+		parent = (RelativeLayout) findViewById(R.id.parent);
+		parent.setBackgroundDrawable(StoreApplication.BG_IMG);
 		titleView = (TitleView) findViewById(R.id.titleView);
 		refreshView = (PullToRefreshLayout) findViewById(R.id.refreshView);
 		resourceListView = (PullableListView) findViewById(R.id.resourceListView);

@@ -11,7 +11,6 @@ import android.support.v4.view.ViewPager;
 import android.support.v4.view.ViewPager.OnPageChangeListener;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ScrollView;
 import android.widget.Toast;
@@ -47,13 +46,17 @@ import com.jiqu.tools.NetReceiver;
 import com.jiqu.tools.RequestTool;
 import com.jiqu.tools.UIUtil;
 import com.jiqu.view.LoadStateView;
+import com.jiqu.view.ProgressButton;
+import com.jiqu.view.ProgressButton.OnProgressButtonClickListener;
 import com.jiqu.view.RatingBarView;
 import com.jiqu.view.TitleView;
 
 import de.greenrobot.dao.query.QueryBuilder;
 
-public class DetailActivity extends BaseActivity implements Listener<String>, ErrorListener, OnPageChangeListener, OnClickListener, DownloadObserver {
+public class DetailActivity extends BaseActivity implements Listener<String>, 
+	ErrorListener, OnPageChangeListener, OnClickListener, DownloadObserver ,OnProgressButtonClickListener{
 	private final String GAME_DETAIL_REQUEST = "gameDetailRequest";
+	private RelativeLayout parent;
 	private TitleView titleView;
 	private LoadStateView loadView;
 	private ScrollView scrollView;
@@ -81,7 +84,7 @@ public class DetailActivity extends BaseActivity implements Listener<String>, Er
 	private ViewPager viewPager;
 	private RelativeLayout pagerRel;
 	private LinearLayout viewGroup;
-	private Button download;
+	private ProgressButton download;
 
 	private LinearLayout scoreLin;
 	private RatingBarView screenSenseBar, immersionBar, gameplayBar, difficultyBar;
@@ -149,6 +152,8 @@ public class DetailActivity extends BaseActivity implements Listener<String>, Er
 		installedAppTool = new InstalledAppTool();
 		initStar();
 
+		parent = (RelativeLayout) findViewById(R.id.parent);
+		parent.setBackgroundDrawable(StoreApplication.BG_IMG);
 		titleView = (TitleView) findViewById(R.id.titleView);
 		loadView = (LoadStateView) findViewById(R.id.loadView);
 		scrollView = (ScrollView) findViewById(R.id.scrollView);
@@ -176,7 +181,7 @@ public class DetailActivity extends BaseActivity implements Listener<String>, Er
 		pagerRel = (RelativeLayout) findViewById(R.id.pagerRel);
 		viewGroup = (LinearLayout) findViewById(R.id.viewGroup);
 		viewPager = (ViewPager) findViewById(R.id.viewPager);
-		download = (Button) findViewById(R.id.download);
+		download = (ProgressButton) findViewById(R.id.download);
 
 		scoreLin = (LinearLayout) findViewById(R.id.scoreLin);
 
@@ -208,7 +213,8 @@ public class DetailActivity extends BaseActivity implements Listener<String>, Er
 
 		gameIcon.setScaleType(ScaleType.FIT_XY);
 		viewPager.setOnPageChangeListener(this);
-		download.setOnClickListener(this);
+//		download.setOnClickListener(this);
+		download.setOnProgressButtonClickListener(this);
 
 		loadView.loadAgain(this);
 
@@ -243,6 +249,7 @@ public class DetailActivity extends BaseActivity implements Listener<String>, Er
 		UIUtil.setTextSize(vertigo, 35);
 		UIUtil.setTextSize(low, 25);
 		UIUtil.setTextSize(high, 25);
+		download.setTextSize((int)(40 * Rx));
 
 		UIUtil.setViewSize(gameIcon, 190 * Rx, 190 * Rx);
 		UIUtil.setViewSize(headControlImg, 110 * Rx, 60 * Rx);
@@ -351,7 +358,6 @@ public class DetailActivity extends BaseActivity implements Listener<String>, Er
 				radioImgs[i] = radio;
 				viewGroup.addView(radio);
 			}
-
 			ViewPagerAdapter adapter = new ViewPagerAdapter(this, imgs);
 			viewPager.setAdapter(adapter);
 		}
@@ -379,6 +385,7 @@ public class DetailActivity extends BaseActivity implements Listener<String>, Er
 		downloadAppinfo = qb.where(Properties.Id.eq(Long.parseLong(id))).unique();
 		if (downloadAppinfo != null) {
 			state = downloadAppinfo.getDownloadState();
+			download.setProgress((int)(downloadAppinfo.getProgress() * 100));
 		} else {
 			downloadAppinfo = GameDetailInfo.toDownloadAppinfo(info);
 			state = downloadAppinfo.getDownloadState();
@@ -396,13 +403,11 @@ public class DetailActivity extends BaseActivity implements Listener<String>, Er
 	@Override
 	public void onPageScrollStateChanged(int arg0) {
 		// TODO Auto-generated method stub
-
 	}
 
 	@Override
 	public void onPageScrolled(int arg0, float arg1, int arg2) {
 		// TODO Auto-generated method stub
-
 	}
 
 	@Override
@@ -424,7 +429,6 @@ public class DetailActivity extends BaseActivity implements Listener<String>, Er
 			loadDetailData(RequestTool.GAME_DETAIL_URL + "?id=" + id);
 			loadView.showLoading();
 		} else if (v == download) {
-
 			if (downloadAppinfo != null) {
 				if (state == DownloadManager.STATE_DOWNLOADING) {
 					DownloadManager.getInstance().pause(downloadAppinfo);
@@ -550,7 +554,7 @@ public class DetailActivity extends BaseActivity implements Listener<String>, Er
 		// TODO Auto-generated method stub
 		if (downloadAppinfo != null && downloadAppinfo.getPackageName().equals(info.getPackageName())) {
 			Message msg = handler.obtainMessage();
-			msg.obj = info.getProgress() * 100 + "";
+			msg.arg1 = (int)(info.getProgress() * 100);
 			msg.what = 1;
 			handler.sendMessage(msg);
 		}
@@ -578,7 +582,7 @@ public class DetailActivity extends BaseActivity implements Listener<String>, Er
 	Handler handler = new Handler() {
 		public void handleMessage(android.os.Message msg) {
 			if (msg.what == 1) {
-//				download.setText((String) (msg.obj));
+				download.setProgress(msg.arg1);
 			} else if (msg.what == 2) {
 				refreshState(downloadAppinfo.getDownloadState());
 			}
@@ -588,5 +592,67 @@ public class DetailActivity extends BaseActivity implements Listener<String>, Er
 	@Override
 	public void onUnZipProgressed(DownloadAppinfo info, int progress) {
 		// TODO Auto-generated method stub
+	}
+
+	@Override
+	public void onClickListener() {
+		// TODO Auto-generated method stub
+		if (downloadAppinfo != null) {
+			if (state == DownloadManager.STATE_DOWNLOADING) {
+				DownloadManager.getInstance().pause(downloadAppinfo);
+			} else if (state == DownloadManager.STATE_UNZIP_FAILED) {
+				if (downloadAppinfo != null) {
+					UnZipManager.getInstance().unzip(downloadAppinfo, Constants.PASSWORD, null);
+				}
+			} else if (state == DownloadManager.STATE_UNZIPING) {
+				download.setEnabled(false);
+			} else if (state == DownloadManager.STATE_WAITING) {
+				DownloadManager.getInstance().cancel(downloadAppinfo);
+			} else if (state == DownloadManager.STATE_INSTALLED) {
+				DownloadManager.getInstance().open(downloadAppinfo.getPackageName());
+			} else if (state == DownloadManager.STATE_PAUSED) {
+				if (NetReceiver.NET_WIFI == NetReceiver.NET_TYPE) {
+					if (FileUtil.checkSDCard()) {
+						if (Long.parseLong(downloadAppinfo.getAppSize()) * 3 >= FileUtil.getSDcardAvailableSpace()) {
+							Toast.makeText(this, "可用空间不足", Toast.LENGTH_SHORT).show();
+							return;
+						}
+					} else {
+						if (Long.parseLong(downloadAppinfo.getAppSize()) * 3 >= FileUtil.getDataStorageAvailableSpace()) {
+							Toast.makeText(this, "可用空间不足", Toast.LENGTH_SHORT).show();
+							return;
+						}
+					}
+					DownloadManager.getInstance().download(downloadAppinfo);
+				}
+			} else if (state == DownloadManager.STATE_ERROR || state == DownloadManager.STATE_NONE || state == DownloadManager.STATE_NEED_UPDATE) {
+				if (NetReceiver.NET_WIFI == NetReceiver.NET_TYPE) {
+					if (FileUtil.checkSDCard()) {
+						if (Long.parseLong(downloadAppinfo.getAppSize()) * 3 >= FileUtil.getSDcardAvailableSpace()) {
+							Toast.makeText(this, "可用空间不足", Toast.LENGTH_SHORT).show();
+							return;
+						}
+					} else {
+						if (Long.parseLong(downloadAppinfo.getAppSize()) * 3 >= FileUtil.getDataStorageAvailableSpace()) {
+							Toast.makeText(this, "可用空间不足", Toast.LENGTH_SHORT).show();
+							return;
+						}
+					}
+					DownloadManager.getInstance().download(downloadAppinfo);
+				} else {
+					Toast.makeText(this, "没有连接wifi", Toast.LENGTH_SHORT).show();
+				}
+			} else {
+				if (downloadAppinfo.getIsZip()) {
+					if (state == DownloadManager.STATE_UNZIPED) {
+						DownloadManager.getInstance().install(downloadAppinfo);
+					}
+				} else {
+					if (state == DownloadManager.STATE_INSTALLED) {
+						DownloadManager.getInstance().install(downloadAppinfo);
+					}
+				}
+			}
+		}
 	}
 }

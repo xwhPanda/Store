@@ -190,7 +190,6 @@ public class MainActivity extends FragmentActivity implements OnClickListener,On
 			public void onErrorResponse(VolleyError arg0) {
 				// TODO Auto-generated method stub
 			}
-			
 		}, map, CHECKNE_WVERSION_REQUEST);
 	}
 	
@@ -235,7 +234,6 @@ public class MainActivity extends FragmentActivity implements OnClickListener,On
 		evaluationLin = (LinearLayout) findViewById(R.id.evaluationLin);
 		gameLin = (LinearLayout) findViewById(R.id.gameLin);
 		toolLin = (LinearLayout) findViewById(R.id.toolLin);
-		
 		
 		imageViews.add(recommendImg);
 		imageViews.add(informationImg);
@@ -568,7 +566,6 @@ public class MainActivity extends FragmentActivity implements OnClickListener,On
                if ((System.currentTimeMillis() - mExitTime) > 2000) {
                        Toast.makeText(this, "再按一次退出程序", Toast.LENGTH_SHORT).show();
                        mExitTime = System.currentTimeMillis();
-                       
                } else {
             	   DownloadManager.getInstance().pauseExit();
             	   Process.killProcess(Process.myPid());

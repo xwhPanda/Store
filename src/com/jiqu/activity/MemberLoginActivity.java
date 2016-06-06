@@ -38,11 +38,13 @@ import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 public class MemberLoginActivity extends BaseActivity implements OnClickListener{
 	private final String LOGIN_TAG = "login";
 	private final String OTHER_REGISTER = "otherRegisterRequest";
+	private RelativeLayout parent;
 	private TitleView titleView;
 	private ImageView accountIcon;
 	private Button forgetPassword,register;
@@ -70,6 +72,8 @@ public class MemberLoginActivity extends BaseActivity implements OnClickListener
 	private void init(){
 		mUMengManager = UMengManager.getInstance();
 		loginDialog = new ProgressDialog(this);
+		parent = (RelativeLayout) findViewById(R.id.parent);
+		parent.setBackgroundDrawable(StoreApplication.BG_IMG);
 		titleView = (TitleView) findViewById(R.id.titleView);
 		accountIcon = (ImageView) findViewById(R.id.accountIcon);
 		forgetPassword = (Button) findViewById(R.id.forgetPassword);

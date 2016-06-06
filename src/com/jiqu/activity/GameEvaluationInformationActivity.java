@@ -8,6 +8,7 @@ import android.widget.LinearLayout.LayoutParams;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.jiqu.application.StoreApplication;
 import com.jiqu.store.BaseActivity;
 import com.vr.store.R;
 import com.jiqu.tools.MetricsTool;
@@ -20,6 +21,7 @@ import com.jiqu.view.RatingBarView;
 import com.jiqu.view.TitleView;
 
 public class GameEvaluationInformationActivity extends BaseActivity implements OnRefreshListener{
+	private RelativeLayout parent;
 	private TitleView titleView;
 	private TextView evaluationTitle;
 	private LinearLayout informationLin;
@@ -72,6 +74,8 @@ public class GameEvaluationInformationActivity extends BaseActivity implements O
 	
 	private void initView(){
 		initStar();
+		parent = (RelativeLayout) findViewById(R.id.parent);
+		parent.setBackgroundDrawable(StoreApplication.BG_IMG);
 		titleView = (TitleView) findViewById(R.id.titleView);
 		evaluationTitle = (TextView) findViewById(R.id.evaluationTitle);
 		informationLin =(LinearLayout) findViewById(R.id.informationLin);

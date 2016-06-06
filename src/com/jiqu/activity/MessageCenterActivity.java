@@ -44,6 +44,7 @@ import com.jiqu.view.TitleView;
 public class MessageCenterActivity extends BaseActivity implements OnClickListener,OnRefreshListener{
 	private final String MESSAGE_REQUEST = "messageRequest";
 	private final String PRIVATE_REQUEST = "privateReuqest";
+	private RelativeLayout parent;
 	private TitleView titleView;
 	private Button notice;
 	private Button privateLetter;
@@ -85,6 +86,8 @@ public class MessageCenterActivity extends BaseActivity implements OnClickListen
 	}
 	
 	private void initView(){
+		parent = (RelativeLayout) findViewById(R.id.parent);
+		parent.setBackgroundDrawable(StoreApplication.BG_IMG);
 		titleView = (TitleView) findViewById(R.id.titleView);
 		notice = (Button) findViewById(R.id.notice);
 		privateLetter = (Button) findViewById(R.id.privateLetter);
@@ -125,6 +128,7 @@ public class MessageCenterActivity extends BaseActivity implements OnClickListen
 			public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 				// TODO Auto-generated method stub
 				startActivity(new Intent(MessageCenterActivity.this, GameEvaluationWebInfoActivity.class)
+				.putExtra("showShareBtn", false)
 				.putExtra("url", messageDataInfos.get(position).getUrl())
 				.putExtra("title", messageDataInfos.get(position).getTitle()));
 			}
@@ -136,6 +140,7 @@ public class MessageCenterActivity extends BaseActivity implements OnClickListen
 			public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 				// TODO Auto-generated method stub
 				startActivity(new Intent(MessageCenterActivity.this, GameEvaluationWebInfoActivity.class)
+				.putExtra("showShareBtn", false)
 				.putExtra("url", privateMessageDataInfos.get(position).getUrl())
 				.putExtra("title", privateMessageDataInfos.get(position).getTitle()));
 			}

@@ -26,6 +26,7 @@ public class GameEvaluationWebInfoActivity extends BaseActivity {
 	
 	private String url;
 	private String title;
+	private boolean showShareBtn = true;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -35,6 +36,7 @@ public class GameEvaluationWebInfoActivity extends BaseActivity {
 		item = (CommonProblemItem) getIntent().getSerializableExtra("item");
 		url = getIntent().getStringExtra("url");
 		title = getIntent().getStringExtra("title");
+		showShareBtn = getIntent().getBooleanExtra("showShareBtn", true);
 		initView();
 	}
 	
@@ -45,8 +47,10 @@ public class GameEvaluationWebInfoActivity extends BaseActivity {
 		
 		titleView.setActivity(this);
 		titleView.back.setBackgroundResource(R.drawable.fanhui);
-		titleView.editBtn.setBackgroundResource(R.drawable.fenxiang);
-		titleView.editBtn.setVisibility(View.VISIBLE);
+		if (showShareBtn) {
+			titleView.editBtn.setBackgroundResource(R.drawable.fenxiang);
+			titleView.editBtn.setVisibility(View.VISIBLE);
+		}
 		
 		webView.clearCache(false);
 		

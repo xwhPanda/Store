@@ -6,12 +6,14 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.jiqu.application.StoreApplication;
 import com.jiqu.store.BaseActivity;
 import com.vr.store.R;
 import com.jiqu.tools.UIUtil;
 import com.jiqu.view.TitleView;
 
 public class AboutUsActivity extends BaseActivity {
+	private RelativeLayout parent;
 	private TitleView titleView;
 	private RelativeLayout appInfoRel;
 	private ImageView companyLogo;
@@ -38,6 +40,8 @@ public class AboutUsActivity extends BaseActivity {
 	}
 	
 	private void initView(){
+		parent = (RelativeLayout) findViewById(R.id.parent);
+		parent.setBackgroundDrawable(StoreApplication.BG_IMG);
 		titleView = (TitleView) findViewById(R.id.titleView);
 		appInfoRel = (RelativeLayout) findViewById(R.id.appInfoRel);
 		companyLogo = (ImageView) findViewById(R.id.companyLogo);

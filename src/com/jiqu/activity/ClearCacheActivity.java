@@ -14,6 +14,7 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.jiqu.application.StoreApplication;
 import com.jiqu.store.BaseActivity;
 import com.vr.store.R;
 import com.jiqu.tools.ClearTool;
@@ -21,6 +22,7 @@ import com.jiqu.tools.UIUtil;
 import com.jiqu.view.TitleView;
 
 public class ClearCacheActivity extends BaseActivity implements OnClickListener{
+	private RelativeLayout parent;
 	private TitleView titleView;
 	private RelativeLayout clearImgRel;
 	private ImageView clearImg;
@@ -52,6 +54,8 @@ public class ClearCacheActivity extends BaseActivity implements OnClickListener{
 		animation_1 = AnimationUtils.loadAnimation(ClearCacheActivity.this, R.anim.clear_img_anim);
 		animation_2 = AnimationUtils.loadAnimation(ClearCacheActivity.this, R.anim.clear_small_img_anim);
 		
+		parent = (RelativeLayout) findViewById(R.id.parent);
+		parent.setBackgroundDrawable(StoreApplication.BG_IMG);
 		titleView = (TitleView) findViewById(R.id.titleView);
 		clearImgRel = (RelativeLayout) findViewById(R.id.clearImgRel);
 		clearImg = (ImageView) findViewById(R.id.clearImg);
@@ -74,7 +78,6 @@ public class ClearCacheActivity extends BaseActivity implements OnClickListener{
 		clear.setOnClickListener(this);
 		
 		initViewSize();
-		
 	}
 	
 	private void initViewSize(){

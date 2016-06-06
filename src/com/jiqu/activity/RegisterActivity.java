@@ -9,6 +9,7 @@ import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
+import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import com.alibaba.fastjson.JSON;
@@ -16,6 +17,7 @@ import com.android.volley.Request.Method;
 import com.android.volley.Response.ErrorListener;
 import com.android.volley.Response.Listener;
 import com.android.volley.VolleyError;
+import com.jiqu.application.StoreApplication;
 import com.jiqu.download.StringUtil;
 import com.jiqu.object.AccountResponeInfo;
 import com.jiqu.store.BaseActivity;
@@ -29,6 +31,7 @@ import com.jiqu.view.QuickLoginView;
 import com.jiqu.view.TitleView;
 
 public class RegisterActivity extends BaseActivity implements OnClickListener{
+	private RelativeLayout parent;
 	private TitleView titleView;
 	private PasswordView nickNameView,emailView,passwordView,confirmPasswordView;
 	private Button registerBtn;
@@ -54,6 +57,8 @@ public class RegisterActivity extends BaseActivity implements OnClickListener{
 	}
 	
 	private void initView(){
+		parent = (RelativeLayout) findViewById(R.id.parent);
+		parent.setBackgroundDrawable(StoreApplication.BG_IMG);
 		titleView = (TitleView) findViewById(R.id.titleView);
 		nickNameView = (PasswordView) findViewById(R.id.nickNameView);
 		emailView = (PasswordView) findViewById(R.id.emailView);

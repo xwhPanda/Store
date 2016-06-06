@@ -39,7 +39,7 @@ public class SplashActivity extends BaseActivity {
 		img = (ImageView) findViewById(R.id.img);
 		bgRel = (ImageView) findViewById(R.id.bgRel);
 		
-		bitmap = UIUtil.readBitmap(this, R.drawable.splash_bg);
+		bitmap = UIUtil.readBitmap(StoreApplication.context, R.drawable.splash_bg);
 		bgRel.setImageBitmap(bitmap);
 		
 		img.setBackgroundResource(R.drawable.welcome);
