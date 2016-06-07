@@ -11,7 +11,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-import com.jiqu.activity.DeepClearActivity;
 import com.jiqu.application.StoreApplication;
 import com.jiqu.download.ThreadManager;
 
@@ -30,7 +29,6 @@ import android.os.Message;
 import android.os.RemoteException;
 import android.os.StatFs;
 import android.text.TextUtils;
-import android.util.Log;
 
 public class ClearTool {
 	private static final String CLEAR_SINGLE_POOL_NAME= "CLEAR_TOOL";
@@ -247,7 +245,6 @@ public class ClearTool {
             for (int i = 0; i < infoList.size(); ++i) {
                 RunningAppProcessInfo appProcessInfo = infoList.get(i);
                 //importance 该进程的重要程度  分为几个级别，数值越低就越重要。
-                Log.d("TAG", "importance : " + appProcessInfo.importance);
                 
                 // 一般数值大于RunningAppProcessInfo.IMPORTANCE_SERVICE的进程都长时间没用或者空进程了
                 // 一般数值大于RunningAppProcessInfo.IMPORTANCE_VISIBLE的进程都是非可见进程，也就是在后台运行着
@@ -268,7 +265,6 @@ public class ClearTool {
             for (int i = 0; i < infoList.size(); ++i) {
                 RunningAppProcessInfo appProcessInfo = infoList.get(i);
                 //importance 该进程的重要程度  分为几个级别，数值越低就越重要。
-                Log.d("TAG", "importance : " + appProcessInfo.importance);
                 
                 // 一般数值大于RunningAppProcessInfo.IMPORTANCE_SERVICE的进程都长时间没用或者空进程了
                 // 一般数值大于RunningAppProcessInfo.IMPORTANCE_VISIBLE的进程都是非可见进程，也就是在后台运行着

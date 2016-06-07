@@ -9,10 +9,8 @@ import com.android.volley.Request.Method;
 import com.android.volley.Response.ErrorListener;
 import com.android.volley.Response.Listener;
 import com.android.volley.VolleyError;
-import com.jiqu.activity.DetailActivity;
 import com.jiqu.activity.HeadlineActivity;
 import com.jiqu.adapter.InformationAdapter;
-import com.jiqu.object.GameInfo;
 import com.jiqu.object.InformationInfo;
 import com.jiqu.object.InformationItemInfo;
 import com.jiqu.object.InformationPagerInfo;
@@ -28,7 +26,6 @@ import com.jiqu.view.ViewPagerLinView;
 import com.vr.store.R;
 
 import android.content.Intent;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -84,7 +81,8 @@ public class InformationNewFragment extends BaseFragment implements OnClickListe
 	@Override
 	public View initView() {
 		// TODO Auto-generated method stub
-		view = LayoutInflater.from(activity).inflate(R.layout.information_new_fragment, null);
+		view = LayoutInflater.from(activity)
+				.inflate(R.layout.information_new_fragment, null);
 		
 		loadView = (LoadStateView) view.findViewById(R.id.loadView);
 		contentScroll = (MyScrollView) view.findViewById(R.id.contentScroll);

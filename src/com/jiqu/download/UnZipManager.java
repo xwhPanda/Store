@@ -1,7 +1,6 @@
 package com.jiqu.download;
 
 import java.io.File;
-import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -11,7 +10,6 @@ import net.lingala.zip4j.progress.ProgressMonitor;
 
 import android.os.Handler;
 import android.os.Message;
-import android.util.Log;
 
 import com.jiqu.database.DownloadAppinfo;
 
@@ -100,7 +98,7 @@ public class UnZipManager {
 							 while (unziping) {
 								 sleep(1000);
 						        	percent = monitor.getPercentDone();
-						        	Log.i("TAG", "解压进度 ： " + percent);
+//						        	Log.i("TAG", "解压进度 ： " + percent);
 						        	if (handler != null) {
 						        		Message msg = handler.obtainMessage(2);
 						        		msg.arg1 = percent;

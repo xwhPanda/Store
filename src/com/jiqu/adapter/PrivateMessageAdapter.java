@@ -18,7 +18,6 @@ import com.jiqu.tools.UIUtil;
 import com.jiqu.view.MsgPopWind;
 
 import android.content.Context;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -170,14 +169,12 @@ public class PrivateMessageAdapter extends BaseAdapter {
 					@Override
 					public void onResponse(String arg0) {
 						// TODO Auto-generated method stub
-						Log.i("TAG", arg0);
 					}
 				}, RequestTool.SHIELD_URL, new ErrorListener(){
 					
 					@Override
 					public void onErrorResponse(VolleyError arg0) {
 						// TODO Auto-generated method stub
-						Log.i("TAG", "onErrorResponse");
 					}
 					
 				}, map, "shield");

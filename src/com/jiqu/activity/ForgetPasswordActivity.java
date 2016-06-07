@@ -189,7 +189,6 @@ public class ForgetPasswordActivity extends BaseActivity implements OnClickListe
 			@Override
 			public void onResponse(String arg0) {
 				// TODO Auto-generated method stub
-				Log.i("TAG", arg0);
 				getCoding = false;
 				if (arg0.contains("status")) {
 					int status = JSON.parseObject(arg0).getIntValue("status");
@@ -212,7 +211,6 @@ public class ForgetPasswordActivity extends BaseActivity implements OnClickListe
 			public void onErrorResponse(VolleyError arg0) {
 				// TODO Auto-generated method stub
 				getCoding = false;
-				Log.i("TAG", arg0.toString());
 			}
 		}, requestTool.getMap(), GETCODE_TAG);
 	}

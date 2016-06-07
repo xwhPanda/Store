@@ -445,7 +445,7 @@ public class MainActivity extends FragmentActivity implements OnClickListener,On
 			break;
 		}
 	}
-
+	
 	@Override
 	public void onClick(View v) {
 		// TODO Auto-generated method stub
@@ -462,8 +462,11 @@ public class MainActivity extends FragmentActivity implements OnClickListener,On
 				mFragmentTransaction.hide(fragments.get(currentIndex));
 				mFragmentTransaction.show(recommendFragment);
 //				mFragmentTransaction.replace(R.id.homeFrameLayout, recommendFragment);
+				
 				currentIndex = 0;
 				changeFocusState(currentIndex, true);
+				
+				mFragmentTransaction.commit();
 			}
 			break;
 
@@ -480,6 +483,8 @@ public class MainActivity extends FragmentActivity implements OnClickListener,On
 //				mFragmentTransaction.replace(R.id.homeFrameLayout, informationFragment);
 				currentIndex = 1;
 				changeFocusState(currentIndex, true);
+				
+				mFragmentTransaction.commit();
 			}
 			break;
 			
@@ -500,6 +505,8 @@ public class MainActivity extends FragmentActivity implements OnClickListener,On
 				mFragmentTransaction.show(gameNewFragment);
 				currentIndex = 2;
 				changeFocusState(currentIndex, true);
+				
+				mFragmentTransaction.commit();
 			}
 			break;
 			
@@ -515,6 +522,8 @@ public class MainActivity extends FragmentActivity implements OnClickListener,On
 				mFragmentTransaction.show(evaluationFragment);
 				currentIndex = 3;
 				changeFocusState(currentIndex, true);
+				
+				mFragmentTransaction.commit();
 			}
 			break;
 			
@@ -530,6 +539,8 @@ public class MainActivity extends FragmentActivity implements OnClickListener,On
 				mFragmentTransaction.show(toolFragment);
 				currentIndex = 4;
 				changeFocusState(currentIndex, true);
+				
+				mFragmentTransaction.commit();
 			}
 			break;
 		case R.id.searchEd:
@@ -556,7 +567,6 @@ public class MainActivity extends FragmentActivity implements OnClickListener,On
 			startActivity(new Intent(this, DownloadManagerActivity.class));
 			break;
 		}
-		mFragmentTransaction.commit();
 	}
 
 	@Override

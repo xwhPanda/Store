@@ -11,24 +11,6 @@
         android:layout_height="wrap_content"/>
     
     <com.jiqu.view.FriendShareItem
-        android:id="@+id/contacts"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        share:imgBg="@drawable/tongxinlu_share"
-        share:titleText="@string/contacts"
-        android:clickable="true"
-        share:shareBg="@drawable/commom_problem_info_btn"
-        android:visibility="gone"/>
-    
-    <ImageView 
-        android:id="@+id/view1"
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:background="@drawable/xian"
-        android:layout_below="@id/contacts"
-        android:visibility="gone"/>
-    
-    <com.jiqu.view.FriendShareItem
         android:id="@+id/qq"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -71,6 +53,9 @@
         android:clickable="true"
         share:shareBg="@drawable/commom_problem_info_btn"
         android:layout_below="@id/view3"/>
+    <!-- 
+    
+    
 
     <ImageView 
         android:id="@+id/view4"
@@ -117,4 +102,5 @@
         
         <include layout="@layout/load_more"/>
     </com.jiqu.view.PullToRefreshLayout>
+     -->
 </RelativeLayout>

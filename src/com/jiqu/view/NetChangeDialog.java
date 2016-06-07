@@ -1,5 +1,6 @@
 package com.jiqu.view;
 
+import com.jiqu.application.StoreApplication;
 import com.jiqu.tools.MetricsTool;
 import com.jiqu.tools.UIUtil;
 import com.vr.store.R;
@@ -41,7 +42,7 @@ public class NetChangeDialog extends Dialog {
 
 	private void initView(Context context){
 		this.context = context;
-		LayoutInflater inflater = LayoutInflater.from(context);
+		LayoutInflater inflater = LayoutInflater.from(StoreApplication.context);
 		View view = inflater.inflate(R.layout.net_change_dialog_layout, null);
 		setContentView(view);
 		

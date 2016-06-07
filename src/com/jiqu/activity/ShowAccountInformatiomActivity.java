@@ -10,7 +10,6 @@ import com.android.volley.Request.Method;
 import com.android.volley.Response.ErrorListener;
 import com.android.volley.Response.Listener;
 import com.android.volley.toolbox.ImageLoader;
-import com.android.volley.toolbox.ImageLoader.ImageContainer;
 import com.android.volley.toolbox.ImageLoader.ImageListener;
 import com.android.volley.VolleyError;
 import com.jiqu.application.StoreApplication;
@@ -35,20 +34,12 @@ import com.jiqu.view.TitleView;
 import de.greenrobot.dao.query.QueryBuilder;
 
 import android.app.Dialog;
-import android.content.ContentUris;
-import android.content.Context;
 import android.content.Intent;
-import android.database.Cursor;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.drawable.BitmapDrawable;
-import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Environment;
 import android.os.Handler;
-import android.provider.DocumentsContract;
 import android.provider.MediaStore;
 import android.text.TextUtils;
 import android.util.Base64;
@@ -59,7 +50,6 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.RelativeLayout.LayoutParams;
 import android.widget.TextView;
@@ -178,7 +168,6 @@ public class ShowAccountInformatiomActivity extends BaseActivity implements OnCl
 //			}else {
 				listener = ImageLoader.getImageListener(accountImg, R.drawable.yonghuicon, R.drawable.yonghuicon);
 //			}
-			Log.i("TAG", info.getPhoto());
 			StoreApplication.getInstance().getImageLoader().get(info.getPhoto(), listener);
 			if (info.getUsername() != null && !TextUtils.isEmpty(info.getUsername())) {
 				nickName.setText(info.getUsername());

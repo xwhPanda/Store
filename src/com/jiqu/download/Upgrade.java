@@ -10,7 +10,6 @@ import java.net.URL;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.AsyncTask;
-import android.util.Log;
 
 public class Upgrade {
 	private String downloadUrl;
@@ -38,7 +37,6 @@ public class Upgrade {
 			try {
 				String savePath = params[1] + File.separator + params[2];
 				File file = new File(savePath);
-				Log.i("TAG", savePath);
 				if (file.exists()) {
 					file.delete();
 				}
@@ -106,7 +104,6 @@ public class Upgrade {
 		@Override
 		protected void onProgressUpdate(Integer... values) {
 			// TODO Auto-generated method stub
-			Log.i("TAG", "Progress : " + values[0]);
 		}
 
 	}

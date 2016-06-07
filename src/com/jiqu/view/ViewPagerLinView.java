@@ -20,7 +20,6 @@ import android.graphics.Bitmap;
 import android.support.v4.view.ViewPager;
 import android.support.v4.view.ViewPager.OnPageChangeListener;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ImageView;
@@ -33,6 +32,7 @@ public class ViewPagerLinView extends RelativeLayout implements OnPageChangeList
 	private Context context;
 	private ViewPager viewPager;
 	private LinearLayout radioGroup;
+	@SuppressWarnings("rawtypes")
 	private Class intentClass;
 	private ImageView[] radioImgs;
 	private ImageView[] contentImgs;
@@ -58,9 +58,10 @@ public class ViewPagerLinView extends RelativeLayout implements OnPageChangeList
 		initView(context);
 	}
 
+	@SuppressWarnings("deprecation")
 	private void initView(Context context){
 		this.context = context;
-		view = LayoutInflater.from(context).inflate(R.layout.viewpager_lin_layout, this);
+		view = LayoutInflater.from(StoreApplication.context).inflate(R.layout.viewpager_lin_layout, this);
 		viewPager = (ViewPager) view.findViewById(R.id.viewPager);
 		radioGroup = (LinearLayout) view.findViewById(R.id.radioGroup);
 		
@@ -73,6 +74,7 @@ public class ViewPagerLinView extends RelativeLayout implements OnPageChangeList
 		}
 	}
 	
+	@SuppressWarnings("rawtypes")
 	public void setClass(Class intentClass){
 		this.intentClass = intentClass;
 	}
@@ -130,7 +132,7 @@ public class ViewPagerLinView extends RelativeLayout implements OnPageChangeList
 					android.support.v4.view.ViewPager.LayoutParams.MATCH_PARENT);
 			contentImg.setLayoutParams(params);
 			contentImg.setScaleType(ScaleType.FIT_XY);
-			Bitmap bitmap = UIUtil.readBitmap(context, defaultImgId);
+			Bitmap bitmap = UIUtil.readBitmap(StoreApplication.context, defaultImgId);
 			ImageListener listener = ImageLoader.getImageListener(contentImg, bitmap, bitmap);
 			if (item.getPic() != null) {
 				StoreApplication.getInstance().getImageLoader().get(item.getPic(),listener,MetricsTool.width,(int)(455 * MetricsTool.Ry));
@@ -205,7 +207,7 @@ public class ViewPagerLinView extends RelativeLayout implements OnPageChangeList
 					android.support.v4.view.ViewPager.LayoutParams.MATCH_PARENT);
 			contentImg.setLayoutParams(params);
 			contentImg.setScaleType(ScaleType.FIT_XY);
-			Bitmap bitmap = UIUtil.readBitmap(context, defaultImgId);
+			Bitmap bitmap = UIUtil.readBitmap(StoreApplication.context, defaultImgId);
 			ImageListener listener = ImageLoader.getImageListener(contentImg, bitmap, bitmap);
 			if (item.getPic() != null) {
 				StoreApplication.getInstance().getImageLoader().get(item.getPic(),listener,MetricsTool.width,(int)(455 * MetricsTool.Ry));
@@ -274,7 +276,7 @@ public class ViewPagerLinView extends RelativeLayout implements OnPageChangeList
 					android.support.v4.view.ViewPager.LayoutParams.MATCH_PARENT);
 			contentImg.setLayoutParams(params);
 			contentImg.setScaleType(ScaleType.FIT_XY);
-			Bitmap bitmap = UIUtil.readBitmap(context, defaultImgId);
+			Bitmap bitmap = UIUtil.readBitmap(StoreApplication.context, defaultImgId);
 			ImageListener listener = ImageLoader.getImageListener(contentImg, bitmap, bitmap);
 			if (item.getPic() != null) {
 				StoreApplication.getInstance().getImageLoader().get(item.getPic(),listener);

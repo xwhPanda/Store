@@ -91,6 +91,19 @@ public class BoutiqueActivity extends BaseActivity implements OnPageChangeListen
 		loadData(RequestTool.BOUTIQUE_URL);
 	}
 	
+	@Override
+	protected void onDestroy() {
+		// TODO Auto-generated method stub
+		super.onDestroy();
+		if (adapter != null) {
+			adapter.stopObserver();
+		}
+		if (pagerView != null) {
+			pagerView.cancleTimer();
+		}
+		requestTool.stopRequest(BOUTIQUE_REQUEST);
+	}
+	
 	private void loadData(String url){
 		requestTool.getMap().clear();
 		requestTool.startStringRequest(Method.GET, new Listener<String>() {
@@ -233,22 +246,8 @@ public class BoutiqueActivity extends BaseActivity implements OnPageChangeListen
 	}
 
 	@Override
-	protected void onDestroy() {
-		// TODO Auto-generated method stub
-		super.onDestroy();
-		if (adapter != null) {
-			adapter.stopObserver();
-		}
-		if (pagerView != null) {
-			pagerView.cancleTimer();
-		}
-		requestTool.stopRequest(BOUTIQUE_REQUEST);
-	}
-
-	@Override
 	public void onRefresh(PullToRefreshLayout pullToRefreshLayout) {
 		// TODO Auto-generated method stub
-		
 	}
 
 	@Override

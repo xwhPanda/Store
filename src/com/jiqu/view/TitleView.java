@@ -1,6 +1,7 @@
 package com.jiqu.view;
 
 import com.vr.store.R;
+import com.jiqu.application.StoreApplication;
 import com.jiqu.tools.MetricsTool;
 import com.jiqu.tools.UIUtil;
 
@@ -48,7 +49,7 @@ public class TitleView extends RelativeLayout implements OnClickListener{
 	
 	private void init(Context context){
 		this.context = context;
-		LayoutInflater inflater = LayoutInflater.from(context);
+		LayoutInflater inflater = LayoutInflater.from(StoreApplication.context);
 		view = inflater.inflate(R.layout.account_title, this);
 		back = (ImageView) view.findViewById(R.id.backBtn);
 		backLin = (LinearLayout) view.findViewById(R.id.backLin);
@@ -89,5 +90,4 @@ public class TitleView extends RelativeLayout implements OnClickListener{
 			}
 		}
 	}
-
 }

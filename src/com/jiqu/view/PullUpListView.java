@@ -4,7 +4,6 @@ import com.vr.store.R;
 
 import android.content.Context;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.AbsListView;
@@ -63,7 +62,6 @@ public class PullUpListView extends ListView implements OnScrollListener {
 	}
 	
 	public void startRefresh(){
-		Log.i("TAG", "startRefresh");
 		addFooterView(footerView);
 	}
 	
@@ -71,7 +69,6 @@ public class PullUpListView extends ListView implements OnScrollListener {
 	 * 刷新完成，隐藏底部布局
 	 */
 	public void refreshFinish(){
-		Log.i("TAG", "refreshFinish");
 		removeFooterView(footerView);
 	}
 

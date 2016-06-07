@@ -1,28 +1,22 @@
 package com.jiqu.tools;
 
 import java.io.DataOutputStream;
-import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-import com.jiqu.application.StoreApplication;
 import com.jiqu.download.DownloadManager;
 import com.jiqu.download.ThreadManager;
 import com.jiqu.interfaces.UninstallStateObserver;
 import com.jiqu.object.InstalledApp;
 
-import android.app.Application;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
-import android.content.pm.PackageManager.NameNotFoundException;
-import android.content.pm.ResolveInfo;
 import android.net.Uri;
-import android.util.Log;
 
 public class InstalledAppTool {
 	private Map<String, InstalledApp> uninstallMap = new ConcurrentHashMap<String, InstalledApp>();
@@ -195,14 +189,12 @@ public class InstalledAppTool {
 		UninstallTask task = taskMap.get(pkg);
 		if (task != null) {
 			taskMap.remove(pkg);
-			Log.i("TAG", "removeUninstallTask : " + pkg);
 		}
 	}
 	
 	public synchronized void uninstallAll(Context context){
 		for(String key:uninstallMap.keySet()){
 			InstalledApp app = uninstallMap.get(key);
-			Log.i("TAG", "应用名 ：" + app.name);
 			app.state = InstalledApp.UNINSTALLING;
 			notifyUninstallStateChanged(app);
 			UninstallTask appTask = taskMap.get(app.packageName);
@@ -252,9 +244,7 @@ public class InstalledAppTool {
 			for (UninstallStateObserver observer : mObservers) {
 				app.state = InstalledApp.UNINSTALLING;
 				observer.onUninstallStateChanged(app);
-				Log.i("TAG", "正在卸载 ： " + app.name);
 			}
 		}
 	}
-
 }

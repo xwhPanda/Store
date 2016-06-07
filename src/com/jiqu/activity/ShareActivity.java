@@ -3,11 +3,9 @@ package com.jiqu.activity;
 import java.util.ArrayList;
 import java.util.List;
 
-import android.app.ProgressDialog;
 import android.content.Intent;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.ListView;
@@ -28,16 +26,12 @@ import com.vr.store.R;
 import com.jiqu.tools.UIUtil;
 import com.jiqu.view.FriendShareItem;
 import com.jiqu.view.PullToRefreshLayout;
-import com.jiqu.view.PullableListView;
 import com.jiqu.view.TitleView;
 
 public class ShareActivity extends BaseActivity {
 	private RelativeLayout parent;
 	private TitleView titleView;
-	private FriendShareItem contacts,qq,weixin,weibo;
-	private PullToRefreshLayout refreshView;
-	private ListView friendListView;
-	private TextView inviteTip;
+	private FriendShareItem qq,weixin,weibo;
 	
 	private ShareAddFriendAdapter adapter;
 	private List<FriendItem> friendItems = new ArrayList<FriendItem>();
@@ -81,14 +75,13 @@ public class ShareActivity extends BaseActivity {
 		parent = (RelativeLayout) findViewById(R.id.parent);
 		parent.setBackgroundDrawable(StoreApplication.BG_IMG);
 		titleView = (TitleView) findViewById(R.id.titleView);
-		contacts = (FriendShareItem) findViewById(R.id.contacts);
 		qq = (FriendShareItem) findViewById(R.id.qq);
 		weixin = (FriendShareItem) findViewById(R.id.weixin);
 		weibo = (FriendShareItem) findViewById(R.id.weibo);
 		
-		inviteTip = (TextView) findViewById(R.id.inviteTip);
+//		inviteTip = (TextView) findViewById(R.id.inviteTip);
 		refreshView = (PullToRefreshLayout) findViewById(R.id.refreshView);
-		friendListView = (PullableListView) findViewById(R.id.friendListView);
+//		friendListView = (PullableListView) findViewById(R.id.friendListView);
 		
 		titleView.setActivity(this);
 		titleView.back.setBackgroundResource(R.drawable.fanhui);
@@ -100,8 +93,9 @@ public class ShareActivity extends BaseActivity {
 			FriendItem shareItem = new FriendItem();
 			friendItems.add(shareItem);
 		}
-		adapter = new ShareAddFriendAdapter(this, friendItems);
-		friendListView.setAdapter(adapter);
+		
+//		adapter = new ShareAddFriendAdapter(this, friendItems);
+//		friendListView.setAdapter(adapter);
 		
 		weibo.getShareBtn().setOnClickListener(new OnClickListener() {
 			
@@ -180,21 +174,14 @@ public class ShareActivity extends BaseActivity {
 
 	
 	private void initViewSize(){
-		UIUtil.setViewHeight(contacts, 180 * Ry);
 		UIUtil.setViewHeight(qq, 180 * Ry);
 		UIUtil.setViewHeight(weibo, 180 * Ry);
 		UIUtil.setViewHeight(weixin, 180 * Ry);
-		UIUtil.setViewHeight(inviteTip, 140 * Ry);
-		
-		UIUtil.setTextSize(inviteTip, 35);
-		
-		UIUtil.setViewPadding(inviteTip, (int)(30 * Rx), 0, 0, 0);
-		
-		try {
-			UIUtil.setViewSizeMargin(contacts, 0, 165 * Ry, 0, 0);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
+//		UIUtil.setViewHeight(inviteTip, 140 * Ry);
+//		
+//		UIUtil.setTextSize(inviteTip, 35);
+//		
+//		UIUtil.setViewPadding(inviteTip, (int)(30 * Rx), 0, 0, 0);
 	}
 
 }

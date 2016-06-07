@@ -3,16 +3,12 @@ package com.jiqu.fragment;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-
-
 import com.alibaba.fastjson.JSON;
-import com.android.internal.telephony.cdma.sms.BearerData;
 import com.android.volley.Request.Method;
 import com.android.volley.Response.ErrorListener;
 import com.android.volley.Response.Listener;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.ImageLoader;
-import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.ImageLoader.ImageListener;
 import com.jiqu.activity.BoutiqueActivity;
 import com.jiqu.activity.DetailActivity;
@@ -22,7 +18,6 @@ import com.jiqu.activity.SortActivity;
 import com.jiqu.activity.ThematicActivity;
 import com.jiqu.adapter.GameAdapter;
 import com.jiqu.application.StoreApplication;
-import com.jiqu.database.Account;
 import com.jiqu.database.DownloadAppinfo;
 import com.jiqu.database.DownloadAppinfoDao.Properties;
 import com.jiqu.download.DownloadManager;
@@ -30,7 +25,6 @@ import com.jiqu.object.GameInfo;
 import com.jiqu.object.InstalledApp;
 import com.jiqu.object.RecommendDataInfo;
 import com.jiqu.object.RecommendHeadlineInfo;
-import com.jiqu.object.TopRecommendtInfo;
 import com.vr.store.R;
 import com.jiqu.tools.InstalledAppTool;
 import com.jiqu.tools.MetricsTool;
@@ -42,26 +36,18 @@ import com.jiqu.view.LoadStateView;
 import com.jiqu.view.PullableListView;
 import com.jiqu.view.RecommedGameView;
 import com.jiqu.view.ViewPagerLinView;
-
 import de.greenrobot.dao.query.QueryBuilder;
-
-
-import android.R.integer;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.graphics.Bitmap;
-import android.os.AsyncTask;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.widget.AbsListView.OnScrollListener;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
-import android.widget.AbsListView;
 import android.widget.HorizontalScrollView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -71,7 +57,6 @@ import android.widget.RelativeLayout;
 
 public class RecommendFragment extends BaseFragment implements OnRefreshListener, 
 	ErrorListener, OnClickListener, Listener<String>{
-	private static final int DEFAULT_PAGE_SIZE = 10;
 	private static final String RECOMMEND_REQUEST_TAG = "recommendRequestTag";
 	private float Rx, Ry;
 	private View view;
@@ -92,8 +77,7 @@ public class RecommendFragment extends BaseFragment implements OnRefreshListener
 
 	private ViewPagerLinView viewPager;
     private ViewPagerLinView recommendGameInformationPager;
-	private View view1, view2, view3;
-	private int currentItem = 0;
+	private View view1;
 
 	private LoadStateView loadStateView;
 	private PullToRefreshLayout pullToRefreshLayout;
@@ -101,12 +85,9 @@ public class RecommendFragment extends BaseFragment implements OnRefreshListener
 	private GameAdapter adapter;
 	private List<GameInfo> resultList = new ArrayList<GameInfo>();
 	
-	private JsonObjectRequest objectRequest;
-	private TopRecommendtInfo topRecommendtInfo = new TopRecommendtInfo();
 	private RequestTool requestTool;
 	
 	private boolean refreshShow = false;
-	private int currentIndex = 0;
 	private RecommendHeadlineInfo headlineInfo;
 	
 	@Override
@@ -284,10 +265,6 @@ public class RecommendFragment extends BaseFragment implements OnRefreshListener
 	@Override
 	public void onLoadMore(PullToRefreshLayout pullToRefreshLayout) {
 		// TODO Auto-generated method stub
-//		requestTool.initParam();
-//		requestTool.setParam("size", String.valueOf(resultList.size() + 20));
-//		requestTool.startHomeRecommendRequest(this, this, false);
-		
 		refreshShow = true;
 	}
 
@@ -413,48 +390,6 @@ public class RecommendFragment extends BaseFragment implements OnRefreshListener
 			recommendGameInformationPager.setData(dataInfo.getData4());
 		}
 		initGame(dataInfo);
-//		if (refreshShow) {
-//			refreshShow = false;
-//			pullToRefreshLayout.refreshFinish(PullToRefreshLayout.SUCCEED);
-//		}
-//		try {
-//			JSONArray array = (JSONArray) arg0.get("item");
-//			resultList = JSON.parseArray(array.toString(), GameInfo.class);
-//
-//			adapter.clearAllItem();
-//			adapter.addItems(resultList);
-//
-//			for (GameInfo gameInfo : resultList) {
-//				gameInfo.setAdapterType(1);
-//			}
-//			
-//			List<InstalledApp> apps = InstalledAppTool.getPersonalApp(getActivity());
-//			
-//			int count = DEFAULT_PAGE_SIZE;
-//			if (resultList.size() < DEFAULT_PAGE_SIZE) {
-//				count = resultList.size();
-//			}
-//			
-//			for(int i = resultList.size() - count;i<resultList.size();i++){
-//				DownloadAppinfo info = DownloadManager.getInstance().getDownloadInfo(Long.parseLong(resultList.get(i).getP_id()));
-//				int state = InstalledAppTool.contain(apps,resultList.get(i).getPackagename(), Integer.parseInt(resultList.get(i).getVersion_code()));
-//				if (resultList.get(i).getUrl().endsWith(".zip")) {
-//					Log.i("TAG", resultList.get(i).getName() + " / " + resultList.get(i).getUrl());
-//				}
-//				if (state != -1) {
-//					resultList.get(i).setState(state);
-//				}else {
-//					if (info != null 
-//							&& (info.getDownloadState() == DownloadManager.STATE_INSTALLED
-//							|| info.getDownloadState() == DownloadManager.STATE_NEED_UPDATE)) {
-//						DownloadManager.DBManager.delete(info);
-//					}
-//				}
-//			}
-//			adapter.notifyDataSetChanged();
-//		} catch (JSONException e) {
-//			e.printStackTrace();
-//		}
 	}
 	
 	@Override
@@ -493,9 +428,9 @@ public class RecommendFragment extends BaseFragment implements OnRefreshListener
 			if ("deleted_downloaded_files_action".equals(action)) {
 				String pkg = intent.getStringExtra("pkg");
 				for(GameInfo info : resultList){
-//					if (info.getPackagename().equals(pkg)) {
-//						info.setState(DownloadManager.STATE_NONE);
-//					}
+					if (info.getPackage_name().equals(pkg)) {
+						info.setState(DownloadManager.STATE_NONE);
+					}
 				}
 				adapter.notifyDataSetChanged();
 			}
@@ -550,13 +485,4 @@ public class RecommendFragment extends BaseFragment implements OnRefreshListener
 		getActivity().unregisterReceiver(appInstallReceiver);
 		getActivity().unregisterReceiver(deleteReceiver);
 	};
-	
-	class LoadDataTask extends AsyncTask<String, String, String>{
-
-		@Override
-		protected String doInBackground(String... params) {
-			// TODO Auto-generated method stub
-			return null;
-		}
-	}
 }

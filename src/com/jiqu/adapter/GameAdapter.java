@@ -22,17 +22,16 @@ import com.jiqu.tools.UIUtil;
 import com.jiqu.view.NetChangeDialog;
 import com.jiqu.view.RatingBarView;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.graphics.drawable.AnimationDrawable;
 import android.os.Handler;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
-import android.view.animation.AlphaAnimation;
-import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
 import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -56,9 +55,10 @@ public class GameAdapter extends BaseAdapter implements DownloadObserver{
 	
 	private int colorId = R.color.itemBgColor;
 	
+	
 	public GameAdapter(Context context,List<GameInfo> informations,boolean hotIconVisible,boolean subscriptVisible){
 		this.informations = informations;
-		inflater = LayoutInflater.from(context);
+		inflater = LayoutInflater.from(StoreApplication.context);
 		mDisplayedHolders = new ArrayList<GameAdapter.Holder2>();
 		this.context = context;
 		this.hotIconVisible = hotIconVisible;
@@ -122,7 +122,8 @@ public class GameAdapter extends BaseAdapter implements DownloadObserver{
 	public void addItems(List<GameInfo> infos){
 		informations.addAll(infos);
 	}
-
+	
+	@SuppressLint("InflateParams")
 	@Override
 	public View getView(final int position, View convertView, ViewGroup parent) {
 		// TODO Auto-generated method stub
@@ -138,7 +139,7 @@ public class GameAdapter extends BaseAdapter implements DownloadObserver{
 				holder1.moreBtn = (ImageView) convertView.findViewById(R.id.moreBt);
 				holder1.moreLin = (LinearLayout) convertView.findViewById(R.id.moreLin);
 				
-				holder1.moreBtn.setImageBitmap(UIUtil.readBitmap(context, R.drawable.more));
+				holder1.moreBtn.setImageBitmap(UIUtil.readBitmap(StoreApplication.context, R.drawable.more));
 				UIUtil.setTextSize(holder1.sortName, 42);
 				UIUtil.setTextSize(holder1.moreTx, 35);
 				UIUtil.setViewSize(holder1.moreBtn, 36 * MetricsTool.Rx, 36 * MetricsTool.Rx);
@@ -222,12 +223,9 @@ public class GameAdapter extends BaseAdapter implements DownloadObserver{
 		private TextView subscriptTx;
 		private ImageView hotIcon;
 		
-		private RelativeLayout informationLin;
 		private LinearLayout subscriptLin;
 		
 		private View rootView;
-		
-		private boolean installDialogShowed = false;
 		
 		private NetChangeDialog netChangeDialog;
 		
@@ -272,14 +270,10 @@ public class GameAdapter extends BaseAdapter implements DownloadObserver{
 			subscriptTx = (TextView) view.findViewById(R.id.subscriptTx);
 			hotIcon = (ImageView) view.findViewById(R.id.hotIcon);
 			
-			hotIcon.setImageBitmap(UIUtil.readBitmap(context, R.drawable.hot_icon));
-			
 			gameScore.setResID(resIds);
 			gameScore.setStep(0.5f);
 			
-			informationLin = (RelativeLayout) view.findViewById(R.id.informationLin);
 			subscriptLin = (LinearLayout) view.findViewById(R.id.subscriptLin);
-			subscriptLin.setBackgroundDrawable(UIUtil.readBitmapDrawable(context, R.drawable.subscript_red));
 			
 			netChangeDialog.setPositiveListener(new OnClickListener() {
 				
@@ -345,12 +339,15 @@ public class GameAdapter extends BaseAdapter implements DownloadObserver{
 			});
 			
 			if (hotIConVisible) {
+				Bitmap hotBitmap = UIUtil.readBitmap(StoreApplication.context, R.drawable.hot_icon);
+				hotIcon.setImageBitmap(hotBitmap);
 				hotIcon.setVisibility(View.VISIBLE);
 			}else {
 				hotIcon.setVisibility(View.GONE);
 			}
 			
 			if (subscriptVisible) {
+				subscriptLin.setBackgroundDrawable(UIUtil.readBitmapDrawable(StoreApplication.context, R.drawable.subscript_red));
 				subscriptLin.setVisibility(View.VISIBLE);
 			}else {
 				subscriptLin.setVisibility(View.GONE);
@@ -393,6 +390,7 @@ public class GameAdapter extends BaseAdapter implements DownloadObserver{
 			}
 		}
 		
+		@SuppressWarnings("static-access")
 		private void setData(DownloadAppinfo data){
 			if (mDownloadManager == null) {
 				mDownloadManager = DownloadManager.getInstance();

@@ -87,8 +87,6 @@ public class ShareAddFriendAdapter extends BaseAdapter {
 			this.data = data;
 			
 			icon.setBackgroundColor(context.getResources().getColor(R.color.red));
-			nickName.setText("缝合伤口缝合拉萨");
-			distance.setText("司法局发顺丰啊");
 		}
 		
 		private View initView(){

@@ -43,7 +43,11 @@ public class LruBitmapCache implements ImageCache {
 		String cachePath;
 		if (Environment.MEDIA_MOUNTED.equals(Environment.getExternalStorageState()) 
 				|| !Environment.isExternalStorageRemovable()) {
-			cachePath = context.getExternalCacheDir().getPath();
+			if (context.getExternalCacheDir() == null) {
+				cachePath = context.getCacheDir().getPath();
+			}else {
+				cachePath = context.getExternalCacheDir().getPath();
+			}
 		}else {
 			cachePath = context.getCacheDir().getPath();
 		}
@@ -74,7 +78,7 @@ public class LruBitmapCache implements ImageCache {
 					return bitmap;
 				}
 			} catch (Exception e) {
-				// TODO: handle exception
+				e.printStackTrace();
 			}
 		}
 		return null;
@@ -99,7 +103,7 @@ public class LruBitmapCache implements ImageCache {
 				mDiskLruCache.flush();
 			}
 		} catch (Exception e) {
-			// TODO: handle exception
+			e.printStackTrace();
 		}
 	}
 	

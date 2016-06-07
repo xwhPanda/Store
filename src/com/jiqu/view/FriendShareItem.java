@@ -1,6 +1,7 @@
 package com.jiqu.view;
 
 import com.vr.store.R;
+import com.jiqu.application.StoreApplication;
 import com.jiqu.tools.MetricsTool;
 import com.jiqu.tools.UIUtil;
 
@@ -31,7 +32,7 @@ public class FriendShareItem extends RelativeLayout {
 
 	
 	private void initView(Context context,AttributeSet attrs){
-		LayoutInflater inflater = LayoutInflater.from(context);
+		LayoutInflater inflater = LayoutInflater.from(StoreApplication.context);
 		view = inflater.inflate(R.layout.friend_share_item, this);
 		img = (ImageView) view.findViewById(R.id.img);
 		title = (TextView) view.findViewById(R.id.title);
