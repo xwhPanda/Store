@@ -6,12 +6,10 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 import com.android.volley.VolleyError;
-import com.android.volley.toolbox.ImageLoader;
 import com.android.volley.toolbox.ImageLoader.ImageContainer;
 import com.android.volley.toolbox.ImageLoader.ImageListener;
 import com.jiqu.application.StoreApplication;
 import com.jiqu.database.DownloadAppinfo;
-import com.jiqu.database.DownloadAppinfoDao.Properties;
 import com.jiqu.download.AppUtil;
 import com.jiqu.download.DownloadManager;
 import com.jiqu.download.DownloadManager.DownloadObserver;
@@ -22,19 +20,14 @@ import com.jiqu.tools.NetReceiver;
 import com.jiqu.tools.UIUtil;
 import com.jiqu.view.NetChangeDialog;
 
-import de.greenrobot.dao.query.QueryBuilder;
-
 import android.content.Context;
-import android.graphics.BitmapFactory;
 import android.os.Handler;
 import android.os.Message;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.animation.Animation;
 import android.view.animation.Animation.AnimationListener;
-import android.view.animation.AnimationUtils;
 import android.view.ViewGroup;
 import android.widget.AbsListView;
 import android.widget.BaseAdapter;
@@ -151,7 +144,6 @@ public class DownloadingAdapter extends BaseAdapter implements DownloadObserver 
 		private Context context;
 		private View rootView;
 		private DownloadAppinfo info;
-		private int position;
 		private String appSize;
 		private NetChangeDialog netChangeDialog;
 

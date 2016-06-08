@@ -80,7 +80,7 @@ public class ShareActivity extends BaseActivity {
 		weibo = (FriendShareItem) findViewById(R.id.weibo);
 		
 //		inviteTip = (TextView) findViewById(R.id.inviteTip);
-		refreshView = (PullToRefreshLayout) findViewById(R.id.refreshView);
+//		refreshView = (PullToRefreshLayout) findViewById(R.id.refreshView);
 //		friendListView = (PullableListView) findViewById(R.id.friendListView);
 		
 		titleView.setActivity(this);

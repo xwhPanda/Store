@@ -117,7 +117,6 @@ public class RecommendFragment extends BaseFragment implements OnRefreshListener
 				this, RequestTool.RECOMMEND_URL, this, requestTool.getMap(), true,RECOMMEND_REQUEST_TAG);
 	}
 	
-	
 	@Override
 	public void onResume() {
 		// TODO Auto-generated method stub

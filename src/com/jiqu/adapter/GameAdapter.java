@@ -55,7 +55,6 @@ public class GameAdapter extends BaseAdapter implements DownloadObserver{
 	
 	private int colorId = R.color.itemBgColor;
 	
-	
 	public GameAdapter(Context context,List<GameInfo> informations,boolean hotIconVisible,boolean subscriptVisible){
 		this.informations = informations;
 		inflater = LayoutInflater.from(StoreApplication.context);

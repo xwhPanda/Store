@@ -3,20 +3,11 @@ package com.jiqu.tools;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.json.JSONObject;
-
-import android.R.integer;
-import android.util.Log;
-
 import com.android.volley.AuthFailureError;
 import com.android.volley.DefaultRetryPolicy;
-import com.android.volley.Request;
-import com.android.volley.RetryPolicy;
-import com.android.volley.VolleyError;
 import com.android.volley.Request.Method;
 import com.android.volley.Response.ErrorListener;
 import com.android.volley.Response.Listener;
-import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.StringRequest;
 import com.jiqu.application.StoreApplication;
 
