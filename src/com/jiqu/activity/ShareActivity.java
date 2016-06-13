@@ -22,6 +22,7 @@ import com.umeng.socialize.UMShareAPI;
 import com.umeng.socialize.UMShareListener;
 import com.umeng.socialize.bean.SHARE_MEDIA;
 import com.umeng.socialize.media.UMImage;
+import com.umeng.socialize.utils.Log;
 import com.vr.store.R;
 import com.jiqu.tools.UIUtil;
 import com.jiqu.view.FriendShareItem;
@@ -31,12 +32,12 @@ import com.jiqu.view.TitleView;
 public class ShareActivity extends BaseActivity {
 	private RelativeLayout parent;
 	private TitleView titleView;
-	private FriendShareItem qq,weixin,weibo;
+	private FriendShareItem qq,weixin,weibo,pengyouquan;
 	
 	private ShareAddFriendAdapter adapter;
 	private List<FriendItem> friendItems = new ArrayList<FriendItem>();
 	
-	private String url = "http://www.baidu.com";
+	private String url = "http://www.123sjzs.com";
 	private UMImage image;
 	private String content;
 	private String title;
@@ -78,6 +79,7 @@ public class ShareActivity extends BaseActivity {
 		qq = (FriendShareItem) findViewById(R.id.qq);
 		weixin = (FriendShareItem) findViewById(R.id.weixin);
 		weibo = (FriendShareItem) findViewById(R.id.weibo);
+		pengyouquan = (FriendShareItem) findViewById(R.id.pengyouquan);
 		
 //		inviteTip = (TextView) findViewById(R.id.inviteTip);
 //		refreshView = (PullToRefreshLayout) findViewById(R.id.refreshView);
@@ -89,13 +91,73 @@ public class ShareActivity extends BaseActivity {
 		
 		initViewSize();
 		
-		for(int i = 0;i < 10;i++){
-			FriendItem shareItem = new FriendItem();
-			friendItems.add(shareItem);
-		}
+		pengyouquan.getShareBtn().setOnClickListener(new OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				// TODO Auto-generated method stub
+				new ShareAction(ShareActivity.this)
+				.setPlatform(SHARE_MEDIA.WEIXIN_CIRCLE)
+				.setCallback(new UMShareListener() {
+					
+					@Override
+					public void onResult(SHARE_MEDIA arg0) {
+						// TODO Auto-generated method stub
+						Log.i("TAG", "onResult");
+					}
+					
+					@Override
+					public void onError(SHARE_MEDIA arg0, Throwable arg1) {
+						// TODO Auto-generated method stub
+						Log.i("TAG", "onError");
+					}
+					
+					@Override
+					public void onCancel(SHARE_MEDIA arg0) {
+						// TODO Auto-generated method stub
+						Log.i("TAG", "onCancel");
+					}
+				})
+				.withTargetUrl(url)
+				.withTitle(title)
+				.withMedia(image)
+				.withText(content)
+				.share();
+			}
+		});
 		
-//		adapter = new ShareAddFriendAdapter(this, friendItems);
-//		friendListView.setAdapter(adapter);
+		weixin.getShareBtn().setOnClickListener(new OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				// TODO Auto-generated method stub
+				Log.LOG = false;
+				new ShareAction(ShareActivity.this)
+				.setPlatform(SHARE_MEDIA.WEIXIN)
+				.setCallback(new UMShareListener() {
+					
+					@Override
+					public void onResult(SHARE_MEDIA arg0) {
+						// TODO Auto-generated method stub
+					}
+					
+					@Override
+					public void onError(SHARE_MEDIA arg0, Throwable arg1) {
+						// TODO Auto-generated method stub
+					}
+					
+					@Override
+					public void onCancel(SHARE_MEDIA arg0) {
+						// TODO Auto-generated method stub
+					}
+				})
+				.withTargetUrl(url)
+				.withTitle(title)
+				.withMedia(image)
+				.withText(content)
+				.share();
+			}
+		});
 		
 		weibo.getShareBtn().setOnClickListener(new OnClickListener() {
 			
@@ -142,7 +204,7 @@ public class ShareActivity extends BaseActivity {
 				.setPlatform(SHARE_MEDIA.QQ)
 				.setCallback(new UMShareListener() {
 					
-					@Override
+		 			@Override
 					public void onResult(SHARE_MEDIA arg0) {
 						// TODO Auto-generated method stub
 					}
@@ -172,11 +234,11 @@ public class ShareActivity extends BaseActivity {
         UMShareAPI.get(this).onActivityResult( requestCode, resultCode, data);
     }
 
-	
 	private void initViewSize(){
 		UIUtil.setViewHeight(qq, 180 * Ry);
 		UIUtil.setViewHeight(weibo, 180 * Ry);
 		UIUtil.setViewHeight(weixin, 180 * Ry);
+		UIUtil.setViewHeight(pengyouquan, 180 * Ry);
 //		UIUtil.setViewHeight(inviteTip, 140 * Ry);
 //		
 //		UIUtil.setTextSize(inviteTip, 35);

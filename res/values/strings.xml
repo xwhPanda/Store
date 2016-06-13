@@ -159,9 +159,10 @@
     
     <string name="friendShare">好友分享</string>
     <string name="contacts">通信录分享</string>
-    <string name="qqShare">QQ分享</string>
-    <string name="weixinShare">微信分享</string>
-    <string name="weiboShare">微博分享</string>
+    <string name="qqShare">分享给QQ好友</string>
+    <string name="weixinShare">分享给微信好友</string>
+    <string name="weiboShare">分享到微博</string>
+    <string name="pengyouquanShare">分享到朋友圈</string>
     <string name="inviteTip">邀请周围好友</string>
     
     <string name="sort">分类</string>

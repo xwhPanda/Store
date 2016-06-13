@@ -121,9 +121,9 @@ public class StoreApplication extends Application {
 	/** 友盟 **/
 	private void initUMeng() {
 		// 微信 appid appsecret
-		PlatformConfig.setWeixin("wx967daebe835fbeac", "5bb696d9ccd75a38c8a0bfe0675559b3");
+		PlatformConfig.setWeixin("wx41034df8e97add60", "75fead583e630c6029dc18ebd3975de4");
 		// 新浪微博 appkey appsecret
-		PlatformConfig.setSinaWeibo("4171998531", "cdaaf47bda171bdf9546478720b7eef2");
+		PlatformConfig.setSinaWeibo("3518038102", "3389298718e97db68c4f53280cb302a0");
 		// QQ和Qzone appid appkey
 		PlatformConfig.setQQZone("1105444730", "TOqwncUiOjr6aoVl");
 	}

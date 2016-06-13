@@ -297,7 +297,6 @@ public class DownloadingAdapter extends BaseAdapter implements DownloadObserver 
 
 		private void setData(DownloadAppinfo appinfo,int position) {
 			this.info = appinfo;
-			this.position = position;
 			appSize = FileUtil.getFileSize(Long.parseLong(appinfo.getAppSize()));
 			if (appinfo.getIconByte() != null) {
 				appIcon.setImageBitmap(UIUtil.bytesToBitmap(appinfo.getIconByte()));

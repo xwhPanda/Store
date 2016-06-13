@@ -166,19 +166,16 @@ public class MemberLoginActivity extends BaseActivity implements OnClickListener
 				@Override
 				public void onError(SHARE_MEDIA arg0, int arg1, Throwable arg2) {
 					// TODO Auto-generated method stub
-					Log.i("TAG", "onError");
 				}
 				
 				@Override
 				public void onComplete(SHARE_MEDIA arg0, int arg1, Map<String, String> arg2) {
 					// TODO Auto-generated method stub
-					Log.i("TAG", "onComplete");
 				}
 				
 				@Override
 				public void onCancel(SHARE_MEDIA arg0, int arg1) {
 					// TODO Auto-generated method stub
-					Log.i("TAG", "onCancel");
 				}
 			});
 			break;
@@ -214,7 +211,7 @@ public class MemberLoginActivity extends BaseActivity implements OnClickListener
 							}
 							String image = data.get("profile_image_url");
 							loginDialog.show();
-							qqLogin(nickname, gender, uid, MD5.GetMD5Code(uid + String.valueOf(gender) + RequestTool.PRIKEY),image);
+							qqLogin(nickname, gender, uid, MD5.GetMD5Code(uid + String.valueOf(gender) + RequestTool.PRIKEY),image,"qq");
 						}
 						
 						@Override
@@ -229,6 +226,51 @@ public class MemberLoginActivity extends BaseActivity implements OnClickListener
 				public void onCancel(SHARE_MEDIA arg0, int arg1) {
 					// TODO Auto-generated method stub
 					Toast.makeText(getApplicationContext(), "取消登录", Toast.LENGTH_SHORT).show();
+				}
+			});
+			break;
+		case R.id.weixinLogin:
+			mUMengManager.weixinAuth(this, new UMAuthListener() {
+				
+				@Override
+				public void onError(SHARE_MEDIA arg0, int arg1, Throwable arg2) {
+					// TODO Auto-generated method stub
+				}
+				
+				@Override
+				public void onComplete(SHARE_MEDIA arg0, int arg1, Map<String, String> arg2) {
+					// TODO Auto-generated method stub
+					mUMengManager.getWeixinInfo(MemberLoginActivity.this, new UMAuthListener() {
+						
+						@Override
+						public void onError(SHARE_MEDIA arg0, int arg1, Throwable arg2) {
+							// TODO Auto-generated method stub
+						}
+						
+						@Override
+						public void onComplete(SHARE_MEDIA arg0, int arg1, Map<String, String> data) {
+							// TODO Auto-generated method stub
+							String uid = data.get("openid");
+							String nickname = data.get("nickname");
+							int gender = 1;
+							if (data.get("sex").equals("2")) {
+								gender = 2;
+							}
+							String image = data.get("headimgurl");
+							loginDialog.show();
+							qqLogin(nickname, gender, uid, MD5.GetMD5Code(uid + String.valueOf(gender) + RequestTool.PRIKEY),image,"weixin");
+						}
+						
+						@Override
+						public void onCancel(SHARE_MEDIA arg0, int arg1) {
+							// TODO Auto-generated method stub
+						}
+					});
+				}
+				
+				@Override
+				public void onCancel(SHARE_MEDIA arg0, int arg1) {
+					// TODO Auto-generated method stub
 				}
 			});
 			break;
@@ -255,7 +297,7 @@ public class MemberLoginActivity extends BaseActivity implements OnClickListener
 		}
 	}
 	
-	private void qqLogin(String nickname,int gender,String uid,String token,final String image){
+	private void qqLogin(String nickname,int gender,String uid,String token,final String image,final String loginType){
 		requestTool.getMap().clear();
 		requestTool.setParam("nickname", nickname);
 		requestTool.setParam("gender", gender);
@@ -285,10 +327,36 @@ public class MemberLoginActivity extends BaseActivity implements OnClickListener
 			@Override
 			public void onErrorResponse(VolleyError arg0) {
 				// TODO Auto-generated method stub
+				if ("qq".equals(loginType)) {
+					UMengManager.getInstance().cancleQqAuth(MemberLoginActivity.this, cancelAuthListener);
+				}else if ("weixin".equals(loginType)) {
+					UMengManager.getInstance().cancleWeixinAuth(MemberLoginActivity.this, cancelAuthListener);
+				}
+				StoreApplication.daoSession.getAccountDao().deleteAll();
 				loginDialog.dismiss();
 			}
 		}, requestTool.getMap(), OTHER_REGISTER);
 	}
+	
+	UMAuthListener cancelAuthListener = new UMAuthListener() {
+		
+		@Override
+		public void onError(SHARE_MEDIA arg0, int arg1, Throwable arg2) {
+			// TODO Auto-generated method stub
+			
+		}
+		
+		@Override
+		public void onComplete(SHARE_MEDIA arg0, int arg1, Map<String, String> arg2) {
+			// TODO Auto-generated method stub
+		}
+		
+		@Override
+		public void onCancel(SHARE_MEDIA arg0, int arg1) {
+			// TODO Auto-generated method stub
+			
+		}
+	};
 	
 	private void login(String account,String password){
 		requestTool.getMap().clear();

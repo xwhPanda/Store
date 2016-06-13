@@ -203,28 +203,32 @@ public class ShowAccountInformatiomActivity extends BaseActivity implements OnCl
 	
 	private void cancleAuth(){
 		if ("qq".equals(loginType)) {
-			UMengManager.getInstance().cancleQqAuth(this, new UMAuthListener() {
-				
-				@Override
-				public void onError(SHARE_MEDIA arg0, int arg1, Throwable arg2) {
-					// TODO Auto-generated method stub
-					
-				}
-				
-				@Override
-				public void onComplete(SHARE_MEDIA arg0, int arg1, Map<String, String> arg2) {
-					// TODO Auto-generated method stub
-					handler.sendEmptyMessage(1);
-				}
-				
-				@Override
-				public void onCancel(SHARE_MEDIA arg0, int arg1) {
-					// TODO Auto-generated method stub
-					
-				}
-			});
+			UMengManager.getInstance().cancleQqAuth(this, listener);
+		}else if ("weixin".equals(loginType)) {
+			UMengManager.getInstance().cancleWeixinAuth(this, listener);
 		}
 	}
+	
+	UMAuthListener listener = new UMAuthListener() {
+		
+		@Override
+		public void onError(SHARE_MEDIA arg0, int arg1, Throwable arg2) {
+			// TODO Auto-generated method stub
+			
+		}
+		
+		@Override
+		public void onComplete(SHARE_MEDIA arg0, int arg1, Map<String, String> arg2) {
+			// TODO Auto-generated method stub
+			handler.sendEmptyMessage(1);
+		}
+		
+		@Override
+		public void onCancel(SHARE_MEDIA arg0, int arg1) {
+			// TODO Auto-generated method stub
+			
+		}
+	};
 
 	private void initViewSize() {
 		UIUtil.setViewSize(accountImg, 250 * Rx, 250 * Rx);

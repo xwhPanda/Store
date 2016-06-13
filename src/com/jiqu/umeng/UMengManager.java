@@ -41,6 +41,7 @@ public class UMengManager {
 		umShareAPI.doOauthVerify(activity, media, umAuthListener);
 	}
 	
+	/** 获取QQ登录信息 **/
 	public void getQqInfo(Activity activity,UMAuthListener umAuthListener){
 		SHARE_MEDIA media = SHARE_MEDIA.QQ;
 		umShareAPI.getPlatformInfo(activity, media, umAuthListener);
@@ -49,6 +50,23 @@ public class UMengManager {
 	/** 取消QQ授权 **/
 	public void cancleQqAuth(Activity activity,UMAuthListener umAuthListener){
 		umShareAPI.deleteOauth(activity, SHARE_MEDIA.QQ, umAuthListener);
+	}
+	
+	/** 微信登录授权 **/
+	public void weixinAuth(Activity activity,UMAuthListener umAuthListener){
+		SHARE_MEDIA media = SHARE_MEDIA.WEIXIN;
+		umShareAPI.doOauthVerify(activity, media, umAuthListener);
+	}
+	
+	/** 获取微信登录信息 **/
+	public void getWeixinInfo(Activity activity,UMAuthListener umAuthListener){
+		SHARE_MEDIA media = SHARE_MEDIA.WEIXIN;
+		umShareAPI.getPlatformInfo(activity, media, umAuthListener);
+	}
+	
+	/** 取消微信授权 **/
+	public void cancleWeixinAuth(Activity activity,UMAuthListener umAuthListener){
+		umShareAPI.deleteOauth(activity, SHARE_MEDIA.WEIXIN, umAuthListener);
 	}
 	
 	/** 是否已经授权 **/

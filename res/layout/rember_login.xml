@@ -65,7 +65,9 @@
         <ImageView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical" />
+            android:layout_gravity="center_vertical" 
+            android:background="@drawable/vertical_xian"
+            android:layout_marginLeft="5dp"/>
 
         <Button
             android:id="@+id/register"
@@ -74,7 +76,8 @@
             fontPath="fonts/lantinghei.ttf"
             android:background="@color/transparent"
             android:text="@string/registered"
-            android:textColor="@color/itemDesColor" />
+            android:textColor="@color/itemDesColor" 
+            android:layout_marginLeft="5dp"/>
     </LinearLayout>
 
     <com.jiqu.view.QuickLoginView

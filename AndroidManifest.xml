@@ -53,7 +53,7 @@
         <!-- 友盟 -->
         <meta-data
             android:name="UMENG_APPKEY"
-            android:value="574297f8e0f55a3bb100060e" >
+            android:value="575cc7d767e58e106a001900" >
         </meta-data>
 
         <!-- 微博分享 -->
@@ -255,6 +255,14 @@
                 <data android:scheme="tencent1105444730" />
             </intent-filter>
         </activity>
+
+        <!-- 微信登录需要 -->
+        <activity
+            android:name="com.vr.store.wxapi.WXEntryActivity"
+            android:configChanges="keyboardHidden|orientation|screenSize"
+            android:exported="true"
+            android:screenOrientation="portrait"
+            android:theme="@android:style/Theme.Translucent.NoTitleBar" />
     </application>
 
 </manifest>

@@ -45,6 +45,23 @@
         android:layout_below="@id/weixin"/>
     
     <com.jiqu.view.FriendShareItem
+        android:id="@+id/pengyouquan"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        share:imgBg="@drawable/pengyouquan_share"
+        share:titleText="@string/pengyouquanShare"
+        android:clickable="true"
+        share:shareBg="@drawable/commom_problem_info_btn"
+        android:layout_below="@id/view3"/>
+    
+    <ImageView 
+        android:id="@+id/view4"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@drawable/xian"
+        android:layout_below="@id/pengyouquan"/>
+    
+    <com.jiqu.view.FriendShareItem
         android:id="@+id/weibo"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -52,10 +69,9 @@
         share:titleText="@string/weiboShare"
         android:clickable="true"
         share:shareBg="@drawable/commom_problem_info_btn"
-        android:layout_below="@id/view3"/>
+        android:layout_below="@id/view4"/>
+    
     <!-- 
-    
-    
 
     <ImageView 
         android:id="@+id/view4"
