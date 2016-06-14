@@ -34,7 +34,13 @@ public class UMengManager {
 	public void cancleSinaAuth(Activity activity,UMAuthListener umAuthListener){
 		umShareAPI.deleteOauth(activity, SHARE_MEDIA.SINA, umAuthListener);
 	}
-									
+			
+	/** 获取新浪登录信息 **/
+	public void getSinaInfo(Activity activity,UMAuthListener umAuthListener){
+		SHARE_MEDIA media = SHARE_MEDIA.SINA;
+		umShareAPI.getPlatformInfo(activity, media, umAuthListener);
+	}
+	
 	/** QQ授权 **/
 	public void qqAuth(Activity activity,UMAuthListener umAuthListener){
 		SHARE_MEDIA media = SHARE_MEDIA.QQ;
@@ -74,7 +80,13 @@ public class UMengManager {
 		return umShareAPI.isAuthorize(activity, media);
 	}
 	
+	/** 回调 **/
 	public void onActivityResult(int requestCode, int resultCode, Intent data){
 		umShareAPI.onActivityResult(requestCode, resultCode, data);
+	}
+	
+	/** 检测应用是否安装 **/
+	public boolean isInstall(Activity activity,SHARE_MEDIA media){
+		return umShareAPI.isInstall(activity, media);
 	}
 }

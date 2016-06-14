@@ -550,14 +550,17 @@ public class MainActivity extends FragmentActivity implements OnClickListener,On
 		case R.id.accountImg:
 			boolean isQQLogin = UMengManager.getInstance().isAuth(this, SHARE_MEDIA.QQ);
 			boolean isWeixinLogin = UMengManager.getInstance().isAuth(this, SHARE_MEDIA.WEIXIN);
+			boolean isSinaLogin = UMengManager.getInstance().isAuth(this, SHARE_MEDIA.SINA);
 			QueryBuilder qb = StoreApplication.daoSession.getAccountDao().queryBuilder();
 			Account account = (Account) qb.unique();
-			if (account != null || isQQLogin || isWeixinLogin) {
+			if (account != null || isQQLogin || isWeixinLogin || isSinaLogin) {
 				String loginType = "";
 				if (isQQLogin) {
 					loginType = "qq";
 				}else if(isWeixinLogin){
 					loginType = "weixin";
+				}else if (isSinaLogin) {
+					loginType = "sina";
 				}
 				startActivity(new Intent(this, ShowAccountInformatiomActivity.class)
 				.putExtra("loginType", loginType));

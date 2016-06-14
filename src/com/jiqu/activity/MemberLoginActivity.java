@@ -3,6 +3,9 @@ package com.jiqu.activity;
 
 import java.util.Map;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import com.alibaba.fastjson.JSON;
 import com.android.volley.Request.Method;
 import com.android.volley.Response.ErrorListener;
@@ -14,6 +17,7 @@ import com.jiqu.interfaces.LoginOutObserver;
 import com.jiqu.object.AccountInformation;
 import com.jiqu.object.AccountResponeInfo;
 import com.jiqu.store.BaseActivity;
+import com.umeng.socialize.Config;
 import com.umeng.socialize.UMAuthListener;
 import com.umeng.socialize.bean.SHARE_MEDIA;
 import com.vr.store.R;
@@ -171,6 +175,46 @@ public class MemberLoginActivity extends BaseActivity implements OnClickListener
 				@Override
 				public void onComplete(SHARE_MEDIA arg0, int arg1, Map<String, String> arg2) {
 					// TODO Auto-generated method stub
+					Log.i("TAG", arg2.toString());
+					mUMengManager.getSinaInfo(MemberLoginActivity.this, new UMAuthListener() {
+						
+						@Override
+						public void onError(SHARE_MEDIA arg0, int arg1, Throwable arg2) {
+							// TODO Auto-generated method stub
+							
+						}
+						
+						@Override
+						public void onComplete(SHARE_MEDIA arg0, int arg1, Map<String, String> data) {
+							// TODO Auto-generated method stub
+							Log.i("TAG", data.toString());
+							String json = data.get("result");
+							try {
+								JSONObject object = new JSONObject(json);
+								Log.i("TAG", object.toString());
+								String uid = object.getString("idstr");
+								Log.i("TAG", "uid : " + uid);
+								String nickname = object.getString("name");
+								int gender = 1;
+								if ("f".equals(object.getString("gender"))) {
+									gender = 2;
+								}
+								String image = object.getString("profile_image_url");
+								loginDialog.show();
+								Log.i("TAG", nickname + "/" + uid + "/" + gender + "/" + image);
+								qqLogin(nickname, gender, uid + "", MD5.GetMD5Code(uid + String.valueOf(gender) + RequestTool.PRIKEY),image,"sina");
+							} catch (JSONException e) {
+								// TODO Auto-generated catch block
+								e.printStackTrace();
+							}
+						}
+						
+						@Override
+						public void onCancel(SHARE_MEDIA arg0, int arg1) {
+							// TODO Auto-generated method stub
+							
+						}
+					});
 				}
 				
 				@Override
@@ -310,6 +354,7 @@ public class MemberLoginActivity extends BaseActivity implements OnClickListener
 				// TODO Auto-generated method stub
 				AccountResponeInfo responeInfo = JSON.parseObject(arg0, AccountResponeInfo.class);
 				Account account = null;
+				Log.i("TAG", arg0);
 				if (responeInfo.getPhoto() == null) {
 					account = AccountInformation.toAccount(responeInfo.getData(), image);
 				}
@@ -331,6 +376,8 @@ public class MemberLoginActivity extends BaseActivity implements OnClickListener
 					UMengManager.getInstance().cancleQqAuth(MemberLoginActivity.this, cancelAuthListener);
 				}else if ("weixin".equals(loginType)) {
 					UMengManager.getInstance().cancleWeixinAuth(MemberLoginActivity.this, cancelAuthListener);
+				}else if ("sina".equals(loginType)) {
+					UMengManager.getInstance().cancleSinaAuth(MemberLoginActivity.this, cancelAuthListener);
 				}
 				StoreApplication.daoSession.getAccountDao().deleteAll();
 				loginDialog.dismiss();

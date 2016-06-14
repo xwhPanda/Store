@@ -206,6 +206,8 @@ public class ShowAccountInformatiomActivity extends BaseActivity implements OnCl
 			UMengManager.getInstance().cancleQqAuth(this, listener);
 		}else if ("weixin".equals(loginType)) {
 			UMengManager.getInstance().cancleWeixinAuth(this, listener);
+		}else if ("sina".equals(loginType)) {
+			UMengManager.getInstance().cancleSinaAuth(this, listener);
 		}
 	}
 	

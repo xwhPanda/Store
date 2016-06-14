@@ -20,6 +20,7 @@ import com.jiqu.database.DaoMaster.DevOpenHelper;
 import com.jiqu.database.DaoSession;
 import com.jiqu.download.FileUtil;
 import com.jiqu.interfaces.LoginOutObserver;
+import com.umeng.socialize.Config;
 import com.umeng.socialize.PlatformConfig;
 import com.vr.store.R;
 import com.jiqu.tools.ChannelUtil;
@@ -120,10 +121,14 @@ public class StoreApplication extends Application {
 
 	/** 友盟 **/
 	private void initUMeng() {
+		//不显示友盟的Toast
+		Config.IsToastTip = false;
 		// 微信 appid appsecret
 		PlatformConfig.setWeixin("wx41034df8e97add60", "75fead583e630c6029dc18ebd3975de4");
 		// 新浪微博 appkey appsecret
 		PlatformConfig.setSinaWeibo("3518038102", "3389298718e97db68c4f53280cb302a0");
+		//新浪微博回调页
+		Config.REDIRECT_URL="http://www.123sjzs.com";
 		// QQ和Qzone appid appkey
 		PlatformConfig.setQQZone("1105444730", "TOqwncUiOjr6aoVl");
 	}
