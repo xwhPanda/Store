@@ -175,7 +175,6 @@ public class MemberLoginActivity extends BaseActivity implements OnClickListener
 				@Override
 				public void onComplete(SHARE_MEDIA arg0, int arg1, Map<String, String> arg2) {
 					// TODO Auto-generated method stub
-					Log.i("TAG", arg2.toString());
 					mUMengManager.getSinaInfo(MemberLoginActivity.this, new UMAuthListener() {
 						
 						@Override
@@ -187,13 +186,10 @@ public class MemberLoginActivity extends BaseActivity implements OnClickListener
 						@Override
 						public void onComplete(SHARE_MEDIA arg0, int arg1, Map<String, String> data) {
 							// TODO Auto-generated method stub
-							Log.i("TAG", data.toString());
 							String json = data.get("result");
 							try {
 								JSONObject object = new JSONObject(json);
-								Log.i("TAG", object.toString());
 								String uid = object.getString("idstr");
-								Log.i("TAG", "uid : " + uid);
 								String nickname = object.getString("name");
 								int gender = 1;
 								if ("f".equals(object.getString("gender"))) {
@@ -201,7 +197,6 @@ public class MemberLoginActivity extends BaseActivity implements OnClickListener
 								}
 								String image = object.getString("profile_image_url");
 								loginDialog.show();
-								Log.i("TAG", nickname + "/" + uid + "/" + gender + "/" + image);
 								qqLogin(nickname, gender, uid + "", MD5.GetMD5Code(uid + String.valueOf(gender) + RequestTool.PRIKEY),image,"sina");
 							} catch (JSONException e) {
 								// TODO Auto-generated catch block

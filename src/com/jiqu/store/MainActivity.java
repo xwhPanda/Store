@@ -252,14 +252,11 @@ public class MainActivity extends FragmentActivity implements OnClickListener,On
 		recommendFragment = new RecommendFragment();
 		informationFragment = new InformationFragment();
 		informationNewFragment = new InformationNewFragment();
-//		gameFragment = new GameFragment();
 		gameNewFragment = new GameNewFragment();
 		evaluationFragment = new EvaluationFragment();
 		toolFragment = new ToolFragment();
 		
 		fragments.add(recommendFragment);
-//		fragments.add(informationFragment);
-//		fragments.add(gameFragment);
 		fragments.add(informationNewFragment);
 		fragments.add(gameNewFragment);
 		fragments.add(evaluationFragment);
@@ -267,12 +264,6 @@ public class MainActivity extends FragmentActivity implements OnClickListener,On
 		
 		FragmentTransaction mFragmentTransaction = mFragmentManager.beginTransaction();
 		mFragmentTransaction.add(R.id.homeFrameLayout, recommendFragment);
-//		mFragmentTransaction.add(R.id.homeFrameLayout, informationFragment);
-//		mFragmentTransaction.hide(informationFragment);
-//		mFragmentTransaction.add(R.id.homeFrameLayout, gameFragment);
-//		mFragmentTransaction.hide(gameFragment);
-//		mFragmentTransaction.add(R.id.homeFrameLayout, evaluationFragment);
-//		mFragmentTransaction.hide(evaluationFragment);
 		mFragmentTransaction.add(R.id.homeFrameLayout, toolFragment);
 		mFragmentTransaction.hide(toolFragment);
 		
@@ -481,6 +472,7 @@ public class MainActivity extends FragmentActivity implements OnClickListener,On
 				mFragmentTransaction.hide(fragments.get(currentIndex));
 				mFragmentTransaction.show(informationNewFragment);
 //				mFragmentTransaction.replace(R.id.homeFrameLayout, informationFragment);
+				
 				currentIndex = 1;
 				changeFocusState(currentIndex, true);
 				
@@ -493,16 +485,12 @@ public class MainActivity extends FragmentActivity implements OnClickListener,On
 				toolTop.setVisibility(View.INVISIBLE);
 				top.setVisibility(View.VISIBLE);
 				changeFocusState(currentIndex, false);
-//				if (!gameFragment.isAdded()) {
-//					mFragmentTransaction.add(R.id.homeFrameLayout, gameFragment);
-//				}
-//				mFragmentTransaction.hide(fragments.get(currentIndex));
-//				mFragmentTransaction.show(gameFragment);
 				if (!gameNewFragment.isAdded()) {
 					mFragmentTransaction.add(R.id.homeFrameLayout, gameNewFragment);
 				}
 				mFragmentTransaction.hide(fragments.get(currentIndex));
 				mFragmentTransaction.show(gameNewFragment);
+				
 				currentIndex = 2;
 				changeFocusState(currentIndex, true);
 				
@@ -520,6 +508,7 @@ public class MainActivity extends FragmentActivity implements OnClickListener,On
 				}
 				mFragmentTransaction.hide(fragments.get(currentIndex));
 				mFragmentTransaction.show(evaluationFragment);
+				
 				currentIndex = 3;
 				changeFocusState(currentIndex, true);
 				
@@ -537,6 +526,7 @@ public class MainActivity extends FragmentActivity implements OnClickListener,On
 				}
 				mFragmentTransaction.hide(fragments.get(currentIndex));
 				mFragmentTransaction.show(toolFragment);
+				
 				currentIndex = 4;
 				changeFocusState(currentIndex, true);
 				
