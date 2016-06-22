@@ -1,20 +1,36 @@
 package com.jiqu.umeng;
 
+import org.json.JSONException;
+
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.os.AsyncTask;
+import android.util.Log;
 
 import com.jiqu.application.StoreApplication;
+import com.umeng.message.IUmengRegisterCallback;
+import com.umeng.message.PushAgent;
+import com.umeng.message.proguard.k.e;
+import com.umeng.message.tag.TagManager;
+import com.umeng.message.tag.TagManager.Result;
 import com.umeng.socialize.UMAuthListener;
 import com.umeng.socialize.UMShareAPI;
 import com.umeng.socialize.bean.SHARE_MEDIA;
 
 public class UMengManager {
 	private static UMengManager uMengManager;
+	/** 友盟分享 **/
 	private UMShareAPI umShareAPI;
-	
+	/** 友盟推送 **/
+	private PushAgent mPushAgent;
 	private UMengManager(Context context){
 		umShareAPI = UMShareAPI.get(context);
+		mPushAgent = PushAgent.getInstance(context);
+		/** 用于调试，正式发布要注释掉 **/
+//		mPushAgent.setDebugMode(true);
+		/** 开启推送 **/
+//		mPushAgent.enable();
 	}
 	
 	public static UMengManager getInstance(){
@@ -88,5 +104,30 @@ public class UMengManager {
 	/** 检测应用是否安装 **/
 	public boolean isInstall(Activity activity,SHARE_MEDIA media){
 		return umShareAPI.isInstall(activity, media);
+	}
+	
+	/** 设置友盟推送的渠道，跟应用渠道要一致 **/
+	public void setMessageChannel(String channel){
+		mPushAgent.setMessageChannel(channel);
+	}
+	
+	/** 开启推送 **/
+	public void enable(){
+		mPushAgent.enable();
+	}
+	
+	/** 开启推送 **/
+	public void enable(IUmengRegisterCallback callback){
+		mPushAgent.enable(callback);
+	}
+	
+	/** 添加alias **/
+	public Boolean addAlias(String alias,String aliasType) throws e, JSONException, Exception{
+		return mPushAgent.addAlias(alias, aliasType);
+	}
+	
+	/** 添加tag **/
+	public Result addTag(String... tags) throws Exception{
+		return mPushAgent.getTagManager().add(tags);
 	}
 }

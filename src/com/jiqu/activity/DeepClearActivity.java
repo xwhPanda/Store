@@ -15,6 +15,7 @@ import java.util.TimerTask;
 
 import android.R.integer;
 import android.R.raw;
+import android.app.ActivityManager.RunningAppProcessInfo;
 import android.content.pm.PackageInfo;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
@@ -74,6 +75,7 @@ public class DeepClearActivity extends BaseActivity implements OnClickListener {
 	private int memoryPre = 100;
 	
 	private boolean quit = false;
+	private List<RunningAppProcessInfo> processInfos = new ArrayList<RunningAppProcessInfo>();
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -302,8 +304,9 @@ public class DeepClearActivity extends BaseActivity implements OnClickListener {
 				speedUp.setBackgroundResource(R.drawable.tuichuzhanghao);
 				speedUp.setTextColor(getResources().getColor(R.color.itemDesColor));
 				if (closeProcessBox.isChecked()) {
-					ClearTool.getInstance().killProcess(DeepClearActivity.this,handler);
-				}else {
+					ClearTool.getInstance().killProcess(processInfos,handler);
+				}
+				if(clearRubishBox.isChecked()){
 					sendEmptyMessage(START_CLEAR_RUBISH);
 				}
 				break;
@@ -323,8 +326,6 @@ public class DeepClearActivity extends BaseActivity implements OnClickListener {
 					}else {
 						sendEmptyMessage(CLEAR_RUBISH_COMPLETED);
 					}
-				}else {
-					sendEmptyMessage(CLEAR_RUBISH_COMPLETED);
 				}
 				break;
 
@@ -353,13 +354,16 @@ public class DeepClearActivity extends BaseActivity implements OnClickListener {
 				
 			case SCAN_COMPELTED://扫描完毕
 				runing = false;
-				if (memoryPre < 60 ) {
-					scanScore.setText(memoryPre + 10 + "");
+				if (memoryPre < 70 ) {
+					memoryPre = 70;
+					scanScore.setText("70");
 				}else {
 					scanScore.setText(memoryPre + "");
 				}
 				closeProcessBox.setVisibility(View.VISIBLE);
+				closeProcessBox.setChecked(true);
 				clearRubishBox.setVisibility(View.VISIBLE);
+				clearRubishBox.setChecked(true);
 				closeProcessImg.setVisibility(View.INVISIBLE);
 				clearRubishImg.setVisibility(View.INVISIBLE);
 				scanBg.clearAnimation();
@@ -371,14 +375,15 @@ public class DeepClearActivity extends BaseActivity implements OnClickListener {
 			case SCAN_PROCESS_COMPLETED://扫描后台进程完毕
 				sendEmptyMessage(START_SCAN_RUBISH);
 				closeProcessImg.clearAnimation();
-				closeProcessCount.setText(msg.arg1 +"个可清理进程");
+				closeProcessCount.setText(processInfos.size() +"个可清理进程");
 				break;
 			
 			case START_SCAN_PROGRESS://开始扫描后台进程
+				processInfos.clear();
 				scanBg.startAnimation(animation_1);
 				closeProcessImg.setBackgroundResource(R.drawable.shuaxin_sel);
 				closeProcessImg.startAnimation(animation_2);
-				ClearTool.getInstance().getProcess(DeepClearActivity.this, handler);
+				processInfos.addAll(ClearTool.getInstance().getProcess(StoreApplication.context, handler));
 				break;
 			
 			case START_SCAN_RUBISH://开始扫描垃圾
@@ -397,7 +402,7 @@ public class DeepClearActivity extends BaseActivity implements OnClickListener {
 				break;
 			case REFRESH_SCORE:
 				int num = msg.arg1;
-				if (memoryPre + 10 <= score) {
+				if (memoryPre <= score) {
 					score = score - num;
 				}
 				scanScore.setText(score + "");

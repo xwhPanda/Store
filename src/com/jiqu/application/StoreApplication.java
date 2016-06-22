@@ -26,6 +26,7 @@ import com.vr.store.R;
 import com.jiqu.tools.ChannelUtil;
 import com.jiqu.tools.Constants;
 import com.jiqu.tools.LruBitmapCache;
+import com.jiqu.umeng.UMengManager;
 
 import android.app.Application;
 import android.content.Context;
@@ -45,21 +46,29 @@ import android.text.TextUtils;
 public class StoreApplication extends Application {
 	private static final String TAG = "StoreApplication";
 	private static StoreApplication instance;
+	/** 数据库 **/
 	public static DaoSession daoSession;
 	private static Looper mMainLooper;
 
+	/** volley的请求队列 **/
 	private RequestQueue requestQueue;
+	/** volley的图片loader **/
 	private ImageLoader imageLoader;
+	/** 包名 **/
 	public static String PACKAGE_NAME;
+	/** data下面cache路径 **/
 	public static String DATA_CACHE_PATH;
 	public static Context context;
 	public static String DEVICE_ID;
+	/** 渠道名 **/
 	public static String CHANNEL;
 	public static String APK_DOWNLOAD_PATH = "";
 	public static String ZIP_DOWNLOAD_PATH = "";
 	public static String UPGRADE_DOWNLOAD_PATH = "";
 	public static String DATA_FILE_PATH = "";
+	/** 退出登录Observers **/
 	public static List<LoginOutObserver> loginOutObservers;
+	/** 背景图片 **/
 	public static Drawable BG_IMG;
 
 	@Override
@@ -121,16 +130,18 @@ public class StoreApplication extends Application {
 
 	/** 友盟 **/
 	private void initUMeng() {
-		//不显示友盟的Toast
+		/** 不显示友盟的Toast **/
 		Config.IsToastTip = false;
-		// 微信 appid appsecret
+		/** 微信 appid appsecret **/
 		PlatformConfig.setWeixin("wx41034df8e97add60", "75fead583e630c6029dc18ebd3975de4");
-		// 新浪微博 appkey appsecret
+		/** 新浪微博 appkey appsecret **/
 		PlatformConfig.setSinaWeibo("3518038102", "3389298718e97db68c4f53280cb302a0");
-		//新浪微博回调页
+		/** 新浪微博回调页 **/
 		Config.REDIRECT_URL="http://www.123sjzs.com";
-		// QQ和Qzone appid appkey
+		/** QQ和Qzone appid appkey **/
 		PlatformConfig.setQQZone("1105444730", "TOqwncUiOjr6aoVl");
+		
+		UMengManager.getInstance().setMessageChannel(CHANNEL);
 	}
 
 	/** 获取AndroidManifest.xml中的mete节点 **/

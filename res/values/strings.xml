@@ -113,6 +113,7 @@
     <string name="allUninstall">全部卸载</string>
     <string name="appuninstall">应用卸载</string>
     <string name="downloading">正在下载</string>
+    <string name="nodownload">什么都没有哟~</string>
     <string name="downloaded">已下载</string>
     <string name="allDelete">全部删除</string>
     <string name="downloadManager">下载管理</string>

@@ -26,7 +26,6 @@
         android:layout_alignLeft="@id/nickNameView"
         android:layout_alignRight="@id/nickNameView"/>
     
-    
     <com.jiqu.view.PasswordView 
         android:id="@+id/passwordView"
         android:layout_width="wrap_content"

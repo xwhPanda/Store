@@ -6,6 +6,7 @@ import java.util.List;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
+import android.provider.Contacts.Intents.UI;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
@@ -15,10 +16,12 @@ import android.widget.AdapterView.OnItemLongClickListener;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
+import android.widget.ImageView;
 import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 
 import com.jiqu.adapter.DownloadedAdapter;
 import com.jiqu.adapter.DownloadingAdapter;
@@ -47,6 +50,9 @@ public class DownloadManagerActivity extends BaseActivity implements OnClickList
 	private Button allStartBtn,allDeleteBtn;
 	private RelativeLayout allDeleteRel;
 	private ListView downloadingList,downloadedList;
+	private LinearLayout noDownloadLin;
+	private ImageView noDownloadImg;
+	private TextView noDownloadTip;
 	private DownloadingAdapter downloadingAdapter;
 	private DownloadedAdapter downloadedAdapter;
 	private List<DownloadAppinfo> downloadingApps = new ArrayList<DownloadAppinfo>();
@@ -54,6 +60,8 @@ public class DownloadManagerActivity extends BaseActivity implements OnClickList
 	
 	private boolean downloadingListShowing = false;
 	private boolean downloadedListShowing = false;
+	private boolean downloadingShow = true;
+	private boolean downloadedShow = false;
 	private InstalledAppTool installedAppTool;
 	
 	@Override
@@ -106,6 +114,9 @@ public class DownloadManagerActivity extends BaseActivity implements OnClickList
 		allDeleteRel = (RelativeLayout) findViewById(R.id.allDeleteRel);
 		downloadingList = (ListView) findViewById(R.id.downloadingList);
 		downloadedList = (ListView) findViewById(R.id.downloadedList);
+		noDownloadLin = (LinearLayout) findViewById(R.id.noDownloadLin);
+		noDownloadImg = (ImageView) findViewById(R.id.noDownloadImg);
+		noDownloadTip = (TextView) findViewById(R.id.noDownloadTip);
 		
 		titleView.setActivity(this);
 		titleView.back.setBackgroundResource(R.drawable.fanhui);
@@ -132,11 +143,13 @@ public class DownloadManagerActivity extends BaseActivity implements OnClickList
 		UIUtil.setViewSize(allDeleteBtn, 320 * Rx, 115 * Rx);
 		UIUtil.setViewSize(allStartCB, 66 * Rx, 66 * Rx);
 		UIUtil.setViewSize(allStartBtn, 320 * Rx, 115 * Rx);
+		UIUtil.setViewSize(noDownloadImg, 328 * Rx, 238 * Rx);
 		
 		UIUtil.setTextSize(downloaded, 45);
 		UIUtil.setTextSize(downloading, 45);
 		UIUtil.setTextSize(allDeleteBtn, 55);
 		UIUtil.setTextSize(allStartBtn, 55);
+		UIUtil.setTextSize(noDownloadTip, 45);
 		
 		try {
 			UIUtil.setViewSizeMargin(btnLin, 0, 190 * Ry, 0, 0);
@@ -144,6 +157,7 @@ public class DownloadManagerActivity extends BaseActivity implements OnClickList
 			UIUtil.setViewSizeMargin(allStartBtn, 0, 0, 60 * Rx, 0);
 			UIUtil.setViewSizeMargin(allDeleteCB, 23 * Rx, 0, 0, 0);
 			UIUtil.setViewSizeMargin(allDeleteBtn, 0, 0, 60 * Rx, 0);
+			UIUtil.setViewSizeMargin(noDownloadTip, 0, 35 * Rx, 0, 0);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -185,24 +199,32 @@ public class DownloadManagerActivity extends BaseActivity implements OnClickList
 	private void initData(){
 		QueryBuilder<DownloadAppinfo> qb = StoreApplication.daoSession.getDownloadAppinfoDao().queryBuilder();
 		List<DownloadAppinfo> infos1 = qb.where(Properties.HasFinished.eq(false)).list();
-		for(DownloadAppinfo info : infos1){
-			if (info.getDownloadState() == DownloadManager.STATE_DOWNLOADING
-					|| info.getDownloadState() == DownloadManager.STATE_WAITING) {
-				if (!DownloadManager.getInstance().isDownloading(info.getId())) {
-					info.setDownloadState(DownloadManager.STATE_PAUSED);
-					DownloadManager.DBManager.insertOrReplace(info);
+		if (infos1 == null || infos1.size() == 0) {
+			noDownloadLin.setVisibility(View.VISIBLE);
+		}else {
+			for(DownloadAppinfo info : infos1){
+				if (info.getDownloadState() == DownloadManager.STATE_DOWNLOADING
+						|| info.getDownloadState() == DownloadManager.STATE_WAITING) {
+					if (!DownloadManager.getInstance().isDownloading(info.getId())) {
+						info.setDownloadState(DownloadManager.STATE_PAUSED);
+						DownloadManager.DBManager.insertOrReplace(info);
+					}
 				}
 			}
+			downloadingApps.clear();
+			downloadingApps.addAll(infos1);
+			downloadingAdapter.putAllMap(false);
+			handler.sendEmptyMessage(2);
 		}
-		downloadingApps.clear();
-		downloadingApps.addAll(infos1);
-		downloadingAdapter.putAllMap(false);
-		handler.sendEmptyMessage(2);
 		
 		QueryBuilder<DownloadAppinfo> qb1 = StoreApplication.daoSession.getDownloadAppinfoDao().queryBuilder();
 		List<DownloadAppinfo> infos2 = qb1.where(Properties.HasFinished.eq(true)).list();
-		List<InstalledApp> apps = installedAppTool.getPersonalApp(this);
-		for (DownloadAppinfo info : infos2) {
+		
+		if (infos2 == null || infos2.size() == 0) {
+			
+		}else {
+			List<InstalledApp> apps = installedAppTool.getPersonalApp(this);
+			for (DownloadAppinfo info : infos2) {
 				if (info.getDownloadState() != DownloadManager.STATE_INSTALLED) {
 					int state = InstalledAppTool.contain(apps,info.getPackageName());
 					if (state == DownloadManager.STATE_INSTALLED) {
@@ -220,16 +242,18 @@ public class DownloadManagerActivity extends BaseActivity implements OnClickList
 						DownloadManager.DBManager.insertOrReplace(info);
 					}
 				}
-			if (info.getDownloadState() == DownloadManager.STATE_UNZIPING 
-					&& !UnZipManager.getInstance().isUnZiping(info.getPackageName())) {
-				info.setDownloadState(DownloadManager.STATE_UNZIP_FAILED);
-				DownloadManager.DBManager.insertOrReplace(info);
+				if (info.getDownloadState() == DownloadManager.STATE_UNZIPING 
+						&& !UnZipManager.getInstance().isUnZiping(info.getPackageName())) {
+					info.setDownloadState(DownloadManager.STATE_UNZIP_FAILED);
+					DownloadManager.DBManager.insertOrReplace(info);
+				}
 			}
+			downloadedApps.clear();
+			downloadedApps.addAll(infos2);
+			downloadedAdapter.putAllMap(false);
+			handler.sendEmptyMessage(3);
 		}
-		downloadedApps.clear();
-		downloadedApps.addAll(infos2);
-		downloadedAdapter.putAllMap(false);
-		handler.sendEmptyMessage(3);
+		
 	}
 	
 	private Handler handler = new Handler(){
@@ -240,6 +264,19 @@ public class DownloadManagerActivity extends BaseActivity implements OnClickList
 				downloadedApps.remove(info);
 				downloadedAdapter.getList().add(info);
 				downloadedAdapter.notifyDataSetChanged();
+				if (downloadingShow) {
+					if (downloadingApps.size() == 0) {
+						noDownloadLin.setVisibility(View.VISIBLE);
+					}else {
+						noDownloadLin.setVisibility(View.GONE);
+					}
+				}else if (downloadedShow) {
+					if (downloadedApps.size() == 0) {
+						noDownloadLin.setVisibility(View.VISIBLE);
+					}else {
+						noDownloadLin.setVisibility(View.GONE);
+					}
+				}
 			}else if (msg.what == 2) {
 				downloadingAdapter.notifyDataSetChanged();
 			}else if (msg.what == 3) {
@@ -266,20 +303,34 @@ public class DownloadManagerActivity extends BaseActivity implements OnClickList
 		switch (v.getId()) {
 		case R.id.downloading:
 			downloadedListShowing = false;
+			downloadingShow = true;
+			downloadedShow = false;
 			changeButtonState(downloading);
 			downloadedList.setVisibility(View.GONE);
 			downloadedAdapter.showAllCheckbox(false);
 			allDeleteRel.setVisibility(View.GONE);
 			downloadingList.setVisibility(View.VISIBLE);
+			if (downloadingApps.size() > 0) {
+				noDownloadLin.setVisibility(View.GONE);
+			}else {
+				noDownloadLin.setVisibility(View.VISIBLE);
+			}
 			break;
 
 		case R.id.downloaded:
 			downloadingListShowing = false;
+			downloadingShow = false;
+			downloadedShow = true;
 			changeButtonState(downloaded);
 			downloadingList.setVisibility(View.GONE);
 			downloadingAdapter.showAllCheckbox(false);
 			allStartRel.setVisibility(View.GONE);
 			downloadedList.setVisibility(View.VISIBLE);
+			if (downloadedApps.size() > 0) {
+				noDownloadLin.setVisibility(View.GONE);
+			}else {
+				noDownloadLin.setVisibility(View.VISIBLE);
+			}
 			break;
 			
 		case R.id.allStartBtn:
@@ -358,6 +409,4 @@ public class DownloadManagerActivity extends BaseActivity implements OnClickList
 		}
 		return super.onKeyDown(keyCode, event);
 	}
-	
-	
 }

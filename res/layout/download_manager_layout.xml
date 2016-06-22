@@ -43,7 +43,7 @@
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:background="@color/black"
-        android:visibility="gone">
+        android:visibility="gone" >
 
         <CheckBox
             android:id="@+id/allStartCB"
@@ -100,8 +100,8 @@
         android:layout_above="@id/allStartRel"
         android:layout_below="@id/btnLin"
         android:divider="@drawable/xian"
-        android:listSelector="#00000000"
         android:dividerHeight="1dp"
+        android:listSelector="#00000000"
         android:scrollbars="none" />
 
     <ListView
@@ -111,9 +111,32 @@
         android:layout_above="@id/allDeleteRel"
         android:layout_below="@id/btnLin"
         android:divider="@drawable/xian"
-        android:listSelector="#00000000"
         android:dividerHeight="1dp"
+        android:listSelector="#00000000"
         android:scrollbars="none"
         android:visibility="invisible" />
+
+    <LinearLayout
+        android:id="@+id/noDownloadLin"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_centerInParent="true"
+        android:layout_below="@id/btnLin"
+        android:gravity="center"
+        android:orientation="vertical" 
+        android:visibility="gone">
+
+        <ImageView android:id="@+id/noDownloadImg"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/nodownload_img"/>
+        
+        <TextView 
+            android:id="@+id/noDownloadTip"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/nodownload"
+            android:textColor="@color/itemDesColor"/>
+    </LinearLayout>
 
 </RelativeLayout>

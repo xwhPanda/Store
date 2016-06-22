@@ -229,18 +229,15 @@ public class ClearTool {
 		}
 	}
 	
-	public void getProcess(Context context,Handler handler){
+	public List<RunningAppProcessInfo> getProcess(Context context,Handler handler){
 		ActivityManager am = (ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE);
         List<RunningAppProcessInfo> infoList = am.getRunningAppProcesses();
-        List<ActivityManager.RunningServiceInfo> serviceInfos = am.getRunningServices(100);
-
+        
+        List<RunningAppProcessInfo> processInfos = new ArrayList<ActivityManager.RunningAppProcessInfo>();
+        
         long beforeMem = getAvailMemory(context);
         int count = 0;
-        Message msg = handler.obtainMessage();
-        //DeepClearActivity.SCAN_PROCESS_COMPLETED
-        msg.what = 5;
-        msg.arg1 = infoList.size();
-        handler.sendMessageDelayed(msg, 2 * 1000);
+        handler.sendEmptyMessageDelayed(5, 2 * 1000);
         if (infoList != null) {
             for (int i = 0; i < infoList.size(); ++i) {
                 RunningAppProcessInfo appProcessInfo = infoList.get(i);
@@ -249,21 +246,22 @@ public class ClearTool {
                 // 一般数值大于RunningAppProcessInfo.IMPORTANCE_SERVICE的进程都长时间没用或者空进程了
                 // 一般数值大于RunningAppProcessInfo.IMPORTANCE_VISIBLE的进程都是非可见进程，也就是在后台运行着
                 if (appProcessInfo.importance > RunningAppProcessInfo.IMPORTANCE_VISIBLE) {
-                    String[] pkgList = appProcessInfo.pkgList;
+                	processInfos.add(appProcessInfo);
+//                    String[] pkgList = appProcessInfo.pkgList;
                 }
 
             }
         }
+        return processInfos;
 	}
 	
-	public void killProcess(Context context,Handler handler){
-		ActivityManager am = (ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE);
-        List<RunningAppProcessInfo> infoList = am.getRunningAppProcesses();
-        List<ActivityManager.RunningServiceInfo> serviceInfos = am.getRunningServices(100);
+	public void killProcess(List<RunningAppProcessInfo> processInfos,Handler handler){
+		ActivityManager am = (ActivityManager) StoreApplication.context.getSystemService(Context.ACTIVITY_SERVICE);
+//        List<RunningAppProcessInfo> infoList = am.getRunningAppProcesses();
 
-        if (infoList != null) {
-            for (int i = 0; i < infoList.size(); ++i) {
-                RunningAppProcessInfo appProcessInfo = infoList.get(i);
+        if (processInfos != null && processInfos.size() > 0) {
+            for (int i = 0; i < processInfos.size(); ++i) {
+                RunningAppProcessInfo appProcessInfo = processInfos.get(i);
                 //importance 该进程的重要程度  分为几个级别，数值越低就越重要。
                 
                 // 一般数值大于RunningAppProcessInfo.IMPORTANCE_SERVICE的进程都长时间没用或者空进程了

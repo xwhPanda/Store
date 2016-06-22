@@ -17,6 +17,8 @@
     
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE"/>
     
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
+    <uses-permission android:name="android.permission.VIBRATE" />
     <uses-permission android:name="android.permission.READ_LOGS" />
     <uses-permission android:name="android.permission.CALL_PHONE" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
@@ -55,7 +57,11 @@
             android:name="UMENG_APPKEY"
             android:value="575cc7d767e58e106a001900" >
         </meta-data>
-
+        <!-- 友盟推送 -->
+		<meta-data
+    		android:name="UMENG_MESSAGE_SECRET"
+    		android:value="a4645e659694d11170fbfe999c580d6f">
+		</meta-data>
         <!-- 微博分享 -->
         <activity
             android:name="com.sina.weibo.sdk.component.WeiboSdkBrowser"

@@ -1,5 +1,7 @@
 package com.jiqu.tools;
 
+import android.R.anim;
+
 public class Constants {
 
 	/** （新浪） 应用的 APP_KEY **/
@@ -43,6 +45,10 @@ public class Constants {
 	public static final String SEND_SUCCESS = "sendSuccess";
 	/** 用户头像 **/
 	public static String ACCOUNT_ICON = "";
+	/** 手机品牌 **/
+	public static String BRAND = android.os.Build.BRAND;
+	/** 手机型号 **/
+	public static String MODEL = android.os.Build.MODEL;
 	
 	public static String RECOMMEND_TAG = "recommend";
 	public static String INFORMATION_TAG = "information";

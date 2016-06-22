@@ -13,6 +13,7 @@ import com.jiqu.tools.MetricsTool;
 import com.jiqu.tools.NetReceiver;
 import com.jiqu.tools.NetReceiver.OnNetChangeListener;
 import com.jiqu.view.NetChangeDialog;
+import com.umeng.message.PushAgent;
 
 import android.app.Activity;
 import android.content.BroadcastReceiver;
@@ -34,6 +35,7 @@ public abstract class BaseActivity extends Activity implements OnNetChangeListen
 	protected void onCreate(Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
 		super.onCreate(savedInstanceState);
+		PushAgent.getInstance(this).onAppStart();
 		Rx = MetricsTool.Rx;
 		Ry = MetricsTool.Ry;
 		installedAppTool = new InstalledAppTool();
