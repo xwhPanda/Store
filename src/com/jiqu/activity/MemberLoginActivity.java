@@ -21,6 +21,7 @@ import com.umeng.socialize.Config;
 import com.umeng.socialize.UMAuthListener;
 import com.umeng.socialize.bean.SHARE_MEDIA;
 import com.vr.store.R;
+import com.jiqu.tools.Constants;
 import com.jiqu.tools.MD5;
 import com.jiqu.tools.RequestTool;
 import com.jiqu.tools.UIUtil;
@@ -451,5 +452,17 @@ public class MemberLoginActivity extends BaseActivity implements OnClickListener
 		// TODO Auto-generated method stub
 		super.onDestroy();
 		requestTool.stopRequest(LOGIN_TAG);
+	}
+	
+	@Override
+	public void removeFromActivityList() {
+		// TODO Auto-generated method stub
+		Constants.ACTIVITY_LIST.remove(this);
+	}
+
+	@Override
+	public void addToActivityList() {
+		// TODO Auto-generated method stub
+		Constants.ACTIVITY_LIST.add(this);
 	}
 }

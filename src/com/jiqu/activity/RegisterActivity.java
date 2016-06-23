@@ -208,4 +208,16 @@ public class RegisterActivity extends BaseActivity implements OnClickListener{
 		super.onDestroy();
 		requestTool.stopRequest(REGISTER_TAG);
 	}
+	
+	@Override
+	public void removeFromActivityList() {
+		// TODO Auto-generated method stub
+		Constants.ACTIVITY_LIST.remove(this);
+	}
+
+	@Override
+	public void addToActivityList() {
+		// TODO Auto-generated method stub
+		Constants.ACTIVITY_LIST.add(this);
+	}
 }

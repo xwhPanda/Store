@@ -8,6 +8,7 @@ import android.widget.RelativeLayout;
 import com.jiqu.application.StoreApplication;
 import com.jiqu.store.BaseActivity;
 import com.vr.store.R;
+import com.jiqu.tools.Constants;
 import com.jiqu.tools.UIUtil;
 import com.jiqu.view.PasswordView;
 import com.jiqu.view.TitleView;
@@ -70,4 +71,15 @@ public class ModifyPasswordActivity extends BaseActivity {
 		}
 	}
 	
+	@Override
+	public void removeFromActivityList() {
+		// TODO Auto-generated method stub
+		Constants.ACTIVITY_LIST.remove(this);
+	}
+
+	@Override
+	public void addToActivityList() {
+		// TODO Auto-generated method stub
+		Constants.ACTIVITY_LIST.add(this);
+	}
 }

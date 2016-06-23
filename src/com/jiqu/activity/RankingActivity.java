@@ -34,6 +34,7 @@ import com.jiqu.object.InstalledApp;
 import com.jiqu.object.RankInfo;
 import com.jiqu.store.BaseActivity;
 import com.vr.store.R;
+import com.jiqu.tools.Constants;
 import com.jiqu.tools.InstalledAppTool;
 import com.jiqu.tools.RequestTool;
 import com.jiqu.tools.UIUtil;
@@ -346,5 +347,17 @@ public class RankingActivity extends BaseActivity implements OnClickListener,OnR
 			}
 		}
 		hotAdapter.notifyDataSetChanged();
+	}
+	
+	@Override
+	public void removeFromActivityList() {
+		// TODO Auto-generated method stub
+		Constants.ACTIVITY_LIST.remove(this);
+	}
+
+	@Override
+	public void addToActivityList() {
+		// TODO Auto-generated method stub
+		Constants.ACTIVITY_LIST.add(this);
 	}
 }

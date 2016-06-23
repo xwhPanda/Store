@@ -8,6 +8,7 @@ import com.jiqu.database.DownloadAppinfo;
 import com.jiqu.download.DownloadManager;
 import com.jiqu.object.GameInfo;
 import com.jiqu.object.InstalledApp;
+import com.jiqu.tools.Constants;
 import com.jiqu.tools.InstalledAppTool;
 import com.jiqu.tools.MetricsTool;
 import com.jiqu.tools.NetReceiver;
@@ -21,6 +22,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
+import android.util.Log;
+import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
 
@@ -35,6 +38,7 @@ public abstract class BaseActivity extends Activity implements OnNetChangeListen
 	protected void onCreate(Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
 		super.onCreate(savedInstanceState);
+		MetricsTool.initMetrics(getWindowManager());
 		PushAgent.getInstance(this).onAppStart();
 		Rx = MetricsTool.Rx;
 		Ry = MetricsTool.Ry;
@@ -72,6 +76,12 @@ public abstract class BaseActivity extends Activity implements OnNetChangeListen
 				netChangeDialog.dismiss();
 			}
 		});
+		
+		addToActivityList();
+		for (Activity activity : Constants.ACTIVITY_LIST) {
+			Log.i("TAG", activity.toString());
+		}
+		
 	}
 	
 	@Override
@@ -81,6 +91,9 @@ public abstract class BaseActivity extends Activity implements OnNetChangeListen
 	}
 	
 	public abstract int getContentView();
+	public abstract void removeFromActivityList();
+	public abstract void addToActivityList();
+	
 	
 	private BroadcastReceiver appInstallReceiver = new BroadcastReceiver(){
 
@@ -139,12 +152,26 @@ public abstract class BaseActivity extends Activity implements OnNetChangeListen
 		}
 	}
 	
-	
-	
 	@Override
 	protected void onDestroy() {
 		// TODO Auto-generated method stub
 		super.onDestroy();
 		unregisterReceiver(appInstallReceiver);
+		removeFromActivityList();
+	}
+	
+	@Override
+	public boolean onKeyDown(int keyCode, KeyEvent event) {
+		// TODO Auto-generated method stub
+		if (keyCode == KeyEvent.KEYCODE_BACK) {
+			Log.i("TAG", "size : " + Constants.ACTIVITY_LIST.size());
+			if ("true".equals(getIntent().getStringExtra("isPush"))
+					&& Constants.ACTIVITY_LIST.size() <= 1) {
+				startActivity(new Intent(this, SplashActivity.class));
+			}
+			finish();
+			return true;
+		}
+		return super.onKeyDown(keyCode, event);
 	}
 }

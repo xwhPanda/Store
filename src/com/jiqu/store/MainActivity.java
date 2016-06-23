@@ -36,6 +36,7 @@ import com.jiqu.tools.NetReceiver;
 import com.jiqu.tools.RequestTool;
 import com.jiqu.tools.NetReceiver.OnNetChangeListener;
 import com.jiqu.tools.UIUtil;
+import com.jiqu.umeng.PushIntentService;
 import com.jiqu.umeng.UMengManager;
 import com.jiqu.view.CircleImageView;
 import com.jiqu.view.CustomDialog;
@@ -121,12 +122,12 @@ public class MainActivity extends FragmentActivity implements OnClickListener,On
 		// TODO Auto-generated method stub
 		super.onCreate(savedInstanceState);
 		PushAgent.getInstance(this).onAppStart();
+		Constants.ACTIVITY_LIST.add(this);
 		requestTool = RequestTool.getInstance();
-		MetricsTool.initMetrics(getWindowManager());
 		netReceiver = NetReceiver.getInstance();
 		netReceiver.setNetChangeListener(this);
 		netReceiver.registerReceive(StoreApplication.context);
-		
+		MetricsTool.initMetrics(getWindowManager());
 		StoreApplication.setLoginOutObserver(this);
 		
 		netChangeDialog = new NetChangeDialog(this);
@@ -158,7 +159,9 @@ public class MainActivity extends FragmentActivity implements OnClickListener,On
 		setOnclick();
 		
 		checkNewVersion();
+		
 		enablePush();
+//		UMengManager.getInstance().setPushIntentServiceClass(PushIntentService.class);
 	}
 	
 	/** 开启推送 **/
@@ -220,6 +223,7 @@ public class MainActivity extends FragmentActivity implements OnClickListener,On
 		super.onDestroy();
 		netReceiver.unregisterReceive(StoreApplication.context);
 		requestTool.stopRequest(CHECKNE_WVERSION_REQUEST);
+		Constants.ACTIVITY_LIST.remove(this);
 	}
 	
 	/**

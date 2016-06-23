@@ -130,4 +130,14 @@ public class UMengManager {
 	public Result addTag(String... tags) throws Exception{
 		return mPushAgent.getTagManager().add(tags);
 	}
+	
+	/** 设置NotificationHandler **/
+	public void setNotificationClickHandler(UmengNotificationHandler notificationHandler){
+		mPushAgent.setNotificationClickHandler(notificationHandler);
+	}
+	
+	/** 设置service **/
+	public void setPushIntentServiceClass(Class serviceClass){
+		mPushAgent.setPushIntentServiceClass(serviceClass);
+	}
 }

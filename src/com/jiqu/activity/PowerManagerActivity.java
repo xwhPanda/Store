@@ -276,4 +276,16 @@ public class PowerManagerActivity extends BaseActivity implements OnCheckedChang
         // 保存设置的屏幕亮度值
         Settings.System.putInt(getContentResolver(), Settings.System.SCREEN_BRIGHTNESS, (int) value);
     }
+	
+	@Override
+	public void removeFromActivityList() {
+		// TODO Auto-generated method stub
+		Constants.ACTIVITY_LIST.remove(this);
+	}
+
+	@Override
+	public void addToActivityList() {
+		// TODO Auto-generated method stub
+		Constants.ACTIVITY_LIST.add(this);
+	}
 }

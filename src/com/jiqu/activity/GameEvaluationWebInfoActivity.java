@@ -13,6 +13,7 @@ import android.widget.TextView;
 import com.jiqu.object.CommonProblemItem;
 import com.jiqu.object.EvaluationItemInfo;
 import com.jiqu.store.BaseActivity;
+import com.jiqu.tools.Constants;
 import com.jiqu.view.LoadStateView;
 import com.jiqu.view.TitleView;
 import com.vr.store.R;
@@ -102,5 +103,17 @@ public class GameEvaluationWebInfoActivity extends BaseActivity {
 	public int getContentView() {
 		// TODO Auto-generated method stub
 		return R.layout.evaluation_web_info_layout;
+	}
+	
+	@Override
+	public void removeFromActivityList() {
+		// TODO Auto-generated method stub
+		Constants.ACTIVITY_LIST.remove(this);
+	}
+
+	@Override
+	public void addToActivityList() {
+		// TODO Auto-generated method stub
+		Constants.ACTIVITY_LIST.add(this);
 	}
 }

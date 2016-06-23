@@ -156,4 +156,15 @@ public class FeedbackActivity extends BaseActivity implements OnClickListener{
 		}
 	}
 	
+	@Override
+	public void removeFromActivityList() {
+		// TODO Auto-generated method stub
+		Constants.ACTIVITY_LIST.remove(this);
+	}
+
+	@Override
+	public void addToActivityList() {
+		// TODO Auto-generated method stub
+		Constants.ACTIVITY_LIST.add(this);
+	}
 }

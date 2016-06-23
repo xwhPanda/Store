@@ -40,6 +40,7 @@ import com.jiqu.object.ThematicSortInfo;
 import com.jiqu.object.ThematicSortInfoItem;
 import com.jiqu.store.BaseActivity;
 import com.vr.store.R;
+import com.jiqu.tools.Constants;
 import com.jiqu.tools.InstalledAppTool;
 import com.jiqu.tools.RequestTool;
 import com.jiqu.view.LoadStateView;
@@ -346,5 +347,17 @@ public class SortInfoActivity extends BaseActivity implements OnRefreshListener,
 			}
 		}
 		adapter.notifyDataSetChanged();
+	}
+	
+	@Override
+	public void removeFromActivityList() {
+		// TODO Auto-generated method stub
+		Constants.ACTIVITY_LIST.remove(this);
+	}
+
+	@Override
+	public void addToActivityList() {
+		// TODO Auto-generated method stub
+		Constants.ACTIVITY_LIST.add(this);
 	}
 }

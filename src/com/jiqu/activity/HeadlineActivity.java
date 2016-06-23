@@ -28,6 +28,7 @@ import com.jiqu.object.InformationItemInfo;
 import com.jiqu.store.BaseActivity;
 import com.umeng.socialize.media.UMImage;
 import com.vr.store.R;
+import com.jiqu.tools.Constants;
 import com.jiqu.tools.MetricsTool;
 import com.jiqu.tools.RequestTool;
 import com.jiqu.tools.UIUtil;
@@ -207,5 +208,17 @@ public class HeadlineActivity extends BaseActivity {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+	}
+	
+	@Override
+	public void removeFromActivityList() {
+		// TODO Auto-generated method stub
+		Constants.ACTIVITY_LIST.remove(this);
+	}
+
+	@Override
+	public void addToActivityList() {
+		// TODO Auto-generated method stub
+		Constants.ACTIVITY_LIST.add(this);
 	}
 }

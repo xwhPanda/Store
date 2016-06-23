@@ -23,7 +23,7 @@ public class TitleView extends RelativeLayout implements OnClickListener{
 	private View view;
 	private Context context;
 	public RelativeLayout parentView;
-	private LinearLayout backLin;
+	public LinearLayout backLin;
 	public ImageView back;
 	public Button editBtn;
 	public TextView tip;
@@ -68,6 +68,10 @@ public class TitleView extends RelativeLayout implements OnClickListener{
 	
 	public void setShareListener(OnClickListener listener){
 		editBtn.setOnClickListener(listener);
+	}
+	
+	public void setBackListener(OnClickListener onClickListener){
+		backLin.setOnClickListener(onClickListener);
 	}
 	
 	public void setSize(){

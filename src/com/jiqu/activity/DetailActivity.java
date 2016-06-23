@@ -9,6 +9,8 @@ import android.os.Handler;
 import android.os.Message;
 import android.support.v4.view.ViewPager;
 import android.support.v4.view.ViewPager.OnPageChangeListener;
+import android.util.Log;
+import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.ImageView;
@@ -39,6 +41,7 @@ import com.jiqu.object.GameDetailData;
 import com.jiqu.object.GameDetailInfo;
 import com.jiqu.object.InstalledApp;
 import com.jiqu.store.BaseActivity;
+import com.jiqu.store.SplashActivity;
 import com.vr.store.R;
 import com.jiqu.tools.Constants;
 import com.jiqu.tools.InstalledAppTool;
@@ -104,6 +107,8 @@ public class DetailActivity extends BaseActivity implements Listener<String>,
 	private String name;
 	// 0：根据id请求数据；1：不需要请求数据，数据是传过来的
 	private int requestType = 0;
+	//是否是推送打开
+	private String isPush = "false";
 	private ImageView[] imgs;
 	private ImageView[] radioImgs;
 
@@ -118,6 +123,8 @@ public class DetailActivity extends BaseActivity implements Listener<String>,
 		id = getIntent().getStringExtra("id");
 		requestType = getIntent().getIntExtra("requestType", 0);
 		name = getIntent().getStringExtra("name");
+		isPush = getIntent().getStringExtra("isPush");
+		
 		initView();
 
 		if (requestType == 0) {
@@ -204,16 +211,15 @@ public class DetailActivity extends BaseActivity implements Listener<String>,
 		evaluationScore = (TextView) findViewById(R.id.evaluationScore);
 		comprehensiveBar = (RatingBarView) findViewById(R.id.comprehensiveBar);
 
-		titleView.setActivity(this);
 		titleView.back.setBackgroundResource(R.drawable.fanhui);
 		titleView.tip.setText("");
 		titleView.tip.setTextColor(getResources().getColor(R.color.blue));
 		titleView.editBtn.setVisibility(View.VISIBLE);
 		titleView.editBtn.setBackgroundResource(R.drawable.fenxiang_white);
+		titleView.setBackListener(this);
 
 		gameIcon.setScaleType(ScaleType.FIT_XY);
 		viewPager.setOnPageChangeListener(this);
-//		download.setOnClickListener(this);
 		download.setOnProgressButtonClickListener(this);
 
 		loadView.loadAgain(this);
@@ -496,6 +502,12 @@ public class DetailActivity extends BaseActivity implements Listener<String>,
 				startActivity(new Intent(DetailActivity.this, ShareActivity.class)
 				.putExtra("bundle", bundle));
 			}
+		}else if (v == titleView.backLin) {
+			if ("true".equals(isPush)
+					&& Constants.ACTIVITY_LIST.size() <= 1) {
+				startActivity(new Intent(this, SplashActivity.class));
+			}
+			finish();
 		}
 	}
 
@@ -654,5 +666,17 @@ public class DetailActivity extends BaseActivity implements Listener<String>,
 				}
 			}
 		}
+	}
+	
+	@Override
+	public void removeFromActivityList() {
+		// TODO Auto-generated method stub
+		Constants.ACTIVITY_LIST.remove(this);
+	}
+
+	@Override
+	public void addToActivityList() {
+		// TODO Auto-generated method stub
+		Constants.ACTIVITY_LIST.add(this);
 	}
 }

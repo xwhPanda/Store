@@ -213,6 +213,9 @@
             android:name="com.jiqu.activity.DetailActivity"
             android:screenOrientation="portrait" 
         	android:theme="@style/AnimationActivity">
+            <intent-filter >
+                <action android:name="android.intent.action.MAIN"/>
+            </intent-filter>
         </activity>
         <activity
             android:name="com.jiqu.activity.GameEvaluationWebInfoActivity"
@@ -269,6 +272,10 @@
             android:exported="true"
             android:screenOrientation="portrait"
             android:theme="@android:style/Theme.Translucent.NoTitleBar" />
+        <!-- 
+        <service android:name="com.jiqu.umeng.PushIntentService"
+            android:process=":push"></service>
+         -->
     </application>
 
 </manifest>

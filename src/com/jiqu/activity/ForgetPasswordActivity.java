@@ -19,6 +19,7 @@ import com.jiqu.application.StoreApplication;
 import com.jiqu.download.StringUtil;
 import com.jiqu.store.BaseActivity;
 import com.vr.store.R;
+import com.jiqu.tools.Constants;
 import com.jiqu.tools.MD5;
 import com.jiqu.tools.MetricsTool;
 import com.jiqu.tools.RequestTool;
@@ -262,5 +263,17 @@ public class ForgetPasswordActivity extends BaseActivity implements OnClickListe
 				UIUtil.showToast(R.string.resetFailed);
 			}
 		}, requestTool.getMap(), RESET_TAG);
+	}
+	
+	@Override
+	public void removeFromActivityList() {
+		// TODO Auto-generated method stub
+		Constants.ACTIVITY_LIST.remove(this);
+	}
+
+	@Override
+	public void addToActivityList() {
+		// TODO Auto-generated method stub
+		Constants.ACTIVITY_LIST.add(this);
 	}
 }

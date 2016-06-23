@@ -1,6 +1,10 @@
 package com.jiqu.tools;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import android.R.anim;
+import android.app.Activity;
 
 public class Constants {
 
@@ -49,6 +53,8 @@ public class Constants {
 	public static String BRAND = android.os.Build.BRAND;
 	/** 手机型号 **/
 	public static String MODEL = android.os.Build.MODEL;
+	/** activit list **/
+	public static List<Activity> ACTIVITY_LIST = new ArrayList<Activity>();
 	
 	public static String RECOMMEND_TAG = "recommend";
 	public static String INFORMATION_TAG = "information";

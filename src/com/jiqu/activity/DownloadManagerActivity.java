@@ -33,6 +33,7 @@ import com.jiqu.download.UnZipManager;
 import com.jiqu.object.InstalledApp;
 import com.jiqu.store.BaseActivity;
 import com.vr.store.R;
+import com.jiqu.tools.Constants;
 import com.jiqu.tools.InstalledAppTool;
 import com.jiqu.tools.UIUtil;
 import com.jiqu.view.TitleView;
@@ -408,5 +409,17 @@ public class DownloadManagerActivity extends BaseActivity implements OnClickList
 			}
 		}
 		return super.onKeyDown(keyCode, event);
+	}
+	
+	@Override
+	public void removeFromActivityList() {
+		// TODO Auto-generated method stub
+		Constants.ACTIVITY_LIST.remove(this);
+	}
+
+	@Override
+	public void addToActivityList() {
+		// TODO Auto-generated method stub
+		Constants.ACTIVITY_LIST.add(this);
 	}
 }

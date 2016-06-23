@@ -27,6 +27,7 @@ import com.jiqu.tools.ChannelUtil;
 import com.jiqu.tools.Constants;
 import com.jiqu.tools.LruBitmapCache;
 import com.jiqu.umeng.UMengManager;
+import com.jiqu.umeng.UmengNotificationHandler;
 
 import android.app.Application;
 import android.content.Context;
@@ -42,6 +43,7 @@ import android.os.Looper;
 import android.provider.Settings.Secure;
 import android.telephony.TelephonyManager;
 import android.text.TextUtils;
+import android.util.Log;
 
 public class StoreApplication extends Application {
 	private static final String TAG = "StoreApplication";
@@ -75,6 +77,7 @@ public class StoreApplication extends Application {
 	public void onCreate() {
 		// TODO Auto-generated method stub
 		super.onCreate();
+		Log.i("TAG", "StoreApplication onCreat");
 		CalligraphyConfig.initDefault("fonts/lantinghei.ttf", R.attr.fontPath);
 		instance = this;
 		mMainLooper = getMainLooper();
@@ -142,6 +145,7 @@ public class StoreApplication extends Application {
 		PlatformConfig.setQQZone("1105444730", "TOqwncUiOjr6aoVl");
 		
 		UMengManager.getInstance().setMessageChannel(CHANNEL);
+		UMengManager.getInstance().setNotificationClickHandler(new UmengNotificationHandler());
 	}
 
 	/** 获取AndroidManifest.xml中的mete节点 **/

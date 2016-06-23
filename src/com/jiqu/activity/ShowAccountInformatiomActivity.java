@@ -655,4 +655,16 @@ public class ShowAccountInformatiomActivity extends BaseActivity implements OnCl
 		// TODO Auto-generated method stub
 		
 	}
+	
+	@Override
+	public void removeFromActivityList() {
+		// TODO Auto-generated method stub
+		Constants.ACTIVITY_LIST.remove(this);
+	}
+
+	@Override
+	public void addToActivityList() {
+		// TODO Auto-generated method stub
+		Constants.ACTIVITY_LIST.add(this);
+	}
 }

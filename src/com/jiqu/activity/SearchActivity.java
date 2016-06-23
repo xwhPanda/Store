@@ -50,6 +50,7 @@ import com.jiqu.object.SearchInfo;
 import com.jiqu.object.SearchKeyword;
 import com.jiqu.store.BaseActivity;
 import com.vr.store.R;
+import com.jiqu.tools.Constants;
 import com.jiqu.tools.InstalledAppTool;
 import com.jiqu.tools.RequestTool;
 import com.jiqu.tools.UIUtil;
@@ -338,5 +339,17 @@ public class SearchActivity extends BaseActivity implements OnClickListener,List
 			}
 		}
 		adapter.notifyDataSetChanged();
+	}
+	
+	@Override
+	public void removeFromActivityList() {
+		// TODO Auto-generated method stub
+		Constants.ACTIVITY_LIST.remove(this);
+	}
+
+	@Override
+	public void addToActivityList() {
+		// TODO Auto-generated method stub
+		Constants.ACTIVITY_LIST.add(this);
 	}
 }

@@ -42,6 +42,7 @@ import com.jiqu.object.GameInfo;
 import com.jiqu.object.SpecialInfo;
 import com.jiqu.store.BaseActivity;
 import com.vr.store.R;
+import com.jiqu.tools.Constants;
 import com.jiqu.tools.CountDownTimer;
 import com.jiqu.tools.MetricsTool;
 import com.jiqu.tools.RequestTool;
@@ -308,5 +309,17 @@ public class BoutiqueActivity extends BaseActivity implements OnPageChangeListen
 			}
 		}
 		adapter.notifyDataSetChanged();
+	}
+	
+	@Override
+	public void removeFromActivityList() {
+		// TODO Auto-generated method stub
+		Constants.ACTIVITY_LIST.remove(this);
+	}
+
+	@Override
+	public void addToActivityList() {
+		// TODO Auto-generated method stub
+		Constants.ACTIVITY_LIST.add(this);
 	}
 }

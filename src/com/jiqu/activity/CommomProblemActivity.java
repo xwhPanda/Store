@@ -28,6 +28,7 @@ import com.jiqu.object.CommonProblemInfo;
 import com.jiqu.object.CommonProblemItem;
 import com.jiqu.store.BaseActivity;
 import com.vr.store.R;
+import com.jiqu.tools.Constants;
 import com.jiqu.tools.RequestTool;
 import com.jiqu.tools.UIUtil;
 import com.jiqu.view.LoadStateView;
@@ -145,5 +146,17 @@ public class CommomProblemActivity extends BaseActivity implements OnClickListen
 			loadView.showLoading();
 			loadData();
 		}
+	}
+	
+	@Override
+	public void removeFromActivityList() {
+		// TODO Auto-generated method stub
+		Constants.ACTIVITY_LIST.remove(this);
+	}
+
+	@Override
+	public void addToActivityList() {
+		// TODO Auto-generated method stub
+		Constants.ACTIVITY_LIST.add(this);
 	}
 }

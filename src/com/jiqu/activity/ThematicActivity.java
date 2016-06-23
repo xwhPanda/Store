@@ -35,6 +35,7 @@ import com.jiqu.object.ThematicInfo;
 import com.jiqu.object.ThematicItem;
 import com.jiqu.store.BaseActivity;
 import com.vr.store.R;
+import com.jiqu.tools.Constants;
 import com.jiqu.tools.CountDownTimer;
 import com.jiqu.tools.MetricsTool;
 import com.jiqu.tools.RequestTool;
@@ -275,5 +276,17 @@ public class ThematicActivity extends BaseActivity implements Listener<JSONObjec
 		if (timer != null) {
 			timer.cancel();
 		}
+	}
+	
+	@Override
+	public void removeFromActivityList() {
+		// TODO Auto-generated method stub
+		Constants.ACTIVITY_LIST.remove(this);
+	}
+
+	@Override
+	public void addToActivityList() {
+		// TODO Auto-generated method stub
+		Constants.ACTIVITY_LIST.add(this);
 	}
 }

@@ -24,6 +24,7 @@ import com.jiqu.object.CategoryInfo;
 import com.jiqu.object.SortItem;
 import com.jiqu.store.BaseActivity;
 import com.vr.store.R;
+import com.jiqu.tools.Constants;
 import com.jiqu.tools.MetricsTool;
 import com.jiqu.tools.RequestTool;
 import com.jiqu.tools.UIUtil;
@@ -120,5 +121,17 @@ public class SortActivity extends BaseActivity implements Listener<String> , Err
 		// TODO Auto-generated method stub
 		super.onDestroy();
 		requestTool.stopRequest(CATEGORY_REQUEST);
+	}
+	
+	@Override
+	public void removeFromActivityList() {
+		// TODO Auto-generated method stub
+		Constants.ACTIVITY_LIST.remove(this);
+	}
+
+	@Override
+	public void addToActivityList() {
+		// TODO Auto-generated method stub
+		Constants.ACTIVITY_LIST.add(this);
 	}
 }

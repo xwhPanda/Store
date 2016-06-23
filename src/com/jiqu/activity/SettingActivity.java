@@ -121,4 +121,15 @@ public class SettingActivity extends BaseActivity implements OnCheckedChangeList
 		threadItem.getThreadSizeTextView().setText(threadNumbers +"");
 	}
 	
+	@Override
+	public void removeFromActivityList() {
+		// TODO Auto-generated method stub
+		Constants.ACTIVITY_LIST.remove(this);
+	}
+
+	@Override
+	public void addToActivityList() {
+		// TODO Auto-generated method stub
+		Constants.ACTIVITY_LIST.add(this);
+	}
 }

@@ -161,4 +161,16 @@ public class SplashActivity extends BaseActivity {
 			
 		}, requestTool.getMap(), "firstInstall");
 	}
+	
+	@Override
+	public void removeFromActivityList() {
+		// TODO Auto-generated method stub
+		Constants.ACTIVITY_LIST.remove(this);
+	}
+
+	@Override
+	public void addToActivityList() {
+		// TODO Auto-generated method stub
+		Constants.ACTIVITY_LIST.add(this);
+	}
 }

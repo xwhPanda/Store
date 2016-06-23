@@ -25,6 +25,7 @@ import com.umeng.socialize.handler.UMWXHandler;
 import com.umeng.socialize.media.UMImage;
 import com.umeng.socialize.utils.Log;
 import com.vr.store.R;
+import com.jiqu.tools.Constants;
 import com.jiqu.tools.UIUtil;
 import com.jiqu.view.FriendShareItem;
 import com.jiqu.view.PullToRefreshLayout;
@@ -247,4 +248,15 @@ public class ShareActivity extends BaseActivity {
 //		UIUtil.setViewPadding(inviteTip, (int)(30 * Rx), 0, 0, 0);
 	}
 
+	@Override
+	public void removeFromActivityList() {
+		// TODO Auto-generated method stub
+		Constants.ACTIVITY_LIST.remove(this);
+	}
+
+	@Override
+	public void addToActivityList() {
+		// TODO Auto-generated method stub
+		Constants.ACTIVITY_LIST.add(this);
+	}
 }
