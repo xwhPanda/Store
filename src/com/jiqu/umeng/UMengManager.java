@@ -11,6 +11,7 @@ import android.util.Log;
 import com.jiqu.application.StoreApplication;
 import com.umeng.message.IUmengRegisterCallback;
 import com.umeng.message.PushAgent;
+import com.umeng.message.UHandler;
 import com.umeng.message.proguard.k.e;
 import com.umeng.message.tag.TagManager;
 import com.umeng.message.tag.TagManager.Result;
@@ -139,5 +140,10 @@ public class UMengManager {
 	/** 设置service **/
 	public void setPushIntentServiceClass(Class serviceClass){
 		mPushAgent.setPushIntentServiceClass(serviceClass);
+	}
+	
+	/** 设置handler **/
+	public void setMessageHandler(UHandler uHandler){
+		mPushAgent.setMessageHandler(uHandler);
 	}
 }

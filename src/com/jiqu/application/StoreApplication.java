@@ -28,6 +28,7 @@ import com.jiqu.tools.Constants;
 import com.jiqu.tools.LruBitmapCache;
 import com.jiqu.umeng.UMengManager;
 import com.jiqu.umeng.UmengNotificationHandler;
+import com.jiqu.umeng.UmengPushMessageHandler;
 
 import android.app.Application;
 import android.content.Context;
@@ -77,7 +78,6 @@ public class StoreApplication extends Application {
 	public void onCreate() {
 		// TODO Auto-generated method stub
 		super.onCreate();
-		Log.i("TAG", "StoreApplication onCreat");
 		CalligraphyConfig.initDefault("fonts/lantinghei.ttf", R.attr.fontPath);
 		instance = this;
 		mMainLooper = getMainLooper();
@@ -145,6 +145,7 @@ public class StoreApplication extends Application {
 		PlatformConfig.setQQZone("1105444730", "TOqwncUiOjr6aoVl");
 		
 		UMengManager.getInstance().setMessageChannel(CHANNEL);
+		UMengManager.getInstance().setMessageHandler(new UmengPushMessageHandler());
 		UMengManager.getInstance().setNotificationClickHandler(new UmengNotificationHandler());
 	}
 

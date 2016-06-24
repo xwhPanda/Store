@@ -26,6 +26,7 @@ import com.jiqu.application.StoreApplication;
 import com.jiqu.object.InformationGallaryItem;
 import com.jiqu.object.InformationItemInfo;
 import com.jiqu.store.BaseActivity;
+import com.jiqu.store.SplashActivity;
 import com.umeng.socialize.media.UMImage;
 import com.vr.store.R;
 import com.jiqu.tools.Constants;
@@ -36,7 +37,7 @@ import com.jiqu.view.EvaluationBottomView;
 import com.jiqu.view.EvaluationItemView;
 import com.jiqu.view.TitleView;
 
-public class HeadlineActivity extends BaseActivity {
+public class HeadlineActivity extends BaseActivity implements OnClickListener{
 	private RelativeLayout parentView;
 	private TitleView titleView;
 	private TextView evaluationTitle;
@@ -57,7 +58,13 @@ public class HeadlineActivity extends BaseActivity {
 	private InformationItemInfo info;
 	/** 是否是网页 **/
 	private boolean isWeb = false;
+	/** 是否是推送通知跳转 **/
+	private String isPush = "false";
 	private String url = "";
+	
+	private String title;
+	private String content;
+	private String image;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -67,9 +74,18 @@ public class HeadlineActivity extends BaseActivity {
 		item = (InformationGallaryItem) getIntent().getSerializableExtra("data");
 		info = (InformationItemInfo) getIntent().getSerializableExtra("info");
 		isWeb = getIntent().getBooleanExtra("isWeb", false);
+		isPush = getIntent().getStringExtra("isPush");
+		
 		initView();
 
-		if (isWeb) {
+		if (isWeb || "true".equals(isPush)) {
+			//通知推送
+			if ("true".equals(isPush)) {
+				title = getIntent().getStringExtra("title");
+				content = getIntent().getStringExtra("content");
+				image = getIntent().getStringExtra("image");
+			}
+			
 			url = getIntent().getStringExtra("url");
 			parent.setVisibility(View.GONE);
 			webView.setVisibility(View.VISIBLE);
@@ -97,7 +113,6 @@ public class HeadlineActivity extends BaseActivity {
 					return true;
 				}
 			});
-
 		}
 	}
 
@@ -152,33 +167,39 @@ public class HeadlineActivity extends BaseActivity {
 		parent = (RelativeLayout) findViewById(R.id.parent);
 		webView = (WebView) findViewById(R.id.webView);
 
-		titleView.setActivity(this);
 		titleView.tip.setText(getResources().getString(R.string.newHeadlines));
 		titleView.back.setBackgroundResource(R.drawable.fanhui);
 		titleView.editBtn.setBackgroundResource(R.drawable.fenxiang);
 		titleView.editBtn.setVisibility(View.VISIBLE);
+		titleView.backLin.setOnClickListener(this);
 
 		titleView.setShareListener(new OnClickListener() {
 			
 			@Override
 			public void onClick(View v) {
 				// TODO Auto-generated method stub
-				if (info == null) {
-					return;
-				}
 				Bundle bundle = new Bundle();
-				if (info.getTitle() != null) {
-					bundle.putString("title", info.getTitle());
+				if (info == null) {
+					if (!"true".equals(isPush)) {
+						return;
+					}
+				}else {
+					if (info.getTitle() != null) {
+						title = info.getTitle();
+					}
+					if (info.getComments() != null) {
+						content = info.getComments();
+						bundle.putString("content", info.getComments());
+					}
+					if (info.getPic() != null && !TextUtils.isEmpty(info.getPic())) {
+						image = info.getPic();
+					}
 				}
-				if (info.getComments() != null) {
-					bundle.putString("content", info.getComments());
-				}
-				if (url != null) {
-					bundle.putString("url", url);
-				}
-				if (info.getPic() != null && !TextUtils.isEmpty(info.getPic())) {
-					bundle.putString("image", info.getPic());
-				}
+				
+				bundle.putString("title", title);
+				bundle.putString("url", url);
+				bundle.putString("content", content);
+				bundle.putString("image", image);
 				startActivity(new Intent(HeadlineActivity.this, ShareActivity.class)
 				.putExtra("bundle", bundle));
 			}
@@ -220,5 +241,17 @@ public class HeadlineActivity extends BaseActivity {
 	public void addToActivityList() {
 		// TODO Auto-generated method stub
 		Constants.ACTIVITY_LIST.add(this);
+	}
+
+	@Override
+	public void onClick(View v) {
+		// TODO Auto-generated method stub
+		if (v == titleView.backLin) {
+			if ("true".equals(isPush)
+					&& Constants.ACTIVITY_LIST.size() <= 1) {
+				startActivity(new Intent(this, SplashActivity.class));
+			}
+			finish();
+		}
 	}
 }

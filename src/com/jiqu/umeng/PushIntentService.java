@@ -26,14 +26,14 @@ public class PushIntentService extends UmengBaseIntentService {
 			UMessage msg = new UMessage(new JSONObject(message));
 			Log.i("TAG", "message : " + message);
 			
-			boolean isClickOrDismissed = true;
-			if(isClickOrDismissed) {
-				//完全自定义消息的点击统计
-				UTrack.getInstance(getApplicationContext()).trackMsgClick(msg);
-			} else {
-				//完全自定义消息的忽略统计
-				UTrack.getInstance(getApplicationContext()).trackMsgDismissed(msg);
-			}
+//			boolean isClickOrDismissed = true;
+//			if(isClickOrDismissed) {
+//				//完全自定义消息的点击统计
+//				UTrack.getInstance(getApplicationContext()).trackMsgClick(msg);
+//			} else {
+//				//完全自定义消息的忽略统计
+//				UTrack.getInstance(getApplicationContext()).trackMsgDismissed(msg);
+//			}
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
