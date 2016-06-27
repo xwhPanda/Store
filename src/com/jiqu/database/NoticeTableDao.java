@@ -25,6 +25,7 @@ public class NoticeTableDao extends AbstractDao<NoticeTable, Long> {
     public static class Properties {
         public final static Property Id = new Property(0, Long.class, "id", true, "_id");
         public final static Property Notice = new Property(1, String.class, "notice", false, "NOTICE");
+        public final static Property Time = new Property(2, String.class, "time", false, "TIME");
     };
 
 
@@ -41,7 +42,8 @@ public class NoticeTableDao extends AbstractDao<NoticeTable, Long> {
         String constraint = ifNotExists? "IF NOT EXISTS ": "";
         db.execSQL("CREATE TABLE " + constraint + "\"NOTICE_TABLE\" (" + //
                 "\"_id\" INTEGER PRIMARY KEY ," + // 0: id
-                "\"NOTICE\" TEXT);"); // 1: notice
+                "\"NOTICE\" TEXT," + // 1: notice
+                "\"TIME\" TEXT);"); // 2: time
     }
 
     /** Drops the underlying database table. */
@@ -64,6 +66,11 @@ public class NoticeTableDao extends AbstractDao<NoticeTable, Long> {
         if (notice != null) {
             stmt.bindString(2, notice);
         }
+ 
+        String time = entity.getTime();
+        if (time != null) {
+            stmt.bindString(3, time);
+        }
     }
 
     /** @inheritdoc */
@@ -77,7 +84,8 @@ public class NoticeTableDao extends AbstractDao<NoticeTable, Long> {
     public NoticeTable readEntity(Cursor cursor, int offset) {
         NoticeTable entity = new NoticeTable( //
             cursor.isNull(offset + 0) ? null : cursor.getLong(offset + 0), // id
-            cursor.isNull(offset + 1) ? null : cursor.getString(offset + 1) // notice
+            cursor.isNull(offset + 1) ? null : cursor.getString(offset + 1), // notice
+            cursor.isNull(offset + 2) ? null : cursor.getString(offset + 2) // time
         );
         return entity;
     }
@@ -87,6 +95,7 @@ public class NoticeTableDao extends AbstractDao<NoticeTable, Long> {
     public void readEntity(Cursor cursor, NoticeTable entity, int offset) {
         entity.setId(cursor.isNull(offset + 0) ? null : cursor.getLong(offset + 0));
         entity.setNotice(cursor.isNull(offset + 1) ? null : cursor.getString(offset + 1));
+        entity.setTime(cursor.isNull(offset + 2) ? null : cursor.getString(offset + 2));
      }
     
     /** @inheritdoc */

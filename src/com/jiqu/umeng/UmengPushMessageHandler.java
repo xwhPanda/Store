@@ -20,6 +20,7 @@ public class UmengPushMessageHandler extends UmengMessageHandler {
 		Log.i("TAG", "UmengPushMessageHandler : " + uMessage.getRaw().toString());
 		MessageTable message = new MessageTable();
 		message.setMessage(uMessage.getRaw().toString());
+		message.setTime(String.valueOf(System.currentTimeMillis()));
 		StoreApplication.daoSession.getMessageTableDao().insertOrReplace(message);
 	}
 
@@ -29,6 +30,7 @@ public class UmengPushMessageHandler extends UmengMessageHandler {
 		Log.i("TAG", "getNotification : " + uMessage.getRaw().toString());
 		NoticeTable notice = new NoticeTable();
 		notice.setNotice(uMessage.getRaw().toString());
+		notice.setTime(String.valueOf(System.currentTimeMillis()));
 		StoreApplication.daoSession.getNoticeTableDao().insertOrReplace(notice);
 		return super.getNotification(context, uMessage);
 	}

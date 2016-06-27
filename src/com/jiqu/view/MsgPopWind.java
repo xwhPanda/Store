@@ -28,8 +28,8 @@ public class MsgPopWind extends PopupWindow {
 		delete = (Button) view.findViewById(R.id.delete);
 		shield = (Button) view.findViewById(R.id.shield);
 		blacklist = (Button) view.findViewById(R.id.blacklist);
-		this.setWidth((int)(210 * MetricsTool.Rx));
-		this.setHeight((int)(220 * MetricsTool.Ry));
+		this.setWidth((int)(180 * MetricsTool.Rx));
+		this.setHeight((int)(120 * MetricsTool.Ry));
 		this.setOutsideTouchable(true);
 		this.setFocusable(true);
 		this.setClippingEnabled(true);

@@ -8,6 +8,7 @@ public class NoticeTable {
 
     private Long id;
     private String notice;
+    private String time;
 
     public NoticeTable() {
     }
@@ -16,9 +17,10 @@ public class NoticeTable {
         this.id = id;
     }
 
-    public NoticeTable(Long id, String notice) {
+    public NoticeTable(Long id, String notice, String time) {
         this.id = id;
         this.notice = notice;
+        this.time = time;
     }
 
     public Long getId() {
@@ -35,6 +37,14 @@ public class NoticeTable {
 
     public void setNotice(String notice) {
         this.notice = notice;
+    }
+
+    public String getTime() {
+        return time;
+    }
+
+    public void setTime(String time) {
+        this.time = time;
     }
 
 }

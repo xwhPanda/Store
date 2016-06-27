@@ -8,15 +8,19 @@ import com.jiqu.activity.ClearCacheActivity;
 import com.jiqu.activity.CommomProblemActivity;
 import com.jiqu.activity.DeepClearActivity;
 import com.jiqu.activity.DownloadManagerActivity;
+import com.jiqu.activity.MemberLoginActivity;
 import com.jiqu.activity.MessageCenterActivity;
 import com.jiqu.activity.PowerManagerActivity;
 import com.jiqu.activity.ResourceManagementActivity;
 import com.jiqu.activity.ShareActivity;
+import com.jiqu.activity.ShowAccountInformatiomActivity;
 import com.jiqu.application.StoreApplication;
 import com.jiqu.database.Account;
+import com.umeng.socialize.bean.SHARE_MEDIA;
 import com.vr.store.R;
 import com.jiqu.tools.MetricsTool;
 import com.jiqu.tools.UIUtil;
+import com.jiqu.umeng.UMengManager;
 import com.jiqu.view.CircleImageView;
 import com.jiqu.view.ToolItemView;
 
@@ -157,6 +161,7 @@ public class ToolFragment extends BaseFragment implements OnClickListener{
 	}
 	
 	private void registerClick(){
+		accountIcon.setOnClickListener(this);
 		messageImg.setOnClickListener(this);
 		downloadItem.setOnClickListener(this);
 		resourcesItem.setOnClickListener(this);
@@ -173,6 +178,28 @@ public class ToolFragment extends BaseFragment implements OnClickListener{
 	public void onClick(View v) {
 		// TODO Auto-generated method stub
 		switch (v.getId()) {
+		case R.id.accountIcon:
+			/** 登录	 **/
+			boolean isQQLogin = UMengManager.getInstance().isAuth(activity, SHARE_MEDIA.QQ);
+			boolean isWeixinLogin = UMengManager.getInstance().isAuth(activity, SHARE_MEDIA.WEIXIN);
+			boolean isSinaLogin = UMengManager.getInstance().isAuth(activity, SHARE_MEDIA.SINA);
+			QueryBuilder qb = StoreApplication.daoSession.getAccountDao().queryBuilder();
+			Account account = (Account) qb.unique();
+			if (account != null || isQQLogin || isWeixinLogin || isSinaLogin) {
+				String loginType = "";
+				if (isQQLogin) {
+					loginType = "qq";
+				}else if(isWeixinLogin){
+					loginType = "weixin";
+				}else if (isSinaLogin) {
+					loginType = "sina";
+				}
+				startActivity(new Intent(activity, ShowAccountInformatiomActivity.class)
+				.putExtra("loginType", loginType));
+			}else {
+				startActivity(new Intent(activity, MemberLoginActivity.class));
+			}
+			break;
 		case R.id.messageImg:
 			/** 消息中心 **/
 			startActivity(new Intent(getActivity(), MessageCenterActivity.class));

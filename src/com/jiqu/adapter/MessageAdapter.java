@@ -11,6 +11,7 @@ import com.jiqu.tools.UIUtil;
 import com.vr.store.R;
 
 import android.content.Context;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -78,11 +79,15 @@ public class MessageAdapter extends BaseAdapter {
 		}else {
 			holder = (Holder) convertView.getTag();
 		}
-		ImageListener listener = ImageLoader.getImageListener(holder.messageIcon, R.drawable.zixun_item_default, R.drawable.zixun_item_default);
-		StoreApplication.getInstance().getImageLoader().get(dataInfo.getPic(), listener);
-		holder.messageName.setText(dataInfo.getTitle());
+		if (!TextUtils.isEmpty(dataInfo.getPic())) {
+			ImageListener listener = ImageLoader.getImageListener(holder.messageIcon, R.drawable.zixun_item_default, R.drawable.zixun_item_default);
+			StoreApplication.getInstance().getImageLoader().get(dataInfo.getPic(), listener);
+		}
+		if (!TextUtils.isEmpty(dataInfo.getTitle())) {
+			holder.messageName.setText(dataInfo.getTitle());
+		}
 		holder.messageDes.setText(dataInfo.getContent());
-		holder.time.setText(UIUtil.getFormatedDateTime("yyyy-mm-dd", Long.parseLong(dataInfo.getTime()) * 1000));
+		holder.time.setText(UIUtil.getFormatedDateTime("yyyy-MM-dd", Long.parseLong(dataInfo.getTime()) * 1000));
 		return convertView;
 	}
 

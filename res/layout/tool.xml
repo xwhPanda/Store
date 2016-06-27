@@ -10,6 +10,7 @@
         android:id="@+id/accountIcon"
         android:layout_width="@dimen/toolAccountIconSize"
         android:layout_height="@dimen/toolAccountIconSize"
+        android:clickable="true"
         android:layout_centerHorizontal="true"/>
 
     <LinearLayout

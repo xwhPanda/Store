@@ -6,8 +6,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.json.JSONObject;
+
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -27,11 +30,13 @@ import com.jiqu.adapter.MessageAdapter;
 import com.jiqu.adapter.PrivateMessageAdapter;
 import com.jiqu.application.StoreApplication;
 import com.jiqu.database.Account;
+import com.jiqu.database.MessageTable;
 import com.jiqu.object.MessageDataInfo;
 import com.jiqu.object.MessageInfo;
 import com.jiqu.object.PrivateMessageDataInfo;
 import com.jiqu.object.PrivateMessageInfo;
 import com.jiqu.store.BaseActivity;
+import com.umeng.message.entity.UMessage;
 import com.vr.store.R;
 import com.jiqu.tools.Constants;
 import com.jiqu.tools.MD5;
@@ -41,6 +46,8 @@ import com.jiqu.view.LoadStateView;
 import com.jiqu.view.PullToRefreshLayout;
 import com.jiqu.view.PullToRefreshLayout.OnRefreshListener;
 import com.jiqu.view.TitleView;
+
+import de.greenrobot.dao.query.QueryBuilder;
 
 public class MessageCenterActivity extends BaseActivity implements OnClickListener,OnRefreshListener{
 	private final String MESSAGE_REQUEST = "messageRequest";
@@ -128,10 +135,12 @@ public class MessageCenterActivity extends BaseActivity implements OnClickListen
 			@Override
 			public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 				// TODO Auto-generated method stub
-				startActivity(new Intent(MessageCenterActivity.this, GameEvaluationWebInfoActivity.class)
-				.putExtra("showShareBtn", false)
-				.putExtra("url", messageDataInfos.get(position).getUrl())
-				.putExtra("title", messageDataInfos.get(position).getTitle()));
+				if (!TextUtils.isEmpty(messageDataInfos.get(position).getUrl())) {
+					startActivity(new Intent(MessageCenterActivity.this, GameEvaluationWebInfoActivity.class)
+					.putExtra("showShareBtn", false)
+					.putExtra("url", messageDataInfos.get(position).getUrl())
+					.putExtra("title", messageDataInfos.get(position).getTitle()));
+				}
 			}
 		});
 		
@@ -140,10 +149,12 @@ public class MessageCenterActivity extends BaseActivity implements OnClickListen
 			@Override
 			public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 				// TODO Auto-generated method stub
-				startActivity(new Intent(MessageCenterActivity.this, GameEvaluationWebInfoActivity.class)
-				.putExtra("showShareBtn", false)
-				.putExtra("url", privateMessageDataInfos.get(position).getUrl())
-				.putExtra("title", privateMessageDataInfos.get(position).getTitle()));
+				if (!TextUtils.isEmpty(privateMessageDataInfos.get(position).getUrl())) {
+					startActivity(new Intent(MessageCenterActivity.this, GameEvaluationWebInfoActivity.class)
+					.putExtra("showShareBtn", false)
+					.putExtra("url", privateMessageDataInfos.get(position).getUrl())
+					.putExtra("title", privateMessageDataInfos.get(position).getTitle()));
+				}
 			}
 		});
 	}
@@ -191,7 +202,13 @@ public class MessageCenterActivity extends BaseActivity implements OnClickListen
 			privateRel.setVisibility(View.VISIBLE);
 			if (isPrivateFirst) {
 				isPrivateFirst = false;
-				loadPrivateMessageData(RequestTool.PRIVATE_LIST_URL);
+//				loadPrivateMessageData(RequestTool.PRIVATE_LIST_URL);
+				
+				privateLoadView.loadDataSuccess();
+				privateLoadView.setVisibility(View.GONE);
+				messageRefreshView.setVisibility(View.VISIBLE);
+				
+				loadPrivateMessageFromDB();
 			}
 		}else if (v == messageLoadView.getLoadBtn()) {
 			messageLoadView.showLoading();
@@ -315,8 +332,34 @@ public class MessageCenterActivity extends BaseActivity implements OnClickListen
 		}else if (pullToRefreshLayout == messageRefreshView) {
 			privateShowing = true;
 			loadPrivateMessageData(RequestTool.PRIVATE_LIST_URL + "?pageNum=" + privatePageNum);
+//			loadPrivateMessageFromDB();
 		}
 	}
+	
+	private void loadPrivateMessageFromDB(){
+		QueryBuilder<MessageTable> qb = StoreApplication.daoSession.getMessageTableDao().queryBuilder();
+		List<MessageTable> messages = qb.list();
+		Collections.reverse(messages);
+		for(MessageTable message : messages ){
+			try {
+				PrivateMessageDataInfo dataInfo = new PrivateMessageDataInfo();
+				UMessage uMessage = new UMessage(new JSONObject(message.getMessage()));
+				dataInfo.setId(String.valueOf(message.getId()));
+				dataInfo.setContent(uMessage.custom);
+				Map<String, String> extra = uMessage.extra;
+				if (extra != null) {
+					dataInfo.setTitle(extra.get("title"));
+					dataInfo.setUrl(extra.get("url"));
+				}
+				dataInfo.setTime(message.getTime());
+				privateMessageDataInfos.add(dataInfo);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
+		privateMessageAdapter.notifyDataSetChanged();
+	}
+	
 	
 	@Override
 	public void removeFromActivityList() {

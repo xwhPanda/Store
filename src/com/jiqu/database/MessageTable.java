@@ -8,6 +8,7 @@ public class MessageTable {
 
     private Long id;
     private String message;
+    private String time;
 
     public MessageTable() {
     }
@@ -16,9 +17,10 @@ public class MessageTable {
         this.id = id;
     }
 
-    public MessageTable(Long id, String message) {
+    public MessageTable(Long id, String message, String time) {
         this.id = id;
         this.message = message;
+        this.time = time;
     }
 
     public Long getId() {
@@ -35,6 +37,14 @@ public class MessageTable {
 
     public void setMessage(String message) {
         this.message = message;
+    }
+
+    public String getTime() {
+        return time;
+    }
+
+    public void setTime(String time) {
+        this.time = time;
     }
 
 }

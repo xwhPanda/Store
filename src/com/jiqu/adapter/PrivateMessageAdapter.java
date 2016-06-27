@@ -107,7 +107,7 @@ public class PrivateMessageAdapter extends BaseAdapter {
 		public void setData(PrivateMessageDataInfo info){
 			this.info = info;
 			message.setText(info.getContent());
-			time.setText(UIUtil.getFormatedDateTime("yyyy-mm-dd", Long.parseLong(info.getTime())));
+			time.setText(UIUtil.getFormatedDateTime("yyyy-MM-dd", Long.parseLong(info.getTime())));
 			nickName.setText(info.getTitle());
 		}
 		
@@ -139,6 +139,7 @@ public class PrivateMessageAdapter extends BaseAdapter {
 				@Override
 				public void onClick(View v) {
 					// TODO Auto-generated method stub
+					StoreApplication.daoSession.getMessageTableDao().deleteByKey(Long.parseLong(info.getId()));
 					messages.remove(info);
 					popWind.dismiss();
 					notifyDataSetChanged();

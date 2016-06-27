@@ -25,6 +25,7 @@ public class MessageTableDao extends AbstractDao<MessageTable, Long> {
     public static class Properties {
         public final static Property Id = new Property(0, Long.class, "id", true, "_id");
         public final static Property Message = new Property(1, String.class, "message", false, "MESSAGE");
+        public final static Property Time = new Property(2, String.class, "time", false, "TIME");
     };
 
 
@@ -41,7 +42,8 @@ public class MessageTableDao extends AbstractDao<MessageTable, Long> {
         String constraint = ifNotExists? "IF NOT EXISTS ": "";
         db.execSQL("CREATE TABLE " + constraint + "\"MESSAGE_TABLE\" (" + //
                 "\"_id\" INTEGER PRIMARY KEY ," + // 0: id
-                "\"MESSAGE\" TEXT);"); // 1: message
+                "\"MESSAGE\" TEXT," + // 1: message
+                "\"TIME\" TEXT);"); // 2: time
     }
 
     /** Drops the underlying database table. */
@@ -64,6 +66,11 @@ public class MessageTableDao extends AbstractDao<MessageTable, Long> {
         if (message != null) {
             stmt.bindString(2, message);
         }
+ 
+        String time = entity.getTime();
+        if (time != null) {
+            stmt.bindString(3, time);
+        }
     }
 
     /** @inheritdoc */
@@ -77,7 +84,8 @@ public class MessageTableDao extends AbstractDao<MessageTable, Long> {
     public MessageTable readEntity(Cursor cursor, int offset) {
         MessageTable entity = new MessageTable( //
             cursor.isNull(offset + 0) ? null : cursor.getLong(offset + 0), // id
-            cursor.isNull(offset + 1) ? null : cursor.getString(offset + 1) // message
+            cursor.isNull(offset + 1) ? null : cursor.getString(offset + 1), // message
+            cursor.isNull(offset + 2) ? null : cursor.getString(offset + 2) // time
         );
         return entity;
     }
@@ -87,6 +95,7 @@ public class MessageTableDao extends AbstractDao<MessageTable, Long> {
     public void readEntity(Cursor cursor, MessageTable entity, int offset) {
         entity.setId(cursor.isNull(offset + 0) ? null : cursor.getLong(offset + 0));
         entity.setMessage(cursor.isNull(offset + 1) ? null : cursor.getString(offset + 1));
+        entity.setTime(cursor.isNull(offset + 2) ? null : cursor.getString(offset + 2));
      }
     
     /** @inheritdoc */
