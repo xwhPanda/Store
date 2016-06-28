@@ -12,6 +12,7 @@ import com.jiqu.tools.MD5;
 import com.jiqu.tools.RequestTool;
 import com.jiqu.tools.SharePreferenceTool;
 import com.jiqu.tools.UIUtil;
+import com.umeng.message.PushAgent;
 import com.vr.store.R;
 
 import android.content.Intent;
@@ -34,6 +35,7 @@ public class SplashActivity extends BaseActivity {
 	protected void onCreate(Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
 		super.onCreate(savedInstanceState);
+		PushAgent.getInstance(this).onAppStart();
 		requestTool = RequestTool.getInstance();
 		
 		img = (ImageView) findViewById(R.id.img);

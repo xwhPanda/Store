@@ -1,6 +1,7 @@
 package com.jiqu.object;
 
 import java.io.Serializable;
+import java.util.Map;
 
 public class MessageDataInfo implements Serializable{
 	private static final long serialVersionUID = 1L;
@@ -11,6 +12,10 @@ public class MessageDataInfo implements Serializable{
 	private String content;
 	private String pic;
 	private String url;
+
+	private String after_open;
+	private String activity;
+	private Map<String, String> extra;
 	
 	public synchronized String getTitle() {
 		return title;
@@ -47,5 +52,23 @@ public class MessageDataInfo implements Serializable{
 	}
 	public synchronized void setUrl(String url) {
 		this.url = url;
+	}
+	public synchronized String getActivity() {
+		return activity;
+	}
+	public synchronized void setActivity(String activity) {
+		this.activity = activity;
+	}
+	public synchronized Map<String, String> getExtra() {
+		return extra;
+	}
+	public synchronized void setExtra(Map<String, String> extra) {
+		this.extra = extra;
+	}
+	public synchronized String getAfter_open() {
+		return after_open;
+	}
+	public synchronized void setAfter_open(String after_open) {
+		this.after_open = after_open;
 	}
 }

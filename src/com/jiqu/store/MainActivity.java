@@ -41,8 +41,10 @@ import com.jiqu.umeng.UMengManager;
 import com.jiqu.view.CircleImageView;
 import com.jiqu.view.CustomDialog;
 import com.jiqu.view.NetChangeDialog;
+import com.ta.utdid2.device.UTDevice;
 import com.umeng.message.IUmengRegisterCallback;
 import com.umeng.message.PushAgent;
+import com.umeng.message.UmengRegistrar;
 import com.umeng.message.tag.TagManager;
 import com.umeng.socialize.bean.SHARE_MEDIA;
 import com.vr.store.R;
@@ -160,23 +162,7 @@ public class MainActivity extends FragmentActivity implements OnClickListener,On
 		
 		checkNewVersion();
 		
-		enablePush();
 //		UMengManager.getInstance().setPushIntentServiceClass(PushIntentService.class);
-	}
-	
-	/** 开启推送 **/
-	private void enablePush(){
-		UMengManager.getInstance().enable(new IUmengRegisterCallback() {
-			
-			@Override
-			public void onRegistered(String arg0) {
-				// TODO Auto-generated method stub
-				String tags = StoreApplication.CHANNEL + "," 
-						+ Constants.BRAND;
-				new AddTagTask(tags).execute();
-				new AddAliasTask(StoreApplication.DEVICE_ID, "device_id").execute();
-			}
-		});
 	}
 	
 	@Override
@@ -637,61 +623,4 @@ public class MainActivity extends FragmentActivity implements OnClickListener,On
 			StoreApplication.getInstance().getImageLoader().get(account.getPhoto(), listener);
 		}
 	}
-	
-	/** 添加alias **/
-	public class AddAliasTask extends AsyncTask<Void, Void, Boolean>{
-		
-		String alias;
-		String aliasType;
-		
-		public AddAliasTask(String aliasString,String aliasTypeString) {
-			// TODO Auto-generated constructor stub
-			this.alias = aliasString;
-			this.aliasType = aliasTypeString;
-		}
-		
-		protected Boolean doInBackground(Void... params) {
-			try {
-				return UMengManager.getInstance().addAlias(StoreApplication.DEVICE_ID, "device_id");
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-			return false;
-		}
-
-		@Override
-		protected void onPostExecute(Boolean result) {
-		}
-	}
-	
-	/** 添加tag **/
-	public class AddTagTask extends AsyncTask<Void, Void, String> {
-
-		String tagString;
-		String[] tags;
-
-		public AddTagTask(String tag) {
-			// TODO Auto-generated constructor stub
-			tagString = tag;
-			tags = tagString.split(",");
-		}
-
-		@Override
-		protected String doInBackground(Void... params) {
-			// TODO Auto-generated method stub
-			try {
-				TagManager.Result result = UMengManager.getInstance().addTag(tags);
-				return result.toString();
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-			return "Fail";
-		}
-
-		@Override
-		protected void onPostExecute(String result) {
-			Log.i("TAG", result);
-		}
-	}
-
 }

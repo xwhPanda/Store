@@ -82,12 +82,14 @@ public class MessageAdapter extends BaseAdapter {
 		if (!TextUtils.isEmpty(dataInfo.getPic())) {
 			ImageListener listener = ImageLoader.getImageListener(holder.messageIcon, R.drawable.zixun_item_default, R.drawable.zixun_item_default);
 			StoreApplication.getInstance().getImageLoader().get(dataInfo.getPic(), listener);
+		}else {
+			holder.messageIcon.setBackgroundResource(R.drawable.zixun_item_default);
 		}
 		if (!TextUtils.isEmpty(dataInfo.getTitle())) {
 			holder.messageName.setText(dataInfo.getTitle());
 		}
 		holder.messageDes.setText(dataInfo.getContent());
-		holder.time.setText(UIUtil.getFormatedDateTime("yyyy-MM-dd", Long.parseLong(dataInfo.getTime()) * 1000));
+		holder.time.setText(UIUtil.getFormatedDateTime("yyyy-MM-dd", Long.parseLong(dataInfo.getTime())));
 		return convertView;
 	}
 

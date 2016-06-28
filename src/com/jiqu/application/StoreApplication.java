@@ -20,6 +20,7 @@ import com.jiqu.database.DaoMaster.DevOpenHelper;
 import com.jiqu.database.DaoSession;
 import com.jiqu.download.FileUtil;
 import com.jiqu.interfaces.LoginOutObserver;
+import com.ta.utdid2.device.UTDevice;
 import com.umeng.socialize.Config;
 import com.umeng.socialize.PlatformConfig;
 import com.vr.store.R;
@@ -118,7 +119,9 @@ public class StoreApplication extends Application {
 			PackageInfo pi = pm.getPackageInfo(Constants.PACKAGENAME, 0);
 			Constants.VERSION_NAME = pi.versionName;
 			Constants.VERSION_CODE = pi.versionCode;
-			Constants.DEVICE_ID = Secure.getString(getContentResolver(), Secure.ANDROID_ID);
+//			Constants.DEVICE_ID = Secure.getString(getContentResolver(), Secure.ANDROID_ID);
+			/** 使用UTDID.jar包获取唯一标志，阿里系APP都在使用，这里友盟推送已经集成此jar包 **/
+			Constants.DEVICE_ID = UTDevice.getUtdid(context);
 			Constants.SERIAL_NUMBER = android.os.Build.SERIAL;
 			DEVICE_ID = ((TelephonyManager) context.getSystemService(TELEPHONY_SERVICE)).getDeviceId();
 			/** 修改meta来决定渠道号，效率低 **/

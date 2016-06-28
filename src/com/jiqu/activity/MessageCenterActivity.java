@@ -5,10 +5,12 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.json.JSONObject;
 
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
@@ -31,6 +33,7 @@ import com.jiqu.adapter.PrivateMessageAdapter;
 import com.jiqu.application.StoreApplication;
 import com.jiqu.database.Account;
 import com.jiqu.database.MessageTable;
+import com.jiqu.database.NoticeTable;
 import com.jiqu.object.MessageDataInfo;
 import com.jiqu.object.MessageInfo;
 import com.jiqu.object.PrivateMessageDataInfo;
@@ -44,6 +47,7 @@ import com.jiqu.tools.RequestTool;
 import com.jiqu.tools.UIUtil;
 import com.jiqu.view.LoadStateView;
 import com.jiqu.view.PullToRefreshLayout;
+import com.jiqu.view.PullableListView;
 import com.jiqu.view.PullToRefreshLayout.OnRefreshListener;
 import com.jiqu.view.TitleView;
 
@@ -84,7 +88,14 @@ public class MessageCenterActivity extends BaseActivity implements OnClickListen
 		account = StoreApplication.daoSession.getAccountDao().queryBuilder().unique();
 		requestTool = RequestTool.getInstance();
 		initView();
-		loadMessageData(RequestTool.MESSAGE_LIST_URL);
+		
+//		loadMessageData(RequestTool.MESSAGE_LIST_URL);
+		
+		messageLoadView.loadDataSuccess();
+		messageLoadView.setVisibility(View.GONE);
+		refreshView.setVisibility(View.VISIBLE);
+		
+		loadNotificationFromDB();
 	}
 	
 	@Override
@@ -108,6 +119,9 @@ public class MessageCenterActivity extends BaseActivity implements OnClickListen
 		privateRel = (RelativeLayout) findViewById(R.id.privateRel);
 		messageLoadView = (LoadStateView) findViewById(R.id.messageLoadView);
 		privateLoadView = (LoadStateView) findViewById(R.id.privateLoadView);
+		
+		((PullableListView)contentView).setCanPullUp(false);
+		((PullableListView)messageContentView).setCanPullUp(false);
 		
 		titleView.setActivity(this);
 		titleView.tip.setText(R.string.messageCenter);
@@ -135,11 +149,30 @@ public class MessageCenterActivity extends BaseActivity implements OnClickListen
 			@Override
 			public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 				// TODO Auto-generated method stub
-				if (!TextUtils.isEmpty(messageDataInfos.get(position).getUrl())) {
-					startActivity(new Intent(MessageCenterActivity.this, GameEvaluationWebInfoActivity.class)
-					.putExtra("showShareBtn", false)
-					.putExtra("url", messageDataInfos.get(position).getUrl())
-					.putExtra("title", messageDataInfos.get(position).getTitle()));
+//				if (!TextUtils.isEmpty(messageDataInfos.get(position).getUrl())) {
+//					startActivity(new Intent(MessageCenterActivity.this, GameEvaluationWebInfoActivity.class)
+//					.putExtra("showShareBtn", false)
+//					.putExtra("url", messageDataInfos.get(position).getUrl())
+//					.putExtra("title", messageDataInfos.get(position).getTitle()));
+//				}
+				MessageDataInfo dataInfo = messageDataInfos.get(position);
+				if ("go_app".equals(dataInfo.getAfter_open())) {
+					
+				}else if ("go_url".equals(dataInfo.getAfter_open())) {
+					 Intent intent = new Intent();        
+					 intent.setAction("android.intent.action.VIEW");    
+				     Uri content_url = Uri.parse(dataInfo.getUrl());   
+				     intent.setData(content_url);  
+				     startActivity(intent);
+					
+				}else if ("go_activity".equals(dataInfo.getAfter_open())) {
+					Intent intent = new Intent();
+					intent.setClassName(MessageCenterActivity.this, dataInfo.getActivity());
+					Set<String> keys = dataInfo.getExtra().keySet();
+					for(String key : keys){
+						intent.putExtra(key, dataInfo.getExtra().get(key));
+					}
+					startActivity(intent);
 				}
 			}
 		});
@@ -336,6 +369,36 @@ public class MessageCenterActivity extends BaseActivity implements OnClickListen
 		}
 	}
 	
+	/** 从数据库里面获取通知 **/
+	private void loadNotificationFromDB(){
+		QueryBuilder<NoticeTable> qb = StoreApplication.daoSession.getNoticeTableDao().queryBuilder();
+		List<NoticeTable> notices = qb.list();
+		Collections.reverse(notices);
+		for(NoticeTable noticeTable : notices){
+			try {
+				UMessage uMessage = new UMessage(new JSONObject(noticeTable.getNotice()));
+				MessageDataInfo dataInfo = new MessageDataInfo();
+				Map<String, String> extra = uMessage.extra;
+				dataInfo.setContent(uMessage.text);
+				dataInfo.setTitle(uMessage.title);
+				dataInfo.setTime(noticeTable.getTime());
+				dataInfo.setActivity(uMessage.activity);
+				dataInfo.setAfter_open(uMessage.after_open);
+				dataInfo.setUrl(uMessage.url);
+				if (extra != null) {
+					dataInfo.setExtra(extra);
+					dataInfo.setPic(extra.get("image"));
+				}
+				messageDataInfos.add(dataInfo);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+			
+			messageAdapter.notifyDataSetChanged();
+		}
+	}
+	
+	/** 从数据库里面获取私信 **/
 	private void loadPrivateMessageFromDB(){
 		QueryBuilder<MessageTable> qb = StoreApplication.daoSession.getMessageTableDao().queryBuilder();
 		List<MessageTable> messages = qb.list();

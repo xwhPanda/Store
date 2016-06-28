@@ -29,10 +29,12 @@ public class PullableListView extends ListView implements Pullable
 		super(context, attrs, defStyle);
 	}
 	
+	/** 是否可以下拉刷新 **/
 	public void setCanPullDown(boolean canPullDown){
 		isCanPullDown = canPullDown;
 	}
 	
+	/** 是否可以上拉刷新 **/
 	public void setCanPullUp(boolean canPullUp){
 		isCanPullUp = canPullUp;
 	}
