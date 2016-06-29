@@ -10,6 +10,7 @@ import com.jiqu.download.DownloadManager;
 import com.jiqu.download.ThreadManager;
 import com.jiqu.interfaces.UninstallStateObserver;
 import com.jiqu.object.InstalledApp;
+import com.tencent.a.a.a.a.c;
 
 import android.content.Context;
 import android.content.Intent;
@@ -17,6 +18,10 @@ import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.net.Uri;
+import android.os.AsyncTask;
+import android.os.Handler;
+import android.os.Message;
+import android.util.Log;
 
 public class InstalledAppTool {
 	private Map<String, InstalledApp> uninstallMap = new ConcurrentHashMap<String, InstalledApp>();
@@ -66,7 +71,7 @@ public class InstalledAppTool {
 		}
 		return apps;
 	}
-
+	
 	/** 获取系统应用  **/
 	public List<InstalledApp> getSystemApp(Context context) {
 		List<InstalledApp> apps = new ArrayList<InstalledApp>();

@@ -1,6 +1,11 @@
 package com.jiqu.activity;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Handler;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
@@ -14,6 +19,7 @@ import android.widget.RelativeLayout;
 import com.jiqu.adapter.UninstallAppAdatpter;
 import com.jiqu.adapter.UninstallSystemAppAdapter;
 import com.jiqu.application.StoreApplication;
+import com.jiqu.object.InstalledApp;
 import com.jiqu.store.BaseActivity;
 import com.vr.store.R;
 import com.jiqu.tools.Constants;
@@ -34,12 +40,14 @@ public class AppUninstallActivity extends BaseActivity implements OnClickListene
 	private UninstallAppAdatpter adapter;
 	private UninstallSystemAppAdapter uninstallSystemAppAdapter;
 	private InstalledAppTool installedAppTool;
+	
+	private List<InstalledApp> personalApps = new ArrayList<InstalledApp>();
+	private List<InstalledApp> systemApps = new ArrayList<InstalledApp>();
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
 		super.onCreate(savedInstanceState);
-		
 		initView();
 	}
 	
@@ -77,12 +85,16 @@ public class AppUninstallActivity extends BaseActivity implements OnClickListene
 	}
 	
 	private void initData(){
-		adapter = new UninstallAppAdatpter(this, installedAppTool.getPersonalApp(this));
+		adapter = new UninstallAppAdatpter(this, personalApps);
 		appList.setAdapter(adapter);
+		new PersonalAppTask().execute();
 		
-		uninstallSystemAppAdapter = new UninstallSystemAppAdapter(this,installedAppTool.getSystemApp(this));
+		uninstallSystemAppAdapter = new UninstallSystemAppAdapter(this,systemApps);
 		systemAppList.setAdapter(uninstallSystemAppAdapter);
+		new SystemAppTask().execute();
 	}
+	
+	
 	
 	private void initViewSize(){
 		UIUtil.setViewHeight(allUninstallRel, 170 * Ry);
@@ -177,5 +189,43 @@ public class AppUninstallActivity extends BaseActivity implements OnClickListene
 	public void addToActivityList() {
 		// TODO Auto-generated method stub
 		Constants.ACTIVITY_LIST.add(this);
+	}
+	
+	/** 获取第三方APP
+	 * 用AsyncTask不然会导致打开此Activity缓慢，影响体验 **/
+	class PersonalAppTask extends AsyncTask<Void, Void, List<InstalledApp>>{
+
+		@Override
+		protected List<InstalledApp> doInBackground(Void... params) {
+			// TODO Auto-generated method stub
+			return installedAppTool.getPersonalApp(AppUninstallActivity.this);
+		}
+		
+		@Override
+		protected void onPostExecute(List<InstalledApp> result) {
+			// TODO Auto-generated method stub
+			personalApps.clear();
+			personalApps.addAll(result);
+			adapter.notifyDataSetChanged();
+		}
+	}
+	
+	/** 获取第系统APP
+	 * 用AsyncTask不然会导致打开此Activity缓慢，影响体验 **/
+	class SystemAppTask extends AsyncTask<Void, Void, List<InstalledApp>>{
+
+		@Override
+		protected List<InstalledApp> doInBackground(Void... params) {
+			// TODO Auto-generated method stub
+			return installedAppTool.getSystemApp(AppUninstallActivity.this);
+		}
+		
+		@Override
+		protected void onPostExecute(List<InstalledApp> result) {
+			// TODO Auto-generated method stub
+			systemApps.clear();
+			systemApps.addAll(result);
+			uninstallSystemAppAdapter.notifyDataSetChanged();
+		}
 	}
 }

@@ -149,8 +149,8 @@ public class UninstallAppAdatpter extends BaseAdapter{
 		}
 		
 		private void initViewSize(View view){
-			UIUtil.setViewSize(checkBox, 56 * MetricsTool.Rx, 56 * MetricsTool.Ry);
-			UIUtil.setViewSize(appIcon, 160 * MetricsTool.Rx, 160 * MetricsTool.Ry);
+			UIUtil.setViewSize(checkBox, 56 * MetricsTool.Rx, 56 * MetricsTool.Rx);
+			UIUtil.setViewSize(appIcon, 160 * MetricsTool.Rx, 160 * MetricsTool.Rx);
 			UIUtil.setViewSize(uninstall, 60 * MetricsTool.Rx, 60 * MetricsTool.Rx);
 			
 			UIUtil.setTextSize(appName, 40);
