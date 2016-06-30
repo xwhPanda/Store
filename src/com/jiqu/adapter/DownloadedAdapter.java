@@ -275,8 +275,8 @@ public class DownloadedAdapter extends BaseAdapter implements DownloadObserver {
 				@Override
 				public void onClick(View v) {
 					// TODO Auto-generated method stub
-//					DownloadManager.getInstance().cancel(info);
-//					DownloadManager.DBManager.getDownloadAppinfoDao().deleteByKey(info.getId());
+					DownloadManager.getInstance().cancel(info);
+					DownloadManager.DBManager.getDownloadAppinfoDao().deleteByKey(info.getId());
 					mDisplayedHolders.remove(this);
 					UIUtil.removeListItem(rootView,new AnimationListener() {
 						
@@ -390,7 +390,13 @@ public class DownloadedAdapter extends BaseAdapter implements DownloadObserver {
 		}
 
 		public void setUnZipProgress(int progress) {
-			open.setText(progress + "%");
+			if (progress == 100) {
+				open.setText("");
+				open.setBackgroundResource(R.drawable.runing_selector);
+				state.setText("安装");
+			}else {
+				open.setText(progress + "%");
+			}
 		}
 	}
 

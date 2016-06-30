@@ -265,6 +265,8 @@ public class DownloadManagerActivity extends BaseActivity implements OnClickList
 				downloadedApps.remove(info);
 				downloadedAdapter.getList().add(info);
 				downloadedAdapter.notifyDataSetChanged();
+
+				Log.i("TAG", "handler : " + info.getAppName() + " / " + info.getIsZip() + " / " + info.getIconUrl());
 				if (downloadingShow) {
 					if (downloadingApps.size() == 0) {
 						noDownloadLin.setVisibility(View.VISIBLE);

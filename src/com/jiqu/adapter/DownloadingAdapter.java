@@ -23,6 +23,7 @@ import com.jiqu.view.NetChangeDialog;
 import android.content.Context;
 import android.os.Handler;
 import android.os.Message;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -358,7 +359,7 @@ public class DownloadingAdapter extends BaseAdapter implements DownloadObserver 
 			case DownloadManager.STATE_DOWNLOADED:
 				synchronized (handler) {
 					Message msg = handler.obtainMessage();
-					msg.obj = info;
+					msg.obj = appinfo;
 					msg.what = 1;
 					handler.sendMessage(msg);
 				}
@@ -366,7 +367,10 @@ public class DownloadingAdapter extends BaseAdapter implements DownloadObserver 
 				break;
 			case DownloadManager.STATE_UNZIPING:
 				synchronized (handler) {
-					handler.sendEmptyMessage(1);
+					Message msg = handler.obtainMessage();
+					msg.obj = appinfo;
+					msg.what = 1;
+					handler.sendMessage(msg);
 				}
 				pause.setBackgroundResource(R.drawable.jieya);
 				break;
