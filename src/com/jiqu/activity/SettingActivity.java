@@ -3,7 +3,6 @@ package com.jiqu.activity;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.CompoundButton;
@@ -11,6 +10,7 @@ import android.widget.RelativeLayout;
 import android.widget.CompoundButton.OnCheckedChangeListener;
 
 import com.jiqu.application.StoreApplication;
+import com.jiqu.download.ThreadManager;
 import com.jiqu.store.BaseActivity;
 import com.vr.store.R;
 import com.jiqu.tools.Constants;
@@ -22,7 +22,7 @@ import com.jiqu.view.TitleView;
 public class SettingActivity extends BaseActivity implements OnCheckedChangeListener,OnClickListener{
 	private RelativeLayout parent;
 	private TitleView titleView;
-	private SettingsItem threadItem,loadLargImg,autoCheckVersion,checkVersion,modifyPassword,loginOut;
+	private SettingsItem threadItem,autoCheckVersion,checkVersion,modifyPassword,loginOut;
 	private SharedPreferences preferences;
 	private int threadNumbers = 0;
 
@@ -45,7 +45,6 @@ public class SettingActivity extends BaseActivity implements OnCheckedChangeList
 		parent.setBackgroundDrawable(StoreApplication.BG_IMG);
 		titleView = (TitleView) findViewById(R.id.titleView);
 		threadItem = (SettingsItem) findViewById(R.id.threadItem);
-		loadLargImg = (SettingsItem) findViewById(R.id.loadLargImg);
 		autoCheckVersion = (SettingsItem) findViewById(R.id.autoCheckVersion);
 		checkVersion = (SettingsItem) findViewById(R.id.checkVersion);
 		modifyPassword = (SettingsItem) findViewById(R.id.modifyPassword);
@@ -57,7 +56,6 @@ public class SettingActivity extends BaseActivity implements OnCheckedChangeList
 		
 		checkVersion.getVersionNameTextView().setText(UIUtil.getVersionName(this));
 		threadItem.getTitleTextView().setText(R.string.changeThreadPool);
-		loadLargImg.getTitleTextView().setText(R.string.loadLargImg);
 		autoCheckVersion.getTitleTextView().setText(R.string.autoCheckVersion);
 		checkVersion.getTitleTextView().setText(R.string.checkVersion);
 		modifyPassword.getTitleTextView().setText(R.string.modifyPassword);
@@ -77,7 +75,6 @@ public class SettingActivity extends BaseActivity implements OnCheckedChangeList
 	
 	private void initViewSize(){
 		UIUtil.setViewSize(threadItem, 1040 * Rx, 150 * Ry);
-		UIUtil.setViewHeight(loadLargImg, 150 * Ry);
 		UIUtil.setViewHeight(autoCheckVersion, 150 * Ry);
 		UIUtil.setViewHeight(checkVersion, 150 * Ry);
 		UIUtil.setViewHeight(modifyPassword, 150 * Ry);
@@ -85,7 +82,6 @@ public class SettingActivity extends BaseActivity implements OnCheckedChangeList
 		
 		try {
 			UIUtil.setViewSizeMargin(threadItem, 0, 195 * Ry, 0, 0);
-			UIUtil.setViewSizeMargin(loadLargImg, 0, 30 * Ry, 0, 0);
 			UIUtil.setViewSizeMargin(autoCheckVersion, 0, 30 * Ry, 0, 0);
 			UIUtil.setViewSizeMargin(checkVersion, 0, 30 * Ry, 0, 0);
 			UIUtil.setViewSizeMargin(modifyPassword, 0, 30 * Ry, 0, 0);
@@ -109,12 +105,13 @@ public class SettingActivity extends BaseActivity implements OnCheckedChangeList
 		if (v == threadItem.getSubtractButton()) {
 			if (threadNumbers > 1 && threadNumbers <= Constants.MAX_DOWANLOAD_THREAD_NUMBER) {
 				threadNumbers -= 1;
+				ThreadManager.getDownloadPool().setMaxThreadNum(threadNumbers,false);
 			}
 			
 		}else if (v == threadItem.getAddButton()) {
-			if (threadNumbers >= 1 && threadNumbers < 5) {
+			if (threadNumbers >= 1 && threadNumbers < Constants.MAX_DOWANLOAD_THREAD_NUMBER) {
 				threadNumbers += 1;
-				
+				ThreadManager.getDownloadPool().setMaxThreadNum(threadNumbers,true);
 			}
 		}
 		SharePreferenceTool.setValuePreferences(preferences, Constants.DOWNLOAD_THREAD_COUNTS, threadNumbers);

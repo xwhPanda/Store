@@ -27,6 +27,7 @@
             android:id="@+id/toolTopImg"
             android:layout_width="@dimen/toolTopImgSize"
             android:layout_height="@dimen/toolTopImgSize"
+            android:clickable="true"
             android:layout_alignParentRight="true"
             android:layout_centerVertical="true"
             android:layout_marginRight="@dimen/toolTopImgMarginR"/>

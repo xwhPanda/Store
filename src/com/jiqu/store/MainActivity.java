@@ -15,6 +15,7 @@ import com.android.volley.toolbox.ImageLoader.ImageListener;
 import com.jiqu.activity.DownloadManagerActivity;
 import com.jiqu.activity.MemberLoginActivity;
 import com.jiqu.activity.SearchActivity;
+import com.jiqu.activity.SettingActivity;
 import com.jiqu.activity.ShowAccountInformatiomActivity;
 import com.jiqu.application.StoreApplication;
 import com.jiqu.database.Account;
@@ -30,22 +31,18 @@ import com.jiqu.fragment.ToolFragment;
 import com.jiqu.interfaces.LoginOutObserver;
 import com.jiqu.object.UpgradeVersionInfo;
 import com.jiqu.object.UpgradeVersionInfo.VersionInfo;
+import com.jiqu.tools.CheckNewVersion;
 import com.jiqu.tools.Constants;
 import com.jiqu.tools.MetricsTool;
 import com.jiqu.tools.NetReceiver;
 import com.jiqu.tools.RequestTool;
 import com.jiqu.tools.NetReceiver.OnNetChangeListener;
 import com.jiqu.tools.UIUtil;
-import com.jiqu.umeng.PushIntentService;
 import com.jiqu.umeng.UMengManager;
 import com.jiqu.view.CircleImageView;
 import com.jiqu.view.CustomDialog;
 import com.jiqu.view.NetChangeDialog;
-import com.ta.utdid2.device.UTDevice;
-import com.umeng.message.IUmengRegisterCallback;
 import com.umeng.message.PushAgent;
-import com.umeng.message.UmengRegistrar;
-import com.umeng.message.tag.TagManager;
 import com.umeng.socialize.bean.SHARE_MEDIA;
 import com.vr.store.R;
 
@@ -53,7 +50,6 @@ import de.greenrobot.dao.query.QueryBuilder;
 
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Process;
 import android.support.v4.app.Fragment;
@@ -116,7 +112,8 @@ public class MainActivity extends FragmentActivity implements OnClickListener,On
 	private RequestTool requestTool;
 	private HashMap<String, Object> map = new HashMap<String, Object>();
 	private NetChangeDialog netChangeDialog;
-	private NetChangeDialog upgradeDialog;
+//	private NetChangeDialog upgradeDialog;
+	private CheckNewVersion checkNewVersion;
 	private VersionInfo versionInfo;
 	
 	@Override
@@ -133,7 +130,8 @@ public class MainActivity extends FragmentActivity implements OnClickListener,On
 		StoreApplication.setLoginOutObserver(this);
 		
 		netChangeDialog = new NetChangeDialog(this);
-		upgradeDialog = new NetChangeDialog(this);
+//		upgradeDialog = new NetChangeDialog(this);
+		checkNewVersion = new CheckNewVersion(this);
 		
 		dialog = new CustomDialog(this)
 				.setNegativeButton(new DialogInterface.OnClickListener() {
@@ -160,9 +158,10 @@ public class MainActivity extends FragmentActivity implements OnClickListener,On
 		init();
 		setOnclick();
 		
-		checkNewVersion();
-		
-//		UMengManager.getInstance().setPushIntentServiceClass(PushIntentService.class);
+//		if (Constants.AUTO_CHECK_NEW_VERSION) {
+//			checkNewVersion();
+			checkNewVersion.checkNewVersion();
+//		}
 	}
 	
 	@Override
@@ -172,43 +171,44 @@ public class MainActivity extends FragmentActivity implements OnClickListener,On
 		netReceiver.setNetChangeListener(this);
 	}
 	
-	private void checkNewVersion(){
-		map.put("version", Constants.VERSION_CODE);
-		map.put("package", Constants.PACKAGENAME);
-		map.put("channel", StoreApplication.CHANNEL);
-		requestTool.startStringRequest(Method.POST, new Listener<String>() {
-
-			@Override
-			public void onResponse(String arg0) {
-				// TODO Auto-generated method stub
-				UpgradeVersionInfo upgradeVersionInfo = JSON.parseObject(arg0, UpgradeVersionInfo.class);
-				if (upgradeVersionInfo != null) {
-					if (upgradeVersionInfo.getStatus() == 1) {
-						versionInfo = upgradeVersionInfo.getData();
-						upgradeDialog.setContent("发现新版本 ： " + versionInfo.getVersion_name());
-						upgradeDialog.setNegativeText("下次再说");
-						upgradeDialog.setPositiveText("立即更新");
-						upgradeDialog.show();
-					}else if (upgradeVersionInfo.getStatus() == 0) {
-						Log.i("UpgradeVersion", "latest version !");
-					}
-				}
-			}
-		}, RequestTool.VR_HELPER_UPGRADE_URL, new ErrorListener(){
-
-			@Override
-			public void onErrorResponse(VolleyError arg0) {
-				// TODO Auto-generated method stub
-			}
-		}, map, CHECKNE_WVERSION_REQUEST);
-	}
+//	private void checkNewVersion(){
+//		map.put("version", Constants.VERSION_CODE);
+//		map.put("package", Constants.PACKAGENAME);
+//		map.put("channel", StoreApplication.CHANNEL);
+//		requestTool.startStringRequest(Method.POST, new Listener<String>() {
+//
+//			@Override
+//			public void onResponse(String arg0) {
+//				// TODO Auto-generated method stub
+//				UpgradeVersionInfo upgradeVersionInfo = JSON.parseObject(arg0, UpgradeVersionInfo.class);
+//				if (upgradeVersionInfo != null) {
+//					if (upgradeVersionInfo.getStatus() == 1) {
+//						versionInfo = upgradeVersionInfo.getData();
+//						upgradeDialog.setContent("发现新版本 ： " + versionInfo.getVersion_name());
+//						upgradeDialog.setNegativeText("下次再说");
+//						upgradeDialog.setPositiveText("立即更新");
+//						upgradeDialog.show();
+//					}else if (upgradeVersionInfo.getStatus() == 0) {
+//						Log.i("UpgradeVersion", "latest version !");
+//					}
+//				}
+//			}
+//		}, RequestTool.VR_HELPER_UPGRADE_URL, new ErrorListener(){
+//
+//			@Override
+//			public void onErrorResponse(VolleyError arg0) {
+//				// TODO Auto-generated method stub
+//			}
+//		}, map, CHECKNE_WVERSION_REQUEST);
+//	}
 	
 	@Override
 	protected void onDestroy() {
 		// TODO Auto-generated method stub
 		super.onDestroy();
 		netReceiver.unregisterReceive(StoreApplication.context);
-		requestTool.stopRequest(CHECKNE_WVERSION_REQUEST);
+//		requestTool.stopRequest(CHECKNE_WVERSION_REQUEST);
+		checkNewVersion.stopRequest();
 		Constants.ACTIVITY_LIST.remove(this);
 	}
 	
@@ -303,25 +303,25 @@ public class MainActivity extends FragmentActivity implements OnClickListener,On
 			}
 		});
 		
-		upgradeDialog.setNegativeListener(new OnClickListener() {
-			
-			@Override
-			public void onClick(View v) {
-				// TODO Auto-generated method stub
-				upgradeDialog.dismiss();
-			}
-		});
-		
-		upgradeDialog.setPositiveListener(new OnClickListener() {
-			
-			@Override
-			public void onClick(View v) {
-				// TODO Auto-generated method stub
-				new Upgrade(versionInfo.getDown_url(), StoreApplication.UPGRADE_DOWNLOAD_PATH, StoreApplication.PACKAGE_NAME + ".apk")
-				.startDownload();
-				upgradeDialog.dismiss();
-			}
-		});
+//		upgradeDialog.setNegativeListener(new OnClickListener() {
+//			
+//			@Override
+//			public void onClick(View v) {
+//				// TODO Auto-generated method stub
+//				upgradeDialog.dismiss();
+//			}
+//		});
+//		
+//		upgradeDialog.setPositiveListener(new OnClickListener() {
+//			
+//			@Override
+//			public void onClick(View v) {
+//				// TODO Auto-generated method stub
+//				new Upgrade(versionInfo.getDown_url(), StoreApplication.UPGRADE_DOWNLOAD_PATH, StoreApplication.PACKAGE_NAME + ".apk")
+//				.startDownload();
+//				upgradeDialog.dismiss();
+//			}
+//		});
 	}
 	
 	private void setViewSize(){
@@ -394,6 +394,8 @@ public class MainActivity extends FragmentActivity implements OnClickListener,On
 		searchEd.setOnClickListener(this);
 		accountImg.setOnClickListener(this);
 		download.setOnClickListener(this);
+		
+		toolTopImg.setOnClickListener(this);
 	}
 	
 	@SuppressWarnings("deprecation")
@@ -572,6 +574,10 @@ public class MainActivity extends FragmentActivity implements OnClickListener,On
 			
 		case R.id.download:
 			startActivity(new Intent(this, DownloadManagerActivity.class));
+			break;
+			
+		case R.id.toolTopImg:
+			startActivity(new Intent(this, SettingActivity.class));
 			break;
 		}
 	}

@@ -68,7 +68,7 @@ public class AboutUsActivity extends BaseActivity {
 	}
 	
 	private void initViewSize(){
-		UIUtil.setViewSize(companyLogo, 100 * Rx, 100 * Rx);
+		UIUtil.setViewSize(companyLogo, 150 * Rx, 150 * Rx);
 		UIUtil.setViewHeight(websiteRel, 180 * Ry);
 		UIUtil.setViewHeight(weiboRel, 180 * Ry);
 		UIUtil.setViewHeight(noPublicRel, 180 * Ry);
@@ -85,7 +85,7 @@ public class AboutUsActivity extends BaseActivity {
 		
 		try {
 			UIUtil.setViewSizeMargin(appInfoLin, 40 * Rx, 0, 0, 0);
-			UIUtil.setViewSizeMargin(appInfoRel, 0, 285 * Ry, 0, 0);
+			UIUtil.setViewSizeMargin(appInfoRel, 120 * Rx, 285 * Ry, 0, 0);
 			UIUtil.setViewSizeMargin(websiteRel, 0, 120 * Ry, 0, 0);
 			UIUtil.setViewSizeMargin(weiboRel, 0, 35 * Ry, 0, 0);
 			UIUtil.setViewSizeMargin(noPublicRel, 0, 35 * Ry, 0, 0);

@@ -18,24 +18,14 @@
         android:layout_height="wrap_content"/>
     
     <com.jiqu.view.SettingsItem
-        android:id="@+id/loadLargImg"
-        setting:isNext="true"
+        android:id="@+id/autoCheckVersion"
+        setting:isAutoCheckUpdate="true"
         android:layout_centerHorizontal="true"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@+id/threadItem"
         android:layout_alignLeft="@+id/threadItem"
         android:layout_alignRight="@+id/threadItem"/>
-    
-    <com.jiqu.view.SettingsItem
-        android:id="@+id/autoCheckVersion"
-        setting:isAutoCheckUpdate="true"
-        android:layout_centerHorizontal="true"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/loadLargImg"
-        android:layout_alignLeft="@+id/loadLargImg"
-        android:layout_alignRight="@+id/loadLargImg"/>
     
     <com.jiqu.view.SettingsItem
         android:id="@+id/checkVersion"

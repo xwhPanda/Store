@@ -27,12 +27,14 @@ import com.vr.store.R;
 import com.jiqu.tools.ChannelUtil;
 import com.jiqu.tools.Constants;
 import com.jiqu.tools.LruBitmapCache;
+import com.jiqu.tools.SharePreferenceTool;
 import com.jiqu.umeng.UMengManager;
 import com.jiqu.umeng.UmengNotificationHandler;
 import com.jiqu.umeng.UmengPushMessageHandler;
 
 import android.app.Application;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
@@ -132,6 +134,10 @@ public class StoreApplication extends Application {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+		
+		SharedPreferences preferences = getSharedPreferences(Constants.SETTINGS_SHARE_PREFERENCE_NAME, MODE_PRIVATE);
+		Constants.DEFAULT_DOWANLOAD_THREAD_COUNTS = SharePreferenceTool.getIntFromPreferences(preferences, Constants.DOWNLOAD_THREAD_COUNTS, Constants.DEFAULT_DOWANLOAD_THREAD_COUNTS);
+		Constants.AUTO_CHECK_NEW_VERSION = SharePreferenceTool.getBooleanFromPreferences(preferences, Constants.AUTO_CHECK_VERSION, false);
 	}
 
 	/** 友盟 **/

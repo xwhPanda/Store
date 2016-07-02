@@ -103,6 +103,10 @@ public class DownloadManager implements ChangeObserver{
 		return map.keySet().size() == 0?false:true;
 	}
 	
+	public Map<String, Downloader> getDownloadMap(){
+		return map;
+	}
+	
 	/** 注册观察者 */
 	public void registerObserver(DownloadObserver observer) {
 		synchronized (mObservers) {

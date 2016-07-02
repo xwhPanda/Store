@@ -4,11 +4,15 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.Executors;
 import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.SynchronousQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.ThreadPoolExecutor.AbortPolicy;
 import java.util.concurrent.TimeUnit;
 
+import android.util.Log;
+
 import com.jiqu.tools.Constants;
+import com.jiqu.tools.SharePreferenceTool;
 
 public class ThreadManager {
 	public static final String DEFAULT_SINGLE_POOL_NAME = "DEFAULT_SINGLE_POOL_NAME";
@@ -29,7 +33,7 @@ public class ThreadManager {
 	public static ThreadPoolProxy getDownloadPool() {
 		synchronized (mDownloadLock) {
 			if (mDownloadPool == null) {
-				mDownloadPool = new ThreadPoolProxy(1, Constants.DEFAULT_DOWANLOAD_THREAD_COUNTS, 5L);
+				mDownloadPool = new ThreadPoolProxy(Constants.DEFAULT_DOWANLOAD_THREAD_COUNTS, Constants.DEFAULT_DOWANLOAD_THREAD_COUNTS, 10L);
 			}
 			return mDownloadPool;
 		}
@@ -106,6 +110,19 @@ public class ThreadManager {
 		public synchronized void cancel(Runnable run) {
 			if (mPool != null && (!mPool.isShutdown() || mPool.isTerminating())) {
 				mPool.getQueue().remove(run);
+			}
+		}
+		
+		/** 设置线程池大小 **/
+		public synchronized void setMaxThreadNum(int number,boolean isAdd){
+			if (mPool != null && (!mPool.isShutdown() || mPool.isTerminating())) {
+				if (isAdd) {
+					mPool.setMaximumPoolSize(number);
+					mPool.setCorePoolSize(number);
+				}else {
+					mPool.setCorePoolSize(number);
+					mPool.setMaximumPoolSize(number);
+				}
 			}
 		}
 
