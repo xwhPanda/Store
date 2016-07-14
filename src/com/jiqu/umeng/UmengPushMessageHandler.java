@@ -17,7 +17,6 @@ import com.umeng.message.entity.UMessage;
 public class UmengPushMessageHandler extends UmengMessageHandler {
 
 	public void dealWithCustomMessage(Context context, UMessage uMessage) {
-		Log.i("TAG", "UmengPushMessageHandler : " + uMessage.getRaw().toString());
 		MessageTable message = new MessageTable();
 		message.setMessage(uMessage.getRaw().toString());
 		message.setTime(String.valueOf(System.currentTimeMillis()));
@@ -27,7 +26,6 @@ public class UmengPushMessageHandler extends UmengMessageHandler {
 	@Override
 	public Notification getNotification(Context context, UMessage uMessage) {
 		// TODO Auto-generated method stub
-		Log.i("TAG", "getNotification : " + uMessage.getRaw().toString());
 		NoticeTable notice = new NoticeTable();
 		notice.setNotice(uMessage.getRaw().toString());
 		notice.setTime(String.valueOf(System.currentTimeMillis()));

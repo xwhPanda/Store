@@ -132,10 +132,9 @@ public class GameEvaluationWebInfoActivity extends BaseActivity {
 			public void onProgressChanged(WebView view, int newProgress) {
 				if (newProgress == 100) {
 					loadView.loadDataSuccess();
-					loadView.setVisibility(View.VISIBLE);
+					loadView.setVisibility(View.INVISIBLE);
 					webView.setVisibility(View.VISIBLE);
 				} else {
-					
 				}
 			}
 		});

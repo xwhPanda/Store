@@ -33,28 +33,9 @@
         android:layout_centerHorizontal="true"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:clickable="true"
         android:layout_below="@+id/autoCheckVersion"
         android:layout_alignLeft="@+id/autoCheckVersion"
         android:layout_alignRight="@+id/autoCheckVersion"/>
-    
-    <com.jiqu.view.SettingsItem
-        android:id="@+id/modifyPassword"
-        setting:isNext="true"
-        android:layout_centerHorizontal="true"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/checkVersion"
-        android:layout_alignLeft="@+id/checkVersion"
-        android:layout_alignRight="@+id/checkVersion"/>
-    
-    <com.jiqu.view.SettingsItem
-        android:id="@+id/loginOut"
-        setting:isNext="true"
-        android:layout_centerHorizontal="true"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/modifyPassword"
-        android:layout_alignLeft="@+id/modifyPassword"
-        android:layout_alignRight="@+id/modifyPassword"/>
 
 </RelativeLayout>

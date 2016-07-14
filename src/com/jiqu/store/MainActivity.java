@@ -112,7 +112,6 @@ public class MainActivity extends FragmentActivity implements OnClickListener,On
 	private RequestTool requestTool;
 	private HashMap<String, Object> map = new HashMap<String, Object>();
 	private NetChangeDialog netChangeDialog;
-//	private NetChangeDialog upgradeDialog;
 	private CheckNewVersion checkNewVersion;
 	private VersionInfo versionInfo;
 	
@@ -130,7 +129,6 @@ public class MainActivity extends FragmentActivity implements OnClickListener,On
 		StoreApplication.setLoginOutObserver(this);
 		
 		netChangeDialog = new NetChangeDialog(this);
-//		upgradeDialog = new NetChangeDialog(this);
 		checkNewVersion = new CheckNewVersion(this);
 		
 		dialog = new CustomDialog(this)
@@ -158,10 +156,9 @@ public class MainActivity extends FragmentActivity implements OnClickListener,On
 		init();
 		setOnclick();
 		
-//		if (Constants.AUTO_CHECK_NEW_VERSION) {
-//			checkNewVersion();
-			checkNewVersion.checkNewVersion();
-//		}
+		if (Constants.AUTO_CHECK_NEW_VERSION) {
+			checkNewVersion.checkNewVersion(false);
+		}
 	}
 	
 	@Override
@@ -171,43 +168,12 @@ public class MainActivity extends FragmentActivity implements OnClickListener,On
 		netReceiver.setNetChangeListener(this);
 	}
 	
-//	private void checkNewVersion(){
-//		map.put("version", Constants.VERSION_CODE);
-//		map.put("package", Constants.PACKAGENAME);
-//		map.put("channel", StoreApplication.CHANNEL);
-//		requestTool.startStringRequest(Method.POST, new Listener<String>() {
-//
-//			@Override
-//			public void onResponse(String arg0) {
-//				// TODO Auto-generated method stub
-//				UpgradeVersionInfo upgradeVersionInfo = JSON.parseObject(arg0, UpgradeVersionInfo.class);
-//				if (upgradeVersionInfo != null) {
-//					if (upgradeVersionInfo.getStatus() == 1) {
-//						versionInfo = upgradeVersionInfo.getData();
-//						upgradeDialog.setContent("发现新版本 ： " + versionInfo.getVersion_name());
-//						upgradeDialog.setNegativeText("下次再说");
-//						upgradeDialog.setPositiveText("立即更新");
-//						upgradeDialog.show();
-//					}else if (upgradeVersionInfo.getStatus() == 0) {
-//						Log.i("UpgradeVersion", "latest version !");
-//					}
-//				}
-//			}
-//		}, RequestTool.VR_HELPER_UPGRADE_URL, new ErrorListener(){
-//
-//			@Override
-//			public void onErrorResponse(VolleyError arg0) {
-//				// TODO Auto-generated method stub
-//			}
-//		}, map, CHECKNE_WVERSION_REQUEST);
-//	}
 	
 	@Override
 	protected void onDestroy() {
 		// TODO Auto-generated method stub
 		super.onDestroy();
 		netReceiver.unregisterReceive(StoreApplication.context);
-//		requestTool.stopRequest(CHECKNE_WVERSION_REQUEST);
 		checkNewVersion.stopRequest();
 		Constants.ACTIVITY_LIST.remove(this);
 	}
@@ -302,26 +268,6 @@ public class MainActivity extends FragmentActivity implements OnClickListener,On
 				netChangeDialog.dismiss();
 			}
 		});
-		
-//		upgradeDialog.setNegativeListener(new OnClickListener() {
-//			
-//			@Override
-//			public void onClick(View v) {
-//				// TODO Auto-generated method stub
-//				upgradeDialog.dismiss();
-//			}
-//		});
-//		
-//		upgradeDialog.setPositiveListener(new OnClickListener() {
-//			
-//			@Override
-//			public void onClick(View v) {
-//				// TODO Auto-generated method stub
-//				new Upgrade(versionInfo.getDown_url(), StoreApplication.UPGRADE_DOWNLOAD_PATH, StoreApplication.PACKAGE_NAME + ".apk")
-//				.startDownload();
-//				upgradeDialog.dismiss();
-//			}
-//		});
 	}
 	
 	private void setViewSize(){
@@ -366,22 +312,12 @@ public class MainActivity extends FragmentActivity implements OnClickListener,On
 	private void initIconData(){
 		File file = new File(Constants.ACCOUNT_ICON);
 		Account account = StoreApplication.getInstance().daoSession.getAccountDao().queryBuilder().unique();
-//		if (file.exists()) {
-//			Bitmap bitmap = BitmapFactory.decodeFile(Constants.ACCOUNT_ICON);
-//			if (account != null) {
-//				ImageListener listener = ImageLoader.getImageListener(accountImg, bitmap, bitmap);
-//				StoreApplication.getInstance().getImageLoader().get(account.getPhoto(), listener);
-//			}else {
-//				accountImg.setBackgroundResource(R.drawable.yonghuicon);
-//			}
-//		}else {
 			if (account != null) {
 				ImageListener listener = ImageLoader.getImageListener(accountImg, R.drawable.yonghuicon, R.drawable.yonghuicon);
 				StoreApplication.getInstance().getImageLoader().get(account.getPhoto(), listener);
 			}else {
 				accountImg.setBackgroundResource(R.drawable.yonghuicon);
 			}
-//		}
 	}
 	
 	private void setOnclick(){

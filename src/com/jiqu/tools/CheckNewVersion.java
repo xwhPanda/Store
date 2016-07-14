@@ -7,6 +7,7 @@ import android.content.Context;
 import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.widget.Toast;
 
 import com.alibaba.fastjson.JSON;
 import com.android.volley.VolleyError;
@@ -58,9 +59,9 @@ public class CheckNewVersion {
 		});
 	}
 
-	/** 升级检测 **/
-	public void checkNewVersion() {
-		Log.i("TAG", "checkNewVersion");
+	/** 升级检测 
+	 * showToast 是否弹出toast**/
+	public void checkNewVersion(final boolean showToast) {
 		HashMap<String, Object> map = new HashMap<String, Object>();
 		map.put("version", Constants.VERSION_CODE);
 		map.put("package", Constants.PACKAGENAME);
@@ -71,7 +72,6 @@ public class CheckNewVersion {
 			public void onResponse(String arg0) {
 				// TODO Auto-generated method stub
 				UpgradeVersionInfo upgradeVersionInfo = JSON.parseObject(arg0, UpgradeVersionInfo.class);
-				Log.i("TAG", "tag : " + arg0);
 				if (upgradeVersionInfo != null) {
 					if (upgradeVersionInfo.getStatus() == 1) {
 						versionInfo = upgradeVersionInfo.getData();
@@ -80,6 +80,9 @@ public class CheckNewVersion {
 						upgradeDialog.setPositiveText("立即更新");
 						upgradeDialog.show();
 					} else if (upgradeVersionInfo.getStatus() == 0) {
+						if (showToast) {
+							Toast.makeText(context, "没有新版本", Toast.LENGTH_SHORT).show();
+						}
 						Log.i("UpgradeVersion", "latest version !");
 					}
 				}

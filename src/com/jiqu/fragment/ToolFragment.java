@@ -260,13 +260,11 @@ public class ToolFragment extends BaseFragment implements OnClickListener{
 			}else {
 				accountName.setText(account.getNickname());
 			}
-			messageImg.setVisibility(View.VISIBLE);
 			level.setVisibility(View.VISIBLE);
 			level.setText("LV " + account.getLevel());
 		}else {
 			accountIcon.setBackgroundResource(R.drawable.yonghuicon);
 			accountName.setText(R.string.notLogin);
-			messageImg.setVisibility(View.GONE);
 			level.setVisibility(View.INVISIBLE);
 			level.setText("LV " + "");
 		}
@@ -277,7 +275,6 @@ public class ToolFragment extends BaseFragment implements OnClickListener{
 		// TODO Auto-generated method stub
 		account = null;
 		accountName.setText(R.string.notLogin);
-		messageImg.setVisibility(View.GONE);
 		level.setVisibility(View.INVISIBLE);
 		level.setText("LV " + "");
 		

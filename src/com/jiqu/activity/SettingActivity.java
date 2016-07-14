@@ -13,6 +13,7 @@ import com.jiqu.application.StoreApplication;
 import com.jiqu.download.ThreadManager;
 import com.jiqu.store.BaseActivity;
 import com.vr.store.R;
+import com.jiqu.tools.CheckNewVersion;
 import com.jiqu.tools.Constants;
 import com.jiqu.tools.SharePreferenceTool;
 import com.jiqu.tools.UIUtil;
@@ -22,7 +23,7 @@ import com.jiqu.view.TitleView;
 public class SettingActivity extends BaseActivity implements OnCheckedChangeListener,OnClickListener{
 	private RelativeLayout parent;
 	private TitleView titleView;
-	private SettingsItem threadItem,autoCheckVersion,checkVersion,modifyPassword,loginOut;
+	private SettingsItem threadItem,autoCheckVersion,checkVersion;
 	private SharedPreferences preferences;
 	private int threadNumbers = 0;
 
@@ -47,8 +48,6 @@ public class SettingActivity extends BaseActivity implements OnCheckedChangeList
 		threadItem = (SettingsItem) findViewById(R.id.threadItem);
 		autoCheckVersion = (SettingsItem) findViewById(R.id.autoCheckVersion);
 		checkVersion = (SettingsItem) findViewById(R.id.checkVersion);
-		modifyPassword = (SettingsItem) findViewById(R.id.modifyPassword);
-		loginOut = (SettingsItem) findViewById(R.id.loginOut);
 		
 		titleView.tip.setText(R.string.setting);
 		titleView.setActivity(this);
@@ -58,12 +57,10 @@ public class SettingActivity extends BaseActivity implements OnCheckedChangeList
 		threadItem.getTitleTextView().setText(R.string.changeThreadPool);
 		autoCheckVersion.getTitleTextView().setText(R.string.autoCheckVersion);
 		checkVersion.getTitleTextView().setText(R.string.checkVersion);
-		modifyPassword.getTitleTextView().setText(R.string.modifyPassword);
-		loginOut.getTitleTextView().setText(R.string.loginOut);
 		
 		autoCheckVersion.getToggleButton().setOnCheckedChangeListener(this);
 		
-		autoCheckVersion.getToggleButton().setChecked(SharePreferenceTool.getBooleanFromPreferences(preferences, Constants.AUTO_CHECK_VERSION, true));
+		autoCheckVersion.getToggleButton().setChecked(SharePreferenceTool.getBooleanFromPreferences(preferences, Constants.AUTO_CHECK_VERSION, false));
 		threadItem.getThreadSizeTextView().setText(SharePreferenceTool.getIntFromPreferences(preferences, Constants.DOWNLOAD_THREAD_COUNTS, Constants.DEFAULT_DOWANLOAD_THREAD_COUNTS) + "");
 		threadItem.getAddButton().setOnClickListener(this);
 		threadItem.getSubtractButton().setOnClickListener(this);
@@ -71,21 +68,19 @@ public class SettingActivity extends BaseActivity implements OnCheckedChangeList
 		threadNumbers = SharePreferenceTool.getIntFromPreferences(preferences, Constants.DOWNLOAD_THREAD_COUNTS, Constants.DEFAULT_DOWANLOAD_THREAD_COUNTS);
 		
 		initViewSize();
+		
+		checkVersion.setOnClickListener(this);
 	}
 	
 	private void initViewSize(){
 		UIUtil.setViewSize(threadItem, 1040 * Rx, 150 * Ry);
 		UIUtil.setViewHeight(autoCheckVersion, 150 * Ry);
 		UIUtil.setViewHeight(checkVersion, 150 * Ry);
-		UIUtil.setViewHeight(modifyPassword, 150 * Ry);
-		UIUtil.setViewHeight(loginOut, 150 * Ry);
 		
 		try {
 			UIUtil.setViewSizeMargin(threadItem, 0, 195 * Ry, 0, 0);
 			UIUtil.setViewSizeMargin(autoCheckVersion, 0, 30 * Ry, 0, 0);
 			UIUtil.setViewSizeMargin(checkVersion, 0, 30 * Ry, 0, 0);
-			UIUtil.setViewSizeMargin(modifyPassword, 0, 30 * Ry, 0, 0);
-			UIUtil.setViewSizeMargin(loginOut, 0, 30 * Ry, 0, 0);			
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -113,6 +108,9 @@ public class SettingActivity extends BaseActivity implements OnCheckedChangeList
 				threadNumbers += 1;
 				ThreadManager.getDownloadPool().setMaxThreadNum(threadNumbers,true);
 			}
+		}else if (v == checkVersion) {
+			CheckNewVersion checkNewVersion = new CheckNewVersion(this);
+			checkNewVersion.checkNewVersion(true);
 		}
 		SharePreferenceTool.setValuePreferences(preferences, Constants.DOWNLOAD_THREAD_COUNTS, threadNumbers);
 		threadItem.getThreadSizeTextView().setText(threadNumbers +"");
