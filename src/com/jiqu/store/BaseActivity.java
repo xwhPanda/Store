@@ -27,7 +27,7 @@ import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
 
-public abstract class BaseActivity extends Activity implements OnNetChangeListener,OnRequestPermissionsResultCallback{
+public abstract class BaseActivity extends Activity implements OnNetChangeListener{
 	protected float Rx;
 	protected float Ry;
 	protected NetChangeDialog netChangeDialog;

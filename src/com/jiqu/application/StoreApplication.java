@@ -23,7 +23,6 @@ import com.jiqu.interfaces.LoginOutObserver;
 import com.ta.utdid2.device.UTDevice;
 import com.umeng.analytics.AnalyticsConfig;
 import com.umeng.analytics.MobclickAgent;
-import com.umeng.analytics.MobclickAgent.UMAnalyticsConfig;
 import com.umeng.socialize.Config;
 import com.umeng.socialize.PlatformConfig;
 import com.vr.store.R;
@@ -164,8 +163,9 @@ public class StoreApplication extends Application implements OnRequestPermission
 		
 		//友盟统计
 //		MobclickAgent.startWithConfigure(new UMAnalyticsConfig(context, "575cc7d767e58e106a001900", CHANNEL));
-//		MobclickAgent.openActivityDurationTrack(false);
-//		MobclickAgent.enableEncrypt(true);
+		AnalyticsConfig.setChannel(CHANNEL);
+		MobclickAgent.openActivityDurationTrack(false);
+		AnalyticsConfig.enableEncrypt(true);
 	}
 
 	/** 获取AndroidManifest.xml中的mete节点 **/
