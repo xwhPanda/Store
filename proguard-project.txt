@@ -59,6 +59,19 @@
 
  -keep class im.yixin.sdk.api.YXMessage {*;}
  -keep class im.yixin.sdk.api.** implements im.yixin.sdk.api.YXMessage$YXMessageData{*;}
+ 
+ -keepclassmembers class * {
+   	public <init> (org.json.JSONObject);
+ }
+ 
+ -keep public class com.vr.store.R$*{
+ 	public static final int *;
+ }
+ 
+ -keepclassmembers enum * {
+    public static **[] values();
+    public static ** valueOf(java.lang.String);
+ }
 
  -dontwarn twitter4j.**
  -keep class twitter4j.** { *; }
@@ -131,6 +144,7 @@
  -libraryjars libs/calligraphy-1.2.0.jar
  -libraryjars libs/zip4j_1.3.2.jar
  -libraryjars lib/android.jar
+ -libraryjars libs/umeng-analytics-v6.0.1.jar
  
  
 -dontwarn com.ut.mini.**
@@ -139,6 +153,7 @@
 -dontwarn com.squareup.wire.**
 -dontwarn android.support.v4.**
 -dontwarn org.android.agoo.**
+-dontwarn u.aly.**
     
 -keepattributes *Annotation*
     

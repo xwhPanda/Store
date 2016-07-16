@@ -19,6 +19,7 @@ import com.jiqu.store.SplashActivity;
 import com.jiqu.tools.Constants;
 import com.jiqu.view.LoadStateView;
 import com.jiqu.view.TitleView;
+import com.umeng.analytics.MobclickAgent;
 import com.vr.store.R;
 
 public class GameEvaluationWebInfoActivity extends BaseActivity {
@@ -51,6 +52,22 @@ public class GameEvaluationWebInfoActivity extends BaseActivity {
 			image = getIntent().getStringExtra("image");
 		}
 		initView();
+	}
+	
+	@Override
+	protected void onResume() {
+		// TODO Auto-generated method stub
+		super.onResume();
+		MobclickAgent.onPageStart("GameEvaluationWebInfoActivity");
+		MobclickAgent.onResume(this);
+	}
+	
+	@Override
+	protected void onPause() {
+		// TODO Auto-generated method stub
+		super.onPause();
+		MobclickAgent.onPageEnd("GameEvaluationWebInfoActivity");
+		MobclickAgent.onPause(this);
 	}
 	
 	private void initView(){

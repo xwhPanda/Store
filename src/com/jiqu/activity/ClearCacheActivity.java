@@ -1,10 +1,7 @@
 package com.jiqu.activity;
 
-import android.app.ActivityManager;
-import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.os.Handler;
-import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.animation.Animation;
@@ -16,6 +13,7 @@ import android.widget.TextView;
 
 import com.jiqu.application.StoreApplication;
 import com.jiqu.store.BaseActivity;
+import com.umeng.analytics.MobclickAgent;
 import com.vr.store.R;
 import com.jiqu.tools.ClearTool;
 import com.jiqu.tools.Constants;
@@ -43,6 +41,22 @@ public class ClearCacheActivity extends BaseActivity implements OnClickListener{
 		super.onCreate(savedInstanceState);
 		
 		initView();
+	}
+	
+	@Override
+	protected void onResume() {
+		// TODO Auto-generated method stub
+		super.onResume();
+		MobclickAgent.onPageStart("ClearCacheActivity");
+		MobclickAgent.onResume(this);
+	}
+	
+	@Override
+	protected void onPause() {
+		// TODO Auto-generated method stub
+		super.onPause();
+		MobclickAgent.onPageEnd("ClearCacheActivity");
+		MobclickAgent.onPause(this);
 	}
 	
 	@Override

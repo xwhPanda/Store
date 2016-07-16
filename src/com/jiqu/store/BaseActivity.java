@@ -22,12 +22,12 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
-import android.util.Log;
+import android.support.v4.app.ActivityCompat.OnRequestPermissionsResultCallback;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
 
-public abstract class BaseActivity extends Activity implements OnNetChangeListener{
+public abstract class BaseActivity extends Activity implements OnNetChangeListener,OnRequestPermissionsResultCallback{
 	protected float Rx;
 	protected float Ry;
 	protected NetChangeDialog netChangeDialog;
@@ -78,9 +78,6 @@ public abstract class BaseActivity extends Activity implements OnNetChangeListen
 		});
 		
 		addToActivityList();
-		for (Activity activity : Constants.ACTIVITY_LIST) {
-			Log.i("TAG", activity.toString());
-		}
 		
 	}
 	
@@ -164,7 +161,6 @@ public abstract class BaseActivity extends Activity implements OnNetChangeListen
 	public boolean onKeyDown(int keyCode, KeyEvent event) {
 		// TODO Auto-generated method stub
 		if (keyCode == KeyEvent.KEYCODE_BACK) {
-			Log.i("TAG", "size : " + Constants.ACTIVITY_LIST.size());
 			if ("true".equals(getIntent().getStringExtra("isPush"))
 					&& Constants.ACTIVITY_LIST.size() <= 1) {
 				startActivity(new Intent(this, SplashActivity.class));

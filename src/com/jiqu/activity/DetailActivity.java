@@ -42,6 +42,7 @@ import com.jiqu.object.GameDetailInfo;
 import com.jiqu.object.InstalledApp;
 import com.jiqu.store.BaseActivity;
 import com.jiqu.store.SplashActivity;
+import com.umeng.analytics.MobclickAgent;
 import com.vr.store.R;
 import com.jiqu.tools.Constants;
 import com.jiqu.tools.InstalledAppTool;
@@ -132,6 +133,22 @@ public class DetailActivity extends BaseActivity implements Listener<String>,
 			loadDetailData(RequestTool.GAME_DETAIL_URL + "?id=" + id);
 		} else if (requestType == 1) {
 		}
+	}
+	
+	@Override
+	protected void onResume() {
+		// TODO Auto-generated method stub
+		super.onResume();
+		MobclickAgent.onPageStart("DetailActivity");
+		MobclickAgent.onResume(this);
+	}
+	
+	@Override
+	protected void onPause() {
+		// TODO Auto-generated method stub
+		super.onPause();
+		MobclickAgent.onPageEnd("DetailActivity");
+		MobclickAgent.onPause(this);
 	}
 
 	private void loadDetailData(String url) {

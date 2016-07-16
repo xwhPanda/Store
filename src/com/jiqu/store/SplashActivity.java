@@ -12,19 +12,25 @@ import com.jiqu.tools.MD5;
 import com.jiqu.tools.RequestTool;
 import com.jiqu.tools.SharePreferenceTool;
 import com.jiqu.tools.UIUtil;
+import com.umeng.analytics.MobclickAgent;
 import com.umeng.message.PushAgent;
 import com.vr.store.R;
 
+import android.Manifest;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
-import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
 import android.os.CountDownTimer;
+import android.support.annotation.NonNull;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.app.ActivityCompat.OnRequestPermissionsResultCallback;
+import android.support.v4.content.ContextCompat;
+import android.util.Log;
 import android.widget.ImageView;
-import android.widget.RelativeLayout;
 
-public class SplashActivity extends BaseActivity {
+public class SplashActivity extends BaseActivity{
 	private RequestTool requestTool;
 	private SharedPreferences preferences;
 	private Bitmap bitmap;
@@ -37,19 +43,15 @@ public class SplashActivity extends BaseActivity {
 		super.onCreate(savedInstanceState);
 		PushAgent.getInstance(this).onAppStart();
 		requestTool = RequestTool.getInstance();
-		
+
 		img = (ImageView) findViewById(R.id.img);
 		bgRel = (ImageView) findViewById(R.id.bgRel);
-		
+
 		bitmap = UIUtil.readBitmap(StoreApplication.context, R.drawable.splash_bg);
 		bgRel.setImageBitmap(bitmap);
-		
+
 		img.setBackgroundResource(R.drawable.welcome);
 		preferences = getSharedPreferences(Constants.STATISTICS_SHARE_PREFERENCE_NAME, MODE_PRIVATE);
-		initFirst();
-		active();
-		
-		new SplashCountTimer(3000, 1000).start();
 	}
 
 	@Override
@@ -57,8 +59,8 @@ public class SplashActivity extends BaseActivity {
 		// TODO Auto-generated method stub
 		return R.layout.splash_layout;
 	}
-	
-	private class SplashCountTimer extends CountDownTimer{
+
+	private class SplashCountTimer extends CountDownTimer {
 
 		public SplashCountTimer(long millisInFuture, long countDownInterval) {
 			super(millisInFuture, countDownInterval);
@@ -67,7 +69,7 @@ public class SplashActivity extends BaseActivity {
 		@Override
 		public void onTick(long millisUntilFinished) {
 			// TODO Auto-generated method stub
-			
+
 		}
 
 		@Override
@@ -84,14 +86,14 @@ public class SplashActivity extends BaseActivity {
 		super.onDestroy();
 		bitmap.recycle();
 	}
-	
-	private void initFirst(){
+
+	private void initFirst() {
 		boolean isFirst = SharePreferenceTool.getBooleanFromPreferences(preferences, Constants.IS_FIRST, true);
 		if (isFirst) {
 			SharePreferenceTool.setValuePreferences(preferences, Constants.IS_FIRST, false);
 			SharePreferenceTool.setValuePreferences(preferences, Constants.TIME, System.currentTimeMillis());
 			firstUse();
-		}else {
+		} else {
 			boolean isSuccess = SharePreferenceTool.getBooleanFromPreferences(preferences, Constants.SEND_SUCCESS, false);
 			if (!isSuccess) {
 				firstUse();
@@ -103,23 +105,14 @@ public class SplashActivity extends BaseActivity {
 			}
 		}
 	}
-	
-	private void active(){
+
+	private void active() {
 		long time = SharePreferenceTool.getLongFromPreferences(preferences, Constants.TIME, 0);
 		if (time == 0) {
 			time = System.currentTimeMillis();
 			SharePreferenceTool.setValuePreferences(preferences, Constants.TIME, time);
 		}
-		String url = RequestTool.ACTIVE_URL
-				+ "?unique_id=" + StoreApplication.DEVICE_ID
-				+ "&channel=" + StoreApplication.CHANNEL
-				+ "&version=" + Constants.VERSION_NAME
-				+ "&setuptime=" + time
-				+ "&token=" + MD5.GetMD5Code(StoreApplication.DEVICE_ID 
-						+ StoreApplication.CHANNEL
-						+ Constants.VERSION_NAME 
-						+ time
-						+ RequestTool.PRIKEY);
+		String url = RequestTool.ACTIVE_URL + "?unique_id=" + Constants.DEVICE_ID + "&channel=" + StoreApplication.CHANNEL + "&version=" + Constants.VERSION_NAME + "&setuptime=" + time + "&token=" + MD5.GetMD5Code(Constants.DEVICE_ID + StoreApplication.CHANNEL + Constants.VERSION_NAME + time + RequestTool.PRIKEY);
 		requestTool.startStringRequest(Method.GET, new Listener<String>() {
 
 			@Override
@@ -134,15 +127,9 @@ public class SplashActivity extends BaseActivity {
 			}
 		}, requestTool.getMap(), "active");
 	}
-	
-	private void firstUse(){
-		String url = RequestTool.INSTALL_URL
-				+ "?unique_id=" + StoreApplication.DEVICE_ID
-				+ "&channel=" + StoreApplication.CHANNEL
-				+ "&version=" + Constants.VERSION_NAME
-				+ "&token=" + MD5.GetMD5Code(StoreApplication.DEVICE_ID 
-						+ StoreApplication.CHANNEL
-						+ Constants.VERSION_NAME + RequestTool.PRIKEY);
+
+	private void firstUse() {
+		String url = RequestTool.INSTALL_URL + "?unique_id=" + Constants.DEVICE_ID + "&channel=" + StoreApplication.CHANNEL + "&version=" + Constants.VERSION_NAME + "&token=" + MD5.GetMD5Code(Constants.DEVICE_ID + StoreApplication.CHANNEL + Constants.VERSION_NAME + RequestTool.PRIKEY);
 		requestTool.startStringRequest(Method.GET, new Listener<String>() {
 
 			@Override
@@ -154,16 +141,16 @@ public class SplashActivity extends BaseActivity {
 					SharePreferenceTool.setValuePreferences(preferences, Constants.SEND_SUCCESS, true);
 				}
 			}
-		}, url, new ErrorListener(){
+		}, url, new ErrorListener() {
 
 			@Override
 			public void onErrorResponse(VolleyError arg0) {
 				// TODO Auto-generated method stub
 			}
-			
+
 		}, requestTool.getMap(), "firstInstall");
 	}
-	
+
 	@Override
 	public void removeFromActivityList() {
 		// TODO Auto-generated method stub
@@ -174,5 +161,26 @@ public class SplashActivity extends BaseActivity {
 	public void addToActivityList() {
 		// TODO Auto-generated method stub
 		Constants.ACTIVITY_LIST.add(this);
+	}
+
+	@Override
+	protected void onResume() {
+		// TODO Auto-generated method stub
+		super.onResume();
+		MobclickAgent.onPageStart("SplashActivity");
+		MobclickAgent.onResume(this);
+		
+		initFirst();
+		active();
+		new SplashCountTimer(3000, 1000).start();
+	}
+	
+
+	@Override
+	protected void onPause() {
+		// TODO Auto-generated method stub
+		super.onPause();
+		MobclickAgent.onPageEnd("SplashActivity");
+		MobclickAgent.onPause(this);
 	}
 }

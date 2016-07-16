@@ -18,6 +18,7 @@ import com.android.volley.VolleyError;
 import com.jiqu.application.StoreApplication;
 import com.jiqu.download.StringUtil;
 import com.jiqu.store.BaseActivity;
+import com.umeng.analytics.MobclickAgent;
 import com.vr.store.R;
 import com.jiqu.tools.Constants;
 import com.jiqu.tools.MD5;
@@ -58,6 +59,22 @@ public class ForgetPasswordActivity extends BaseActivity implements OnClickListe
 	public int getContentView() {
 		// TODO Auto-generated method stub
 		return R.layout.forget_password;
+	}
+	
+	@Override
+	protected void onResume() {
+		// TODO Auto-generated method stub
+		super.onResume();
+		MobclickAgent.onPageStart("ForgetPasswordActivity");
+		MobclickAgent.onResume(this);
+	}
+	
+	@Override
+	protected void onPause() {
+		// TODO Auto-generated method stub
+		super.onPause();
+		MobclickAgent.onPageEnd("ForgetPasswordActivity");
+		MobclickAgent.onPause(this);
 	}
 
 	private void init(){

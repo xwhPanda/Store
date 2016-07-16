@@ -9,35 +9,29 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
-import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
-import com.alipay.share.sdk.openapi.SendMessageToZFB.Req;
 import com.android.volley.Request.Method;
 import com.android.volley.Response.ErrorListener;
 import com.android.volley.Response.Listener;
 import com.android.volley.VolleyError;
 import com.jiqu.adapter.GameAdapter;
-import com.jiqu.adapter.ResourcesManagmentAdapter;
 import com.jiqu.application.StoreApplication;
 import com.jiqu.download.DownloadManager;
 import com.jiqu.object.GameInfo;
 import com.jiqu.object.InstalledApp;
 import com.jiqu.object.ResourceInfo;
-import com.jiqu.object.ResourcesItem;
 import com.jiqu.store.BaseActivity;
-import com.umeng.socialize.utils.Log;
+import com.umeng.analytics.MobclickAgent;
 import com.vr.store.R;
 import com.jiqu.tools.Constants;
 import com.jiqu.tools.InstalledAppTool;
 import com.jiqu.tools.RequestTool;
-import com.jiqu.tools.UIUtil;
 import com.jiqu.view.PullToRefreshLayout;
-import com.jiqu.view.PullToRefreshLayout.OnRefreshListener;
 import com.jiqu.view.PullableListView;
 import com.jiqu.view.TitleView;
 
@@ -66,6 +60,22 @@ public class ResourceManagementActivity extends BaseActivity{
 		loadData(RequestTool.OTHER_UPGRADE_URL,json);
 		
 		adapter.startObserver();
+	}
+	
+	@Override
+	protected void onPause() {
+		// TODO Auto-generated method stub
+		super.onPause();
+		MobclickAgent.onPageEnd("ResourceManagementActivity");
+		MobclickAgent.onPause(this);
+	}
+	
+	@Override
+	protected void onResume() {
+		// TODO Auto-generated method stub
+		super.onResume();
+		MobclickAgent.onPageStart("ResourceManagementActivity");
+		MobclickAgent.onResume(this);
 	}
 	
 	@Override

@@ -39,10 +39,9 @@ public class UMengManager {
 			@Override
 			public void onRegistered(String arg0) {
 				// TODO Auto-generated method stub
-				Log.i("TAG", arg0);
 				String tags = StoreApplication.CHANNEL + "," + Constants.BRAND;
 				AddTag(tags);
-				AddAlias(StoreApplication.DEVICE_ID, "device_id");
+				AddAlias(Constants.DEVICE_ID, "device_id");
 			}
 		});
 		setDisplayNotificationNumber(3);
@@ -191,7 +190,7 @@ public class UMengManager {
 		
 		protected Boolean doInBackground(Void... params) {
 			try {
-				return UMengManager.getInstance().addAlias(StoreApplication.DEVICE_ID, "device_id");
+				return UMengManager.getInstance().addAlias(Constants.DEVICE_ID, "device_id");
 			} catch (Exception e) {
 				e.printStackTrace();
 			}

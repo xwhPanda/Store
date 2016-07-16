@@ -17,6 +17,7 @@ import com.jiqu.database.Account;
 import com.jiqu.interfaces.DialogDismissObserver;
 import com.jiqu.interfaces.LoginOutObserver;
 import com.jiqu.store.BaseActivity;
+import com.umeng.analytics.MobclickAgent;
 import com.umeng.socialize.UMAuthListener;
 import com.umeng.socialize.bean.SHARE_MEDIA;
 import com.vr.store.R;
@@ -43,7 +44,6 @@ import android.os.Handler;
 import android.provider.MediaStore;
 import android.text.TextUtils;
 import android.util.Base64;
-import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.Window;
@@ -104,6 +104,22 @@ public class ShowAccountInformatiomActivity extends BaseActivity implements OnCl
 //		}else {
 //			loadDataFromOther();
 //		}
+	}
+	
+	@Override
+	protected void onResume() {
+		// TODO Auto-generated method stub
+		super.onResume();
+		MobclickAgent.onPageStart("ShowAccountInformatiomActivity");
+		MobclickAgent.onResume(this);
+	}
+	
+	@Override
+	protected void onPause() {
+		// TODO Auto-generated method stub
+		super.onPause();
+		MobclickAgent.onPageEnd("ShowAccountInformatiomActivity");
+		MobclickAgent.onPause(this);
 	}
 
 	@Override

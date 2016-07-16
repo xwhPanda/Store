@@ -27,6 +27,7 @@ import com.jiqu.object.InformationGallaryItem;
 import com.jiqu.object.InformationItemInfo;
 import com.jiqu.store.BaseActivity;
 import com.jiqu.store.SplashActivity;
+import com.umeng.analytics.MobclickAgent;
 import com.umeng.socialize.media.UMImage;
 import com.vr.store.R;
 import com.jiqu.tools.Constants;
@@ -114,6 +115,22 @@ public class HeadlineActivity extends BaseActivity implements OnClickListener{
 				}
 			});
 		}
+	}
+	
+	@Override
+	protected void onResume() {
+		// TODO Auto-generated method stub
+		super.onResume();
+		MobclickAgent.onPageStart("HeadlineActivity");
+		MobclickAgent.onResume(this);
+	}
+	
+	@Override
+	protected void onPause() {
+		// TODO Auto-generated method stub
+		super.onPause();
+		MobclickAgent.onPageEnd("HeadlineActivity");
+		MobclickAgent.onPause(this);
 	}
 
 	@Override

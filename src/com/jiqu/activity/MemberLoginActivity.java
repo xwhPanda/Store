@@ -17,7 +17,7 @@ import com.jiqu.interfaces.LoginOutObserver;
 import com.jiqu.object.AccountInformation;
 import com.jiqu.object.AccountResponeInfo;
 import com.jiqu.store.BaseActivity;
-import com.umeng.socialize.Config;
+import com.umeng.analytics.MobclickAgent;
 import com.umeng.socialize.UMAuthListener;
 import com.umeng.socialize.bean.SHARE_MEDIA;
 import com.vr.store.R;
@@ -26,12 +26,10 @@ import com.jiqu.tools.MD5;
 import com.jiqu.tools.RequestTool;
 import com.jiqu.tools.UIUtil;
 import com.jiqu.umeng.UMengManager;
-import com.jiqu.view.NetChangeDialog;
 import com.jiqu.view.PasswordView;
 import com.jiqu.view.QuickLoginView;
 import com.jiqu.view.TitleView;
 
-import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
@@ -72,6 +70,22 @@ public class MemberLoginActivity extends BaseActivity implements OnClickListener
 		
 		init();
 		setListener();
+	}
+	
+	@Override
+	protected void onResume() {
+		// TODO Auto-generated method stub
+		super.onResume();
+		MobclickAgent.onPageStart("MemberLoginActivity");
+		MobclickAgent.onResume(this);
+	}
+	
+	@Override
+	protected void onPause() {
+		// TODO Auto-generated method stub
+		super.onPause();
+		MobclickAgent.onPageEnd("MemberLoginActivity");
+		MobclickAgent.onPause(this);
 	}
 	
 	private void init(){

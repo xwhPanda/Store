@@ -39,6 +39,7 @@ import com.jiqu.object.MessageInfo;
 import com.jiqu.object.PrivateMessageDataInfo;
 import com.jiqu.object.PrivateMessageInfo;
 import com.jiqu.store.BaseActivity;
+import com.umeng.analytics.MobclickAgent;
 import com.umeng.message.entity.UMessage;
 import com.vr.store.R;
 import com.jiqu.tools.Constants;
@@ -102,6 +103,22 @@ public class MessageCenterActivity extends BaseActivity implements OnClickListen
 	public int getContentView() {
 		// TODO Auto-generated method stub
 		return R.layout.message_center_layout;
+	}
+	
+	@Override
+	protected void onResume() {
+		// TODO Auto-generated method stub
+		super.onResume();
+		MobclickAgent.onPageStart("MessageCenterActivity");
+		MobclickAgent.onResume(this);
+	}
+	
+	@Override
+	protected void onPause() {
+		// TODO Auto-generated method stub
+		super.onPause();
+		MobclickAgent.onPageEnd("MessageCenterActivity");
+		MobclickAgent.onPause(this);
 	}
 	
 	private void initView(){
@@ -355,16 +372,16 @@ public class MessageCenterActivity extends BaseActivity implements OnClickListen
 		// TODO Auto-generated method stub
 		
 	}
-
+		
 	@Override
 	public void onLoadMore(PullToRefreshLayout pullToRefreshLayout) {
 		// TODO Auto-generated method stub
 		if (pullToRefreshLayout == refreshView) {
 			messageShowing = true;
-			loadMessageData(RequestTool.MESSAGE_LIST_URL + "?pageNum=" + messagePageNum);
+//			loadMessageData(RequestTool.MESSAGE_LIST_URL + "?pageNum=" + messagePageNum);
 		}else if (pullToRefreshLayout == messageRefreshView) {
 			privateShowing = true;
-			loadPrivateMessageData(RequestTool.PRIVATE_LIST_URL + "?pageNum=" + privatePageNum);
+//			loadPrivateMessageData(RequestTool.PRIVATE_LIST_URL + "?pageNum=" + privatePageNum);
 //			loadPrivateMessageFromDB();
 		}
 	}

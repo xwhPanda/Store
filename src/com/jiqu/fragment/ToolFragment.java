@@ -16,6 +16,7 @@ import com.jiqu.activity.ShareActivity;
 import com.jiqu.activity.ShowAccountInformatiomActivity;
 import com.jiqu.application.StoreApplication;
 import com.jiqu.database.Account;
+import com.umeng.analytics.MobclickAgent;
 import com.umeng.socialize.bean.SHARE_MEDIA;
 import com.vr.store.R;
 import com.jiqu.tools.MetricsTool;
@@ -123,6 +124,20 @@ public class ToolFragment extends BaseFragment implements OnClickListener{
 		registerClick();
 		
 		return view;
+	}
+	
+	@Override
+	public void onResume() {
+		// TODO Auto-generated method stub
+		super.onResume();
+		MobclickAgent.onPageStart("ToolFragment");
+	}
+	
+	@Override
+	public void onPause() {
+		// TODO Auto-generated method stub
+		super.onPause();
+		MobclickAgent.onPageEnd("ToolFragment");
 	}
 	
 	private void initViewSize(){

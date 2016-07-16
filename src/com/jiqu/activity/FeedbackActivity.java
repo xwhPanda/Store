@@ -26,6 +26,7 @@ import com.jiqu.tools.MD5;
 import com.jiqu.tools.RequestTool;
 import com.jiqu.tools.UIUtil;
 import com.jiqu.view.TitleView;
+import com.umeng.analytics.MobclickAgent;
 import com.vr.store.R;
 
 public class FeedbackActivity extends BaseActivity implements OnClickListener{
@@ -50,6 +51,22 @@ public class FeedbackActivity extends BaseActivity implements OnClickListener{
 		requestTool = RequestTool.getInstance();
 		title = getIntent().getStringExtra("title");
 		initView();
+	}
+	
+	@Override
+	protected void onResume() {
+		// TODO Auto-generated method stub
+		super.onResume();
+		MobclickAgent.onPageStart("FeedbackActivity");
+		MobclickAgent.onResume(this);
+	}
+	
+	@Override
+	protected void onPause() {
+		// TODO Auto-generated method stub
+		super.onPause();
+		MobclickAgent.onPageEnd("FeedbackActivity");
+		MobclickAgent.onPause(this);
 	}
 	
 	private void initView(){

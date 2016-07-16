@@ -598,22 +598,22 @@ public class BatteryInfo {
 				/*if (u.getUid() == Process.WIFI_UID) {
 					mWifiSippers.add(app);
 				} else */
-				if (u.getUid() == Process.BLUETOOTH_GID) {
-					mBluetoothSippers.add(app);
-				} else {
+//				if (u.getUid() == Process.BLUETOOTH_GID) {
+//					mBluetoothSippers.add(app);
+//				} else {
 					mUsageList.add(app);
-				}
+//				}
 			}
 			/*if (u.getUid() == Process.WIFI_UID) {
 				mWifiPower += power;
 			} else */
-			if (u.getUid() == Process.BLUETOOTH_GID) {
-				mBluetoothPower += power;
-			} else {
+//			if (u.getUid() == Process.BLUETOOTH_GID) {
+//				mBluetoothPower += power;
+//			} else {
 				if (power > mMaxPower)
 					mMaxPower = power;
 				mTotalPower += power;
-			}
+//			}
 
 			if (DEBUG)
 				Log.i(TAG, "Added power = " + power);

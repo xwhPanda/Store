@@ -23,6 +23,7 @@ import com.jiqu.view.MyScrollView;
 import com.jiqu.view.PullUpListView;
 import com.jiqu.view.PullUpListView.MyPullUpListViewCallBack;
 import com.jiqu.view.ViewPagerLinView;
+import com.umeng.analytics.MobclickAgent;
 import com.vr.store.R;
 
 import android.content.Intent;
@@ -126,6 +127,20 @@ public class InformationNewFragment extends BaseFragment implements OnClickListe
 		initViewSize();
 		
 		return view;
+	}
+	
+	@Override
+	public void onResume() {
+		// TODO Auto-generated method stub
+		super.onResume();
+		MobclickAgent.onPageStart("InformationNewFragment");
+	}
+	
+	@Override
+	public void onPause() {
+		// TODO Auto-generated method stub
+		super.onPause();
+		MobclickAgent.onPageEnd("InformationNewFragment");
 	}
 	
 	private void initViewSize(){

@@ -20729,6 +20729,7 @@ com.renn.rennsdk.AccessToken$Type: com.renn.rennsdk.AccessToken$Type[] values()
 com.renn.rennsdk.AccessToken$Type: com.renn.rennsdk.AccessToken$Type valueOf(java.lang.String)
 com.renn.rennsdk.RennRequest$Method: com.renn.rennsdk.RennRequest$Method[] values()
 com.renn.rennsdk.RennRequest$Method: com.renn.rennsdk.RennRequest$Method valueOf(java.lang.String)
+com.renn.rennsdk.RennResponse: RennResponse(org.json.JSONObject)
 com.renn.rennsdk.exception.RennServerException$ErrorType: com.renn.rennsdk.exception.RennServerException$ErrorType[] values()
 com.renn.rennsdk.exception.RennServerException$ErrorType: com.renn.rennsdk.exception.RennServerException$ErrorType valueOf(java.lang.String)
 com.renn.rennsdk.oauth.RenrenAccountManager$LoginError: com.renn.rennsdk.oauth.RenrenAccountManager$LoginError[] values()
@@ -30047,6 +30048,14 @@ com.tencent.wxop.stat.z
 com.tencent.wxop.stat.z: com.tencent.wxop.stat.g cm
 com.tencent.wxop.stat.z: z(com.tencent.wxop.stat.g)
 com.tencent.wxop.stat.z: void onReceive(android.content.Context,android.content.Intent)
+com.umeng.analytics.Gender: com.umeng.analytics.Gender[] values()
+com.umeng.analytics.Gender: com.umeng.analytics.Gender valueOf(java.lang.String)
+com.umeng.analytics.MobclickAgent$EScenarioType: com.umeng.analytics.MobclickAgent$EScenarioType[] values()
+com.umeng.analytics.MobclickAgent$EScenarioType: com.umeng.analytics.MobclickAgent$EScenarioType valueOf(java.lang.String)
+com.umeng.analytics.social.UMPlatformData$GENDER: com.umeng.analytics.social.UMPlatformData$GENDER[] values()
+com.umeng.analytics.social.UMPlatformData$GENDER: com.umeng.analytics.social.UMPlatformData$GENDER valueOf(java.lang.String)
+com.umeng.analytics.social.UMPlatformData$UMedia: com.umeng.analytics.social.UMPlatformData$UMedia[] values()
+com.umeng.analytics.social.UMPlatformData$UMedia: com.umeng.analytics.social.UMPlatformData$UMedia valueOf(java.lang.String)
 com.umeng.message.ALIAS_TYPE
 com.umeng.message.ALIAS_TYPE: java.lang.String SINA_WEIBO
 com.umeng.message.ALIAS_TYPE: java.lang.String TENCENT_WEIBO
@@ -30517,6 +30526,7 @@ com.umeng.message.UmengService: UmengService()
 com.umeng.message.UpdateActionReceiver
 com.umeng.message.UpdateActionReceiver: UpdateActionReceiver(com.umeng.message.entity.UMessage)
 com.umeng.message.UpdateActionReceiver: void onReceive(android.content.Context,android.content.Intent)
+com.umeng.message.entity.UMessage: UMessage(org.json.JSONObject)
 com.umeng.message.proguard.E: com.umeng.message.proguard.E[] values()
 com.umeng.message.proguard.E: com.umeng.message.proguard.E valueOf(java.lang.String)
 com.umeng.message.protobuffer.PushRequest
@@ -30666,6 +30676,7 @@ com.umeng.message.protobuffer.PushResponse$responseCode: com.umeng.message.proto
 com.umeng.message.protobuffer.PushResponse$responseCode: com.umeng.message.protobuffer.PushResponse$responseCode valueOf(java.lang.String)
 com.umeng.message.protobuffer.PushResponse$responseCode: com.umeng.message.protobuffer.PushResponse$responseCode fromValue(int)
 com.umeng.message.protobuffer.PushResponse$responseCode: int getValue()
+com.umeng.message.tag.TagManager$Result: TagManager$Result(org.json.JSONObject)
 com.umeng.socialize.Config
 com.umeng.socialize.Config: boolean OpenEditor
 com.umeng.socialize.Config: boolean ShareLocation
@@ -30943,6 +30954,7 @@ com.umeng.socialize.a: boolean b
 com.umeng.socialize.a: a(android.content.Context,com.umeng.socialize.bean.SHARE_MEDIA)
 com.umeng.socialize.a: void a(com.umeng.socialize.PlatformConfig$Platform)
 com.umeng.socialize.a: com.umeng.socialize.PlatformConfig$Platform a()
+com.umeng.socialize.a.b: b(org.json.JSONObject)
 com.umeng.socialize.bean.RequestType: com.umeng.socialize.bean.RequestType[] values()
 com.umeng.socialize.bean.RequestType: com.umeng.socialize.bean.RequestType valueOf(java.lang.String)
 com.umeng.socialize.bean.SHARE_MEDIA: com.umeng.socialize.bean.SHARE_MEDIA[] values()
@@ -31094,10 +31106,23 @@ com.umeng.socialize.media.SimpleShareContent: com.umeng.socialize.media.UMVideo 
 com.umeng.socialize.media.UMediaObject
 com.umeng.socialize.media.UMediaObject$MediaType: com.umeng.socialize.media.UMediaObject$MediaType[] values()
 com.umeng.socialize.media.UMediaObject$MediaType: com.umeng.socialize.media.UMediaObject$MediaType valueOf(java.lang.String)
+com.umeng.socialize.net.ActionBarResponse: ActionBarResponse(org.json.JSONObject)
+com.umeng.socialize.net.ExpiresInResponse: ExpiresInResponse(org.json.JSONObject)
+com.umeng.socialize.net.GetPlatformKeyResponse: GetPlatformKeyResponse(org.json.JSONObject)
+com.umeng.socialize.net.PlatformTokenUploadResponse: PlatformTokenUploadResponse(org.json.JSONObject)
+com.umeng.socialize.net.ShareFriendsResponse: ShareFriendsResponse(org.json.JSONObject)
+com.umeng.socialize.net.ShareMultiFollowResponse: ShareMultiFollowResponse(org.json.JSONObject)
+com.umeng.socialize.net.ShareMultiResponse: ShareMultiResponse(org.json.JSONObject)
+com.umeng.socialize.net.UpdatePlatformKeyResponse: UpdatePlatformKeyResponse(org.json.JSONObject)
+com.umeng.socialize.net.UploadImageResponse: UploadImageResponse(org.json.JSONObject)
+com.umeng.socialize.net.UrlResponse: UrlResponse(org.json.JSONObject)
+com.umeng.socialize.net.UserInfoResponse: UserInfoResponse(org.json.JSONObject)
 com.umeng.socialize.net.base.SocializeRequest$FILE_TYPE: com.umeng.socialize.net.base.SocializeRequest$FILE_TYPE[] values()
 com.umeng.socialize.net.base.SocializeRequest$FILE_TYPE: com.umeng.socialize.net.base.SocializeRequest$FILE_TYPE valueOf(java.lang.String)
 com.umeng.socialize.net.base.SocializeRequest$RequestMethod: com.umeng.socialize.net.base.SocializeRequest$RequestMethod[] values()
 com.umeng.socialize.net.base.SocializeRequest$RequestMethod: com.umeng.socialize.net.base.SocializeRequest$RequestMethod valueOf(java.lang.String)
+com.umeng.socialize.net.base.SocializeReseponse: SocializeReseponse(org.json.JSONObject)
+com.umeng.socialize.net.utils.UResponse: UResponse(org.json.JSONObject)
 com.umeng.socialize.net.utils.UResponse$STATUS: com.umeng.socialize.net.utils.UResponse$STATUS[] values()
 com.umeng.socialize.net.utils.UResponse$STATUS: com.umeng.socialize.net.utils.UResponse$STATUS valueOf(java.lang.String)
 com.umeng.socialize.utils.ResUtil$BindDrawableListener
@@ -32457,7 +32482,6 @@ com.vr.store.R$id: int loadAgain
 com.vr.store.R$id: int loadAgainRel
 com.vr.store.R$id: int loadFailTip
 com.vr.store.R$id: int loadImg
-com.vr.store.R$id: int loadLargImg
 com.vr.store.R$id: int loadRel
 com.vr.store.R$id: int loadStateView
 com.vr.store.R$id: int loadView
@@ -32484,7 +32508,6 @@ com.vr.store.R$id: int messageRefreshView
 com.vr.store.R$id: int messageRel
 com.vr.store.R$id: int messenger_send_button
 com.vr.store.R$id: int modifyBtn
-com.vr.store.R$id: int modifyPassword
 com.vr.store.R$id: int monthWheel
 com.vr.store.R$id: int moreBt
 com.vr.store.R$id: int moreBtn
@@ -38063,6 +38086,22 @@ twitter4j.util.TimeSpanConverter: java.lang.String toTimeSpanString(long)
 twitter4j.util.TimeSpanConverter: java.lang.String toTimeSpanString(int)
 twitter4j.util.function.Consumer
 twitter4j.util.function.Consumer: void accept(java.lang.Object)
+u.aly.az: u.aly.az[] values()
+u.aly.az: u.aly.az valueOf(java.lang.String)
+u.aly.ba$e: u.aly.ba$e[] values()
+u.aly.ba$e: u.aly.ba$e valueOf(java.lang.String)
+u.aly.bb$e: u.aly.bb$e[] values()
+u.aly.bb$e: u.aly.bb$e valueOf(java.lang.String)
+u.aly.bc$e: u.aly.bc$e[] values()
+u.aly.bc$e: u.aly.bc$e valueOf(java.lang.String)
+u.aly.bd$e: u.aly.bd$e[] values()
+u.aly.bd$e: u.aly.bd$e valueOf(java.lang.String)
+u.aly.be$e: u.aly.be$e[] values()
+u.aly.be$e: u.aly.be$e valueOf(java.lang.String)
+u.aly.bf$e: u.aly.bf$e[] values()
+u.aly.bf$e: u.aly.bf$e valueOf(java.lang.String)
+u.aly.bg$e: u.aly.bg$e[] values()
+u.aly.bg$e: u.aly.bg$e valueOf(java.lang.String)
 uk.co.chrisjenx.calligraphy.R$anim
 uk.co.chrisjenx.calligraphy.R$anim: int abc_fade_in
 uk.co.chrisjenx.calligraphy.R$anim: int abc_fade_out

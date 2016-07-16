@@ -7,6 +7,7 @@ import android.widget.RelativeLayout;
 
 import com.jiqu.application.StoreApplication;
 import com.jiqu.store.BaseActivity;
+import com.umeng.analytics.MobclickAgent;
 import com.vr.store.R;
 import com.jiqu.tools.Constants;
 import com.jiqu.tools.UIUtil;
@@ -31,6 +32,22 @@ public class ModifyPasswordActivity extends BaseActivity {
 	public int getContentView() {
 		// TODO Auto-generated method stub
 		return R.layout.modify_password_layout;
+	}
+	
+	@Override
+	protected void onResume() {
+		// TODO Auto-generated method stub
+		super.onResume();
+		MobclickAgent.onPageStart("ModifyPasswordActivity");
+		MobclickAgent.onResume(this);
+	}
+	
+	@Override
+	protected void onPause() {
+		// TODO Auto-generated method stub
+		super.onPause();
+		MobclickAgent.onPageEnd("ModifyPasswordActivity");
+		MobclickAgent.onPause(this);
 	}
 	
 	private void initView(){

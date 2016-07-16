@@ -29,6 +29,7 @@ import com.jiqu.view.PullToRefreshLayout;
 import com.jiqu.view.PullableListView;
 import com.jiqu.view.PullUpListView.MyPullUpListViewCallBack;
 import com.jiqu.view.ViewPagerLinView;
+import com.umeng.analytics.MobclickAgent;
 import com.vr.store.R;
 
 import android.content.Intent;
@@ -139,6 +140,20 @@ public class GameNewFragment extends BaseFragment implements MyPullUpListViewCal
 		
 		initViewSize();
 		return view;
+	}
+	
+	@Override
+	public void onResume() {
+		// TODO Auto-generated method stub
+		super.onResume();
+		MobclickAgent.onPageStart("GameNewFragment");
+	}
+	
+	@Override
+	public void onPause() {
+		// TODO Auto-generated method stub
+		super.onPause();
+		MobclickAgent.onPageEnd("GameNewFragment");
 	}
 	
 	private void initViewSize(){

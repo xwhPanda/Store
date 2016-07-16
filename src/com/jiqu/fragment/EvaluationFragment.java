@@ -13,6 +13,7 @@ import com.jiqu.activity.GameEvaluationWebInfoActivity;
 import com.jiqu.adapter.EvaluationGridViewAdapter;
 import com.jiqu.object.EvaluationInfo;
 import com.jiqu.object.EvaluationItemInfo;
+import com.umeng.analytics.MobclickAgent;
 import com.vr.store.R;
 import com.jiqu.tools.RequestTool;
 import com.jiqu.tools.UIUtil;
@@ -73,6 +74,20 @@ public class EvaluationFragment extends BaseFragment implements OnRefreshListene
 		});
 		
 		return view;
+	}
+	
+	@Override
+	public void onResume() {
+		// TODO Auto-generated method stub
+		super.onResume();
+		MobclickAgent.onPageStart("EvaluationFragment");
+	}
+	
+	@Override
+	public void onPause() {
+		// TODO Auto-generated method stub
+		super.onPause();
+		MobclickAgent.onPageEnd("EvaluationFragment");
 	}
 	
 	@Override

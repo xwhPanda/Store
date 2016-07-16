@@ -33,6 +33,7 @@ import com.jiqu.object.GameInfo;
 import com.jiqu.object.InstalledApp;
 import com.jiqu.object.RankInfo;
 import com.jiqu.store.BaseActivity;
+import com.umeng.analytics.MobclickAgent;
 import com.vr.store.R;
 import com.jiqu.tools.Constants;
 import com.jiqu.tools.InstalledAppTool;
@@ -80,6 +81,22 @@ public class RankingActivity extends BaseActivity implements OnClickListener,OnR
 		initView();
 		
 		loadPraiseData(RequestTool.PRAISE_URL);
+	}
+	
+	@Override
+	protected void onPause() {
+		// TODO Auto-generated method stub
+		super.onPause();
+		MobclickAgent.onPageEnd("RankingActivity");
+		MobclickAgent.onPause(this);
+	}
+	
+	@Override
+	protected void onResume() {
+		// TODO Auto-generated method stub
+		super.onResume();
+		MobclickAgent.onPageStart("RankingActivity");
+		MobclickAgent.onResume(this);
 	}
 	
 	private void loadPraiseData(String url){

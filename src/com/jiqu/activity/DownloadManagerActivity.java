@@ -32,6 +32,7 @@ import com.jiqu.download.DownloadManager;
 import com.jiqu.download.UnZipManager;
 import com.jiqu.object.InstalledApp;
 import com.jiqu.store.BaseActivity;
+import com.umeng.analytics.MobclickAgent;
 import com.vr.store.R;
 import com.jiqu.tools.Constants;
 import com.jiqu.tools.InstalledAppTool;
@@ -79,6 +80,21 @@ public class DownloadManagerActivity extends BaseActivity implements OnClickList
 		new DataTask().execute("");
 	}
 	
+	@Override
+	protected void onResume() {
+		// TODO Auto-generated method stub
+		super.onResume();
+		MobclickAgent.onPageStart("DownloadManagerActivity");
+		MobclickAgent.onResume(this);
+	}
+	
+	@Override
+	protected void onPause() {
+		// TODO Auto-generated method stub
+		super.onPause();
+		MobclickAgent.onPageEnd("DownloadManagerActivity");
+		MobclickAgent.onPause(this);
+	}
 	
 	@Override
 	protected void onDestroy() {

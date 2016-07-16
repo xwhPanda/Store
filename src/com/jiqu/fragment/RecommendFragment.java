@@ -25,6 +25,7 @@ import com.jiqu.object.GameInfo;
 import com.jiqu.object.InstalledApp;
 import com.jiqu.object.RecommendDataInfo;
 import com.jiqu.object.RecommendHeadlineInfo;
+import com.umeng.analytics.MobclickAgent;
 import com.vr.store.R;
 import com.jiqu.tools.InstalledAppTool;
 import com.jiqu.tools.MetricsTool;
@@ -105,6 +106,8 @@ public class RecommendFragment extends BaseFragment implements OnRefreshListener
 		requestTool = RequestTool.getInstance();
 	}
 	
+	
+	
 	@Override
 	public void initData() {
 		// TODO Auto-generated method stub
@@ -121,6 +124,14 @@ public class RecommendFragment extends BaseFragment implements OnRefreshListener
 	public void onResume() {
 		// TODO Auto-generated method stub
 		super.onResume();
+		 MobclickAgent.onPageStart("RecommendFragment");
+	}
+	
+	@Override
+	public void onPause() {
+		// TODO Auto-generated method stub
+		super.onPause();
+		MobclickAgent.onPageEnd("RecommendFragment");
 	}
 
 	private void initAdapter() {

@@ -41,6 +41,7 @@ import com.jiqu.download.DownloadManager;
 import com.jiqu.object.GameInfo;
 import com.jiqu.object.SpecialInfo;
 import com.jiqu.store.BaseActivity;
+import com.umeng.analytics.MobclickAgent;
 import com.vr.store.R;
 import com.jiqu.tools.Constants;
 import com.jiqu.tools.CountDownTimer;
@@ -90,6 +91,22 @@ public class BoutiqueActivity extends BaseActivity implements OnPageChangeListen
 		
 		initView();
 		loadData(RequestTool.BOUTIQUE_URL);
+	}
+	
+	@Override
+	protected void onResume() {
+		// TODO Auto-generated method stub
+		super.onResume();
+		MobclickAgent.onPageStart("BoutiqueActivity");
+		MobclickAgent.onResume(this);
+	}
+	
+	@Override
+	protected void onPause() {
+		// TODO Auto-generated method stub
+		super.onPause();
+		MobclickAgent.onPageEnd("BoutiqueActivity");
+		MobclickAgent.onPause(this);
 	}
 	
 	@Override

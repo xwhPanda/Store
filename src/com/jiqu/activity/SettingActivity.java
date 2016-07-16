@@ -12,6 +12,7 @@ import android.widget.CompoundButton.OnCheckedChangeListener;
 import com.jiqu.application.StoreApplication;
 import com.jiqu.download.ThreadManager;
 import com.jiqu.store.BaseActivity;
+import com.umeng.analytics.MobclickAgent;
 import com.vr.store.R;
 import com.jiqu.tools.CheckNewVersion;
 import com.jiqu.tools.Constants;
@@ -40,6 +41,22 @@ public class SettingActivity extends BaseActivity implements OnCheckedChangeList
 		// TODO Auto-generated method stub
 		return R.layout.setting_layout;
 	}
+	
+	@Override
+	protected void onResume() {
+		// TODO Auto-generated method stub
+		super.onResume();
+		MobclickAgent.onPageStart("SettingActivity");
+		MobclickAgent.onResume(this);
+	}
+	
+	@Override
+	protected void onPause() {
+		// TODO Auto-generated method stub
+		super.onPause();
+		MobclickAgent.onPageEnd("SettingActivity");
+		MobclickAgent.onPause(this);
+	}
 
 	private void initView(){
 		parent = (RelativeLayout) findViewById(R.id.parent);
@@ -60,7 +77,7 @@ public class SettingActivity extends BaseActivity implements OnCheckedChangeList
 		
 		autoCheckVersion.getToggleButton().setOnCheckedChangeListener(this);
 		
-		autoCheckVersion.getToggleButton().setChecked(SharePreferenceTool.getBooleanFromPreferences(preferences, Constants.AUTO_CHECK_VERSION, false));
+		autoCheckVersion.getToggleButton().setChecked(SharePreferenceTool.getBooleanFromPreferences(preferences, Constants.AUTO_CHECK_VERSION, true));
 		threadItem.getThreadSizeTextView().setText(SharePreferenceTool.getIntFromPreferences(preferences, Constants.DOWNLOAD_THREAD_COUNTS, Constants.DEFAULT_DOWANLOAD_THREAD_COUNTS) + "");
 		threadItem.getAddButton().setOnClickListener(this);
 		threadItem.getSubtractButton().setOnClickListener(this);

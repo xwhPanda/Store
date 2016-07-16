@@ -3,15 +3,9 @@ package com.jiqu.activity;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-
-import org.json.JSONObject;
-
-import android.R.integer;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
-import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.AdapterView;
@@ -33,15 +27,13 @@ import com.jiqu.database.DownloadAppinfoDao.Properties;
 import com.jiqu.download.DownloadManager;
 import com.jiqu.object.CategoryAppsInfo;
 import com.jiqu.object.GameInfo;
-import com.jiqu.object.InstalledApp;
 import com.jiqu.object.SortItem;
 import com.jiqu.object.ThematicItem;
 import com.jiqu.object.ThematicSortInfo;
-import com.jiqu.object.ThematicSortInfoItem;
 import com.jiqu.store.BaseActivity;
+import com.umeng.analytics.MobclickAgent;
 import com.vr.store.R;
 import com.jiqu.tools.Constants;
-import com.jiqu.tools.InstalledAppTool;
 import com.jiqu.tools.RequestTool;
 import com.jiqu.view.LoadStateView;
 import com.jiqu.view.PullToRefreshLayout;
@@ -129,6 +121,22 @@ public class SortInfoActivity extends BaseActivity implements OnRefreshListener,
 				loadCategoryData(loadUrl);
 			}
 		}
+	
+	@Override
+	protected void onResume() {
+		// TODO Auto-generated method stub
+		super.onResume();
+		MobclickAgent.onPageStart("SortInfoActivity");
+		MobclickAgent.onResume(this);
+	}
+	
+	@Override
+	protected void onPause() {
+		// TODO Auto-generated method stub
+		super.onPause();
+		MobclickAgent.onPageEnd("SortInfoActivity");
+		MobclickAgent.onPause(this);
+	}
 
 	@Override
 	public int getContentView() {

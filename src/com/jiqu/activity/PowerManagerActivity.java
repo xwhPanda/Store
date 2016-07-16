@@ -32,6 +32,7 @@ import com.jiqu.application.StoreApplication;
 import com.jiqu.object.BatteryInfo;
 import com.jiqu.object.BatterySipper;
 import com.jiqu.store.BaseActivity;
+import com.umeng.analytics.MobclickAgent;
 import com.vr.store.R;
 import com.jiqu.tools.Constants;
 import com.jiqu.tools.SharePreferenceTool;
@@ -190,6 +191,8 @@ public class PowerManagerActivity extends BaseActivity implements OnCheckedChang
 		// TODO Auto-generated method stub
 		super.onPause();
 		waveHelper.cancel();
+		MobclickAgent.onPageEnd("PowerManagementActivity");
+		MobclickAgent.onPause(this);
 	}
 	
 	@Override
@@ -197,6 +200,8 @@ public class PowerManagerActivity extends BaseActivity implements OnCheckedChang
 		// TODO Auto-generated method stub
 		super.onResume();
 		waveHelper.start();
+		MobclickAgent.onPageStart("PowerManagementActivity");
+		MobclickAgent.onResume(this);
 	}
 	
 	protected void onDestroy() {

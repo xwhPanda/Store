@@ -37,6 +37,7 @@ import android.widget.Toast;
 
 import com.jiqu.application.StoreApplication;
 import com.jiqu.store.BaseActivity;
+import com.umeng.analytics.MobclickAgent;
 import com.vr.store.R;
 import com.jiqu.tools.ClearTool;
 import com.jiqu.tools.Constants;
@@ -85,6 +86,22 @@ public class DeepClearActivity extends BaseActivity implements OnClickListener {
 
 		initView();
 		initClearDB();
+	}
+	
+	@Override
+	protected void onResume() {
+		// TODO Auto-generated method stub
+		super.onResume();
+		MobclickAgent.onPageStart("DeepClearActivity");
+		MobclickAgent.onResume(this);
+	}
+	
+	@Override
+	protected void onPause() {
+		// TODO Auto-generated method stub
+		super.onPause();
+		MobclickAgent.onPageEnd("DeepClearActivity");
+		MobclickAgent.onPause(this);
 	}
 
 	@Override

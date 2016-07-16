@@ -77,8 +77,8 @@ public class UnZipManager {
 				zFile.setFileNameCharset("GBK");
 				  
 		        if (!zFile.isValidZipFile()){
+		        	downloadAppinfo.setDownloadState(DownloadManager.STATE_UNZIP_FAILED);
 		        	if (handler != null) {
-		        		downloadAppinfo.setDownloadState(DownloadManager.STATE_UNZIP_FAILED);
 						handler.sendEmptyMessage(1);
 					}
 		            return;

@@ -10,6 +10,7 @@ import android.widget.TextView;
 
 import com.jiqu.application.StoreApplication;
 import com.jiqu.store.BaseActivity;
+import com.umeng.analytics.MobclickAgent;
 import com.vr.store.R;
 import com.jiqu.tools.Constants;
 import com.jiqu.tools.MetricsTool;
@@ -55,6 +56,22 @@ public class GameEvaluationInformationActivity extends BaseActivity implements O
 		// TODO Auto-generated method stub
 		super.onCreate(savedInstanceState);
 		initView();
+	}
+	
+	@Override
+	protected void onResume() {
+		// TODO Auto-generated method stub
+		super.onResume();
+		MobclickAgent.onPageStart("GameEvaluationInformationActivity");
+		MobclickAgent.onResume(this);
+	}
+	
+	@Override
+	protected void onPause() {
+		// TODO Auto-generated method stub
+		super.onPause();
+		MobclickAgent.onPageEnd("GameEvaluationInformationActivity");
+		MobclickAgent.onPause(this);
 	}
 	
 	@Override

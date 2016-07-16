@@ -16,6 +16,7 @@ import com.jiqu.adapter.ShareAddFriendAdapter;
 import com.jiqu.application.StoreApplication;
 import com.jiqu.object.FriendItem;
 import com.jiqu.store.BaseActivity;
+import com.umeng.analytics.MobclickAgent;
 import com.umeng.socialize.Config;
 import com.umeng.socialize.ShareAction;
 import com.umeng.socialize.UMShareAPI;
@@ -67,6 +68,22 @@ public class ShareActivity extends BaseActivity {
 		
 		initView();
 	}
+	
+	@Override
+	protected void onResume() {
+		// TODO Auto-generated method stub
+		super.onResume();
+		MobclickAgent.onPageStart("ShareActivity");
+		MobclickAgent.onResume(this);
+	}
+	
+	@Override
+	protected void onPause() {
+		// TODO Auto-generated method stub
+		super.onPause();
+		MobclickAgent.onPageEnd("ShareActivity");
+		MobclickAgent.onPause(this);
+	}
 
 	@Override
 	public int getContentView() {
@@ -98,6 +115,7 @@ public class ShareActivity extends BaseActivity {
 			@Override
 			public void onClick(View v) {
 				// TODO Auto-generated method stub
+				MobclickAgent.onEvent(ShareActivity.this,"pengyouquanForward");
 				new ShareAction(ShareActivity.this)
 				.setPlatform(SHARE_MEDIA.WEIXIN_CIRCLE)
 				.setCallback(new UMShareListener() {
@@ -105,19 +123,16 @@ public class ShareActivity extends BaseActivity {
 					@Override
 					public void onResult(SHARE_MEDIA arg0) {
 						// TODO Auto-generated method stub
-						Log.i("TAG", "onResult");
 					}
 					
 					@Override
 					public void onError(SHARE_MEDIA arg0, Throwable arg1) {
 						// TODO Auto-generated method stub
-						Log.i("TAG", "onError");
 					}
 					
 					@Override
 					public void onCancel(SHARE_MEDIA arg0) {
 						// TODO Auto-generated method stub
-						Log.i("TAG", "onCancel");
 					}
 				})
 				.withTargetUrl(url)
@@ -134,6 +149,7 @@ public class ShareActivity extends BaseActivity {
 			public void onClick(View v) {
 				// TODO Auto-generated method stub
 				Log.LOG = false;
+				MobclickAgent.onEvent(ShareActivity.this,"weixinForward");
 				new ShareAction(ShareActivity.this)
 				.setPlatform(SHARE_MEDIA.WEIXIN)
 				.setCallback(new UMShareListener() {
@@ -166,6 +182,7 @@ public class ShareActivity extends BaseActivity {
 			@Override
 			public void onClick(View v) {
 				// TODO Auto-generated method stub
+				MobclickAgent.onEvent(ShareActivity.this,"weiboForward");
 				Config.OpenEditor = false;
 				com.umeng.socialize.utils.Log.LOG = false;
 				new ShareAction(ShareActivity.this)
@@ -200,6 +217,7 @@ public class ShareActivity extends BaseActivity {
 			@Override
 			public void onClick(View v) {
 				// TODO Auto-generated method stub
+				MobclickAgent.onEvent(ShareActivity.this,"qqForward");
 				UMImage image = new UMImage(ShareActivity.this
 						, BitmapFactory.decodeResource(getResources(), R.drawable.ic_launcher));
 				new ShareAction(ShareActivity.this)

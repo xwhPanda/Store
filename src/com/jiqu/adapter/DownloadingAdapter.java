@@ -21,6 +21,7 @@ import com.jiqu.tools.UIUtil;
 import com.jiqu.view.NetChangeDialog;
 
 import android.content.Context;
+import android.graphics.drawable.AnimationDrawable;
 import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
@@ -333,7 +334,7 @@ public class DownloadingAdapter extends BaseAdapter implements DownloadObserver 
 		}
 
 		public void refreshView(DownloadAppinfo appinfo) {
-//			pause.clearAnimation();
+			pause.clearAnimation();
 			downloadPrg.setProgress((int) (appinfo.getProgress() * 100));
 			progressTx.setText(FileUtil.getFileSize(appinfo.getCurrentSize()) + "/" + appSize);
 			switch (appinfo.getDownloadState()) {
@@ -348,7 +349,9 @@ public class DownloadingAdapter extends BaseAdapter implements DownloadObserver 
 				pause.setBackgroundResource(R.drawable.xiazai_failed);
 				break;
 			case DownloadManager.STATE_WAITING:
-				pause.setBackgroundResource(R.drawable.dengdai);
+				pause.setBackgroundResource(R.drawable.wait_anim);
+				AnimationDrawable animationDrawable = (AnimationDrawable) pause.getBackground();
+				animationDrawable.start();
 //				Animation animation = AnimationUtils.loadAnimation(context, R.anim.wating_rorating);
 //				pause.setAnimation(animation);
 //				pause.startAnimation(animation);

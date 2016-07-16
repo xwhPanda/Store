@@ -49,6 +49,7 @@ import com.jiqu.object.SearchIndexItemInfo;
 import com.jiqu.object.SearchInfo;
 import com.jiqu.object.SearchKeyword;
 import com.jiqu.store.BaseActivity;
+import com.umeng.analytics.MobclickAgent;
 import com.vr.store.R;
 import com.jiqu.tools.Constants;
 import com.jiqu.tools.InstalledAppTool;
@@ -85,7 +86,14 @@ public class SearchActivity extends BaseActivity implements OnClickListener,List
 		requestTool = RequestTool.getInstance();
 		
 		initView();
-		
+	}
+	
+	@Override
+	protected void onPause() {
+		// TODO Auto-generated method stub
+		super.onPause();
+		MobclickAgent.onPageEnd("SearchActivity");
+		MobclickAgent.onPause(this);
 	}
 
 	@Override
@@ -226,6 +234,8 @@ public class SearchActivity extends BaseActivity implements OnClickListener,List
 		if (adapter != null) {
 			adapter.startObserver();
 		}
+		MobclickAgent.onPageStart("SearchActivity");
+		MobclickAgent.onResume(this);
 	}
 
 	@Override

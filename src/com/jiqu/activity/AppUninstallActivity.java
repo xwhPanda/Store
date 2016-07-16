@@ -21,6 +21,7 @@ import com.jiqu.adapter.UninstallSystemAppAdapter;
 import com.jiqu.application.StoreApplication;
 import com.jiqu.object.InstalledApp;
 import com.jiqu.store.BaseActivity;
+import com.umeng.analytics.MobclickAgent;
 import com.vr.store.R;
 import com.jiqu.tools.Constants;
 import com.jiqu.tools.InstalledAppTool;
@@ -55,6 +56,22 @@ public class AppUninstallActivity extends BaseActivity implements OnClickListene
 	public int getContentView() {
 		// TODO Auto-generated method stub
 		return R.layout.app_uninstall_layout;
+	}
+	
+	@Override
+	protected void onResume() {
+		// TODO Auto-generated method stub
+		super.onResume();
+		MobclickAgent.onPageStart("AppUninstallActivity");
+		MobclickAgent.onResume(this);
+	}
+	
+	@Override
+	protected void onPause() {
+		// TODO Auto-generated method stub
+		super.onPause();
+		MobclickAgent.onPageEnd("AppUninstallActivity");
+		MobclickAgent.onPause(this);
 	}
 	
 	private void initView(){

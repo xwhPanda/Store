@@ -21,6 +21,9 @@ import com.jiqu.database.DaoSession;
 import com.jiqu.download.FileUtil;
 import com.jiqu.interfaces.LoginOutObserver;
 import com.ta.utdid2.device.UTDevice;
+import com.umeng.analytics.AnalyticsConfig;
+import com.umeng.analytics.MobclickAgent;
+import com.umeng.analytics.MobclickAgent.UMAnalyticsConfig;
 import com.umeng.socialize.Config;
 import com.umeng.socialize.PlatformConfig;
 import com.vr.store.R;
@@ -45,11 +48,13 @@ import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Looper;
 import android.provider.Settings.Secure;
+import android.support.annotation.NonNull;
+import android.support.v4.app.ActivityCompat.OnRequestPermissionsResultCallback;
 import android.telephony.TelephonyManager;
 import android.text.TextUtils;
 import android.util.Log;
 
-public class StoreApplication extends Application {
+public class StoreApplication extends Application implements OnRequestPermissionsResultCallback{
 	private static final String TAG = "StoreApplication";
 	private static StoreApplication instance;
 	/** 数据库 **/
@@ -65,7 +70,7 @@ public class StoreApplication extends Application {
 	/** data下面cache路径 **/
 	public static String DATA_CACHE_PATH;
 	public static Context context;
-	public static String DEVICE_ID;
+//	public static String DEVICE_ID;
 	/** 渠道名 **/
 	public static String CHANNEL;
 	public static String APK_DOWNLOAD_PATH = "";
@@ -125,7 +130,7 @@ public class StoreApplication extends Application {
 			/** 使用UTDID.jar包获取唯一标志，阿里系APP都在使用，这里友盟推送已经集成此jar包 **/
 			Constants.DEVICE_ID = UTDevice.getUtdid(context);
 			Constants.SERIAL_NUMBER = android.os.Build.SERIAL;
-			DEVICE_ID = ((TelephonyManager) context.getSystemService(TELEPHONY_SERVICE)).getDeviceId();
+//			DEVICE_ID = ((TelephonyManager) context.getSystemService(TELEPHONY_SERVICE)).getDeviceId();
 			/** 修改meta来决定渠道号，效率低 **/
 			// CHANNEL = getMetaDataValue("channel");
 			/** 美团打包方案 **/
@@ -156,6 +161,11 @@ public class StoreApplication extends Application {
 		UMengManager.getInstance().setMessageChannel(CHANNEL);
 		UMengManager.getInstance().setMessageHandler(new UmengPushMessageHandler());
 		UMengManager.getInstance().setNotificationClickHandler(new UmengNotificationHandler());
+		
+		//友盟统计
+//		MobclickAgent.startWithConfigure(new UMAnalyticsConfig(context, "575cc7d767e58e106a001900", CHANNEL));
+//		MobclickAgent.openActivityDurationTrack(false);
+//		MobclickAgent.enableEncrypt(true);
 	}
 
 	/** 获取AndroidManifest.xml中的mete节点 **/
@@ -284,5 +294,11 @@ public class StoreApplication extends Application {
 			}
 		}
 		return String.valueOf(hs);
+	}
+
+	@Override
+	public void onRequestPermissionsResult(int arg0, @NonNull String[] arg1, @NonNull int[] arg2) {
+		// TODO Auto-generated method stub
+		
 	}
 }

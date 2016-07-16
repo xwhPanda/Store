@@ -9,7 +9,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.view.ViewPager;
 import android.support.v4.view.ViewPager.OnPageChangeListener;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -34,6 +33,7 @@ import com.jiqu.application.StoreApplication;
 import com.jiqu.object.ThematicInfo;
 import com.jiqu.object.ThematicItem;
 import com.jiqu.store.BaseActivity;
+import com.umeng.analytics.MobclickAgent;
 import com.vr.store.R;
 import com.jiqu.tools.Constants;
 import com.jiqu.tools.CountDownTimer;
@@ -80,6 +80,22 @@ public class ThematicActivity extends BaseActivity implements Listener<JSONObjec
 		initView();
 		
 		loadThematicData(RequestTool.SPECIAL_URL);
+	}
+	
+	@Override
+	protected void onResume() {
+		// TODO Auto-generated method stub
+		super.onResume();
+		MobclickAgent.onPageStart("ThematicActivity");
+		MobclickAgent.onResume(this);
+	}
+	
+	@Override
+	protected void onPause() {
+		// TODO Auto-generated method stub
+		super.onPause();
+		MobclickAgent.onPageEnd("ThematicActivity");
+		MobclickAgent.onPause(this);
 	}
 
 	private void loadThematicData(String url){

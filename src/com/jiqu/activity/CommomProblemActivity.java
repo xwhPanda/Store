@@ -27,6 +27,7 @@ import com.jiqu.application.StoreApplication;
 import com.jiqu.object.CommonProblemInfo;
 import com.jiqu.object.CommonProblemItem;
 import com.jiqu.store.BaseActivity;
+import com.umeng.analytics.MobclickAgent;
 import com.vr.store.R;
 import com.jiqu.tools.Constants;
 import com.jiqu.tools.RequestTool;
@@ -60,6 +61,22 @@ public class CommomProblemActivity extends BaseActivity implements OnClickListen
 	public int getContentView() {
 		// TODO Auto-generated method stub
 		return R.layout.commom_problem_layout;
+	}
+	
+	@Override
+	protected void onResume() {
+		// TODO Auto-generated method stub
+		super.onResume();
+		MobclickAgent.onPageStart("CommomProblemActivity");
+		MobclickAgent.onResume(this);
+	}
+	
+	@Override
+	protected void onPause() {
+		// TODO Auto-generated method stub
+		super.onPause();
+		MobclickAgent.onPageEnd("CommomProblemActivity");
+		MobclickAgent.onPause(this);
 	}
 	
 	private void initView(){

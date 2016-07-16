@@ -4,6 +4,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import com.alibaba.fastjson.JSON;
 import com.android.volley.Response.ErrorListener;
@@ -42,20 +43,26 @@ import com.jiqu.umeng.UMengManager;
 import com.jiqu.view.CircleImageView;
 import com.jiqu.view.CustomDialog;
 import com.jiqu.view.NetChangeDialog;
+import com.umeng.analytics.MobclickAgent;
 import com.umeng.message.PushAgent;
 import com.umeng.socialize.bean.SHARE_MEDIA;
 import com.vr.store.R;
 
 import de.greenrobot.dao.query.QueryBuilder;
 
+import android.Manifest;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.os.Process;
+import android.support.annotation.NonNull;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
@@ -393,6 +400,10 @@ public class MainActivity extends FragmentActivity implements OnClickListener,On
 		switch (v.getId()) {
 		case R.id.recommendLin:
 			if (currentIndex != 0) {
+				Map<String, String> map = new HashMap<String, String>();
+	            map.put("action", "onclick");
+	            MobclickAgent.onEvent(this, "recommend", map);
+				
 				toolTop.setVisibility(View.INVISIBLE);
 				top.setVisibility(View.VISIBLE);
 				changeFocusState(currentIndex, false);
@@ -412,6 +423,9 @@ public class MainActivity extends FragmentActivity implements OnClickListener,On
 
 		case R.id.informationLin:
 			if (currentIndex != 1) {
+				Map<String, String> map = new HashMap<String, String>();
+	            map.put("action", "onclick");
+	            MobclickAgent.onEvent(this, "information", map);
 				toolTop.setVisibility(View.INVISIBLE);
 				top.setVisibility(View.VISIBLE);
 				changeFocusState(currentIndex, false);
@@ -431,6 +445,9 @@ public class MainActivity extends FragmentActivity implements OnClickListener,On
 			
 		case R.id.gameLin:
 			if (currentIndex != 2) {
+				Map<String, String> map = new HashMap<String, String>();
+	            map.put("action", "onclick");
+	            MobclickAgent.onEvent(this, "game", map);
 				toolTop.setVisibility(View.INVISIBLE);
 				top.setVisibility(View.VISIBLE);
 				changeFocusState(currentIndex, false);
@@ -449,6 +466,9 @@ public class MainActivity extends FragmentActivity implements OnClickListener,On
 			
 		case R.id.evaluationLin:
 			if (currentIndex != 3) {
+				Map<String, String> map = new HashMap<String, String>();
+	            map.put("action", "onclick");
+	            MobclickAgent.onEvent(this, "evaluation", map);
 				toolTop.setVisibility(View.INVISIBLE);
 				top.setVisibility(View.VISIBLE);
 				changeFocusState(currentIndex, false);
@@ -467,6 +487,9 @@ public class MainActivity extends FragmentActivity implements OnClickListener,On
 			
 		case R.id.toolLin:
 			if (currentIndex != 4) {
+				Map<String, String> map = new HashMap<String, String>();
+	            map.put("action", "onclick");
+	            MobclickAgent.onEvent(this, "tool", map);
 				toolTop.setVisibility(View.VISIBLE);
 				top.setVisibility(View.INVISIBLE);
 				changeFocusState(currentIndex, false);
@@ -483,10 +506,16 @@ public class MainActivity extends FragmentActivity implements OnClickListener,On
 			}
 			break;
 		case R.id.searchEd:
+			Map<String, String> map = new HashMap<String, String>();
+            map.put("action", "onclick");
+            MobclickAgent.onEvent(this, "search", map);
 			startActivity(new Intent(this, SearchActivity.class));
 			break;
 		
 		case R.id.accountImg:
+			Map<String, String> accountmap = new HashMap<String, String>();
+			accountmap.put("action", "onclick");
+            MobclickAgent.onEvent(this, "account", accountmap);
 			boolean isQQLogin = UMengManager.getInstance().isAuth(this, SHARE_MEDIA.QQ);
 			boolean isWeixinLogin = UMengManager.getInstance().isAuth(this, SHARE_MEDIA.WEIXIN);
 			boolean isSinaLogin = UMengManager.getInstance().isAuth(this, SHARE_MEDIA.SINA);
@@ -509,6 +538,9 @@ public class MainActivity extends FragmentActivity implements OnClickListener,On
 			break;
 			
 		case R.id.download:
+			Map<String, String> downloadmap = new HashMap<String, String>();
+			downloadmap.put("action", "onclick");
+            MobclickAgent.onEvent(this, "downloadManager", downloadmap);
 			startActivity(new Intent(this, DownloadManagerActivity.class));
 			break;
 			
@@ -526,6 +558,7 @@ public class MainActivity extends FragmentActivity implements OnClickListener,On
                        Toast.makeText(this, "再按一次退出程序", Toast.LENGTH_SHORT).show();
                        mExitTime = System.currentTimeMillis();
                } else {
+            	   MobclickAgent.onKillProcess(this);
             	   DownloadManager.getInstance().pauseExit();
             	   Process.killProcess(Process.myPid());
                }
@@ -564,5 +597,20 @@ public class MainActivity extends FragmentActivity implements OnClickListener,On
 			ImageListener listener = ImageLoader.getImageListener(accountImg, R.drawable.yonghuicon, R.drawable.yonghuicon);
 			StoreApplication.getInstance().getImageLoader().get(account.getPhoto(), listener);
 		}
+	}
+	
+	@Override
+	protected void onResume() {
+		// TODO Auto-generated method stub
+		super.onResume();
+		MobclickAgent.onResume(this);
+	}
+	
+	
+	@Override
+	protected void onPause() {
+		// TODO Auto-generated method stub
+		super.onPause();
+		MobclickAgent.onPause(this);
 	}
 }

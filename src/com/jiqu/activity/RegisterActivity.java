@@ -1,11 +1,8 @@
 package com.jiqu.activity;
 
-import org.json.JSONObject;
-
 import android.os.Bundle;
 import android.text.InputType;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
@@ -21,6 +18,7 @@ import com.jiqu.application.StoreApplication;
 import com.jiqu.download.StringUtil;
 import com.jiqu.object.AccountResponeInfo;
 import com.jiqu.store.BaseActivity;
+import com.umeng.analytics.MobclickAgent;
 import com.vr.store.R;
 import com.jiqu.tools.Constants;
 import com.jiqu.tools.MD5;
@@ -54,6 +52,22 @@ public class RegisterActivity extends BaseActivity implements OnClickListener{
 	public int getContentView() {
 		// TODO Auto-generated method stub
 		return R.layout.register_layout;
+	}
+	
+	@Override
+	protected void onPause() {
+		// TODO Auto-generated method stub
+		super.onPause();
+		MobclickAgent.onPageEnd("RegisterActivity");
+		MobclickAgent.onPause(this);
+	}
+	
+	@Override
+	protected void onResume() {
+		// TODO Auto-generated method stub
+		super.onResume();
+		MobclickAgent.onPageStart("RegisterActivity");
+		MobclickAgent.onResume(this);
 	}
 	
 	private void initView(){
